@@ -33,26 +33,27 @@ namespace ProjectManager.Controllers
             return View();
         }
 
-        public ActionResult ExpList(Guid ProjectGUID)
+        public ActionResult GetTaskResources(Guid id)
         {
             var q = from p in dbContext.Project
                     join t in dbContext.Tasks on p.ProjectGUID equals t.ProjectGUID
                     join tr in dbContext.TaskResource on t.TaskGUID equals tr.TaskGUID
                     join c in dbContext.ResourceCategory on tr.CategoryID equals c.CategoryID
-                    where p.ProjectGUID == ProjectGUID
+                    where p.ProjectGUID == id
                     select new DisplayResource { ProjectGUID = p.ProjectGUID, ProjectName = p.ProjectName, TaskGUID = t.TaskGUID, TaskName = t.TaskName, ResourceGUID = tr.ResourceGUID, ResourceID = tr.ResourceID, ResourceName = tr.ResourceName, CategoryID = c.CategoryID, CategoryName = c.CategoryName, Quantity = tr.Quantity, Unit = tr.Unit, UnitPrice = tr.UnitPrice, SubTotal = (tr.UnitPrice * tr.Quantity), Date = DateTime.Now, Description = tr.Description };
 
             var DisplayList = q.ToList();
 
-            ViewBag.Departments = D.GetCollections();
-            return View(DisplayList);
+            var Departments = D.GetCollections();
+
+            return PartialView(DisplayList);
         }
 
         public JsonResult GetProjectList(Guid DepartmentID)
         {
             var Projects = Project.GetCollections();
 
-            List<Project> ProjectList = Project.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID).Select(p => new Project { ProjectID = p.ProjectID, ProjectName = p.ProjectName }).ToList();
+            List<Project> ProjectList = Project.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID).Select(p => new Project {ProjectGUID = p.ProjectGUID, ProjectID = p.ProjectID, ProjectName = p.ProjectName }).ToList();
 
             return Json(ProjectList, JsonRequestBehavior.AllowGet);
         }
