@@ -1,0 +1,176 @@
+﻿@model IEnumerable<ProjectManager.Models.ResourceCategory>
+@{
+    ViewBag.Activity = "成本管理";
+    ViewBag.Title = "費用管理";
+}
+
+@section style{
+    <style>
+        table {
+            background-color: white
+        }
+
+        thead {
+            background-color: darkcyan;
+            color: white;
+            text-align: center;
+        }
+
+        .border-info {
+            border: 3px solid #72bee1 !important
+        }
+
+        td > p {
+            outline: none;
+        }
+    </style>
+}
+
+<button id="AddCat" class="btn btn-primary mb-2" data-toggle="modal" data-target="#AddCatModal">新增費用類別</button>
+
+<table id="tb_cats" class="table table-bordered">
+    <thead>
+        <tr>
+            <td style="width:6em">類別編號</td>
+            <td style="width:10em">類別名稱</td>
+            <td>說明</td>
+            <td colspan="2" style="width:150px">編輯</td>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            ProjectManager.Models.ResourceCategory NewCat = new ProjectManager.Models.ResourceCategory();
+            NewCat.CategoryID = 0;
+            NewCat.CategoryName = "";
+            NewCat.Description = "目前尚無資料!";
+        }
+        @foreach (var cat in Model.DefaultIfEmpty(NewCat))
+        {
+            <tr>
+                <td class="text-center">@cat.CategoryID</td>
+                <td><p>@cat.CategoryName</p></td>
+                <td><p>@cat.Description</p></td>
+                <td class="text-center" style="width:75px"><button name="btn_edit" class="btn btn-info">Edit</button></td>
+                <td class="text-center" style="width:75px"><button name="btn_Del" class="btn btn-danger" data-toggle="modal" data-target="#DeleteCatModal">Delete</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade mt-5" id="AddCatModal" tabindex="-1" role="dialog" aria-labelledby="AddCatModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:3px 4px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddCatModalLabel">新增費用類別</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div  class="modal-body">
+                <form id="f_newCat" actions="~/Cost/AddCat" method="post">
+                    <div class="form-group">
+                        <label for="CategoryName" class="col-form-label">費用名稱:</label>
+                        <input type="text" class="form-control" id="CategoryName" name="CategoryName">
+                    </div>
+                    <div class="form-group">
+                        <label for="Description" class="col-form-label">說明:</label>
+                        <textarea class="form-control" id="Description" name="Description" style="resize:none" rows="10"></textarea>
+                    </div>
+                    <div class="form-group modal-footer">
+                        <button type="reset" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" id="btn_Add" class="btn btn-primary">新增</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" style="top:50px;" id="DeleteCatModal" tabindex="-1" role="dialog" aria-labelledby="DeleteCatModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:3px 4px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DeleteCatModalLabel">確認要刪除這筆資料嗎?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <dl>
+                    <dt>費用名稱:</dt>
+                    <dd style="margin-left:20px" id="dd_CategoryName"></dd>
+                    <dt>說明:</dt>
+                    <dd style="margin-left:20px" id="dd_Description"></dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a id="btn_ConfirmDelete" href="~/Cost/ExpCatMgr" class="btn btn-danger">確認刪除</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script{
+    <script>
+        $(document).ready(function ()
+        {
+            $("#btn_Add").click(function ()
+            {
+                var data = $("#f_newCat").serialize();
+                $("#f_newCat").find(":input").val("");
+                $("#AddCatModal").modal("hide");
+                $.post("/Cost/AddCat", data);
+            });
+
+            $("#tb_cats>tbody").on("click", ":button[name='btn_edit']", Update);
+            var flag = false;
+            function Update()
+            {
+                var CatIDCell = $(this).parents("tr").children("td:nth-child(1)");
+                var CatNameCell = $(this).parents("tr").children("td:nth-child(2)");
+                var DescriptionCell = $(this).parents("tr").children("td:nth-child(3)");
+
+                if (flag)
+                {
+                    var data = { CategoryID: CatIDCell.text(), CategoryName: CatNameCell.text(), Description: DescriptionCell.text() };
+
+                    $.post("/Cost/Update", data);
+                    CatNameCell.unbind();
+                    DescriptionCell.unbind();
+                    $(this).html('Edit');
+                    CatNameCell.children("p").attr("contenteditable", false);
+                    DescriptionCell.children("p").attr("contenteditable", false);
+                    flag = !flag;
+                }
+                else
+                {
+                    $(this).html('Save');
+                    CatNameCell.focusin(function () { $(this).addClass("border-info"); }).focusout(function () { $(this).removeClass("border-info"); });
+                    DescriptionCell.focusin(function () { $(this).addClass("border-info"); }).focusout(function () { $(this).removeClass("border-info"); });
+                    CatNameCell.children("p").attr("contenteditable", true);
+                    DescriptionCell.children("p").attr("contenteditable", true);
+                    flag = !flag;
+                }
+            }
+            $("#tb_cats>tbody").on("click", ":button[name='btn_Del']", Delete);
+            function Delete()
+            {
+                var CatID = $(this).parents("tr").children("td:nth-child(1)").text();
+                var CatName = $(this).parents("tr").children("td:nth-child(2)").text();
+                var Description = $(this).parents("tr").children("td:nth-child(3)").text();
+                $("#DeleteCatModal").attr("data-CatID", CatID);
+                $("#dd_CategoryName").text(CatName);
+                $("#dd_Description").text(Description);
+            }
+
+            $("#btn_ConfirmDelete").click(function ()
+            {
+                var modal = $("#DeleteCatModal");
+                var CatID = modal.data("catid");
+                $.post("/Cost/Delete", { id: CatID });
+                modal.modal("hide");
+            });
+        });
+    </script>
+}

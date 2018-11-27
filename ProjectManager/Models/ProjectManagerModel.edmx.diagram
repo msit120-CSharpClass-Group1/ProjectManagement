@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a9db548aea894af79cca73d6cdff3121" Name="Diagram1">
+        <EntityTypeShape EntityType="ProjectManagementModel.Calendar" Width="1.5" PointX="5" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Dashboard" Width="1.5" PointX="5" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Department" Width="1.5" PointX="0.5" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Employee" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.JobTitle" Width="1.5" PointX="0.5" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Meeting" Width="1.5" PointX="12.25" PointY="10.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.MeetingDetail" Width="1.5" PointX="14.5" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Members" Width="1.5" PointX="8" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Permissions" Width="1.5" PointX="5.75" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.PreTasks" Width="1.5" PointX="17.5" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Project" Width="1.5" PointX="10" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.ProjectCategory" Width="1.5" PointX="7.75" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.ProjectDiscuss" Width="1.5" PointX="5" PointY="23" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.ProjectMembers" Width="1.5" PointX="12.25" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.ProjectStatus" Width="1.5" PointX="7.75" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.ResourceCategory" Width="1.5" PointX="18.25" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.TaskDetail" Width="1.5" PointX="17.5" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.TaskDetailStatus" Width="1.5" PointX="15.25" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.TaskModified" Width="1.5" PointX="17.5" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.TaskResource" Width="1.5" PointX="20.5" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Tasks" Width="1.5" PointX="15.25" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.TaskStatus" Width="1.5" PointX="13" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.WidgetDetail" Width="1.5" PointX="7.25" PointY="8" IsExpanded="true" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Calendar_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Dashboard_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_WidgetDetail_Dashboard" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Department_Department" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Employee_Department" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Project_Department" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Project_Department1" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Employee_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Employee_JobTitle" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Members_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Project_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Project_Employee1" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Project_Employee2" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_ProjectDiscuss_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_ProjectMembers_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_TaskDetail_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Tasks_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Meeting_Project" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_MeetingDetail_Meeting" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Members_Permissions" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_PreTasks_PreTasks" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_PreTasks_Tasks" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Project_ProjectCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Project_ProjectStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_ProjectMembers_Project" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Tasks_Project" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_TaskResource_ResourceCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_TaskDetail_TaskDetailStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_TaskDetail_Tasks" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_TaskModified_Tasks" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_TaskResource_Tasks" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Tasks_TaskStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="ProjectManagementModel.ProjectRelationDept" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
