@@ -219,11 +219,11 @@
           <Property Name="ResourceID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ResourceName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CategoryID" Type="int" />
-          <Property Name="Unit" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="Unit" Type="nchar" MaxLength="10" />
           <Property Name="UnitPrice" Type="money" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
-          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Tasks">
           <Key>
@@ -1098,11 +1098,11 @@
           <Property Name="ResourceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ResourceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CategoryID" Type="Int32" />
-          <Property Name="Unit" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Unit" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="UnitPrice" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ResourceCategory" Relationship="Self.FK_TaskResource_ResourceCategory" FromRole="TaskResource" ToRole="ResourceCategory" />
           <NavigationProperty Name="Tasks" Relationship="Self.FK_TaskResource_Tasks" FromRole="TaskResource" ToRole="Tasks" />
         </EntityType>
