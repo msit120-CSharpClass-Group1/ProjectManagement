@@ -23,7 +23,13 @@ namespace ProjectManager.Controllers
         [HttpGet]
         public ActionResult ExpList()
         {
-            ViewBag.Departments = D.GetCollections();
+            var Departments = D.GetCollections();
+
+            var q = (from d in dbContext.Department
+                    join p in dbContext.Project on d.DepartmentGUID equals p.RequiredDeptGUID
+                    select d).Distinct();
+
+            ViewBag.Departments = q.ToList();
             return View();
         }
 
@@ -61,7 +67,7 @@ namespace ProjectManager.Controllers
         {
             rc.Add(cat);
             //return RedirectToAction("ExpCatMgr");
-            return View("ExpCatMgr");
+            return RedirectToAction("ExpCatMgr");
         }
 
         public ActionResult Update(ResourceCategory cat)

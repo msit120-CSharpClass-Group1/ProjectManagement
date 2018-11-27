@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ProjectManager.Models.ResourceCategory>
 @{
     ViewBag.Activity = "成本管理";
-    ViewBag.Title = "費用管理";
+    ViewBag.Title = "費用類別管理";
 }
 
 @section style{
@@ -22,6 +22,7 @@
 
         td > p {
             outline: none;
+            min-height:20px;
         }
     </style>
 }
@@ -66,7 +67,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div  class="modal-body">
+            <div class="modal-body">
                 <form id="f_newCat" actions="~/Cost/AddCat" method="post">
                     <div class="form-group">
                         <label for="CategoryName" class="col-form-label">費用名稱:</label>
@@ -76,11 +77,11 @@
                         <label for="Description" class="col-form-label">說明:</label>
                         <textarea class="form-control" id="Description" name="Description" style="resize:none" rows="10"></textarea>
                     </div>
-                    <div class="form-group modal-footer">
-                        <button type="reset" class="btn btn-default" data-dismiss="modal">取消</button>
-                        <button type="submit" id="btn_Add" class="btn btn-primary">新增</button>
-                    </div>
                 </form>
+                <div class="form-group modal-footer">
+                    <button type="reset" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" id="btn_Add" class="btn btn-primary">新增</button>
+                </div>
             </div>
         </div>
     </div>
@@ -105,7 +106,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <a id="btn_ConfirmDelete" href="~/Cost/ExpCatMgr" class="btn btn-danger">確認刪除</a>
+                <button type="button" id="btn_ConfirmDelete" class="btn btn-danger">確認刪除</button>
             </div>
         </div>
     </div>
@@ -113,63 +114,71 @@
 
 @section script{
     <script>
-        $(document).ready(function ()
+        $("#btn_Add").click(function ()
         {
-            $("#btn_Add").click(function ()
+            console.log("hello");
+            var data = $("#f_newCat").serialize();
+            $("#f_newCat").find(":input").val("");
+            $("#AddCatModal").modal("hide");
+            $.post("/Cost/AddCat", data, function ()
             {
-                var data = $("#f_newCat").serialize();
-                $("#f_newCat").find(":input").val("");
-                $("#AddCatModal").modal("hide");
-                $.post("/Cost/AddCat", data);
+                location.reload();
             });
+        });
 
-            $("#tb_cats>tbody").on("click", ":button[name='btn_edit']", Update);
-            var flag = false;
-            function Update()
+        $("#tb_cats>tbody").on("click", ":button[name='btn_edit']", Update);
+        var flag = false;
+        function Update()
+        {
+            var CatIDCell = $(this).parents("tr").children("td:nth-child(1)");
+            var CatNameCell = $(this).parents("tr").children("td:nth-child(2)");
+            var DescriptionCell = $(this).parents("tr").children("td:nth-child(3)");
+
+            if (flag)
             {
-                var CatIDCell = $(this).parents("tr").children("td:nth-child(1)");
-                var CatNameCell = $(this).parents("tr").children("td:nth-child(2)");
-                var DescriptionCell = $(this).parents("tr").children("td:nth-child(3)");
+                var data = { CategoryID: CatIDCell.text(), CategoryName: CatNameCell.text(), Description: DescriptionCell.text() };
 
-                if (flag)
+
+                CatNameCell.unbind();
+                DescriptionCell.unbind();
+                $(this).html('Edit');
+                CatNameCell.children("p").attr("contenteditable", false);
+                DescriptionCell.children("p").attr("contenteditable", false);
+                flag = !flag;
+                $.post("/Cost/Update", data, function ()
                 {
-                    var data = { CategoryID: CatIDCell.text(), CategoryName: CatNameCell.text(), Description: DescriptionCell.text() };
-
-                    $.post("/Cost/Update", data);
-                    CatNameCell.unbind();
-                    DescriptionCell.unbind();
-                    $(this).html('Edit');
-                    CatNameCell.children("p").attr("contenteditable", false);
-                    DescriptionCell.children("p").attr("contenteditable", false);
-                    flag = !flag;
-                }
-                else
-                {
-                    $(this).html('Save');
-                    CatNameCell.focusin(function () { $(this).addClass("border-info"); }).focusout(function () { $(this).removeClass("border-info"); });
-                    DescriptionCell.focusin(function () { $(this).addClass("border-info"); }).focusout(function () { $(this).removeClass("border-info"); });
-                    CatNameCell.children("p").attr("contenteditable", true);
-                    DescriptionCell.children("p").attr("contenteditable", true);
-                    flag = !flag;
-                }
+                    location.reload();
+                });
             }
-            $("#tb_cats>tbody").on("click", ":button[name='btn_Del']", Delete);
-            function Delete()
+            else
             {
-                var CatID = $(this).parents("tr").children("td:nth-child(1)").text();
-                var CatName = $(this).parents("tr").children("td:nth-child(2)").text();
-                var Description = $(this).parents("tr").children("td:nth-child(3)").text();
-                $("#DeleteCatModal").attr("data-CatID", CatID);
-                $("#dd_CategoryName").text(CatName);
-                $("#dd_Description").text(Description);
+                $(this).html('Save');
+                CatNameCell.focusin(function () { $(this).addClass("border-info"); }).focusout(function () { $(this).removeClass("border-info"); });
+                DescriptionCell.focusin(function () { $(this).addClass("border-info"); }).focusout(function () { $(this).removeClass("border-info"); });
+                CatNameCell.children("p").attr("contenteditable", true);
+                DescriptionCell.children("p").attr("contenteditable", true);
+                flag = !flag;
             }
+        }
+        $("#tb_cats>tbody").on("click", ":button[name='btn_Del']", Delete);
+        function Delete()
+        {
+            var CatID = $(this).parents("tr").children("td:nth-child(1)").text();
+            var CatName = $(this).parents("tr").children("td:nth-child(2)").text();
+            var Description = $(this).parents("tr").children("td:nth-child(3)").text();
+            $("#DeleteCatModal").attr("data-CatID", CatID);
+            $("#dd_CategoryName").text(CatName);
+            $("#dd_Description").text(Description);
+        }
 
-            $("#btn_ConfirmDelete").click(function ()
+        $("#btn_ConfirmDelete").click(function ()
+        {
+            var modal = $("#DeleteCatModal");
+            var CatID = modal.data("catid");
+            modal.modal("hide");
+            $.post("/Cost/Delete", { id: CatID }, function ()
             {
-                var modal = $("#DeleteCatModal");
-                var CatID = modal.data("catid");
-                $.post("/Cost/Delete", { id: CatID });
-                modal.modal("hide");
+                location.reload();
             });
         });
     </script>
