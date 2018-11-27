@@ -8,8 +8,8 @@ namespace ProjectManager.Models
 {
     public class Repository<T> : IRepository<T> where T:class
     {
-        ProjectManagementEntities db = null;
-        DbSet<T> dbset = null;
+        protected ProjectManagementEntities db = null;
+        protected DbSet<T> dbset = null;
 
         public Repository()
         {
