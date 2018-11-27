@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ProjectManager.Models.DisplayResource>
 @{
     ViewBag.Activity = "成本管理";
-    ViewBag.Title = "費用清單";
+    ViewBag.Title = "費用管理";
 }
 
 @section style{
@@ -25,10 +25,10 @@
             <label for="ProjectName">專案名稱：</label>
             <input class="mr-5 form-control" id="ProjectName" name="ProjectName" placeholder="請輸入專案名稱" type="text" value="">
         </div>
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#SelectProjectModal"><i class="fas fa-list-ul"></i></button>
+        <button id="btn_select_project" type="button" class="btn btn-default" data-toggle="modal" data-target="#SelectProjectModal"><i class="fas fa-list-ul"></i></button>
     </form>
 </div>
-<a id="AddCat" class="btn btn-primary margin" data-toggle="modal" data-target="#AddCatModal">新增費用</a>
+<button id="AddCat" class="btn btn-primary my-3" data-toggle="modal" data-target="#AddCatModal">新增費用</button>
 
 @if (Model != null)
 {
@@ -94,14 +94,14 @@ else
                 </button>
             </div>
             <div class="modal-body">
-                <div class="dropdown">
+                <div class="mb-2">
                     <lable>需求部門：</lable>
                     @{
                         SelectList Departments = new SelectList(ViewBag.Departments, "DepartmentGUID", "DepartmentName");
                     }
                     @Html.DropDownList("RequiredDeptGUID", Departments, new { @class = "btn btn-default" })
                 </div>
-                <div class="dropdown">
+                <div>
                     <lable>專案名稱：</lable>
                     <select id="Select_ProjectName" class="btn btn-default"></select>
                 </div>
@@ -118,9 +118,9 @@ else
     <script>
         $(document).ready(function ()
         {
-            $("#RequiredDeptGUID").change(function ()
+            function LoadProjects()
             {
-                $.getJSON("/Cost/GetProjectList", { DepartmentID: $(this).val() }, function (projects)
+                $.getJSON("/Cost/GetProjectList", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
                 {
                     console.log(projects);
                     var docFrag = $(document.createDocumentFragment());
@@ -131,8 +131,9 @@ else
                     });
                     $("#Select_ProjectName").html(docFrag);
                 });
-            });
-
+            }
+            $("#RequiredDeptGUID").change(LoadProjects);
+            $("#btn_select_project").click(LoadProjects);
             $("#btn_SelectProject").click(function ()
             {
                 var opt = $("#Select_ProjectName>:selected");
@@ -140,7 +141,6 @@ else
                 $("#ProjectName").val(opt.text());
                 $("#SelectProjectModal").modal("hide");
             });
-
         });
     </script>
 }
