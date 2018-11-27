@@ -49,5 +49,10 @@ namespace ProjectManager.Models
             db.Entry(entity).State = EntityState.Modified;
             db.SaveChanges();
         }
+
+        public T Find(Guid? id, Guid? pid)
+        {
+            return dbset.Find(id, pid);
+        }
     }
 }
