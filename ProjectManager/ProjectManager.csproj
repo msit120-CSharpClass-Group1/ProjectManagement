@@ -55,6 +55,9 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
@@ -190,15 +193,18 @@
     <Compile Include="Controllers\CostController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BLL\TreeGridModel.cs" />
     <Compile Include="Models\Calendar.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Dashboard.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataObject\GroupedProject.cs" />
     <Compile Include="Models\Department.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
@@ -219,6 +225,7 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MetaData\Project.cs" />
+    <Compile Include="Models\MetaData\Tasks.cs" />
     <Compile Include="Models\Permissions.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
@@ -256,6 +263,8 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Repository.cs" />
+    <Compile Include="Models\Repository\ProjectsRepository.cs" />
+    <Compile Include="Models\Repository\TasksRepository.cs" />
     <Compile Include="Models\ResourceCategory.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
@@ -305,6 +314,7 @@
     <Content Include="Views\Cost\ExpList.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-ui-1.12.1-Effects\package.json" />
+    <Content Include="Views\Projects\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
