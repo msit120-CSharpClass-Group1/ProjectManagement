@@ -211,6 +211,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BLL\ProjectsBL.cs" />
+    <Compile Include="Models\BLL\TasksBL.cs" />
     <Compile Include="Models\BLL\TreeGridModel.cs" />
     <Compile Include="Models\Calendar.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
@@ -277,7 +278,6 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Repository.cs" />
-    <Compile Include="Models\Repository\ProjectsRepository.cs" />
     <Compile Include="Models\Repository\TasksRepository.cs" />
     <Compile Include="Models\ResourceCategory.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
@@ -338,6 +338,7 @@
     <Content Include="Views\Projects\Index.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectReport.cshtml" />
     <Content Include="Views\Cost\AddTaskResource.cshtml" />
+    <Content Include="Views\ProjectDetails\ProjectEdit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
