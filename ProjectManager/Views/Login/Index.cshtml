@@ -13,6 +13,87 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/Login.css" rel="preload stylesheet" as="style">
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <style>
+        @@font-face {
+            font-family: Noto Sans CJK TC;
+            src: url(/Fonts/NotoSansCJKtc-Regular.otf)
+        }
+
+        *:not([class*="icon"]):not(i) {
+            font-family: 'Noto Sans CJK TC', 'FontAwesome', 'Material Icons Extended', 'Material-Design-Icons', 'QualcommIcon', 'VideoJS', 'icons101', 'AmebaNewSymbols', 'videofont', 'ohpOffice365Icons', "anchorjs-icons", 'consumer-icons', 'tm-detail-font', 'iconfont', 'FabricMDL2Icons', 'Noto Emoji', Arial !important;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 25px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 15px;
+                width: 15px;
+                left: 10px;
+                bottom: 5px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #e8716d;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+        .keepLogin {
+            line-height: 25px;
+            margin-bottom: 0 ;
+            margin-left: 10px;
+            
+        }
+        .keepLoginFlex {
+            margin: 10px 0;
+            display: flex;
+            align-content: space-around;
+        }
+
+    </style>
 </head>
 <body>
     <section class="user">
@@ -37,32 +118,38 @@
                     <form method="post" action="~/Login/Login" class="forms_form">
                         <fieldset class="forms_fieldset">
                             <div class="forms_field">
-                                <input type="text" placeholder="Account" name="MemberID" class="forms_field-input" required autofocus autocomplete="off" />
+                                <input id="logInMemberID" name="MemberID" type="text" placeholder="Account" class="forms_field-input" required autofocus autocomplete="off" />
                             </div>
                             <div class="forms_field">
-                                <input type="password" placeholder="Password" name="Password" class="forms_field-input" required />
+                                <input id="logInPassword" name="Password" type="password" placeholder="Password" class="forms_field-input" required />
                             </div>
+                            <span id="logIntext" class="mt-3 mb-3 badge badge-danger">@ViewBag.msg</span>
                         </fieldset>
-                        <div>@ViewBag.msg</div>
+                        <div class="keepLoginFlex">
+                            <label class="switch ">
+                                <input name="keepLogin" type="checkbox" >
+                                <span class="slider round"></span>
+                            </label>
+                            <p class="keepLogin">保持登入</p>
+                        </div>
                         <div class="forms_buttons">
                             <button type="button" class="forms_buttons-forgot">忘記密碼?</button>
-                            <input type="submit" value="登入" class="forms_buttons-action">
+                            <input id="logIn" type="submit" value="登入" class="forms_buttons-action">
                         </div>
                     </form>
                 </div>
                 <div class="user_forms-signup">
                     <h2 class="forms_title">註冊</h2>
                     @*<form id="signIn" class="forms_form" method="post" action="~/Login/CreateAccount">*@
-                    <form  class="forms_form" >
+                    <form class="forms_form">
                         <fieldset class="forms_fieldset">
                             <div class="forms_field">
-                                <input id="MemberID" name="MemberID" type="text" placeholder="Account" class="forms_field-input" required />
+                                <input id="signInMemberID" name="MemberID" type="text" placeholder="Account" class="forms_field-input" required /><span id="signIntext" class="badge badge-danger"></span>
                             </div>
                             <div class="forms_field">
-                                <input id="Password" name="Password" type="password" placeholder="Password" class="forms_field-input" required />
+                                <input id="signInPassword" name="Password" type="password" placeholder="Password" class="forms_field-input" required />
                             </div>
-                        </fieldset>
-                        <div id="accounttext"></div>
+                        </fieldset>                        
                         <div class="forms_buttons">
                             <input id="signIn" type="button" value="註冊" class="forms_buttons-action">
                         </div>
@@ -74,23 +161,48 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/login.js"></script>
     <script>
-          $(document).ready(function () {
-            //jQuery程式碼寫在這裡
-              
-              $('#signIn').click(function () {
+        $(document).ready(function () {
+            //$('#logIn').click(function () {
 
-                  var MemberID = $('#MemberID').val()
-                  var Password = $('#Password').val()
-                 
-                  $.ajax({
-                      url: "CreateAccount",
-                      method: "post",
-                      data: { "MemberID": MemberID, "Password": Password },
-                      dataType: "json"
-                  }).done(function (data) {
-                      $('#accounttext').text(data)
-                  });
+            //    var MemberID = $('#logInMemberID').val();
+            //    var Password = $('#logInPassword').val();
+            //    var logInMsg = $('#logIntext');
+            //    $.ajax({
+            //        url: "Login",
+            //        method: "post",
+            //        data: { "MemberID": MemberID, "Password": Password },
+            //        dataType: "json"
+            //    }).done(function (data) {
+            //        var msg = "帳號密碼錯誤";
+            //        if (parseInt(data) == 1) {
+            //            msg = "登入成功";
+            //            logInMsg.removeClass('badge badge-danger').addClass('badge badge-success');
+            //        }
+            //        logInMsg.text(msg);
+            //    });
+            //})
+
+            $('#signIn').click(function () {
+
+                var MemberID = $('#signInMemberID').val();
+                var Password = $('#signInPassword').val();
+                var signInMsg = $('#signIntext');
+                $.ajax({
+                    url: "CreateAccount",
+                    method: "post",
+                    data: { "MemberID": MemberID, "Password": Password },
+                    dataType: "json"
+                }).done(function (data) {
+                    var msg = "帳號已存在";
+                    if (parseInt(data) == 1)
+                    {
+                        msg = "註冊成功";
+                        signInMsg.removeClass('badge badge-danger').addClass('badge badge-success');
+                    }
+                    signInMsg.text(msg);
+                });
             })
+           
         })
     </script>
 </body>

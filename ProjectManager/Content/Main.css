@@ -8,7 +8,7 @@
 
 @font-face {
     font-family: Noto Sans CJK TC;
-    src: url(/Fonts/NotoSansCJKtc-Regular.otf)
+    src: url(/Fonts/NotoSansCJKtc-Regular.otf);
 }
 
 *:not([class*="icon"]):not(i) {
