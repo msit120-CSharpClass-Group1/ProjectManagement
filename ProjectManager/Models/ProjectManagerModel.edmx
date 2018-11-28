@@ -136,7 +136,7 @@
           <Key>
             <PropertyRef Name="ProjectCategoryID" />
           </Key>
-          <Property Name="ProjectCategoryID" Type="int" Nullable="false" />
+          <Property Name="ProjectCategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProjectCategoryName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ProjectDiscuss">
@@ -170,7 +170,7 @@
           <Key>
             <PropertyRef Name="ProjectStatusID" />
           </Key>
-          <Property Name="ProjectStatusID" Type="int" Nullable="false" />
+          <Property Name="ProjectStatusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProjectStatusName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ResourceCategory">
@@ -198,7 +198,7 @@
           <Key>
             <PropertyRef Name="TaskDetailStatusID" />
           </Key>
-          <Property Name="TaskDetailStatusID" Type="int" Nullable="false" />
+          <Property Name="TaskDetailStatusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TaskDetailStatusName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="TaskModified">
@@ -250,7 +250,7 @@
           <Key>
             <PropertyRef Name="TaskStatusID" />
           </Key>
-          <Property Name="TaskStatusID" Type="int" Nullable="false" />
+          <Property Name="TaskStatusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TaskStatusName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="WidgetDetail">

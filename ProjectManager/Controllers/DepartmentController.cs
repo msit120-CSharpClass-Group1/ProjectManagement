@@ -27,7 +27,7 @@ namespace ProjectManager.Controllers
                     _department.ParentDepartmentGUID = new Guid(Request.Form["ParentDepartmentGUID"]);
                 }
                 _department.DepartmentGUID = Guid.NewGuid();
-                _department.DepartmentName = Request.Form["DepartmentName"];              
+                _department.DepartmentName = Request.Form["DepartmentName"];
                 depRepository.Add(_department);
                 return RedirectToAction("Index");
             }

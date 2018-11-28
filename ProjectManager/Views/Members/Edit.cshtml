@@ -4,21 +4,21 @@
 }
 
 
-<h2>修改</h2>
+<h2>修改密碼</h2>
 <form method="post" action="~/Members/Edit" class="form-horizontal">
 
-    @*<div class="form-group">
+    <div class="form-group">
         <label class="col-md-2 control-label">員工名稱</label>
         <div class="col-md-2">
             <input type="hidden" name="MemberGUID" value="@Model.MemberGUID" />
             @Html.DropDownList("EmployeeGUID", (SelectList)ViewBag.employee, "請選擇")
         </div>
-    </div>*@
+    </div>
 
     <div class="form-group">
         <label class="col-md-2 control-label">權限等級</label>
         <div class="col-md-2">
-            <input type="hidden" name="MemberGUID" value="@Model.MemberGUID" />
+            <input type="hidden" name="PermissionsGUID" value="@Model.PermissionsGUID" />
             @Html.DropDownList("PermissionsGUID", (SelectList)ViewBag.permissions, "請選擇")
         </div>
     </div>

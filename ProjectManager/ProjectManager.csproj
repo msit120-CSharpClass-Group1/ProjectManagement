@@ -210,10 +210,10 @@
     <Compile Include="Controllers\ProjectCategoryController.cs" />
     <Compile Include="Controllers\ProjectDetailsController.cs" />
     <Compile Include="Controllers\MyBoardController.cs" />
+    <Compile Include="Controllers\ProjectStatusController.cs" />
     <Compile Include="Controllers\SelectMBoarController.cs" />
     <Compile Include="Controllers\SelectProjectController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
-    <Compile Include="Controllers\ProjectStatusController.cs" />
     <Compile Include="Controllers\TaskDetailStatusController.cs" />
     <Compile Include="Controllers\TaskStatusController.cs" />
     <Compile Include="Global.asax.cs">
@@ -348,6 +348,9 @@
     <Content Include="Views\SelectProject\Index.cshtml" />
     <Content Include="Views\Cost\GetTaskResources.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
+    <Content Include="Views\ProjectDetails\Index.cshtml" />
+    <Content Include="Views\ProjectDetails\ProjectReport.cshtml" />
+    <Content Include="Views\Cost\AddTaskResource.cshtml" />
     <Content Include="Views\Department\Edit.cshtml" />
     <Content Include="Views\Department\Index.cshtml" />
     <Content Include="Views\Department\Insert.cshtml" />
@@ -362,18 +365,15 @@
     <Content Include="Views\ProjectCategory\Edit.cshtml" />
     <Content Include="Views\ProjectCategory\Index.cshtml" />
     <Content Include="Views\ProjectCategory\Insert.cshtml" />
+    <Content Include="Views\ProjectStatus\Edit.cshtml" />
+    <Content Include="Views\ProjectStatus\Index.cshtml" />
+    <Content Include="Views\ProjectStatus\Insert.cshtml" />
     <Content Include="Views\TaskDetailStatus\Edit.cshtml" />
     <Content Include="Views\TaskDetailStatus\Index.cshtml" />
     <Content Include="Views\TaskDetailStatus\Insert.cshtml" />
     <Content Include="Views\TaskStatus\Edit.cshtml" />
     <Content Include="Views\TaskStatus\Index.cshtml" />
     <Content Include="Views\TaskStatus\Insert.cshtml" />
-    <Content Include="Views\ProjectStatus\Edit.cshtml" />
-    <Content Include="Views\ProjectStatus\Index.cshtml" />
-    <Content Include="Views\ProjectStatus\Insert.cshtml" />
-    <Content Include="Views\ProjectDetails\Index.cshtml" />
-    <Content Include="Views\ProjectDetails\ProjectReport.cshtml" />
-    <Content Include="Views\Cost\AddTaskResource.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
