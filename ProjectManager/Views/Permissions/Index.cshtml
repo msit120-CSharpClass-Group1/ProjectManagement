@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ProjectManager.Models.Permissions>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>權限</h2>
+
+<a href="~/Permissions/Insert" class="btn btn-warning">新增權限</a>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>權限編號</th>
+            <th>權限名稱</th>
+            <th>修改</th>
+            <th>刪除</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var _permissions in Model)
+        {
+            <tr>
+                <td>@_permissions.PermissionsID</td>
+                <td>@_permissions.PermissionsName</td>
+                <td><a href="~/Permissions/Edit/@_permissions.PermissionsGUID" class="btn btn-primary">修改</a></td>
+                <td><a href="~/Permissions/Delete/@_permissions.PermissionsGUID" class="btn btn-danger">刪除</a></td>
+            </tr>
+        }
+
+    </tbody>
+</table>
