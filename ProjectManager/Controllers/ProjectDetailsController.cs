@@ -108,5 +108,14 @@ namespace ProjectManager.Controllers
             projectRepo.Update(recentProject);
             return ProjectEdit();
         }
+
+        public ActionResult AssignTaskUI()
+        {
+            //ViewBag.LoadTask = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).ToList();
+            //return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
+            return View();
+        }
+
+
     }
 }
