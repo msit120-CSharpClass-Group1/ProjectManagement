@@ -44,7 +44,7 @@
         <div class="collapsible my-4 container" id=Dept@(i)>
             @foreach (var item in g.group)
             {
-                <a href="~/ProjectDetails/ProjectReport?ProjectGUID=@item.ProjectGUID">
+                <a href="~/ProjectDetails/ProjectReport?ProjectGUID=@item.ProjectGUID" data-ProjectGUID="@item.ProjectGUID">
                     <div class="card d-inline-block mr-3 mb-2 " style="width:18rem;">
                         <div class="card-header bg-dark">
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().CompletedRate)</span>
@@ -80,6 +80,7 @@
         </div>
     }
 </div>
+
 @section asideRight{
 <div class="container text-light mt-3">
     <h4>新增專案</h4>
@@ -113,11 +114,11 @@
         <div class="row ">
             <div class="col-6 form-group">
                 @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().StartDate)
-                <input name="EstStartDate" type="date" class="form-control d-inline" />
+                <input name="StartDate" type="date" class="form-control d-inline" />
             </div>
             <div class="col-6 form-group">
                 @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EndDate)
-                <input name="EstEndDate" type="date" class="form-control d-inline" />
+                <input name="EndDate" type="date" class="form-control d-inline" />
             </div>
         </div>
 
@@ -143,12 +144,13 @@
             </div>
         </div>
         <div id="formBtns" class="mt-5 mx-auto text-center ">
-            <button id="cancelBtn" type="button" class="btn btn-default py-1 px-5">取消</button>
+            <button id="cancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
             <button id="confiredBtn" type="submit" class="btn btn-primary py-1 px-5">確認</button>
         </div>
     </form>
 </div>
 }
+
 @section script{
     <script>
         $(document).ready(function () {
@@ -173,6 +175,7 @@
                 $(_dept).toggle("blind", {}, 300);
                 $(this).find("i").toggleClass("fas fa-caret-down").toggleClass("fas fa-caret-right");
             });
+            
         });
 
     </script>
