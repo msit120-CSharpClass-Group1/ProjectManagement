@@ -103,15 +103,14 @@
             </div>
             <button class="rightOpenbtn" title="Go to top">&#9776;</button>
             <aside id="myRightsidenav" class="right-sidenav" style="display: none;">
-                <ul>
-                    <li>
-                        <a href="#"><i class="fas fa-tachometer-alt"></i><span>自己決定要放什麼</span></a>
-                    </li>
-                    <li>
-                        <button class="dropdown-btn">
-                            <i class="fas fa-copy"></i><span>下拉式選單</span><i class="fa fa-caret-down"></i>
-                        </button>
-                        <ul class="dropdown-container">
+                @{
+                    if (IsSectionDefined("asideRight"))
+                    {
+                        @RenderSection("asideRight", false);
+                    }
+                    else
+                    {
+                        <ul>
                             <li>
                                 <a href="#"><i class="fas fa-tachometer-alt"></i><span>自己決定要放什麼</span></a>
                             </li>
@@ -132,10 +131,11 @@
                                 </ul>
                             </li>
                         </ul>
-                    </li>
-                </ul>
-            </aside>
 
+                    }
+                }
+
+            </aside>
         </div>
     </article>
 
