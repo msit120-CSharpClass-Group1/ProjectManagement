@@ -117,6 +117,7 @@
     <Content Include="Content\_all-skins.css" />
     <Content Include="Global.asax" />
     <Content Include="image\001.jpg" />
+    <Content Include="image\avatar.png" />
     <Content Include="image\user2-160x160.jpg" />
     <Content Include="Models\ProjectManagerModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -239,7 +240,10 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MetaData\Project.cs" />
+    <Compile Include="Models\MetaData\Employee.cs" />
     <Compile Include="Models\MetaData\Tasks.cs" />
+    <Compile Include="Models\PartialClass\Employee.cs" />
+    <Compile Include="Models\PartialClass\Project.cs" />
     <Compile Include="Models\Permissions.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
@@ -336,6 +340,7 @@
     <Content Include="Views\SelectProject\Index.cshtml" />
     <Content Include="Views\Cost\GetTaskResources.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
+    <Content Include="Views\ProjectDetails\Index.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectReport.cshtml" />
     <Content Include="Views\Cost\AddTaskResource.cshtml" />
     <None Include="Web.Debug.config">
