@@ -16,7 +16,7 @@
         <a class="title" href="/">專案管理系統</a>
         <div class="topnav-right">
             <div class="dropdown">
-                <button class="navdropbtn">Logout</button>
+                <button id="logoutbtn" class="navdropbtn">Logout</button>
             </div>
             <div class="dropdown">
                 <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">使用者名稱</button>
@@ -72,7 +72,6 @@
                         <a href="~/Cost/ExpCatMgr">費用類別管理</a>
                     </li>
                 </ul>
-
             </li>
             <li>
                 <a href="#"><i class="fas fa-calendar-alt"></i><span>行事曆</span></a>
@@ -80,6 +79,45 @@
             <li>
                 <a href="#"><i class="fas fa-users"></i><span>會議記錄</span></a>
             </li>
+
+            <li>
+                <button class="dropdown-btn">
+                    <i class="fas fa-tasks"></i><span>後臺管理</span><i class="fa fa-caret-down"></i>
+                </button>
+                <ul class="dropdown-container hide">
+                    <li>
+                        <a href="">專案</a>
+                    </li>
+                    <li>
+                        <a href="~/ProjectCategory/Index">專案類型</a>
+                    </li>
+                    <li>
+                        <a href="~/ProjectStatus/Index">專案階段</a>
+                    </li>
+                    <li>
+                        <a href="">任務</a>
+                    </li>
+                    <li>
+                        <a href="~/TaskStatus/Index">任務階段</a>
+                    </li>
+                    <li>
+                        <a href="~/TaskDetailStatus/Index">待辦事項狀態</a>
+                    </li>
+                    <li>
+                        <a href="~/Members/Index">會員</a>
+                    </li>
+                    <li>
+                        <a href="~/JobTitle/Index">職稱</a>
+                    </li>
+                    <li>
+                        <a href="~/Department/Index/">部門</a>
+                    </li>
+                    <li>
+                        <a href="~/Permissions/Index">權限</a>
+                    </li>
+                </ul>
+            </li>
+
         </ul>
     </aside>
 
@@ -91,6 +129,12 @@
                 <li class="active">@ViewBag.Title</li>
             </ol>
         </div>
+        @{ 
+            if (IsSectionDefined("nav"))
+            {
+                @RenderSection("nav", false);
+            }
+        }
         <div class="content">
             @RenderBody()
             <div class="dropup">
@@ -102,6 +146,7 @@
                 </div>
             </div>
             <button class="rightOpenbtn" title="Go to top">&#9776;</button>
+
             <aside id="myRightsidenav" class="right-sidenav" style="display: none;">
                 @{
                     if (IsSectionDefined("asideRight"))
@@ -137,13 +182,12 @@
             </aside>
         </div>
     </article>
-
-
     <footer></footer>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/jquery-ui-1.12.1-Effects/jquery-ui.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/Main.js"></script>
+
     @RenderSection("script", false)
 </body>
 </html>

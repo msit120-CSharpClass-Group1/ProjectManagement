@@ -1,0 +1,20 @@
+﻿@model ProjectManager.Models.TaskStatus
+@{
+    ViewBag.Activity = "任務階段";
+    ViewBag.Title = "修改任務階段名稱";
+}
+
+<form method="post" action="~/TaskStatus/Edit" class="form-horizontal">
+    <div class="form-group">
+        <label class="col-md-2 control-label">任務階段名稱</label>
+        <div class="col-md-2">
+            <input type="hidden" class="form-control" name="TaskStatusID" value="@Model.TaskStatusID" />
+            <input type="text" class="form-control" name="TaskStatusName" value="@Model.TaskStatusName" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default">修改</button>
+        </div>
+    </div>
+</form>
