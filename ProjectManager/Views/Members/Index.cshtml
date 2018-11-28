@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ProjectManager.Models.Members>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>會員</h2>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>會員帳號</th>
+            <th>員工名稱</th>
+            <th>權限等級</th>
+            <th>新增日期</th>
+            <th>修改日期</th>
+            <th>最後登入日期</th>
+            <th>修改</th>
+            <th>刪除帳號</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var _members in Model)
+        {
+            <tr>
+                <td>@_members.MemberID</td>
+                <td>@_members.Employee.EmployeeName </td>
+                <td>@_members.Permissions.PermissionsName</td>
+                @*<input type="hidden" value="ViewBag.permissions" name="@_members.PermissionsGUID" />*@               
+                <td>@_members.CreateDate</td>
+                <td>@_members.ModifiedDate</td>
+                <td>@_members.LastLoginDate</td>
+                <td><a href="~/Members/Edit/@_members.PermissionsGUID" class="btn btn-primary">修改</a></td>
+                <td><a href="~/Members/Delete/@_members.MemberGUID" class="btn btn-danger">刪除帳號</a></td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
