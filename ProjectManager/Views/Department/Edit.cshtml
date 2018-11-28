@@ -1,0 +1,32 @@
+﻿@model IEnumerable<ProjectManager.Models.Department>
+@{
+    ViewBag.Title = "Edit";
+}
+<h2>修改部門</h2>
+<form method="post" action="~/Department/Edit" class="form-horizontal">
+    <div class="form-group">
+        <label class="col-md-2 control-label">直屬部門</label>
+        <div class="col-md-2">
+            <input type="hidden" name="DepartmentGUID" value="@ViewBag.department.DepartmentGUID" />
+            <select value="" class="form-control" name="ParentDepartmentGUID" >
+                <option value="0">請選擇</option>
+                @foreach (var _department in Model)
+                {
+                    <option value="@_department.DepartmentGUID">@_department.DepartmentName</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="DepartmentName" class="col-md-2 control-label">部門名稱</label>
+        <div class="col-md-2">
+            <input type="text" class="form-control" name="DepartmentName"
+                   value="@ViewBag.department.DepartmentName" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default">修改</button>
+        </div>
+    </div>
+</form>
