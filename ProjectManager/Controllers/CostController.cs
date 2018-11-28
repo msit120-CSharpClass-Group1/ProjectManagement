@@ -9,9 +9,9 @@ namespace ProjectManager.Controllers
 {
     public class CostController : Controller
     {
-        Repository<ResourceCategory> rc = new Repository<ResourceCategory>();
-        Repository<Department> D = new Repository<Department>();
-        Repository<Project> Project = new Repository<Project>();
+        Repository<ResourceCategory> ResourceCatRepo = new Repository<ResourceCategory>();
+        Repository<Department> DptRepo = new Repository<Department>();
+        Repository<Project> ProjectReop = new Repository<Project>();
         ProjectManagementEntities dbContext = new ProjectManagementEntities();
 
         // GET: Cost
@@ -23,7 +23,7 @@ namespace ProjectManager.Controllers
         [HttpGet]
         public ActionResult ExpList()
         {
-            var Departments = D.GetCollections();
+            var Departments = DptRepo.GetCollections();
 
             var q = (from d in dbContext.Department
                     join p in dbContext.Project on d.DepartmentGUID equals p.RequiredDeptGUID
@@ -44,16 +44,22 @@ namespace ProjectManager.Controllers
 
             var DisplayList = q.ToList();
 
-            var Departments = D.GetCollections();
+            var Departments = DptRepo.GetCollections();
 
             return PartialView(DisplayList);
         }
 
-        public JsonResult GetProjectList(Guid DepartmentID)
+        public ActionResult AddTaskResource()
         {
-            var Projects = Project.GetCollections();
 
-            List<Project> ProjectList = Project.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID).Select(p => new Project {ProjectGUID = p.ProjectGUID, ProjectID = p.ProjectID, ProjectName = p.ProjectName }).ToList();
+            return PartialView();
+        }
+
+        public JsonResult GetProjectListByDptID(Guid DepartmentID)
+        {
+            var Projects = ProjectReop.GetCollections();
+
+            List<Project> ProjectList = ProjectReop.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID).Select(p => new Project {ProjectGUID = p.ProjectGUID, ProjectID = p.ProjectID, ProjectName = p.ProjectName }).ToList();
 
             return Json(ProjectList, JsonRequestBehavior.AllowGet);
         }
@@ -61,25 +67,24 @@ namespace ProjectManager.Controllers
 
         public ActionResult ExpCatMgr()
         {
-            return View(rc.GetCollections());
+            return View(ResourceCatRepo.GetCollections());
         }
 
         public ActionResult AddCat(ResourceCategory cat)
         {
-            rc.Add(cat);
-            //return RedirectToAction("ExpCatMgr");
+            ResourceCatRepo.Add(cat);
             return RedirectToAction("ExpCatMgr");
         }
 
         public ActionResult Update(ResourceCategory cat)
         {
-            rc.Update(cat);
+            ResourceCatRepo.Update(cat);
             return RedirectToAction("ExpCatMgr");
         }
 
         public ActionResult Delete(int? id)
         {
-            rc.Delete(rc.Find(id));
+            ResourceCatRepo.Delete(ResourceCatRepo.Find(id));
             return RedirectToAction("ExpCatMgr");
         }
     }

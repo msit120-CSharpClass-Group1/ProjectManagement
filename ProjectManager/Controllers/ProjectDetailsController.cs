@@ -53,6 +53,9 @@ namespace ProjectManager.Controllers
             Guid InvitePJGUID = new Guid(Session["ProjectGUID"].ToString());
             var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID);
             return Content(JsonConvert.SerializeObject(pjmb), "application/json");
+        public ActionResult ProjectReport(Guid? ProjectGUID)
+        {
+            return View();
         }
     }
 }

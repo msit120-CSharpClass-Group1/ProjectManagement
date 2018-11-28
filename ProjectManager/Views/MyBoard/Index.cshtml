@@ -1,0 +1,162 @@
+﻿@model ProjectManager.Models.BoardVM
+@{
+    ViewBag.Title = "Index";
+}
+@section style{
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .boardSec {
+            display: flex;
+            overflow-x: auto;
+        }
+
+        .board {
+            width: 272px;
+            margin: 0 4px;
+            height: 100%;
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: top;
+            white-space: nowrap;
+        }
+
+        .listContent {
+            background-color: #dfe3e6;
+            border-radius: 3px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            max-height: 100%;
+            position: relative;
+            white-space: normal;
+        }
+
+        .listHeader {
+            flex: 0 0 auto;
+            padding: 10px 8px 8px;
+            position: relative;
+            min-height: 20px;
+        }
+
+        .listHeaderTitle {
+            padding-left: 5px;
+        }
+
+        .listCards {
+            flex: 1 1 auto;
+            margin-bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            margin: 0 4px;
+            padding: 0 4px;
+            z-index: 1;
+            min-height: 0;
+        }
+
+        .listCard {
+            background-color: #fff;
+            border-radius: 3px;
+            box-shadow: 0 1px 0 rgba(9,45,66,.25);
+            cursor: pointer;
+            display: block;
+            margin-bottom: 8px;
+            max-width: 300px;
+            min-height: 20px;
+            position: relative;
+            text-decoration: none;
+            z-index: 0;
+        }
+
+        .listCardTitle {
+            display: block;
+            padding-left: 5px;
+            padding-top: 3px;
+            margin: 0 0 4px;
+            overflow: hidden;
+            text-decoration: none;
+            word-wrap: break-word;
+            color: #17394d;
+        }
+
+        .badge {
+            color: #6b808c;
+            display: inline-block;
+            margin: 0 4px 4px 0;
+            max-width: 100%;
+            min-height: 20px;
+            overflow: hidden;
+            position: relative;
+            padding: 7px;
+            text-decoration: none;
+            text-overflow: ellipsis;
+        }
+
+        .cardDetailHeader {
+            margin: 12px 40px 8px 56px;
+            min-height: 32px;
+            position: relative;
+            z-index: 1;
+            color: #fff;
+        }
+    </style>
+}
+@section asideRight
+{
+    <div class="cardDetailHeader">
+
+        <div class="cardDetailTitle"></div>
+
+    </div>
+}
+<h2> @Model.Project.First().ProjectName</h2>
+<div class="boardSec">
+    @foreach (var s in Model.TaskStatus)
+    {
+        <div class="board">
+            <div class="listContent">
+                <div class="listHeader">
+                    <div class="listHeaderTitle">@s.TaskStatusName</div>
+                </div>
+                <div class="listCards">
+                    @foreach (var t in Model.Tasks.Where(x => x.TaskStatusID == s.TaskStatusID))
+                    {
+                        <a class="listCard" data-tid="@t.TaskGUID">
+                            <span class="listCardTitle">@t.TaskName</span>
+                            <div class="badges">
+                                <div class="badge" title="待辦清單項目">
+                                    @*<span class="badge-icon icon-sm icon-checklist"></span>*@
+                                    <span class="badge-text">0/3</span>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@section script
+{
+    <script>
+        $(document).ready(function () {
+            $('.listCard').click(function () {
+                var cardID = $(this).data("tid");
+                $.ajax({
+                    type: 'Get',
+                    url: '@Url.Action("GetCard", "Myboard")',
+                    data: { id: cardID },
+                    dataType: 'json'
+                }).done(function (datas) {
+                    $(datas.Task).each(function (id, data) {
+                        $('.cardDetailTitle').text(data.TaskName);
+                    });
+                });
+            });
+        });
+    </script>
+}
