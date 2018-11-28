@@ -6,6 +6,7 @@
 
 @section style{
     <style>
+
         table {
             background-color: white
         }
@@ -16,14 +17,6 @@
             text-align: center;
         }
 
-        .border-info {
-            border: 3px solid #72bee1 !important
-        }
-
-        td > p {
-            outline: none;
-            min-height: 20px;
-        }
     </style>
 }
 <div>
@@ -59,8 +52,6 @@
             </div>
             <select id="Select_ProjectName" class="custom-select"></select>
         </div>
-
-        @*<button id="btn_SelectProject" type="button" class="btn btn-info" data-toggle="modal" data-target="#SelectProjectModal"><i class="fas fa-list-ul"></i></button>*@
     </form>
 </div>
 
@@ -74,22 +65,80 @@
 <div id="PartialView" class="mt-3">
 </div>
 
-<div class="modal fade" style="top:50px;" id="DeleteCatModal" tabindex="-1" role="dialog" aria-labelledby="DeleteCatModalLabel" aria-hidden="true">
+<div class="modal fade" style="top:50px;" id="DeleteExpModal" tabindex="-1" role="dialog" aria-labelledby="DeleteExpModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius:3px 4px;">
             <div class="modal-header">
-                <h5 class="modal-title" id="DeleteCatModalLabel">確認要刪除這筆資料嗎?</h5>
+                <h5 class="modal-title" id="DeleteExpModalLabel">確認要刪除這筆資料嗎?</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <dl>
-                    <dt>費用名稱:</dt>
-                    <dd style="margin-left:20px" id="dd_CategoryName"></dd>
-                    <dt>說明:</dt>
-                    <dd style="margin-left:20px" id="dd_Description"></dd>
-                </dl>
+            <div class="modal-body pl-3">
+                <div class="row">
+                    <div class="col-sm-3 pr-0">
+                        <label>費用日期:</label>
+                    </div>
+                    <div class="col-sm-9 pl-0">
+                        <span id="dd_Date"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 pr-0">
+                        <label>工作名稱:</label>
+                    </div>
+                    <div class="col-sm-9 pl-0">
+                        <span id="dd_TaskName"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 pr-0">
+                        <label>費用名稱:</label>
+                    </div>
+                    <div class="col-sm-9 pl-0">
+                        <span id="dd_ResourceName"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 pr-0">
+                        <label>類別名稱:</label>
+                    </div>
+                    <div class="col-sm-9 pl-0">
+                        <span id="dd_CatName"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 pr-0">
+                        <label>數量:</label>
+                    </div>
+                    <div class="col-sm-9 pl-0">
+                        <span id="dd_Quantity"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 pr-0">
+                        <label>單價:</label>
+                    </div>
+                    <div class="col-sm-9 pl-0">
+                        <span id="dd_UnitPrice"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 pr-0">
+                        <label>小計:</label>
+                    </div>
+                    <div class="col-sm-9 pl-0">
+                        <span id="dd_Subtot"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 pr-0">
+                        <label>備註:</label>
+                    </div>
+                    <div class="col-sm-9 pl-0">
+                        <span id="dd_Description"></span>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -98,16 +147,76 @@
         </div>
     </div>
 </div>
-@section asideRight{
-    <div id="AddTaskResources">
 
+@section asideRight{
+    <div class="container text-light mt-3" style="min-width:350px;">
+        <form id="f_EditResource">
+            <h4 id="asideTitle" style="display:inline">新增專案費用</h4>
+            <button id="btn_reset" type="reset" class="btn btn-danger ml-3">清除重填</button>
+            <div class="form-group">
+                <label for="ResourceName">費用名稱：</label>
+                <input id="ResourceGUID" name="ResourceGUID" style="display:none;" />
+                <input id="ResourceName" name="ResourceName" class="form-control" style="width:18em;" />
+            </div>
+
+            <div class="row col-12">
+                <div class="form-group">
+                    <lable for="date">費用發生日期：</lable>
+                    <input id="date" name="date" type="date" class="form-control d-inline" />
+                </div>
+            </div>
+
+            <div class="row col-12">
+                <div class="form-group">
+                    <lable for="TaskGUID">費用歸屬工作名稱：</lable>
+                    <select id="TaskGUID" name="TaskGUID" class="form-control custom-select">
+                        <option>請先選擇專案</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row col-12">
+                <div class="form-group">
+                    <lable for="CategoryID">費用類別：</lable><br />
+                    @Html.DropDownList("CategoryID", (SelectList)ViewBag.ExpCats, "請選擇類別", new { @class = "form-control custom-select" })
+                </div>
+            </div>
+
+            <div class="row col-12">
+                <div class="form-group mr-5">
+                    <lable for="UnitPrice">單價：</lable>
+                    <input id="UnitPrice" name="UnitPrice" class="form-control" style="width:7em;" />
+                </div>
+                <div class="form-group">
+                    <lable for="Quantity">數量：</lable>
+                    <input id="Quantity" name="Quantity" class="form-control" style="width:7em;" />
+                </div>
+            </div>
+
+            <div class="row col-12">
+                <div class="form-group">
+                    <lable for="Description">備註：</lable>
+                    <textarea id="Description" name="Description" class="form-control" style="width:300px;height:150px;resize:none"></textarea>
+                </div>
+            </div>
+
+            <div class="row col-12">
+                <div id="formBtns" class="mt-1 mx-auto text-center">
+                    <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
+                    <button id="btn_ConfirmAdd" type="button" class="btn btn-primary py-1 px-3">確認新增</button>
+                    <button id="btn_ConfirmModify" type="button" class="btn btn-success py-1 px-3">確認修改</button>
+                </div>
+            </div>
+        </form>
     </div>
-    }
+}
 
 @section script{
     <script>
         $(document).ready(function ()
         {
+            $(".rightOpenbtn").html('<i class="fas fa-plus"></i>');
+
             function LoadProjects()
             {
                 var optionlabel = $("<option></option>").text("請選擇專案");
@@ -116,7 +225,6 @@
 
                 $.getJSON("/Cost/GetProjectListByDptID", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
                 {
-                    console.log(projects.length);
                     var docFrag = $(document.createDocumentFragment());
                     docFrag.append(optionlabel);
                     $.each(projects, function (index, project)
@@ -132,7 +240,9 @@
 
             $("#RequiredDeptGUID").change(LoadProjects);
 
-            $("#Select_ProjectName").change(function ()
+            $("#Select_ProjectName").change(LoadResources);
+
+            function LoadResources()
             {
                 var opt = $("#Select_ProjectName>:selected");
                 $("#ProjectID").val(opt.val());
@@ -140,70 +250,141 @@
                 $("#PartialView").load("/Cost/GetTaskResources/" + opt.data('projectguid'), function ()
                 {
                     $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+                    LoadTasks();
                     Binding();
                 });
                 $("#result").show();
-            });
+            }
 
-            function Binding()
+            function LoadTasks()
             {
-                $("#tb_TaskResources>tbody").on("click", ":button[name='btn_edit']", Update);
-                var flag = false;
-                function Update()
+                var ProjectGuid = $("#Select_ProjectName>:selected").data('projectguid');
+                $.getJSON("/Cost/GetTaskListByProjectGuid", { ProjectGuid: ProjectGuid }, function (tasks)
                 {
-                    var CatIDCell = $(this).parents("tr").children("td:nth-child(1)");
-                    var CatNameCell = $(this).parents("tr").children("td:nth-child(2)");
-                    var DescriptionCell = $(this).parents("tr").children("td:nth-child(3)");
-
-                    if (flag)
+                    var optionlabel = $("<option></option>").text("請選擇工作");
+                    var docFrag = $(document.createDocumentFragment());
+                    docFrag.append(optionlabel);
+                    $.each(tasks, function (index, task)
                     {
-                        var data = { CategoryID: CatIDCell.text(), CategoryName: CatNameCell.text(), Description: DescriptionCell.text() };
+                        var opt = $("<option></option>").val(task.TaskGUID).text(task.TaskName);
+                        docFrag.append(opt);
+                    })
+                    $("#TaskGUID").html(docFrag);
+                });
+            };
 
+            $(".rightOpenbtn").click(SetRightAsideToAdd)
 
-                        CatNameCell.unbind();
-                        DescriptionCell.unbind();
-                        $(this).html('Edit');
-                        CatNameCell.children("p").attr("contenteditable", false);
-                        DescriptionCell.children("p").attr("contenteditable", false);
-                        flag = !flag;
-                        $.post("/Cost/Update", data, function ()
-                        {
-                            location.reload();
-                        });
-                    }
-                    else
-                    {
-                        $(this).html('Save');
-                        CatNameCell.focusin(function () { $(this).addClass("border-info"); }).focusout(function () { $(this).removeClass("border-info"); });
-                        DescriptionCell.focusin(function () { $(this).addClass("border-info"); }).focusout(function () { $(this).removeClass("border-info"); });
-                        CatNameCell.children("p").attr("contenteditable", true);
-                        DescriptionCell.children("p").attr("contenteditable", true);
-                        flag = !flag;
-                    }
-                }
-                $("#tb_cats>tbody").on("click", ":button[name='btn_Del']", Delete);
-                function Delete()
+            function SetRightAsideToAdd()
+            {
+                $("#asideTitle").text("新增專案費用");
+                $("#btn_ConfirmAdd").show();
+                $("#btn_ConfirmModify").hide();
+                $("#ResourceGUID").val("");
+            }
+
+            $("#btn_CancelEdit").click(function ()
+            {
+                $('#myRightsidenav').slideUp();
+            })
+
+            $("#btn_ConfirmAdd").click(AddResource);
+
+            function AddResource()
+            {
+                var data = $("#f_EditResource").serialize();
+                $.post("/Cost/AddTaskResource", data, function ()
                 {
-                    var CatID = $(this).parents("tr").children("td:nth-child(1)").text();
-                    var CatName = $(this).parents("tr").children("td:nth-child(2)").text();
-                    var Description = $(this).parents("tr").children("td:nth-child(3)").text();
-                    $("#DeleteCatModal").attr("data-CatID", CatID);
-                    $("#dd_CategoryName").text(CatName);
-                    $("#dd_Description").text(Description);
-                }
-
-                $("#btn_ConfirmDelete").click(function ()
-                {
-                    var modal = $("#DeleteCatModal");
-                    var CatID = modal.data("catid");
-                    modal.modal("hide");
-                    $.post("/Cost/Delete", { id: CatID }, function ()
-                    {
-                        location.reload();
-                    });
+                    LoadResources();
                 });
             }
 
+            $("#btn_ConfirmModify").click(UpdateResource);
+                        
+            function UpdateResource()
+            {
+                var data = $("#f_EditResource").serialize();
+                $.post("/Cost/UpdateTaskResource", data, function ()
+                {
+                    LoadResources();
+                });
+                $('#myRightsidenav').slideUp();
+            }
+
+            function Binding()
+            {
+                $("#tb_TaskResources>tbody").on("click", ":button[name='btn_edit']", SetRightAsideToModify);
+
+                function SetRightAsideToModify()
+                {
+                    $("#asideTitle").text("編輯專案費用");
+                    $("#btn_ConfirmAdd").hide();
+                    $("#btn_ConfirmModify").show();
+                    $('#myRightsidenav').slideDown();
+
+                    var Date = $(this).parents("tr").children("td:nth-child(1)").text();
+                    var TaskGUID = $(this).parents("tr").children("td:nth-child(2)").data('taskguid');
+                    var ResourceGuid = $(this).parents("tr").children("td:nth-child(3)").data('resourceguid');
+                    var ResourceName = $(this).parents("tr").children("td:nth-child(3)").text();
+                    var CatID = $(this).parents("tr").children("td:nth-child(4)").data('categoryid');
+                    var Quantity = $(this).parents("tr").children("td:nth-child(5)").text();
+                    var UnitPrice = $(this).parents("tr").children("td:nth-child(6)").data('unitprice');
+                    var Description = $(this).parents("tr").children("td:nth-child(8)").text();
+
+                    $("#ResourceGUID").val(ResourceGuid);
+                    $("#ResourceName").val(ResourceName);
+                    $("#date").val(Date.replace("/", "-").replace("/", "-"));
+                    $("#TaskGUID").val(TaskGUID);
+                    $("#CategoryID").val(CatID);
+                    $("#Quantity").val(Quantity);
+                    $("#UnitPrice").val(UnitPrice);
+                    $("#Description").val(Description);
+                }
+
+                $("#tb_TaskResources>tbody").on("click", ":button[name='btn_Del']", ShowDeleteModal);
+
+                function ShowDeleteModal()
+                {
+                    var Date = $(this).parents("tr").children("td:nth-child(1)").text();
+                    var TaskName = $(this).parents("tr").children("td:nth-child(2)").text();
+                    var ResourceGuid = $(this).parents("tr").children("td:nth-child(3)").data('resourceguid');
+                    var ExpName = $(this).parents("tr").children("td:nth-child(3)").text();
+                    var CatName = $(this).parents("tr").children("td:nth-child(4)").text();
+                    var Quantity = $(this).parents("tr").children("td:nth-child(5)").text();
+                    var UnitPrice = $(this).parents("tr").children("td:nth-child(6)").text();
+                    var Subtotal = $(this).parents("tr").children("td:nth-child(7)").text();
+                    var Description = $(this).parents("tr").children("td:nth-child(8)").text();
+
+                    $("#btn_ConfirmDelete").attr("data-resourceguid", ResourceGuid);
+
+                    $("#dd_Date").text(Date);
+                    $("#dd_TaskName").text(TaskName);
+                    $("#dd_ResourceName").text(ExpName);
+                    $("#dd_CatName").text(CatName);
+                    $("#dd_Quantity").text(Quantity);
+                    $("#dd_UnitPrice").text(UnitPrice);
+                    $("#dd_Subtot").text(Subtotal);
+                    $("#dd_Description").text(Description);
+                }
+            }
+
+            $("#btn_ConfirmDelete").click(DeleteResource);
+
+            function DeleteResource()
+            {
+                var ResourceGuid = this.dataset.resourceguid;
+                $("#DeleteExpModal").modal("hide");
+                $.post("/Cost/DeleteTaskResource", { id: ResourceGuid }, function ()
+                {
+                    LoadResources();
+                });
+            }
+
+            $("#date").change(function ()
+            {
+                console.log($(this).val());
+            })
+            
         });
     </script>
 }
