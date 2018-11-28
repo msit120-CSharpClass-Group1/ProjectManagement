@@ -10,7 +10,7 @@ namespace ProjectManager.Controllers
 {
     public class ProjectsController : Controller
     {
-        ProjectsRepository projectRepo = new ProjectsRepository();
+        Repository<Project> projectRepo = new Repository<Project>();
         // GET: Projects
         public ActionResult Index(int ProjectStatusID=1)
         {
@@ -19,7 +19,7 @@ namespace ProjectManager.Controllers
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
-            var datas = ProjectsRepository.ShowGroupedProject(projectRepo.GetCollections().Where(p=>p.ProjectStatusID==ProjectStatusID));
+            var datas = projectRepo.GetCollections().Where(p => p.ProjectStatusID == ProjectStatusID).GetGroupedProject();
             return View(datas);
         }
         public ActionResult Projects()
