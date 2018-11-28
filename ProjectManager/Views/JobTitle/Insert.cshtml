@@ -1,0 +1,26 @@
+﻿@model ProjectManager.Models.JobTitle
+@{
+    ViewBag.Title = "Insert";
+}
+
+<h2>新增職稱</h2>
+<form method="post" action="~/JobTitle/Insert" class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-2 control-label">職稱編號</label>
+        <div class="col-sm-2">
+            @Html.TextBoxFor(p => p.TitleID,new {@class= "form-control"})
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">職稱姓名</label>
+        <div class="col-sm-2">
+            @Html.TextBoxFor(p => p.TitleName, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">新增</button>
+        </div>
+    </div>
+</form>
