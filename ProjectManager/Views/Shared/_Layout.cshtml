@@ -91,6 +91,12 @@
                 <li class="active">@ViewBag.Title</li>
             </ol>
         </div>
+        @{ 
+            if (IsSectionDefined("nav"))
+            {
+                @RenderSection("nav", false);
+            }
+        }
         <div class="content">
             @RenderBody()
             <div class="dropup">
@@ -102,6 +108,7 @@
                 </div>
             </div>
             <button class="rightOpenbtn" title="Go to top">&#9776;</button>
+
             <aside id="myRightsidenav" class="right-sidenav" style="display: none;">
                 @{
                     if (IsSectionDefined("asideRight"))

@@ -24,63 +24,54 @@
             outline: none;
             min-height: 20px;
         }
-
-        .rightOpenbtn{
-            display:none;
-        }
     </style>
 }
 <div>
     <form class="form-inline">
         <div class="form-group">
-            <label for="ProjectID">專案編號：</label>
-            <input class="mr-2 form-control" id="ProjectID" name="ProjectID" placeholder="請輸入專案編號" style="width:9em" type="text" value="">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="ProjectID">專案編號：</label>
+            </div>
+            <div>
+                <input class="form-control" id="ProjectID" name="ProjectID" placeholder="請輸入專案編號" style="width:9em" type="text" value="">
+                <div style="display:none">
+                    <ul>
+                        <li>
+                            <div id="showProjectID"></div>
+                            <div id="showProjectName"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="ProjectName">專案名稱：</label>
-            <input class="mr-2 form-control" id="ProjectName" name="ProjectName" placeholder="請輸入專案名稱" style="width:15em" type="text" value="">
+        <div class="form-group ml-3">
+            <div class="input-group-prepend">
+                <lable class="input-group-text" for="RequiredDeptGUID">需求部門：</lable>
+            </div>
+            @{
+                SelectList Departments = new SelectList(ViewBag.Departments, "DepartmentGUID", "DepartmentName");
+            }
+            @Html.DropDownList("RequiredDeptGUID", Departments, "請選擇部門", new { @class = "custom-select" })
         </div>
-        <button id="btn_SelectProject" type="button" class="btn btn-info" data-toggle="modal" data-target="#SelectProjectModal"><i class="fas fa-list-ul"></i></button>
+        <div class="form-group ml-3">
+            <div class="input-group-prepend">
+                <lable class="input-group-text" for="Select_ProjectName">專案名稱：</lable>
+            </div>
+            <select id="Select_ProjectName" class="custom-select"></select>
+        </div>
+
+        @*<button id="btn_SelectProject" type="button" class="btn btn-info" data-toggle="modal" data-target="#SelectProjectModal"><i class="fas fa-list-ul"></i></button>*@
     </form>
 </div>
-<button id="AddCat" class="btn btn-primary my-3" data-toggle="modal" data-target="#AddCatModal">新增費用</button>
 
-<div id="PartialView">
-    <h4>請先選取專案</h4>
+<div id="result" class="mt-3" style="display:none">
+    <span id="sp_ProjectName"></span>
+    <span>中的費用，共有</span>
+    <span id="Count_of_Resources"></span>
+    <span>筆。</span>
 </div>
 
-<div class="modal fade" style="top:50px;" id="SelectProjectModal" tabindex="-1" role="dialog" aria-labelledby="SelectProjectModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content" style="border-radius:3px 4px;">
-            <div class="modal-header">
-                <h5 class="modal-title" id="DeleteCatModalLabel">請選擇專案</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <lable class="input-group-text" for="RequiredDeptGUID">需求部門：</lable>
-                    </div>
-                    @{
-                        SelectList Departments = new SelectList(ViewBag.Departments, "DepartmentGUID", "DepartmentName");
-                    }
-                    @Html.DropDownList("RequiredDeptGUID", Departments, new { @class = "custom-select" })
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <lable class="input-group-text" for="Select_ProjectName">專案名稱：</lable>
-                    </div>
-                    <select id="Select_ProjectName" class="custom-select"></select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button id="btn_ConfirmProject" class="btn btn-primary">確認</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="PartialView" class="mt-3">
 </div>
 
 <div class="modal fade" style="top:50px;" id="DeleteCatModal" tabindex="-1" role="dialog" aria-labelledby="DeleteCatModalLabel" aria-hidden="true">
@@ -107,6 +98,11 @@
         </div>
     </div>
 </div>
+@section asideRight{
+    <div id="AddTaskResources">
+
+    </div>
+    }
 
 @section script{
     <script>
@@ -114,10 +110,15 @@
         {
             function LoadProjects()
             {
-                $.getJSON("/Cost/GetProjectList", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
+                var optionlabel = $("<option></option>").text("請選擇專案");
+                $("#Select_ProjectName").html(optionlabel);
+                $("#result").hide();
+
+                $.getJSON("/Cost/GetProjectListByDptID", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
                 {
-                    console.log(projects);
+                    console.log(projects.length);
                     var docFrag = $(document.createDocumentFragment());
+                    docFrag.append(optionlabel);
                     $.each(projects, function (index, project)
                     {
                         var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectID).attr("data-projectguid", project.ProjectGUID);
@@ -127,20 +128,24 @@
                 });
             }
 
-            $("#RequiredDeptGUID").change(LoadProjects);
             LoadProjects();
 
-            $("#btn_ConfirmProject").click(function ()
+            $("#RequiredDeptGUID").change(LoadProjects);
+
+            $("#Select_ProjectName").change(function ()
             {
                 var opt = $("#Select_ProjectName>:selected");
                 $("#ProjectID").val(opt.val());
-                $("#ProjectName").val(opt.text());
-                $("#SelectProjectModal").modal("hide");
-                $("#PartialView").load("/Cost/GetTaskResources/" + opt.data('projectguid'));
-                btnbinding();
+                $("#sp_ProjectName").text(opt.text());
+                $("#PartialView").load("/Cost/GetTaskResources/" + opt.data('projectguid'), function ()
+                {
+                    $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+                    Binding();
+                });
+                $("#result").show();
             });
 
-            function btnbinding()
+            function Binding()
             {
                 $("#tb_TaskResources>tbody").on("click", ":button[name='btn_edit']", Update);
                 var flag = false;
