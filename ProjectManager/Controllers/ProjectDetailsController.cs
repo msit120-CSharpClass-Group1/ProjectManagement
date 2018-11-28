@@ -15,13 +15,23 @@ namespace ProjectManager.Controllers
         Repository<Department> dep = new Repository<Department>();
         Repository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
 
-        public ActionResult Index(Guid ProjectGUID)
+        public ActionResult SaveSession(Guid ProjectGUID)
         {
-            Session["ProjectGUID"] = ProjectGUID;
-            Guid indexPJID = new Guid(Session["ProjectGUID"].ToString());
-            ViewBag.FirstEmpList = employee.GetCollections().ToList();
-            ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();
-            return View(dep.GetCollections());
+            Response.Cookies["ProjectGUID"].Value = ProjectGUID.ToString();
+            Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddDays(7);
+            return RedirectToAction("Index", "ProjectDetails");
+        }
+
+        public ActionResult Index(/*Guid ProjectGUID*/)
+        {
+            if (Request.Cookies["ProjectGUID"].Value != null)
+            {
+                Guid indexPJID = new Guid(Request.Cookies["ProjectGUID"].Value.ToString());
+                ViewBag.FirstEmpList = employee.GetCollections().ToList();
+                ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();
+                return View(dep.GetCollections());
+            }
+            return RedirectToAction("ProjectReport", "ProjectDetails");
         }
 
         public ActionResult SelectDep()
@@ -33,24 +43,28 @@ namespace ProjectManager.Controllers
 
         public ActionResult AddProjectMember(Guid memberID)
         {
-            ProjectMembers pm = new ProjectMembers();
-            pm.ProjectGUID = new Guid(Session["ProjectGUID"].ToString());
-            pm.EmployeeGUID = memberID;
-            projectMembers.Add(pm);
-            return Content("html...");
+
+                ProjectMembers pm = new ProjectMembers();
+                pm.ProjectGUID = new Guid(Request.Cookies["ProjectGUID"].Value.ToString());
+                pm.EmployeeGUID = memberID;
+                projectMembers.Add(pm);
+                return Content("html...");          
+            //return RedirectToAction("ProjectReport", "ProjectDetails");
         }
 
         public ActionResult DeleteProjectMember()
         {
+
             Guid memberID = new Guid(Request.QueryString["memberID"]);
-            Guid InvitePJGUID = new Guid(Session["ProjectGUID"].ToString());
+            Guid InvitePJGUID = new Guid(Request.Cookies["ProjectGUID"].Value.ToString());
             projectMembers.Delete(projectMembers.Find(memberID, InvitePJGUID));
             return Content("html...");
+            //return RedirectToAction("ProjectReport", "ProjectDetails");
         }
 
         public ActionResult ReloadTeamCount()
         {
-            Guid InvitePJGUID = new Guid(Session["ProjectGUID"].ToString());
+            Guid InvitePJGUID = new Guid(Request.Cookies["ProjectGUID"].Value.ToString());
             var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID);
             return Content(JsonConvert.SerializeObject(pjmb), "application/json");
         }

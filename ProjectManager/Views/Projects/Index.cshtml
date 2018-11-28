@@ -43,8 +43,8 @@
 
         <div class="collapsible my-4 container" id=Dept@(i)>
             @foreach (var item in g.group)
-            {
-                <a href="~/ProjectDetails/ProjectReport?ProjectGUID=@item.ProjectGUID">
+            {                
+                <a href="~/ProjectDetails/SaveSession?ProjectGUID=@item.ProjectGUID">
                     <div class="card d-inline-block mr-3 mb-2 " style="width:18rem;">
                         <div class="card-header bg-dark">
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().CompletedRate)</span>

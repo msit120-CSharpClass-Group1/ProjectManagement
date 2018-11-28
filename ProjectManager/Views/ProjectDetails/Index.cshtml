@@ -50,11 +50,11 @@
 @section nav{
     <nav>
         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#" role="tab" aria-controls="nav-home" aria-selected="true">專案報表</a>
-            <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="" role="tab" aria-controls="nav-home" aria-selected="true">修改專案</a>
-            <a class="nav-item nav-link" id="nav-addtask-tab" data-toggle="tab" href="#" role="tab" aria-controls="nav-addtask" aria-selected="true">新增工作</a>
-            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#" role="tab" aria-controls="nav-profile" aria-selected="false">邀請成員</a>
-            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#" role="tab" aria-controls="nav-contact" aria-selected="false">分配工作</a>
+            <a class="nav-item nav-link active" id="nav-home-tab" href="~/ProjectDetails/ProjectReport" role="tab" aria-controls="nav-home" aria-selected="false">專案報表</a>
+            <a class="nav-item nav-link" id="nav-home-tab" href="" role="tab" aria-controls="nav-home" aria-selected="false">修改專案</a>
+            <a class="nav-item nav-link" id="nav-addtask-tab" href="#" role="tab" aria-controls="nav-addtask" aria-selected="false">新增工作</a>
+            <a class="nav-item nav-link" id="nav-addtask-tab" href="~/ProjectDetails/Index" role="tab" aria-controls="nav-addtask" aria-selected="true">邀請成員</a>
+            <a class="nav-item nav-link" id="nav-contact-tab" href="#" role="tab" aria-controls="nav-contact" aria-selected="false">分配工作</a>
         </div>
     </nav>
 }
@@ -110,6 +110,7 @@
                 {
                     var sel = $('#scrollDiv');
                     var docFrag = $(document.createDocumentFragment());
+                    sel.html($("<img></img>").attr("src", "/image/loading.gif"));
                     $.each(datas, function (idx, _emp)
                     {
                         var p = $("<p></p>").text(_emp.EmployeeName);// Find assigned
@@ -135,7 +136,7 @@
                 var memberName = $(this).prev().text();
                 if (this.checked)
                 {
-                    $(".panel").text("加入中...");
+                    $(".panel").html($("<img></img>").attr("src", "/image/loading.gif"))
                     $.ajax({
                         url: '@Url.Action("AddProjectMember", "ProjectDetails")',
                         data: { "memberID": memberGUID},
@@ -149,7 +150,7 @@
                 }
                 else
                 {
-                    $(".panel").text("移除中...");
+                    $(".panel").html($("<img></img>").attr("src", "/image/loading.gif"))
                     $.ajax({
                         url: '@Url.Action("DeleteProjectMember", "ProjectDetails")',
                         data: { "memberID": memberGUID},
