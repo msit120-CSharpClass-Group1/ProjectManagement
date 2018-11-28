@@ -112,11 +112,14 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Login.css" />
     <Content Include="Content\Main.css" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\skin-black.css" />
     <Content Include="Content\_all-skins.css" />
     <Content Include="Global.asax" />
     <Content Include="image\001.jpg" />
+    <Content Include="image\avatar.png" />
     <Content Include="image\user2-160x160.jpg" />
     <Content Include="Models\ProjectManagerModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -183,6 +186,7 @@
     <Content Include="Scripts\jquery-ui-1.12.1-Effects\LICENSE.txt" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
+    <Content Include="Scripts\login.js" />
     <Content Include="Scripts\Main.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\popper-utils.js" />
@@ -201,12 +205,21 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\CostController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\JobTitleController.cs" />
+    <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\PermissionsController.cs" />
+    <Compile Include="Controllers\ProjectCategoryController.cs" />
     <Compile Include="Controllers\ProjectDetailsController.cs" />
     <Compile Include="Controllers\MyBoardController.cs" />
+    <Compile Include="Controllers\ProjectStatusController.cs" />
     <Compile Include="Controllers\SelectMBoarController.cs" />
     <Compile Include="Controllers\SelectProjectController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
+    <Compile Include="Controllers\TaskDetailStatusController.cs" />
+    <Compile Include="Controllers\TaskStatusController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -240,7 +253,10 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MetaData\Project.cs" />
+    <Compile Include="Models\MetaData\Employee.cs" />
     <Compile Include="Models\MetaData\Tasks.cs" />
+    <Compile Include="Models\PartialClass\Employee.cs" />
+    <Compile Include="Models\PartialClass\Project.cs" />
     <Compile Include="Models\Permissions.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
@@ -331,14 +347,39 @@
     <Content Include="Views\Cost\ExpList.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-ui-1.12.1-Effects\package.json" />
+    <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\MyBoard\Index.cshtml" />
     <Content Include="Views\SelectMBoar\Index.cshtml" />
     <Content Include="Views\SelectProject\Index.cshtml" />
     <Content Include="Views\Cost\GetTaskResources.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
+    <Content Include="Views\ProjectDetails\Index.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectReport.cshtml" />
     <Content Include="Views\Cost\AddTaskResource.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectEdit.cshtml" />
+    <Content Include="Views\Department\Edit.cshtml" />
+    <Content Include="Views\Department\Index.cshtml" />
+    <Content Include="Views\Department\Insert.cshtml" />
+    <Content Include="Views\JobTitle\Edit.cshtml" />
+    <Content Include="Views\JobTitle\Index.cshtml" />
+    <Content Include="Views\JobTitle\Insert.cshtml" />
+    <Content Include="Views\Members\Edit.cshtml" />
+    <Content Include="Views\Members\Index.cshtml" />
+    <Content Include="Views\Permissions\Edit.cshtml" />
+    <Content Include="Views\Permissions\Index.cshtml" />
+    <Content Include="Views\Permissions\Insert.cshtml" />
+    <Content Include="Views\ProjectCategory\Edit.cshtml" />
+    <Content Include="Views\ProjectCategory\Index.cshtml" />
+    <Content Include="Views\ProjectCategory\Insert.cshtml" />
+    <Content Include="Views\ProjectStatus\Edit.cshtml" />
+    <Content Include="Views\ProjectStatus\Index.cshtml" />
+    <Content Include="Views\ProjectStatus\Insert.cshtml" />
+    <Content Include="Views\TaskDetailStatus\Edit.cshtml" />
+    <Content Include="Views\TaskDetailStatus\Index.cshtml" />
+    <Content Include="Views\TaskDetailStatus\Insert.cshtml" />
+    <Content Include="Views\TaskStatus\Edit.cshtml" />
+    <Content Include="Views\TaskStatus\Index.cshtml" />
+    <Content Include="Views\TaskStatus\Insert.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
