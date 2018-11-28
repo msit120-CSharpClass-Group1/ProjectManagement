@@ -59,9 +59,9 @@ namespace ProjectManager.Models
         [DisplayName("專案階段")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
         public Nullable<int> ProjectStatusID { get; set; }
-        [DisplayName("專案類別")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
+        [DisplayName("專案類別")]        
         public Nullable<int> ProjectCategoryID { get; set; }
+        [DisplayName("專案督導")]
         public Nullable<System.Guid> ProjectSupervisorGUID { get; set; }
         [DisplayName("總經理關注")]
         public Nullable<bool> IsGeneralManagerConcerned { get; set; }
