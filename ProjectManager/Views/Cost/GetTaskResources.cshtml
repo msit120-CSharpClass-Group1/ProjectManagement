@@ -24,11 +24,11 @@
                 <td data-resourceguid="@resource.ResourceGUID"><p>@resource.ResourceName</p></td>
                 <td data-categoryid="@resource.CategoryID"><p>@resource.CategoryName</p></td>
                 <td class="text-sm-right"><p>@resource.Quantity</p></td>
-                <td class="text-sm-right"><p>@resource.UnitPrice.ToString("C0")</p></td>
+                <td class="text-sm-right" data-unitprice="@resource.UnitPrice"><p>@resource.UnitPrice.ToString("C0")</p></td>
                 <td class="text-sm-right"><p>@resource.SubTotal.ToString("C0")</p></td>
                 <td><p>@resource.Description</p></td>
                 <td class="text-center" style="width:75px"><button name="btn_edit" class="btn btn-info">Edit</button></td>
-                <td class="text-center" style="width:75px"><button name="btn_Del" class="btn btn-danger" data-toggle="modal" data-target="#DeleteCatModal">Delete</button></td>
+                <td class="text-center" style="width:75px"><button name="btn_Del" class="btn btn-danger" data-toggle="modal" data-target="#DeleteExpModal">Delete</button></td>
             </tr>
         }
     </tbody>
