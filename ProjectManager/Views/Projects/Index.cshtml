@@ -15,7 +15,7 @@
         default:
             break;
     }
-    ViewBag.Title = "專案 > " + strStatus ;
+    ViewBag.Title = "專案 > " + strStatus;
 }
 @section style{
     <style>
@@ -44,7 +44,7 @@
         <div class="collapsible my-4 container" id=Dept@(i)>
             @foreach (var item in g.group)
             {
-                <a href="~/ProjectDetails/Index?ProjectGUID=@item.ProjectGUID">
+                <a href="~/InviteTeamMember/Index?ProjectGUID=@item.ProjectGUID">
                     <div class="card d-inline-block mr-3 mb-2 " style="width:18rem;">
                         <div class="card-header bg-dark">
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().CompletedRate)</span>
@@ -58,7 +58,7 @@
                         </div>
                         <div class="card-footer text-center text-muted ">
                             <div class="row align-items-center">
-                                <div class="col-2"><i class="fas fa-minus"></i></div>
+                                <div class="col-2"></div>
                                 <div class="col-8 small">@Html.DisplayFor(m => item.ProjectName)</div>
                                 <div class="col-2">
                                     @{
@@ -80,18 +80,90 @@
         </div>
     }
 </div>
+@section asideRight{
+<div class="container text-light mt-3">
+    <h4>新增專案</h4>
+    <form class="form-horizontal " action="~/Projects/CreateProject" method="post">
+        <input name="ProjectID" type="hidden" class="form-control d-inline" style="width:10em;" />
+        <div class="form-group">
+            @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectName)
+            @Html.TextBox("ProjectName", null, new { @class = "form-control", style = "width:18em;" })
+        </div>
 
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().RequiredDeptGUID)
+                @Html.DropDownList("RequiredDeptGUID", (SelectList)ViewBag.Departments, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().RequiredDeptPMGUID)
+                @Html.DropDownList("RequiredDeptPMGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstStartDate)
+                <input name="EstStartDate" type="date" class="form-control d-inline" />
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstEndDate)
+                <input name="EstEndDate" type="date" class="form-control d-inline" />
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().StartDate)
+                <input name="EstStartDate" type="date" class="form-control d-inline" />
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EndDate)
+                <input name="EstEndDate" type="date" class="form-control d-inline" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectStatusID)
+                @Html.DropDownList("ProjectStatusID", (SelectList)ViewBag.ProjectStatuses, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectCategoryID)
+                @Html.DropDownList("ProjectCategoryID", (SelectList)ViewBag.ProjectCategories, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectSupervisorGUID)
+                @Html.DropDownList("ProjectSupervisorGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+        <div class="col-6 form-group">
+            總經理關注 <input name="IsGeneralManagerConcerned" value="true" type="checkbox" />
+        </div>
+            <div id="formBtns" class="mt-5 mx-auto text-center">
+                <button id="cancelBtn" type="button" class="btn btn-default py-1 px-5">取消</button>
+                <button id="confiredBtn" type="submit" class="btn btn-primary py-1 px-5">確認</button>
+            </div>
+        </div>
+    </form>
+</div>
+}
 @section script{
     <script>
         $(document).ready(function () {
+            var dtNow = new Date($.now());
+            var dtyy = dtNow.getFullYear()
+            var dtMM = dtNow.getMonth() + 1
+            var dtdd = dtNow.getDate();
+            $('input[type="date"]').val(dtyy + '-' + dtMM + '-' + dtdd);
+            
             var createProjectForm = $('#CreateProjectForm');
             var Overview = $('#ProjectsOverview');
 
             $('#btn-plus>a').click(function () {
-                createProjectForm.css({ "right": 0 });
+                $('button.rightOpenbtn').click();
             });
             $('#formBtns').children('button').click(function () {
-                createProjectForm.css({ "right": -99999 });
+                $('button.rightOpenbtn').click();
             });
 
             Overview.find('h4').on("click", function () {
