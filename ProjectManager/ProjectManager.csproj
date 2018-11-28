@@ -103,10 +103,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\ProjectManagement.mdf" />
-    <Content Include="App_Data\ProjectManagement_log.ldf">
-      <DependentUpon>ProjectManagement.mdf</DependentUpon>
-    </Content>
     <Content Include="Content\AdminLTE.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -195,12 +191,7 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
-    <Content Include="Views\Cost\ExpCatMgr.cshtml" />
-    <Content Include="Views\Cost\ExpList.cshtml" />
-    <Content Include="Views\Cost\Index.cshtml" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -303,12 +294,10 @@
     <Compile Include="Models\TaskStatus.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ViewModel\BoardVM.cs" />
     <Compile Include="Models\ViewModel\DisplayResource.cs" />
     <Compile Include="Models\WidgetDetail.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="partial\Tasks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -316,6 +305,7 @@
     <None Include="packages.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Cost\Index.cshtml" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Scripts\umd\popper.min.js.map" />
@@ -328,6 +318,8 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\Cost\ExpCatMgr.cshtml" />
+    <Content Include="Views\Cost\ExpList.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-ui-1.12.1-Effects\package.json" />
     <Content Include="Views\MyBoard\Index.cshtml" />
@@ -342,7 +334,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
