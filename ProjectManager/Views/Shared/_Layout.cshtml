@@ -106,7 +106,8 @@
             <button class="rightOpenbtn" title="Go to top">&#9776;</button>
             <aside id="myRightsidenav" class="right-sidenav" style="display: none;">
                 <ul>
-                    <li>
+                    @RenderSection("navRightContent", false)
+                    @*<li>
                         <a href="#"><i class="fas fa-tachometer-alt"></i><span>自己決定要放什麼</span></a>
                     </li>
                     <li>
@@ -124,7 +125,7 @@
                                 <a href="#">選項3</a>
                             </li>
                         </ul>
-                    </li>
+                    </li>*@
                 </ul>
             </aside>
 
