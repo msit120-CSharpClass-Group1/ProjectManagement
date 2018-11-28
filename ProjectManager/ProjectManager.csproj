@@ -112,7 +112,9 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Login.css" />
     <Content Include="Content\Main.css" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\skin-black.css" />
     <Content Include="Content\_all-skins.css" />
     <Content Include="Global.asax" />
@@ -184,6 +186,7 @@
     <Content Include="Scripts\jquery-ui-1.12.1-Effects\LICENSE.txt" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
+    <Content Include="Scripts\login.js" />
     <Content Include="Scripts\Main.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\popper-utils.js" />
@@ -204,6 +207,7 @@
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\JobTitleController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
@@ -343,6 +347,7 @@
     <Content Include="Views\Cost\ExpList.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-ui-1.12.1-Effects\package.json" />
+    <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\MyBoard\Index.cshtml" />
     <Content Include="Views\SelectMBoar\Index.cshtml" />
     <Content Include="Views\SelectProject\Index.cshtml" />
