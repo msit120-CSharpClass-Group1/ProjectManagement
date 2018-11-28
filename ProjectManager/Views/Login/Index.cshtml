@@ -1,0 +1,97 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Login.css" rel="preload stylesheet" as="style">
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+</head>
+<body>
+    <section class="user">
+        <div class="user_options-container">
+            <div class="user_options-text">
+                <div class="user_options-unregistered">
+                    <h2 class="user_unregistered-title">還沒有帳號嗎?</h2>
+                    <p class="user_unregistered-text">可以按下方按鈕註冊新帳號</p>
+                    <button class="user_unregistered-signup" id="signup-button">註冊</button>
+                </div>
+
+                <div class="user_options-registered">
+                    <h2 class="user_registered-title">有帳號了?</h2>
+                    <p class="user_registered-text">可以按下方按鈕登入帳號</p>
+                    <button class="user_registered-login" id="login-button">登入</button>
+                </div>
+            </div>
+
+            <div class="user_options-forms" id="user_options-forms">
+                <div class="user_forms-login">
+                    <h2 class="forms_title">登入</h2>
+                    <form method="post" action="~/Login/Login" class="forms_form">
+                        <fieldset class="forms_fieldset">
+                            <div class="forms_field">
+                                <input type="text" placeholder="Account" name="MemberID" class="forms_field-input" required autofocus autocomplete="off" />
+                            </div>
+                            <div class="forms_field">
+                                <input type="password" placeholder="Password" name="Password" class="forms_field-input" required />
+                            </div>
+                        </fieldset>
+                        <div>@ViewBag.msg</div>
+                        <div class="forms_buttons">
+                            <button type="button" class="forms_buttons-forgot">忘記密碼?</button>
+                            <input type="submit" value="登入" class="forms_buttons-action">
+                        </div>
+                    </form>
+                </div>
+                <div class="user_forms-signup">
+                    <h2 class="forms_title">註冊</h2>
+                    @*<form id="signIn" class="forms_form" method="post" action="~/Login/CreateAccount">*@
+                    <form  class="forms_form" >
+                        <fieldset class="forms_fieldset">
+                            <div class="forms_field">
+                                <input id="MemberID" name="MemberID" type="text" placeholder="Account" class="forms_field-input" required />
+                            </div>
+                            <div class="forms_field">
+                                <input id="Password" name="Password" type="password" placeholder="Password" class="forms_field-input" required />
+                            </div>
+                        </fieldset>
+                        <div id="accounttext"></div>
+                        <div class="forms_buttons">
+                            <input id="signIn" type="button" value="註冊" class="forms_buttons-action">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/login.js"></script>
+    <script>
+          $(document).ready(function () {
+            //jQuery程式碼寫在這裡
+              
+              $('#signIn').click(function () {
+
+                  var MemberID = $('#MemberID').val()
+                  var Password = $('#Password').val()
+                 
+                  $.ajax({
+                      url: "CreateAccount",
+                      method: "post",
+                      data: { "MemberID": MemberID, "Password": Password },
+                      dataType: "json"
+                  }).done(function (data) {
+                      $('#accounttext').text(data)
+                  });
+            })
+        })
+    </script>
+</body>
+</html>
