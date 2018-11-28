@@ -196,6 +196,9 @@
     <Compile Include="Controllers\CostController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MyBoardController.cs" />
+    <Compile Include="Controllers\SelectMBoarController.cs" />
+    <Compile Include="Controllers\SelectProjectController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -289,6 +292,7 @@
     <Compile Include="Models\TaskStatus.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModel\BoardVM.cs" />
     <Compile Include="Models\ViewModel\DisplayResource.cs" />
     <Compile Include="Models\WidgetDetail.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
@@ -319,6 +323,9 @@
     <Content Include="Views\Cost\ExpList.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-ui-1.12.1-Effects\package.json" />
+    <Content Include="Views\MyBoard\Index.cshtml" />
+    <Content Include="Views\SelectMBoar\Index.cshtml" />
+    <Content Include="Views\SelectProject\Index.cshtml" />
     <Content Include="Views\Cost\GetTaskResources.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
     <Content Include="Views\Cost\AddTaskResource.cshtml" />
