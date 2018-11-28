@@ -20,8 +20,8 @@ namespace ProjectManager.Controllers
             Session["ProjectGUID"] = ProjectGUID;
             Guid indexPJID = new Guid(Session["ProjectGUID"].ToString());
             ViewBag.FirstEmpList = employee.GetCollections().ToList();
-            ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();     
-            return View(dep.GetCollections());          
+            ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();
+            return View(dep.GetCollections());
         }
 
         public ActionResult SelectDep()
@@ -30,8 +30,8 @@ namespace ProjectManager.Controllers
             var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);
             return Content(JsonConvert.SerializeObject(emp), "application/json");
         }
-        
-        public ActionResult AddProjectMember(Guid memberID) 
+
+        public ActionResult AddProjectMember(Guid memberID)
         {
             ProjectMembers pm = new ProjectMembers();
             pm.ProjectGUID = new Guid(Session["ProjectGUID"].ToString());
@@ -53,6 +53,7 @@ namespace ProjectManager.Controllers
             Guid InvitePJGUID = new Guid(Session["ProjectGUID"].ToString());
             var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID);
             return Content(JsonConvert.SerializeObject(pjmb), "application/json");
+        }
         public ActionResult ProjectReport(Guid? ProjectGUID)
         {
             return View();

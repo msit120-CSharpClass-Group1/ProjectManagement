@@ -6,48 +6,59 @@
 }
 
 @section style{
-<style>
-    #sel1 {
-        width: 200px;
-        margin: 15px;
-    }
+    <style>
+        #sel1 {
+            width: 200px;
+            margin: 15px;
+        }
 
-    #emplist {
-        margin: 5px;
-    }
+        #emplist {
+            margin: 5px;
+        }
 
-    img {
-        width: 30px;
-    }
+        img {
+            width: 30px;
+        }
 
-    p, .ckbox1 {
-        display: inline;
-        margin: 15px;
-    }
+        p, .ckbox1 {
+            display: inline;
+            margin: 15px;
+        }
 
-    #scrollDiv {
-        height: 300px;
-    }
+        #scrollDiv {
+            height: 300px;
+        }
 
-    .alert alert-primary {
-        margin: 5px;
-    }
+        .alert alert-primary {
+            margin: 5px;
+        }
 
-    .smallDiv {
-        width: 20px;
-        background-color: crimson;
-    }
+        .smallDiv {
+            width: 20px;
+            background-color: crimson;
+        }
 
-    .flip {
-        text-align: center;
-        background: #fbec06;
-        cursor: pointer;
-        font-family: 'Arial';
-    }
-</style>
+        .flip {
+            text-align: center;
+            background: #fbec06;
+            cursor: pointer;
+            font-family: 'Arial';
+        }
+    </style>
 }
 
-<h1 id="PJGUID">@TempData["PID"]</h1>
+@section nav{
+    <nav>
+        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#" role="tab" aria-controls="nav-home" aria-selected="true">專案報表</a>
+            <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="" role="tab" aria-controls="nav-home" aria-selected="true">修改專案</a>
+            <a class="nav-item nav-link" id="nav-addtask-tab" data-toggle="tab" href="#" role="tab" aria-controls="nav-addtask" aria-selected="true">新增工作</a>
+            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#" role="tab" aria-controls="nav-profile" aria-selected="false">邀請成員</a>
+            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#" role="tab" aria-controls="nav-contact" aria-selected="false">分配工作</a>
+        </div>
+    </nav>
+}
+
 <div class="container">
     <div class="row">
         <div class="col-sm">
