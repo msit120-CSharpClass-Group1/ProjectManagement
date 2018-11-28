@@ -12,7 +12,7 @@ namespace ProjectManager.Controllers
         private IRepository<Permissions> permissionsRepository = new Repository<Permissions>();
         public ActionResult Index()
         {
-            return View(permissionsRepository.GetCollections());
+            return View(permissionsRepository.GetCollections().OrderBy(c=>c.PermissionsID));
         }
 
         public ActionResult Insert(Permissions _permissions)

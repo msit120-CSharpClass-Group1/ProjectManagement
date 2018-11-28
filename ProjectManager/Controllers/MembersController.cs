@@ -12,9 +12,16 @@ namespace ProjectManager.Controllers
         private IRepository<Members> memberRepository = new Repository<Members>();
         private IRepository<Permissions> permissionsRepository = new Repository<Permissions>();
         ProjectManagementEntities db = new ProjectManagementEntities();
+
         public ActionResult Index()
         {
-         
+            var permissions = db.Permissions.Select(g => new
+            {
+                g.PermissionsGUID,
+                g.PermissionsName
+            });
+
+            ViewBag.permissions = new SelectList(permissions, "PermissionsGUID", "PermissionsName");
             return View(memberRepository.GetCollections());
         }
 
@@ -31,14 +38,14 @@ namespace ProjectManager.Controllers
         //    return View();
         //}
 
-        [HttpGet]
-        public ActionResult Edit(Guid? id)
-        {
-            return View(permissionsRepository.Find(id));
-        }
+        //[HttpGet]
+        //public ActionResult Edit(Guid? id)
+        //{
+        //    return View(permissionsRepository.Find(id));
+        //}
 
         [HttpPost]
-        public ActionResult Edit(Members members)
+        public ActionResult Edit(Permissions _permissions )
         {
             var empolyees = db.Employee.Select(c => new
             {
@@ -56,7 +63,7 @@ namespace ProjectManager.Controllers
             });
 
             ViewBag.permissions = new SelectList(permissions, "PermissionsGUID", "PermissionsName");
-            Members _members = memberRepository.Find(members.MemberGUID);
+            Members _members = memberRepository.Find(_permissions.PermissionsGUID);
             _members.ModifiedDate = DateTime.Now;
             memberRepository.Update(_members);
 
