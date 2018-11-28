@@ -113,6 +113,7 @@
     <Content Include="Content\_all-skins.css" />
     <Content Include="Global.asax" />
     <Content Include="image\001.jpg" />
+    <Content Include="image\avatar.png" />
     <Content Include="image\user2-160x160.jpg" />
     <Content Include="Models\ProjectManagerModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -196,6 +197,7 @@
     <Compile Include="Controllers\CostController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProjectDetailsController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -228,7 +230,10 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MetaData\Project.cs" />
+    <Compile Include="Models\MetaData\Employee.cs" />
     <Compile Include="Models\MetaData\Tasks.cs" />
+    <Compile Include="Models\PartialClass\Employee.cs" />
+    <Compile Include="Models\PartialClass\Project.cs" />
     <Compile Include="Models\Permissions.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
@@ -319,6 +324,7 @@
     <Content Include="Scripts\jquery-ui-1.12.1-Effects\package.json" />
     <Content Include="Views\Cost\GetTaskResources.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
+    <Content Include="Views\ProjectDetails\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

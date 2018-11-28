@@ -5,6 +5,7 @@ using System.Web;
 
 namespace ProjectManager.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -28,9 +29,8 @@ namespace ProjectManager.Models
 
         [NotMapped]
         [DisplayName("實際工期節省比率")]
-        public int DurationSavedRate { get; set; }
+        public int DurationSavedRate { get; set; }      
     }
-
     public class ProjectMetaData
     {
         [DisplayName("專案編號")]
@@ -69,5 +69,22 @@ namespace ProjectManager.Models
         public Nullable<int> ProjectBudget { get; set; }
         [DisplayName("專案描述")]
         public string Description { get; set; }
+
+        //Michael Add
+        [JsonIgnore]
+        public virtual Department Department { get; set; }
+
+        [JsonIgnore]
+        public virtual Department Department1 { get; set; }
+
+        [JsonIgnore]
+        public virtual ProjectStatus ProjectStatus { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [JsonIgnore]
+        public virtual ICollection<ProjectMembers> ProjectMembers { get; set; }
+        [JsonIgnore]
+        public virtual ProjectCategory ProjectCategory { get; set; }
+
     }
 }

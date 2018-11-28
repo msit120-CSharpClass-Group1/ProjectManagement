@@ -1,0 +1,180 @@
+﻿@using ProjectManager.Models
+@model IEnumerable<ProjectManager.Models.Department>
+@{
+    ViewBag.Title = "專案成員邀請";
+    //Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+@section style{
+<style>
+    #sel1 {
+        width: 200px;
+        margin: 15px;
+    }
+
+    #emplist {
+        margin: 5px;
+    }
+
+    img {
+        width: 30px;
+    }
+
+    p, .ckbox1 {
+        display: inline;
+        margin: 15px;
+    }
+
+    #scrollDiv {
+        height: 300px;
+    }
+
+    .alert alert-primary {
+        margin: 5px;
+    }
+
+    .smallDiv {
+        width: 20px;
+        background-color: crimson;
+    }
+
+    .flip {
+        text-align: center;
+        background: #fbec06;
+        cursor: pointer;
+        font-family: 'Arial';
+    }
+</style>
+}
+
+<h1 id="PJGUID">@TempData["PID"]</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <select id="sel1">
+                <option>所有部門</option>
+                @foreach (var _dep in Model)
+                {
+                    <option value="@_dep.DepartmentGUID">@_dep.DepartmentName</option>
+                }
+            </select>
+            <div id="teamcount" style="float:right">
+                <div class="flip"><i class="fas fa-users"></i></div>
+                <div class="panel">
+                    @foreach (var _ProjectMemeber in (List<ProjectMembers>)ViewBag.ThisProjectMember)
+                    {
+                        <img src="~/image/avatar.png" class="rounded-circle" /><p>@_ProjectMemeber.Employee.EmployeeName</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div style="overflow-y: scroll" id="scrollDiv">
+                <!--runin-->
+                @foreach (var _emp in (List<Employee>)ViewBag.FirstEmpList)
+                {
+                    <div class="alert alert-primary" role="alert" id="empDiv">
+                        <img src="~/image/avatar.png" class="rounded-circle" />
+                        <p>@_emp.EmployeeName</p>
+                        <input type="checkbox" class="ckbox1" style="float:right" value="@_emp.EmployeeGUID" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script{
+    <script>
+    $(document).ready(function ()
+    {
+        var selecter = $("#sel1");
+        var flag = false;
+        selecter.change(function () //選擇部門事件
+        {
+                var selectedopt = $(this).find(":selected").val();
+                $.getJSON('@Url.Action("selectdep", "ProjectDetails")', { "depid": selectedopt }, function (datas)
+                {
+                    var sel = $('#scrollDiv');
+                    var docFrag = $(document.createDocumentFragment());
+                    $.each(datas, function (idx, _emp)
+                    {
+                        var p = $("<p></p>").text(_emp.EmployeeName);// Find assigned
+                        var input = $("<input/>").attr("type", "checkbox").attr("class", "ckbox1").attr("style", "float:right").val(_emp.EmployeeGUID);
+                        var img = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle");
+                        var empdiv = $("<div></div>").attr("class", "alert alert-primary");
+                        empdiv.append([img, p, input]);
+                        docFrag.append(empdiv);
+                    })
+                    sel.html(docFrag);
+                    if (!flag) { selecter.children().first().remove()};
+                    flag = true;
+                    SendIDToTeamTable();
+            })
+        })
+
+        SendIDToTeamTable();
+        function SendIDToTeamTable()//勾選成員、取消勾選事件
+        {
+            $('.ckbox1').on('change', function ()
+            {
+                var memberGUID = $(this).val();
+                var memberName = $(this).prev().text();
+                if (this.checked)
+                {
+                    $(".panel").text("加入中...");
+                    $.ajax({
+                        url: '@Url.Action("AddProjectMember", "ProjectDetails")',
+                        data: { "memberID": memberGUID},
+                        success: function ()
+                        {
+                         /*   alert("success Insert"); *///when DB insert data success,must append empImg In teamCount Div
+                            ReloadTeamCount();
+                        }
+                        , error: function () { alert(memberName+" 已存在於此專案")}
+                    });
+                }
+                else
+                {
+                    $(".panel").text("移除中...");
+                    $.ajax({
+                        url: '@Url.Action("DeleteProjectMember", "ProjectDetails")',
+                        data: { "memberID": memberGUID},
+                        success: function ()
+                        {
+                            ReloadTeamCount();
+                        }
+                    });
+                }
+            });
+        }
+
+        function ReloadTeamCount()//重新載入專案成員(當勾選成員時觸發)
+        {
+            $.getJSON('@Url.Action("ReloadTeamCount", "ProjectDetails")', { "projectID": $("#PJGUID").text() }, function (datas)
+            {
+                var docFrag = $(document.createDocumentFragment());
+                var teamcountDIV = $("#teamcount");
+                var panel = $(".panel");
+                $.each(datas, function (idx, _emp)
+                {
+                    var empImg = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle");
+                    var empP = $("<p></p>").text(_emp.Employee.EmployeeName);
+                    docFrag.append([empImg, empP]);
+                })
+                panel.html(docFrag);
+            })
+        }
+
+        $(function () // 目前專案成員滑塊
+        {
+            $(".flip").click(function () {
+                $(".panel").slideToggle("slow");
+            });
+        });
+    })
+    </script>
+}
+
