@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ProjectManager.Models.BLL
+namespace ProjectManager.Models
 {
     public static class TasksBL
     {

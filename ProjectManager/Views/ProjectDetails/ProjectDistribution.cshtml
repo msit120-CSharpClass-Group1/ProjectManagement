@@ -1,0 +1,225 @@
+﻿@using ProjectManager.Models
+@model IEnumerable<ProjectManager.Models.Tasks>
+@{
+    ViewBag.Title = "新增工作";
+}
+
+@section style{
+    <style>
+        .treegrid-indent {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .treegrid-expander {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .treegrid-expander-expanded {
+            background-image: url(../image/collapse.png);
+        }
+
+        .treegrid-expander-collapsed {
+            background-image: url(../image/expand.png);
+        }
+    </style>
+}
+@section nav{
+    @Html.Partial("_PartialPageNav", "Shared")
+}
+
+@foreach (var item in (List<Project>)ViewBag.Projects)
+{
+    <h4>@item.ProjectID &nbsp; @item.ProjectName</h4>
+}
+
+@*<input id="isGanttShowed" type="checkbox" /> Show Gantt*@
+<div id="tasks_layout" class="container">
+    <div id="ganttContainer" style="width: 100%; height: 500px" hidden></div>
+    <div id="treeGridContainer">
+        <table id="treeGrid" class="table table-bordered table-hover tree">
+            <thead class="panel-heading">
+                <tr>
+                    <th>@Html.DisplayNameFor(m => m.TaskName)</th>
+                    <th><a href="#"><i class="fas fa-plus"></i></a></th>
+                    <th>@Html.DisplayNameFor(m => m.TaskStatusID)</th>
+                    <th>@Html.DisplayNameFor(m => m.EmployeeGUID)</th>
+                    <th>@Html.DisplayNameFor(m => m.Description)</th>
+                    <th>@Html.DisplayNameFor(m => m.Tag)</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var task in @Model)
+                {
+                    var class1 = "treegrid-" + task.orderID;
+                    var class2 = task.parentOrderID == 0 ? "" : "treegrid-parent-" + task.parentOrderID;
+                    <tr class="@class1 @class2" data-orderID="@task.orderID" data-taskGUID="@task.TaskGUID" >
+                        <td>@task.TaskName</td>
+                        <td><a href="#"><i class="fas fa-plus"></i></a></td>
+                        <td>@task.TaskStatus.TaskStatusName</td>
+                        <td>@Html.DisplayFor(m => task.Employee.EmployeeName)</td>
+                        <td>@Html.DisplayFor(m => task.Description)</td>
+                        <td>@Html.DisplayFor(m => task.Tag)</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+
+        <div class="modal fade" id="treeGridFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="~/ProjectDetails/Edit" enctype="application/x-www-form-urlencoded">
+                            <input name="TaskGUID" class="form-control d-inline" style="width:10em;" />@*type="hidden"*@
+                            <div class="form-group">
+                                @*@Html.DisplayNameFor(m => m.TaskName) @Html.TextBoxFor() <input name="TaskName" type="text" class="form-control d-inline" style="width:10em;" />*@
+                            </div>
+
+                            <div class="row ">
+                                <div class="col-6 form-group">
+                                    需求部門
+
+                                </div>
+                                <div class="col-6 form-group">
+                                    需求部門PM
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-2"><button type="button" class="btn btn-danger float-left">刪除</button></div>
+                                <div class="col-5"></div>
+                                <div class="col-5">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                    <button type="submit" class="btn btn-primary">確認修改</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section asideRight{
+    <div class="container text-light mt-3">
+        <h4>新增工作項目</h4>
+        <form class="form-horizontal " action="~/ProjectDetails/InsertTask" method="post">
+            <input name="ParentTaskGUID" id="ParentTaskGUID" class="form-control d-inline" style="width:10em;" />@*type="hidden"*@
+            <div class="form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().TaskName)
+                @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:12em;" })
+            </div>
+
+            <div class="row ">
+                <div class="col-6 form-group">
+                    @Html.LabelFor(m => m.FirstOrDefault().TaskStatusID)
+                    @Html.DropDownList("TaskStatusID", (SelectList)ViewBag.TaskStatuses, "請選擇", new { @class = "form-control", style = "width:12em;" })
+                </div>
+                <div class="col-6 form-group">
+                    @Html.LabelFor(m => m.FirstOrDefault().Tag)
+                    @Html.TextBox("Tag", null, new { @class = "form-control", style = "width:12em;" })
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-6 form-group">
+                    @Html.LabelFor(m => m.FirstOrDefault().EstStartDate)
+                    @{
+                        string strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+                    }<br />
+                    <input name="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
+                </div>
+                <div class="col-6 form-group">
+                    @Html.LabelFor(m => m.FirstOrDefault().EstEndDate)
+                    @{
+                        strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+                    }<br />
+                    <input name="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-6 form-group">
+                    @Html.LabelFor(m => m.FirstOrDefault().StartDate)
+                    @{
+                        strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+                    }<br />
+                    <input name="StartDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
+                </div>
+                <div class="col-6 form-group">
+                    @Html.LabelFor(m => m.FirstOrDefault().EndDate)
+                    @{
+                        strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+                    }<br />
+                    <input name="EndDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
+                </div>
+            </div>
+
+            <div id="formBtns" class="mt-5 mx-auto text-center ">
+                <button id="cancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
+                <button id="confiredBtn" type="submit" class="btn btn-primary py-1 px-5">確認</button>
+            </div>
+        </form>
+    </div>
+}
+
+@section script{
+    <script src="~/Scripts/jquery.treegrid.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var treeGrid = $('#treeGrid');
+            var formModal = $('#treeGridFormModal');
+            treeGrid.treegrid();
+
+            var tasks_layout = $('#tasks_layout');
+            var treeGridContainer = $('#treeGridContainer');
+            var ganttContainer = $('#ganttContainer');
+
+            treeGrid.find('tr').each(function () {
+                $(this).on("dblclick", function () {
+                    ShowByGUID();
+
+
+                });
+
+            });
+            treeGrid.find('tr a').each(function () {
+                $(this).on("click", function () {
+                    if ($('#myRightsidenav').css('display') == "none") {
+                        $('button.rightOpenbtn').click();
+                    }
+                    $('#ParentTaskGUID').val($(this).parents('tr').attr('data-taskGUID'));
+                });
+
+            });
+
+            function ShowByGUID() {
+                var _taskGUID = $(this).attr('data-taskGUID');
+                
+            }
+
+        });
+    </script>
+    <style>
+        .table-bordered td, .table-bordered th {
+            border: 0px solid;
+        }
+
+        .table-bordered tr {
+            border: 1px solid #dee2e6;
+        }
+    </style>
+}
