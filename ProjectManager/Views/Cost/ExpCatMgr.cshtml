@@ -120,7 +120,6 @@
     <script>
         $("#btn_Add").click(function ()
         {
-            console.log("hello");
             var data = $("#f_newCat").serialize();
             $("#f_newCat").find(":input").val("");
             $("#AddCatModal").modal("hide");
@@ -149,7 +148,7 @@
                 CatNameCell.children("p").attr("contenteditable", false);
                 DescriptionCell.children("p").attr("contenteditable", false);
                 flag = !flag;
-                $.post("/Cost/Update", data, function ()
+                $.post("/Cost/UpdateCat", data, function ()
                 {
                     location.reload();
                 });
@@ -180,7 +179,7 @@
             var modal = $("#DeleteCatModal");
             var CatID = modal.data("catid");
             modal.modal("hide");
-            $.post("/Cost/Delete", { id: CatID }, function ()
+            $.post("/Cost/DeleteCat", { id: CatID }, function ()
             {
                 location.reload();
             });

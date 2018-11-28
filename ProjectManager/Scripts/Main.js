@@ -7,8 +7,9 @@
     });
 
     //開啟右側選單
-    $('.rightOpenbtn').click(function () {
-        $('.main').toggleClass("right-sidenav-toggle");
+    $('.rightOpenbtn').click(function ()
+    {
+        //$('.main').toggleClass("right-sidenav-toggle");
         $('#myRightsidenav').slideToggle();
     });
 
