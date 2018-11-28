@@ -1,0 +1,67 @@
+﻿@model IEnumerable<ProjectManager.Models.GroupedProject>
+
+<div class="container text-light mt-3">
+    <h4>新增專案</h4>
+    <form class="form-horizontal " action="~/Projects/CreateProject" method="post">
+        <input name="ProjectID" type="hidden" class="form-control d-inline" style="width:10em;" />
+        <div class="form-group">
+            @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectName)
+            @Html.TextBox("ProjectName", null, new { @class = "form-control", style = "width:18em;" })
+        </div>
+
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().RequiredDeptGUID)
+                @Html.DropDownList("RequiredDeptGUID", (SelectList)ViewBag.Departments, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().RequiredDeptPMGUID)
+                @Html.DropDownList("RequiredDeptPMGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstStartDate)
+                <input name="EstStartDate" type="date" class="form-control d-inline" />
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstEndDate)
+                <input name="EstEndDate" type="date" class="form-control d-inline" />
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().StartDate)
+                <input name="EstStartDate" type="date" class="form-control d-inline" />
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EndDate)
+                <input name="EstEndDate" type="date" class="form-control d-inline" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectStatusID)
+                @Html.DropDownList("ProjectStatusID", (SelectList)ViewBag.ProjectStatuses, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectCategoryID)
+                @Html.DropDownList("ProjectCategoryID", (SelectList)ViewBag.ProjectCategories, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectSupervisorGUID)
+                @Html.DropDownList("ProjectSupervisorGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+            <div class="col-6 form-group">
+                總經理關注 <input name="IsGeneralManagerConcerned" value="true" type="checkbox" />
+            </div>
+            <div id="formBtns" class="mt-5 mx-auto text-center">
+                <button id="cancelBtn" type="button" class="btn btn-default py-1 px-5">取消</button>
+                <button id="confiredBtn" type="submit" class="btn btn-primary py-1 px-5">確認</button>
+            </div>
+        </div>
+    </form>
+</div>
