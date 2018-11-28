@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ProjectManager.Models.DisplayResource>
+
+@if (Model != null)
+{
+    <table id="tb_TaskResources" class="table table-bordered">
+        <thead>
+            <tr>
+                <td width="130px">@Html.DisplayNameFor(p => p.First().Date)</td>
+                <td>@Html.DisplayNameFor(p => p.First().TaskName)</td>
+                <td>@Html.DisplayNameFor(p => p.First().ResourceName)</td>
+                <td width="130px">@Html.DisplayNameFor(p => p.First().CategoryName)</td>
+                <td width="75px">@Html.DisplayNameFor(p => p.First().Quantity)</td>
+                <td width="100px">@Html.DisplayNameFor(p => p.First().UnitPrice)</td>
+                <td width="150px">@Html.DisplayNameFor(p => p.First().SubTotal)</td>
+                <td width="300px">@Html.DisplayNameFor(p => p.First().Description)</td>
+                <td colspan="2">編輯</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var resource in Model)
+            {
+                <tr>
+                    <td><p>@resource.Date.ToShortDateString()</p></td>
+                    <td><p>@resource.TaskName</p></td>
+                    <td><p>@resource.ResourceName</p></td>
+                    <td><p>@resource.CategoryName</p></td>
+                    <td class="text-sm-right"><p>@resource.Quantity</p></td>
+                    <td class="text-sm-right"><p>@resource.UnitPrice.ToString("C0")</p></td>
+                    <td class="text-sm-right"><p>@resource.SubTotal.ToString("C0")</p></td>
+                    <td><p>@resource.Description</p></td>
+                    <td class="text-center" style="width:75px"><button name="btn_edit" class="btn btn-info">Edit</button></td>
+                    <td class="text-center" style="width:75px"><button name="btn_Del" class="btn btn-danger" data-toggle="modal" data-target="#DeleteCatModal">Delete</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h4>請先選取專案或新增費用</h4>
+}
