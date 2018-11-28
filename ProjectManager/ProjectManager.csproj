@@ -119,7 +119,9 @@
     <Content Include="Content\_all-skins.css" />
     <Content Include="Global.asax" />
     <Content Include="image\001.jpg" />
+    <Content Include="image\ajax-loader.gif" />
     <Content Include="image\avatar.png" />
+    <Content Include="image\loading.gif" />
     <Content Include="image\user2-160x160.jpg" />
     <Content Include="Models\ProjectManagerModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
