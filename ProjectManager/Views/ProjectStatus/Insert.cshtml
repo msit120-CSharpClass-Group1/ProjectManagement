@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Activity = "專案階段";
+    ViewBag.Title = "新增專案階段";
+}
+<form method="post" action="~/ProjectStatus/Insert" class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-2 control-label">專案階段名稱</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" name="ProjectStatusName" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">新增</button>
+        </div>
+    </div>
+</form>
+

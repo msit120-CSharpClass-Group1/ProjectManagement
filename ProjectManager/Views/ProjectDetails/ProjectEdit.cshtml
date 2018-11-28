@@ -1,0 +1,106 @@
+﻿@model ProjectManager.Models.Project
+@{
+    ViewBag.Title = "修改專案";
+}
+<script src="~/Scripts/bootstrap.min.js"></script>
+<div class="container mt-3">    
+    <form class="form-horizontal " action="~/ProjectDetails/ProjectEdit" method="post">
+        <h3>@Model.ProjectID</h3>
+        <input name="ProjectGUID" type="hidden" class="form-control d-inline" style="width:10em;" value=@Model.ProjectGUID />
+        <input name="ProjectID" type="hidden" class="form-control d-inline" style="width:10em;" value=@Model.ProjectID />
+        <div class="form-group">
+            @Html.LabelFor(m => m.ProjectName)
+            @Html.TextBoxFor(m => m.ProjectName, new { @class = "form-control", style = "width:18em;" })
+        </div>
+
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.RequiredDeptGUID)
+                @Html.DropDownList("RequiredDeptGUID", (SelectList)ViewBag.Departments, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.RequiredDeptPMGUID)
+                @Html.DropDownList("RequiredDeptPMGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.EstStartDate)
+                @{
+                    string strDate = string.Format("{0:yyyy-MM-dd}", Model.EstStartDate.Value);
+                }<br />
+                <input name="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;"/>
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.EstEndDate)
+                @{
+                    strDate = string.Format("{0:yyyy-MM-dd}", Model.EstEndDate.Value);
+                }<br />
+                <input name="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;"/>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.StartDate)
+                @{
+                    strDate = string.Format("{0:yyyy-MM-dd}", Model.StartDate.Value);
+                }<br />
+                <input name="StartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;"/>
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.EndDate)
+                @{
+                    strDate = string.Format("{0:yyyy-MM-dd}", Model.StartDate.Value);
+                }<br />
+                <input name="EndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.ProjectStatusID)
+                @Html.DropDownList("ProjectStatusID", (SelectList)ViewBag.ProjectStatuses, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.ProjectCategoryID)
+                @Html.DropDownList("ProjectCategoryID", (SelectList)ViewBag.ProjectCategories, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.ProjectSupervisorGUID)
+                @Html.DropDownList("ProjectSupervisorGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+            </div>
+            <div class="col-6 form-group ">
+                @Html.LabelFor(m => m.IsGeneralManagerConcerned)<br />
+                @Html.RadioButton("IsGeneralManagerConcerned", true, (bool)Model.IsGeneralManagerConcerned, new { @class = "form-control d-inline align-middle", style = "width:1.2em;" })<span class="mr-2">是</span>
+                @Html.RadioButton("IsGeneralManagerConcerned", false, (bool)!Model.IsGeneralManagerConcerned, new { @class = "form-control d-inline align-middle", style = "width:1.2em;" })<span>否</span>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-12 form-group">
+                @Html.LabelFor(m => m.Description)
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+            </div>
+        </div>
+        <div id="formBtns" class="mt-3 mx-auto text-center ">
+            <a href="~/ProjectDetails/ProjectEdit" class="btn btn-default py-1 px-5">取消變更</a>
+            <button id="confiredBtn" type="submit" class="btn btn-primary py-1 px-5">儲存修改</button>
+        </div>
+    </form>
+</div>
+
+
+
+@section nav{
+    <nav>
+        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link" id="nav-home-tab"  href="~/ProjectDetails/ProjectReport" role="tab" aria-controls="nav-home" aria-selected="true">專案報表</a>
+            <a class="nav-item nav-link active" id="nav-home-tab"  href="~/ProjectDetails/ProjectEdit" role="tab" aria-controls="nav-home" aria-selected="true">修改專案</a>
+            <a class="nav-item nav-link" id="nav-addtask-tab"  href="#" role="tab" aria-controls="nav-addtask" aria-selected="true">新增工作</a>
+            <a class="nav-item nav-link" id="nav-invitemember-tab"  href="~/ProjectDetails/Index" role="tab" aria-controls="nav-invitemember" aria-selected="true">邀請成員</a>
+            <a class="nav-item nav-link" id="nav-contact-tab"  href="#" role="tab" aria-controls="nav-contact" aria-selected="false">分配工作</a>
+        </div>
+    </nav>
+}
+

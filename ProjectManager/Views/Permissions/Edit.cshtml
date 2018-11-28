@@ -1,0 +1,30 @@
+﻿@model ProjectManager.Models.Permissions
+@{
+    ViewBag.Activity = "權限";
+    ViewBag.Title = "修改權限";
+}
+
+<form method="post" action="~/Permissions/Edit" class="form-horizontal">
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">權限編號</label>
+        <div class="col-md-2">
+            <input type="hidden" name="PermissionsGUID" value="@Model.PermissionsGUID" />
+            <input type="text" class="form-control" name="PermissionsID" value="@Model.PermissionsID" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">權限名稱</label>
+        <div class="col-md-2">
+            <input type="text" class="form-control" name="PermissionsName" value="@Model.PermissionsName" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default">修改</button>
+        </div>
+    </div>
+</form>
+
+
