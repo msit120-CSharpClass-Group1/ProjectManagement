@@ -7,37 +7,37 @@
 @section style
 {
     <style>
-            /*div {
+        /*div {
             border: 0.5px solid pink
         }*/
 
-            #projectMemberDivL2 {
-                width: auto;
-                float: left;
-                margin: 5px;
-            }
+        #projectMemberDivL2 {
+            width: auto;
+            float: left;
+            margin: 5px;
+        }
 
-            #projectMemberDivL1 {
-                overflow: scroll;
-                height: 500px;
-            }
+        #projectMemberDivL1 {
+            overflow: scroll;
+            height: 500px;
+        }
 
-            .flip {
-                margin: 0px;
-                padding: 5px;
-                text-align: center;
-                background: #E09697;
-                cursor: pointer;
-                font-family: 'Arial';
-            }
+        .flip {
+            margin: 0px;
+            padding: 5px;
+            text-align: center;
+            background: #E09697;
+            cursor: pointer;
+            font-family: 'Arial';
+        }
 
-            .draggable {
-                cursor: pointer;
-            }
+        .draggable {
+            cursor: pointer;
+        }
 
-                .draggable:hover {
-                    background-color: pink;
-                }
+            .draggable:hover {
+                background-color: pink;
+            }
     </style>
 }
 <form method="post" action="~/ProjectDeltails/EditTask" class="form-horizontal">
@@ -200,15 +200,3 @@
     </script>
 }
 
-
-@section nav{
-    <nav>
-        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link" id="nav-home-tab" href="~/ProjectDetails/ProjectReport" role="tab" aria-controls="nav-home" aria-selected="false">專案報表</a>
-            <a class="nav-item nav-link" id="nav-home-tab" href="~/ProjectDetails/ProjectEdit" role="tab" aria-controls="nav-home" aria-selected="false">修改專案</a>
-            <a class="nav-item nav-link" id="nav-addtask-tab" href="#" role="tab" aria-controls="nav-addtask" aria-selected="false">新增工作</a>
-            <a class="nav-item nav-link active" id="nav-invitemember-tab" href="~/ProjectDetails/Index" role="tab" aria-controls="nav-invitemember" aria-selected="true">邀請成員</a>
-            <a class="nav-item nav-link" id="nav-contact-tab" href="~/ProjectDetails/AssignTask" role="tab" aria-controls="nav-contact" aria-selected="false">分配工作</a>
-        </div>
-    </nav>
-}
