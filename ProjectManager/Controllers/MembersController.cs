@@ -14,55 +14,37 @@ namespace ProjectManager.Controllers
         ProjectManagementEntities db = new ProjectManagementEntities();
         public ActionResult Index()
         {
-         
+          
+            ViewBag.members = memberRepository.GetCollections().ToList();
+
             return View(memberRepository.GetCollections());
         }
-
-        //public ActionResult Insert(Members _members)
-        //{
-        //    if(Request.Form.Count>0)
-        //    {
-        //        _members.MemberGUID = Guid.NewGuid();
-        //        _members.CreateDate = DateTime.Now;
-        //        memberRepository.Create(_members);
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View();
-        //}
 
         [HttpGet]
         public ActionResult Edit(Guid? id)
         {
-            return View(permissionsRepository.Find(id));
+            ViewBag.PermissonName = permissionsRepository.GetCollections().ToList();
+            return View(memberRepository.Find(id));
+        }
+
+        public ActionResult LoadMemberGUID(string PermissionsName)
+        {
+            var GUID = permissionsRepository.GetCollections().Where(p => p.PermissionsName == PermissionsName).FirstOrDefault().PermissionsGUID;
+            return Content(GUID.ToString());
+            
         }
 
         [HttpPost]
         public ActionResult Edit(Members members)
         {
-            var empolyees = db.Employee.Select(c => new
-            {
-                c.EmployeeGUID,
-                c.EmployeeName
-            });
-
-            ViewBag.employee = new SelectList(empolyees, "EmployeeGUID", "EmployeeName");
-
-
-            var permissions = db.Permissions.Select(g => new
-            {
-                g.PermissionsGUID,
-                g.PermissionsName
-            });
-
-            ViewBag.permissions = new SelectList(permissions, "PermissionsGUID", "PermissionsName");
-            Members _members = memberRepository.Find(members.MemberGUID);
+            var MName = Request.Form["members"];
+            var pgID = Request.Form["PermissionsGUID"];
+            Members _members = memberRepository.Find(new Guid(MName));
             _members.ModifiedDate = DateTime.Now;
+            _members.PermissionsGUID = new Guid(pgID);
             memberRepository.Update(_members);
-
             return RedirectToAction("Index");
         }
-
 
 
         public ActionResult Delete(Guid? id)
@@ -76,12 +58,5 @@ namespace ProjectManager.Controllers
 
             return RedirectToAction("Index");
         }
-
-        public ActionResult EditPermisson(Members _member)
-        {
-
-            return View();
-        }
-
     }
 }
