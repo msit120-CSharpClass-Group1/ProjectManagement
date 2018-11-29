@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ProjectManager.Models.Members>
+﻿@using ProjectManager.Models;
+@model IEnumerable<ProjectManager.Models.Members>
 @{
     ViewBag.Title = "會員";
 }
@@ -17,22 +18,21 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var _members in Model)
+        @foreach (var _member in (List<Members>)ViewBag.members)
         {
             <tr>
-                <td>@_members.MemberID</td>
-                <td>@_members.Employee.EmployeeName </td>
-                <td>@_members.Permissions.PermissionsName</td>
-                @*<input type="hidden" value="ViewBag.permissions" name="@_members.PermissionsGUID" />*@               
-                <td>@_members.CreateDate</td>
-                <td>@_members.ModifiedDate</td>
-                <td>@_members.LastLoginDate</td>
-                <td><a href="~/Members/Edit/@_members.PermissionsGUID" class="btn btn-primary">修改</a></td>
-                <td><a href="~/Members/Delete/@_members.MemberGUID" class="btn btn-danger">刪除帳號</a></td>
+                <td>@_member.MemberID</td>
+                <td>@_member.Employee.EmployeeName</td>
+                <td>@_member.Permissions.PermissionsName</td>
+                <td>@_member.CreateDate</td>
+                <td>@_member.ModifiedDate</td>
+                <td>@_member.LastLoginDate</td>
+                <td><a href="~/Members/Edit/@_member.MemberGUID" class="btn btn-primary">修改</a></td>
+                <td><a href="~/Members/Delete/@_member.MemberGUID" class="btn btn-danger">刪除帳號</a></td>
             </tr>
         }
-
     </tbody>
+    @*<a href="~/Members/Edit/@_member.PermissionsGUID" class="btn btn-primary">修改</a>*@
 </table>
 
 
