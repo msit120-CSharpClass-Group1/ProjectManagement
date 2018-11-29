@@ -217,8 +217,20 @@ namespace ProjectManager.Controllers
         public ActionResult DeleteTask(Tasks _task)
         {
             Tasks recentTask = taskRepo.Find(_task.TaskGUID);
+            var childTasks = recentTask.GetAllChildTasks();
+            foreach (var child in childTasks.Reverse())
+            {
+                taskRepo.Delete(taskRepo.Find(child.TaskGUID));
+            }
             taskRepo.Delete(recentTask);
             return RedirectToAction("ProjectDistribution");
+        }
+        public ActionResult GetChildTaskCount(Tasks _task)
+        {
+            Tasks recentTask = taskRepo.Find(_task.TaskGUID);
+            var childTasks = recentTask.GetAllChildTasks();
+
+            return Content(childTasks.Count().ToString(), "application/json");
         }
     }
 }

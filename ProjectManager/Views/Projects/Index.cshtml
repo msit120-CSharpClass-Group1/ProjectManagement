@@ -154,11 +154,8 @@
 @section script{
     <script>
         $(document).ready(function () {
-            var dtNow = new Date($.now());
-            var dtyy = dtNow.getFullYear()
-            var dtMM = dtNow.getMonth() + 1
-            var dtdd = dtNow.getDate();
-            $('input[type="date"]').val(dtyy + '-' + dtMM + '-' + dtdd);
+
+            $('input[type="date"]').val("@string.Format("{0:yyyy-MM-dd}", DateTime.Now)");
             
             var createProjectForm = $('#CreateProjectForm');
             var Overview = $('#ProjectsOverview');

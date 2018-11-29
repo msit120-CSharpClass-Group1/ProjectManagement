@@ -33,5 +33,11 @@ namespace ProjectManager.Models
             }
             return leafTasks;
         }
+        public static IEnumerable<Tasks> GetAllChildTasks(this Tasks task)
+        {            
+            TreeGridModel model = new TreeGridModel();
+            model.GetChildren(task, new Repository<Tasks>().GetCollections().ToList());
+            return model.ChildTasks;
+        }
     }
 }

@@ -45,12 +45,33 @@
     <div id="treeGridContainer"></div>
 </div>
 
+<div class="modal fade" style="top:50px;" id="DeleteAlarmModal" tabindex="-1" role="dialog" aria-labelledby="DeleteExpModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:3px 4px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DeleteAlarmModalTitle">確定要刪除嗎?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="modal-body pl-3">
+                    <p></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="btn_ConfirmDelete" class="btn btn-danger">確認刪除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section asideRight{
     <div class="container text-light mt-3">
         <h4 id="ModeTitle">新增工作項目</h4>
         <form id="TaskForm" class="form-horizontal " action="@Url.Action("InsertTask", "ProjectDetails")" method="post">
-            <input name="ParentTaskGUID" id="ParentTaskGUID" type="hidden" />
-            <input name="TaskGUID" id="TaskGUID" type="hidden" />
+            <input name="ParentTaskGUID" id="ParentTaskGUID" type="text" hidden />
+            <input name="TaskGUID" id="TaskGUID" type="text" hidden />@**@
             <div class="form-group">
                 @Html.LabelFor(m => m.FirstOrDefault().TaskName)
                 @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:12em;" })
@@ -110,17 +131,18 @@
                 <button id="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
                 <button id="ConfirmedAddBtn" type="button" class="btn btn-primary py-1 px-5">確認新增</button>
                 <button id="ConfirmedModifyBtn" type="button" class="btn btn-primary py-1 px-5">確認修改</button>
-                <br /><button id="DeleteBtn" class="btn btn-danger py-1 px-3 mt-3" hidden>刪除工作項目</button>
+                <br /><button id="DeleteBtn" class="btn btn-danger py-1 px-3 mt-3">刪除工作項目</button>
             </div>
         </form>
     </div>
 }
 
 @section script{
-<script src="~/Scripts/jquery.treegrid.min.js"></script>
-<script>
+    <script src="~/Scripts/jquery.treegrid.min.js"></script>
+    <script>
         $(document).ready(function () {
-            $(".rightOpenbtn").html('<i class="fas fa-plus"></i>').click(SetRightAsideToAdd);
+            $('.rightOpenbtn').html('<i class="fas fa-plus"></i>').click(SetRightAsideToAdd);
+            $('#DeleteBtn').hide();
 
             var tasks_layout = $('#tasks_layout');
             var treeGridContainer = $('#treeGridContainer');
@@ -174,12 +196,14 @@
                 $('#ModeTitle').text("修改工作項目");
                 $('#ConfirmedAddBtn').hide();
                 $('#ConfirmedModifyBtn').show();
+                $('#DeleteBtn').show();
 
             }
             function SetRightAsideToAdd() {
                 $('#ModeTitle').text("新增工作項目");
                 $('#ConfirmedAddBtn').show();
                 $('#ConfirmedModifyBtn').hide();
+                $('#DeleteBtn').hide();
 
                 taskForm.find('input[type="text"]').val("");
                 taskForm.find('textarea').val("");
@@ -197,17 +221,28 @@
                      treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
                 });
             });
+            $('#CancelBtn').click(function () { $('.rightOpenbtn').click(); });
+            $('#DeleteBtn').click(function () {
+                var data = taskForm.serialize();
+                $.getJSON("@Url.Action("GetChildTaskCount", "ProjectDetails")", data, function (strCount) {
+                    if (strCount != "0") {
+                        $('#DeleteAlarmModal').find('p').text("工作項目 " + $('#TaskName').val() + " 有" + strCount + "個子項目");
+                        $('#DeleteAlarmModal').modal('show');
+                    }
+
+                });
+            });
 
         });
-</script>
-<style>
-    .table-bordered td, .table-bordered th {
-        border: 0px solid;
-    }
+    </script>
+    <style>
+        .table-bordered td, .table-bordered th {
+            border: 0px solid;
+        }
 
-    .table-bordered tr {
-        border: 1px solid #dee2e6;
-    }
-</style>
+        .table-bordered tr {
+            border: 1px solid #dee2e6;
+        }
+    </style>
 }
 
