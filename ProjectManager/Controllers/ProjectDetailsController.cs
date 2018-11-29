@@ -143,6 +143,7 @@ namespace ProjectManager.Controllers
             _tasks.Tag = message;
             tasks.Update(_tasks);
             return RedirectToAction("AssignTask");
+        }
         public ActionResult ProjectDistribution()
         {
             if (Session["ProjectGUID"] == null)
@@ -155,6 +156,7 @@ namespace ProjectManager.Controllers
 
             return View(tasks);
         }
+            
         [HttpPost]
         public ActionResult InsertTask(Tasks task)
         {
