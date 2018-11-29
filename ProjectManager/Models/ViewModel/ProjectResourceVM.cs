@@ -7,7 +7,7 @@ using System.Web;
 
 namespace ProjectManager.Models
 {
-    public class DisplayResource
+    public class ProjectResourceVM
     {
         public System.Guid ProjectGUID { get; set; }
         [DisplayName("專案名稱")]
