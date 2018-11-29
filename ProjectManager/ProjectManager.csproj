@@ -382,6 +382,7 @@
     <Content Include="Views\TaskStatus\Edit.cshtml" />
     <Content Include="Views\TaskStatus\Index.cshtml" />
     <Content Include="Views\TaskStatus\Insert.cshtml" />
+    <Content Include="Views\ProjectDetails\AssignTask.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
