@@ -121,6 +121,8 @@
     <Content Include="image\001.jpg" />
     <Content Include="image\ajax-loader.gif" />
     <Content Include="image\avatar.png" />
+    <Content Include="image\collapse.png" />
+    <Content Include="image\expand.png" />
     <Content Include="image\loading.gif" />
     <Content Include="image\user2-160x160.jpg" />
     <Content Include="Models\ProjectManagerModel.Context.tt">
@@ -188,6 +190,8 @@
     <Content Include="Scripts\jquery-ui-1.12.1-Effects\LICENSE.txt" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
+    <Content Include="Scripts\jquery.treegrid.js" />
+    <Content Include="Scripts\jquery.treegrid.min.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\Main.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
@@ -382,6 +386,8 @@
     <Content Include="Views\TaskStatus\Edit.cshtml" />
     <Content Include="Views\TaskStatus\Index.cshtml" />
     <Content Include="Views\TaskStatus\Insert.cshtml" />
+    <Content Include="Views\Shared\_PartialPageNav.cshtml" />
+    <Content Include="Views\ProjectDetails\ProjectDistribution.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
