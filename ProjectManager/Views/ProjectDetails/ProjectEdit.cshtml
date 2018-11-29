@@ -2,8 +2,11 @@
 @{
     ViewBag.Title = "修改專案";
 }
-<script src="~/Scripts/bootstrap.min.js"></script>
-<div class="container mt-3">    
+@section nav{
+    @Html.Partial("_PartialPageNav", "Shared")
+}
+
+<div class="container mt-3">
     <form class="form-horizontal " action="~/ProjectDetails/ProjectEdit" method="post">
         <h3>@Model.ProjectID</h3>
         <input name="ProjectGUID" type="hidden" class="form-control d-inline" style="width:10em;" value=@Model.ProjectGUID />
@@ -29,14 +32,14 @@
                 @{
                     string strDate = string.Format("{0:yyyy-MM-dd}", Model.EstStartDate.Value);
                 }<br />
-                <input name="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;"/>
+                <input name="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
             </div>
             <div class="col-6 form-group">
                 @Html.LabelFor(m => m.EstEndDate)
                 @{
                     strDate = string.Format("{0:yyyy-MM-dd}", Model.EstEndDate.Value);
                 }<br />
-                <input name="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;"/>
+                <input name="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
             </div>
         </div>
         <div class="row ">
@@ -45,14 +48,14 @@
                 @{
                     strDate = string.Format("{0:yyyy-MM-dd}", Model.StartDate.Value);
                 }<br />
-                <input name="StartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;"/>
+                <input name="StartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
             </div>
             <div class="col-6 form-group">
                 @Html.LabelFor(m => m.EndDate)
                 @{
                     strDate = string.Format("{0:yyyy-MM-dd}", Model.StartDate.Value);
                 }<br />
-                <input name="EndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;"/>
+                <input name="EndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
             </div>
         </div>
 
@@ -92,15 +95,4 @@
 
 
 
-@section nav{
-    <nav>
-        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link" id="nav-home-tab"  href="~/ProjectDetails/ProjectReport" role="tab" aria-controls="nav-home" aria-selected="true">專案報表</a>
-            <a class="nav-item nav-link active" id="nav-home-tab"  href="~/ProjectDetails/ProjectEdit" role="tab" aria-controls="nav-home" aria-selected="true">修改專案</a>
-            <a class="nav-item nav-link" id="nav-addtask-tab"  href="#" role="tab" aria-controls="nav-addtask" aria-selected="true">新增工作</a>
-            <a class="nav-item nav-link" id="nav-invitemember-tab"  href="~/ProjectDetails/Index" role="tab" aria-controls="nav-invitemember" aria-selected="true">邀請成員</a>
-            <a class="nav-item nav-link" id="nav-contact-tab"  href="~/ProjectDetails/AssignTask" role="tab" aria-controls="nav-contact" aria-selected="false">分配工作</a>
-        </div>
-    </nav>
-}
 

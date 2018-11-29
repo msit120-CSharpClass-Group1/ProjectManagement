@@ -10,6 +10,7 @@ namespace ProjectManager.Controllers
 {
     public class ProjectDetailsController : Controller
     {
+        Repository<Tasks> taskRepo = new Repository<Tasks>();
         Repository<Project> projectRepo = new Repository<Project>();
         // GET: ProjectDetails
 
@@ -67,6 +68,8 @@ namespace ProjectManager.Controllers
             if (ProjectGUID != null)
             {
                 Session["ProjectGUID"] = ProjectGUID;
+                Response.Cookies["ProjectGUID"].Value = ProjectGUID.ToString();
+                Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddDays(7);
             }
             return View();
         }
@@ -140,6 +143,28 @@ namespace ProjectManager.Controllers
             _tasks.Tag = message;
             tasks.Update(_tasks);
             return RedirectToAction("AssignTask");
+        public ActionResult ProjectDistribution()
+        {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());            
+            var tasks = taskRepo.GetCollections().OrderBy(t=>t.TaskID)
+                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
+            ViewBag.Projects = projectRepo.GetCollections().Where(p => p.ProjectGUID == _projectGUID).ToList();
+            ViewBag.TaskStatuses = new SelectList(new Repository<TaskStatus>().GetCollections(), "TaskStatusID", "TaskStatusName");
+
+            return View(tasks);
+        }
+        [HttpPost]
+        public ActionResult InsertTask(Tasks task)
+        {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());            
+            task.ProjectGUID = _projectGUID;
+            task.TaskGUID = Guid.NewGuid();
+            taskRepo.Add(task);
+            return RedirectToAction("ProjectDistribution");
         }
     }
 }

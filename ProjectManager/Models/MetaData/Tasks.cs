@@ -20,6 +20,11 @@ namespace ProjectManager.Models
 
         public class TasksMetadata
         {
+            public Nullable<System.Guid> ProjectGUID { get; set; }
+            public System.Guid TaskGUID { get; set; }
+            public Nullable<System.Guid> ParentTaskGUID { get; set; }
+            public int TaskID { get; set; }
+
             [DisplayName("工作項目名稱")]
             public string TaskName { get; set; }
 
