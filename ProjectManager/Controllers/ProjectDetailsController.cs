@@ -111,7 +111,7 @@ namespace ProjectManager.Controllers
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            ViewBag.LoadTask = TasksBL.GetLeafTasks(tasks.GetCollections().Where(t=>t.TaskStatusID ==2));
+            ViewBag.LoadTask = TasksBL.GetLeafTasks(tasks.GetCollections().Where(t=>t.TaskStatusID ==2 && t.ProjectGUID == SendprojectGUID));
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
 
