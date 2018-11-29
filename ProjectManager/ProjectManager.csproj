@@ -389,6 +389,7 @@
     <Content Include="Views\ProjectDetails\AssignTask.cshtml" />
     <Content Include="Views\Shared\_PartialPageNav.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectDistribution.cshtml" />
+    <Content Include="Views\Members\EditPermission.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
