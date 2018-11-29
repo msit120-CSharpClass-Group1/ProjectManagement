@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ProjectManager.Models;
+using PagedList;
+using PagedList.Mvc;
 
 namespace ProjectManager.Controllers
 {
@@ -27,7 +29,7 @@ namespace ProjectManager.Controllers
 
             var q = (from d in DptRepo.GetCollections()
                      join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
-                    select d).Distinct();
+                     select d).Distinct();
 
             ViewBag.Departments = q.ToList();
 
@@ -50,20 +52,37 @@ namespace ProjectManager.Controllers
             return Json(TaskList, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetTaskResources(Guid id)
+        public ActionResult GetTaskResources(Guid id,int? page)
         {
             var q = from p in ProjectRepo.GetCollections()
                     join t in TaskRepo.GetCollections() on p.ProjectGUID equals t.ProjectGUID
                     join tr in ResourceRepo.GetCollections() on t.TaskGUID equals tr.TaskGUID
                     join c in ResourceCatRepo.GetCollections() on tr.CategoryID equals c.CategoryID
                     where p.ProjectGUID == id
-                    select new ProjectResourceVM { ProjectGUID = p.ProjectGUID, ProjectName = p.ProjectName, TaskGUID = t.TaskGUID, TaskName = t.TaskName, ResourceGUID = tr.ResourceGUID, ResourceID = tr.ResourceID, ResourceName = tr.ResourceName, CategoryID = c.CategoryID, CategoryName = c.CategoryName, Quantity = tr.Quantity, Unit = tr.Unit, UnitPrice = tr.UnitPrice, SubTotal = (tr.UnitPrice * tr.Quantity), Date = tr.Date, Description = tr.Description };
+                    select new ProjectResourceVM
+                    {
+                        ProjectGUID = p.ProjectGUID,
+                        ProjectName = p.ProjectName,
+                        TaskGUID = t.TaskGUID,
+                        TaskName = t.TaskName,
+                        ResourceGUID = tr.ResourceGUID,
+                        ResourceID = tr.ResourceID,
+                        ResourceName = tr.ResourceName,
+                        CategoryID = c.CategoryID,
+                        CategoryName = c.CategoryName,
+                        Quantity = tr.Quantity,
+                        Unit = tr.Unit,
+                        UnitPrice = tr.UnitPrice,
+                        SubTotal = (tr.UnitPrice * tr.Quantity),
+                        Date = tr.Date,
+                        Description = tr.Description
+                    };
 
-            var DisplayList = q.ToList();
+            var ProjectResourceList = q.ToList().ToPagedList(page ?? 1, 10);
 
             var Departments = DptRepo.GetCollections();
 
-            return PartialView(DisplayList);
+            return PartialView(ProjectResourceList);
         }
 
         public ActionResult AddTaskResource(TaskResource resource)
@@ -82,7 +101,7 @@ namespace ProjectManager.Controllers
         }
 
         public ActionResult DeleteTaskResource(Guid id)
-        {            
+        {
             ResourceRepo.Delete(ResourceRepo.Find(id));
             return RedirectToAction("ExpList");
         }

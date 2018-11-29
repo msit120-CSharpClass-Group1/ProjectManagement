@@ -1,6 +1,8 @@
-﻿@model IEnumerable<ProjectManager.Models.DisplayResource>
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<ProjectManager.Models.ProjectResourceVM>
 
-
+@Html.PagedListPager(Model, page => Url.Action("GetTaskResources", new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
 <table id="tb_TaskResources" class="table table-bordered" data-count="@Model.Count()">
     <thead>
         <tr>
@@ -18,7 +20,7 @@
     <tbody>
         @foreach (var resource in Model)
         {
-            <tr >
+            <tr>
                 <td><p>@resource.Date.ToShortDateString()</p></td>
                 <td data-taskguid="@resource.TaskGUID"><p>@resource.TaskName</p></td>
                 <td data-resourceguid="@resource.ResourceGUID"><p>@resource.ResourceName</p></td>
