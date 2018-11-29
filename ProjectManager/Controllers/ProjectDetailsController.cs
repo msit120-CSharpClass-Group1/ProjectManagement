@@ -31,6 +31,8 @@ namespace ProjectManager.Controllers
 
         public ActionResult SelectDep()
         {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
             var depGUID = new Guid(Request.QueryString["depid"]);
             var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);
             return Content(JsonConvert.SerializeObject(emp), "application/json");
@@ -106,6 +108,8 @@ namespace ProjectManager.Controllers
 
         public ActionResult AssignTask()
         {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
             ViewBag.LoadTask = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).ToList();
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
@@ -130,6 +134,8 @@ namespace ProjectManager.Controllers
 
         public ActionResult ReloadTaskList()
         {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
             var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).ToList();
             return Content(JsonConvert.SerializeObject(taskList), "application/json");
@@ -144,6 +150,15 @@ namespace ProjectManager.Controllers
             tasks.Update(_tasks);
             return RedirectToAction("AssignTask");
         }
+
+        public ActionResult GetTaskDesc(Guid? TaskGUID)
+        {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            var TaskName = tasks.GetCollections().Where(t => t.TaskGUID == TaskGUID).First().Description;
+            return Content(TaskName);
+        }
+
         public ActionResult ProjectDistribution()
         {
             if (Session["ProjectGUID"] == null)
