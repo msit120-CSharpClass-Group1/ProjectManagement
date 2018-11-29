@@ -10,9 +10,15 @@
             padding: 0;
         }
 
+        .content > h2 {
+            margin-left: 60px;
+        }
+
         .boardSec {
             display: flex;
             overflow-x: auto;
+            margin-left: 55px;
+            margin-top: 20px;
         }
 
         .board {
@@ -97,19 +103,223 @@
         }
 
         .cardDetailHeader {
-            margin: 12px 40px 8px 56px;
+            margin: 10px 10px;
             min-height: 32px;
-            position: relative;
+            display: flex;
+            justify-content: flex-start;
             z-index: 1;
             color: #fff;
+            font-size: 20px;
         }
+
+        .cardDetailTitle {
+            margin-left: 8px;
+        }
+
+        .cardDetailIcon i {
+            width: 25px;
+            color: #fff;
+        }
+
+        .cardDetailContent {
+            margin: 10px 0;
+            font-size: 20px;
+            min-height: 24px;
+            position: relative;
+            width: 100%;
+            z-index: 0;
+            color: #fff;
+        }
+
+        .itemTitle {
+            display: flex;
+            margin-bottom: 10px;
+            margin: 5px 10px;
+        }
+        
+        /*-----------代辦清單------------*/
+        .todo {
+            margin-bottom: 0;
+        }
+        .desContent {
+            margin: 5px 10px;
+        }
+        .desContent textarea {
+            overflow-y: auto;
+            height: 100px;
+            width: 230px;
+        }
+        .cardDetailContent > button {
+            opacity: 0;
+            margin:0 10px 5px 10px;
+        }
+        .checklist-progress {
+            height:25px;
+            display:flex;
+            margin:5px 10px 0 10px;
+        }
+        .checklist-progress-percentage {
+            color: #fff;
+            font-size: 11px;
+            width: 25px;
+        }
+        .checklist-progress-bar {
+            background-color: rgba(248,248,255,0.8);
+            border-radius: 4px;
+            height: 8px;
+            margin: 5px 0 0 0;
+            overflow: hidden;
+            position:relative;
+            width:200px;
+        }
+        .checklist-progress-bar-current {
+            background: #5ba4cf;
+            bottom: 0;
+            left: 0;
+            position: absolute;
+            top: 0;
+            transition: width .14s ease-in,background .14s ease-in;
+            width:30%;
+        }
+        .checkLists {
+            height:auto;
+        }
+        .listNewItem {
+            margin: 5px 10px;
+        }
+        .listNewItem textarea {
+            height: 35px;
+            width: 230px;
+            resize: none;
+            font-size: 16px;
+            background: transparent;
+            border: 1px solid transparent;
+            box-shadow: none;
+            color: #fff;
+            cursor: pointer;
+            min-height: 35px;
+            margin: 4px 0 0;
+            overflow: hidden;
+            text-decoration: none;
+        }
+            .listNewItem textarea:focus {
+                background: #fff;
+                border: 1px solid #5ba4cf;
+                box-shadow: 0 0 0 1px #5ba4cf;
+                color: #17394d;
+                cursor: text;
+            }
+        .checkListItem {
+            border-radius: 3px;
+            margin: 0 10px 0 10px;
+            display: flex;
+            justify-content: space-between;
+            -webkit-transform-origin: left bottom;
+            transform-origin: left bottom;
+            transition-property: opacity,height,padding,margin,-webkit-transform;
+            transition-property: transform,opacity,height,padding,margin;
+            transition-property: transform,opacity,height,padding,margin,-webkit-transform;
+            transition-duration: .14s;
+            transition-timing-function: ease-in;
+            cursor: pointer;
+            height: 30px;
+            align-items: center;
+            z-index:9999;
+            
+        }
+            .checkListItem:hover {
+                background-color: rgba(9,45,66,0.8);
+               
+            }
+            .checkListCkeck {
+                background: #fff;
+                border-radius: 3px;
+                box-sizing: border-box;
+                line-height: 20px;
+                overflow: hidden;
+                text-align: center;
+                height: 20px;
+                width: 20px;
+                margin-top: 2px;
+                white-space: nowrap;
+            }
+        .checkListContent {
+            word-break: break-word;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 20px;
+            letter-spacing: 3px;
+            margin-left: 10px;
+            font-size:18px;
+            
+        }
+        .cardDetailDelete {
+            margin-left: 50px;
+            margin-top: -5px;
+        }
+        .cardDetailDelete i {
+            width: 20px;
+            height: 20px;
+           
+        }
+        .listEdit {
+            display: block;
+            z-index: 50;
+            width: 100%;
+        }
+        .listEditContent {
+            overflow: hidden;
+            overflow-wrap: break-word;
+            resize: none;
+            height: 35px;
+            font-size:16px;
+        }
+        
     </style>
 }
 @section asideRight
 {
     <div class="cardDetailHeader">
-
+        <span class="cardDetailIcon"><i class="far fa-sticky-note"></i></span>
+        <div>任務名稱  :</div>
         <div class="cardDetailTitle"></div>
+    </div>
+    <div class="cardDetailContent">
+        <div class="itemTitle">
+            <span class="cardDetailIcon"><i class="fas fa-align-left"></i></span>
+            <div class="">描述</div>
+        </div>
+        <div class="desContent">
+            <textarea readonly>1234451</textarea>
+        </div>
+    </div>
+    <div class="cardDetailContent">
+        <div class="itemTitle todo">
+            <span class="cardDetailIcon"><i class="far fa-check-square"></i></span>
+            <div class="">代辦清單</div>
+        </div>
+        <div class="checklist-progress">
+            <span class="checklist-progress-percentage">0%</span>
+            <div class="checklist-progress-bar">
+                <div class="checklist-progress-bar-current" style="width: 30%;"></div>
+            </div>
+            <span class="checklist-completed-text hide quie">待辦清單的所有事項都完成囉！</span>
+        </div>
+        <div class="checkLists">
+            @*<div class="checkListItem">
+        <div class="checkListCkeck"></div>
+        <div class="checkListContent">123156</div>
+        </div>*@
+            @*<div class="listEdit options-menu">
+                <textarea class="listEditContent" id="listEditContent" type="text"></textarea>
+            </div>*@
+        </div>
+        <div class="listNewItem">
+            <textarea name="newItem" id="newItem">新增項目...</textarea>
+        </div>
+        
+        
+        <button type="button" class="btn btn-insert btn-light btn-sm ">新增</button>
 
     </div>
 }
@@ -143,6 +353,7 @@
 @section script
 {
     <script>
+        
         $(document).ready(function () {
             $('.listCard').click(function () {
                 var cardID = $(this).data("tid");
@@ -154,9 +365,43 @@
                 }).done(function (datas) {
                     $(datas.Task).each(function (id, data) {
                         $('.cardDetailTitle').text(data.TaskName);
+                        $('.desContent>textArea').text(data.Description);
                     });
                 });
             });
+
+            //taskDetail insert
+            $('.listNewItem textarea').focus(function () {
+                $('.btn-insert').css('opacity', 1);
+            }).blur(function () {
+                $('.btn-insert').css('opacity', 0);
+            });
+            var cardDetailID = 0;
+            $('.btn-insert').click(function () {
+                cardDetailID += 1;
+                var userNewList = $('#newItem').val();
+                var checkListItem = $('<div class="checkListItem"></div>');
+                checkListItem.append('<div class="checkListCkeck"><i class="fas fa-check"></i></div>');
+                checkListItem.append('<div class="checkListContent" id="list'+ cardDetailID +'"></div>');
+                checkListItem.append('<div class="cardDetailDelete"><i class="far fa-minus-square"></i></div>');
+                $('.checkLists').append(checkListItem);
+                $('#list'+cardDetailID).text(userNewList);
+                $('.btn-insert').css('opacity', 0);
+                $('#newItem').val("新增項目...");
+            });
+            //<div class="listEdit options-menu">
+            //    <textarea class="listEditContent" id="listEditContent" type="text"></textarea>
+            //</div>
+            
+            $('.checkList').on("click", ".checkListContent", function () {
+                $('.checkLists').removeAttr('OnClick');
+                var listText = $(this).text();
+                console.log(listText);
+                $(this).html("<input type='text'>");
+            });
+
+
         });
+
     </script>
 }
