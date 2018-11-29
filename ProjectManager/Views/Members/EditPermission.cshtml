@@ -1,16 +1,21 @@
-﻿@using ProjectManager.Models;
+﻿
+@{
+    ViewBag.Title = "EditPermission";
+}
+
+@using ProjectManager.Models;
 @model ProjectManager.Models.Members
 @*@{
-    ViewBag.Activity = "會員";
-    ViewBag.Title = "修改會員權限";  
-}*@
+        ViewBag.Activity = "會員";
+        ViewBag.Title = "修改會員權限";
+    }*@
 
 <form method="post" action="~/Members/Edit" class="form-horizontal">
 
     <div class="form-group">
         <label class="col-md-2 control-label">員工名稱</label>
         <div class="col-md-2">
-            <input id="mbGUID" type="hidden" name="members" value="@Model.MemberGUID" />
+            <input type="hidden" name="MemberGUID" value="@Model.MemberGUID" />
             <input type="text" name="EmployeeName" value="@Model.Employee.EmployeeName" />
             @*@Html.DropDownList("EmployeeGUID", (SelectList)ViewBag.employee, "請選擇")*@
         </div>
@@ -19,15 +24,15 @@
     <div class="form-group">
         <label class="col-md-2 control-label">權限等級</label>
         <div class="col-md-2">
-            <input type="hidden" name="PermissionsGUID" value="@Model.PermissionsGUID" id="pMGUID" />
-            <select id="select1">
+            <input type="hidden" name="PermissionsGUID" value="@Model.PermissionsGUID" />
+            <select>
                 <option value="0">請選擇</option>
                 @foreach (var _permission in (List<Permissions>)ViewBag.PermissonName)
                 {
                     <option>@_permission.PermissionsName</option>
                 }
             </select>
-                @*@Html.DropDownList("PermissionsGUID", (SelectList)ViewBag.permissions, "請選擇")*@
+            @*@Html.DropDownList("PermissionsGUID", (SelectList)ViewBag.permissions, "請選擇")*@
         </div>
     </div>
 
@@ -38,20 +43,5 @@
     </div>
 </form>
 
-@section script
-{
-<script>
-    $("#select1").change(function () {
-        var PermissionsName = $(this).find(":selected").val();
-        $.ajax({
-                url: '@Url.Action("LoadMemberGUID", "Members")',
-                data: { "PermissionsName": PermissionsName},
-                success: function (data)
-                {
-                    $("#pMGUID").val(data);       
-                }
-               });
-    });
-</script>
-}
+
 

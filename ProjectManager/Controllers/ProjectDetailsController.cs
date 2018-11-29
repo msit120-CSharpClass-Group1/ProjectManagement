@@ -17,28 +17,22 @@ namespace ProjectManager.Controllers
         Repository<Employee> employee = new Repository<Employee>();
         Repository<Department> dep = new Repository<Department>();
         Repository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
-
-        public ActionResult SaveSession(Guid ProjectGUID)
-        {
-            Response.Cookies["ProjectGUID"].Value = ProjectGUID.ToString();
-            Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddDays(7);
-            return RedirectToAction("Index", "ProjectDetails");
-        }
+        Repository<Tasks> tasks = new Repository<Tasks>();
 
         public ActionResult Index(/*Guid ProjectGUID*/)
         {
-            if (Request.Cookies["ProjectGUID"].Value != null)
-            {
-                Guid indexPJID = new Guid(Request.Cookies["ProjectGUID"].Value.ToString());
-                ViewBag.FirstEmpList = employee.GetCollections().ToList();
-                ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();
-                return View(dep.GetCollections());
-            }
-            return RedirectToAction("ProjectReport", "ProjectDetails");
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid indexPJID = new Guid(Session["ProjectGUID"].ToString());
+            ViewBag.FirstEmpList = employee.GetCollections().ToList();
+            ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();
+            return View(dep.GetCollections());
         }
 
         public ActionResult SelectDep()
         {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
             var depGUID = new Guid(Request.QueryString["depid"]);
             var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);
             return Content(JsonConvert.SerializeObject(emp), "application/json");
@@ -47,11 +41,11 @@ namespace ProjectManager.Controllers
         public ActionResult AddProjectMember(Guid memberID)
         {
 
-                ProjectMembers pm = new ProjectMembers();
-                pm.ProjectGUID = new Guid(Request.Cookies["ProjectGUID"].Value.ToString());
-                pm.EmployeeGUID = memberID;
-                projectMembers.Add(pm);
-                return Content("html...");          
+            ProjectMembers pm = new ProjectMembers();
+            pm.ProjectGUID = new Guid(Session["ProjectGUID"].ToString());
+            pm.EmployeeGUID = memberID;
+            projectMembers.Add(pm);
+            return Content("html...");
             //return RedirectToAction("ProjectReport", "ProjectDetails");
         }
 
@@ -59,7 +53,7 @@ namespace ProjectManager.Controllers
         {
 
             Guid memberID = new Guid(Request.QueryString["memberID"]);
-            Guid InvitePJGUID = new Guid(Request.Cookies["ProjectGUID"].Value.ToString());
+            Guid InvitePJGUID = new Guid(Session["ProjectGUID"].ToString());
             projectMembers.Delete(projectMembers.Find(memberID, InvitePJGUID));
             return Content("html...");
             //return RedirectToAction("ProjectReport", "ProjectDetails");
@@ -67,7 +61,7 @@ namespace ProjectManager.Controllers
 
         public ActionResult ReloadTeamCount()
         {
-            Guid InvitePJGUID = new Guid(Request.Cookies["ProjectGUID"].Value.ToString());
+            Guid InvitePJGUID = new Guid(Session["ProjectGUID"].ToString());
             var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID);
             return Content(JsonConvert.SerializeObject(pjmb), "application/json");
         }
@@ -112,13 +106,59 @@ namespace ProjectManager.Controllers
             return ProjectEdit();
         }
 
-        public ActionResult AssignTaskUI()
+        public ActionResult AssignTask()
         {
-            //ViewBag.LoadTask = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).ToList();
-            //return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
-            return View();
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
+            ViewBag.LoadTask = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).ToList();
+            return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
 
+        public ActionResult EditTask()
+        {
+            if (Request.Form["TotalRow"] != "")
+            {
+                var TotalRow = Convert.ToInt32(Request.Form["TotalRow"]);
+                for (int i = 0; i < TotalRow; i++)
+                {
+                    var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
+                    var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
+                    Tasks _tasks = tasks.Find(TaskGUID);
+                    _tasks.EmployeeGUID = EmpGUID;
+                    tasks.Update(_tasks);
+                }
+            }
+            return RedirectToAction("AssignTask");
+        }
+
+        public ActionResult ReloadTaskList()
+        {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
+            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).ToList();
+            return Content(JsonConvert.SerializeObject(taskList), "application/json");
+        }
+
+        public ActionResult LeaveMessageTag()
+        {
+            var message = Request.Form["text"];
+            Guid TaskGUID = new Guid(Request.Form["TaskGUID"].ToString());
+            Tasks _tasks = tasks.Find(TaskGUID);
+            _tasks.Tag = message;
+            tasks.Update(_tasks);
+            return RedirectToAction("AssignTask");
+        }
+
+        public ActionResult GetTaskDesc(Guid? TaskGUID)
+        {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            var TaskName = tasks.GetCollections().Where(t => t.TaskGUID == TaskGUID).First().Description;
+            return Content(TaskName);
+        }
+        
         public ActionResult ProjectDistribution()
         {
             if (Session["ProjectGUID"] == null)
