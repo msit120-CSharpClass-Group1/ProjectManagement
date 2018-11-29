@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ProjectManager.Models.Tasks>
+
+<table id="treeGrid" class="table table-bordered table-hover tree">
+    <thead class="panel-heading">
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.TaskName)</th>
+            <th><a href="#"><i class="fas fa-plus"></i></a></th>
+            <th>@Html.DisplayNameFor(m => m.TaskStatusID)</th>
+            <th>@Html.DisplayNameFor(m => m.EmployeeGUID)</th>
+            <th>@Html.DisplayNameFor(m => m.Description)</th>
+            <th>@Html.DisplayNameFor(m => m.Tag)</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var task in @Model)
+        {
+            var class1 = "treegrid-" + task.orderID;
+            var class2 = task.parentOrderID == 0 ? "" : "treegrid-parent-" + task.parentOrderID;
+            <tr class="@class1 @class2" data-orderID="@task.orderID" data-taskGUID="@task.TaskGUID">
+                <td>@task.TaskName</td>
+                <td><a href="#"><i class="fas fa-plus"></i></a></td>
+                <td>@task.TaskStatus.TaskStatusName</td>
+                <td>@Html.DisplayFor(m => task.Employee.EmployeeName)</td>
+                <td>@Html.DisplayFor(m => task.Description)</td>
+                <td>@Html.DisplayFor(m => task.Tag)</td>
+            </tr>
+        }
+    </tbody>
+</table>

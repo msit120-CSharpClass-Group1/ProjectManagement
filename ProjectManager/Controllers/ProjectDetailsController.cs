@@ -131,6 +131,16 @@ namespace ProjectManager.Controllers
 
             return View(tasks);
         }
+        public ActionResult TreeGridPartialView()
+        {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
+                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
+            return PartialView(tasks);
+        }
+
         [HttpPost]
         public ActionResult InsertTask(Tasks task)
         {
@@ -140,6 +150,34 @@ namespace ProjectManager.Controllers
             task.ProjectGUID = _projectGUID;
             task.TaskGUID = Guid.NewGuid();
             taskRepo.Add(task);
+            return RedirectToAction("ProjectDistribution");
+        }
+        [HttpGet]
+        public ActionResult EditTask(Guid? TaskGUID)
+        {
+            var task = taskRepo.Find(TaskGUID);
+            return Content(JsonConvert.SerializeObject(task), "application/json");
+        }
+        [HttpPost]
+        public ActionResult EditTask(Tasks _task)
+        {
+            Tasks recentTask = taskRepo.Find(_task.TaskGUID);
+            recentTask.TaskName = _task.TaskName;
+            recentTask.TaskStatusID = _task.TaskStatusID;
+            recentTask.Tag = _task.Tag;
+            recentTask.EstStartDate = _task.EstStartDate;
+            recentTask.EstEndDate = _task.EstEndDate;
+            recentTask.StartDate = _task.StartDate;
+            recentTask.EndDate = _task.EndDate;
+
+            taskRepo.Update(recentTask);
+            return RedirectToAction("ProjectDistribution");
+        }
+        [HttpPost]
+        public ActionResult DeleteTask(Tasks _task)
+        {
+            Tasks recentTask = taskRepo.Find(_task.TaskGUID);
+            taskRepo.Delete(recentTask);
             return RedirectToAction("ProjectDistribution");
         }
     }

@@ -129,7 +129,7 @@
                 <li class="active">@ViewBag.Title</li>
             </ol>
         </div>
-        @{ 
+        @{
             if (IsSectionDefined("nav"))
             {
                 @RenderSection("nav", false);
@@ -189,5 +189,6 @@
     <script src="~/Scripts/Main.js"></script>
 
     @RenderSection("script", false)
+
 </body>
 </html>
