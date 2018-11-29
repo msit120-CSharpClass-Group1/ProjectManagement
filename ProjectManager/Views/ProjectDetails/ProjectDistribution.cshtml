@@ -119,7 +119,7 @@
     <div class="container text-light mt-3">
         <h4>新增工作項目</h4>
         <form class="form-horizontal " action="~/ProjectDetails/InsertTask" method="post">
-            <input name="ParentTaskGUID" id="ParentTaskGUID" class="form-control d-inline" style="width:10em;" />@*type="hidden"*@
+            <input name="ParentTaskGUID" id="ParentTaskGUID" type="hidden"  />
             <div class="form-group">
                 @Html.LabelFor(m => m.FirstOrDefault().TaskName)
                 @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:12em;" })
