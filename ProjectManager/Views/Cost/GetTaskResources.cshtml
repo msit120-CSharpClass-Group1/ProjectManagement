@@ -3,7 +3,7 @@
 @model IPagedList<ProjectManager.Models.ProjectResourceVM>
 
 @Html.PagedListPager(Model, page => Url.Action("GetTaskResources", new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
-<table id="tb_TaskResources" class="table table-bordered" data-count="@Model.Count()">
+<table id="tb_TaskResources" class="table table-bordered" data-count="@ViewBag.Count">
     <thead>
         <tr>
             <td width="130px">@Html.DisplayNameFor(p => p.First().Date)</td>
