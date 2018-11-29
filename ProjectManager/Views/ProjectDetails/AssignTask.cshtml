@@ -1,0 +1,205 @@
+﻿@using ProjectManager.Models
+@model IEnumerable<ProjectManager.Models.ProjectMembers>
+@{
+    ViewBag.Title = "分配工作";
+}
+
+@section style
+{
+    <style>
+        /*div {
+            border: 0.5px solid pink
+        }*/
+
+        #projectMemberDivL2 {
+            width: auto;
+            float: left;
+            margin: 5px;
+        }
+
+        #projectMemberDivL1 {
+            overflow: scroll;
+            height: 500px;
+        }
+
+        .flip {
+            margin: 0px;
+            padding: 5px;
+            text-align: center;
+            background: #E09697;
+            cursor: pointer;
+            font-family: 'Arial';
+        }
+
+        .draggable {
+            cursor: pointer;
+        }
+
+            .draggable:hover {
+                background-color: pink;
+            }
+    </style>
+}
+<form method="post" action="~/ProjectDeltails/EditTask" class="form-horizontal">
+    <div class="flip">查看分配狀態</div>
+    <div class="panel">
+        <table class="table table-bordered" id="mappingTable">
+            <thead>
+                <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
+            </thead>
+            <tbody>
+                <!--RunIN-->
+            </tbody>
+        </table>
+    </div>
+    <div class="row no-gutters">
+        <div class="col-12 col-sm-6 col-md-8" id="projectMemberDivL1">
+            @foreach (var _projectMember in Model)
+            {
+                <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
+                    <div class="card-header bg-transparent border-success"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/MyImage/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
+                    <ul class="card-body text-success droppable" style="height:50px;">
+                        <!--TaskArea Start-->
+                        <!--TaskArea End-->
+                    </ul>
+                    <div class="card-footer bg-transparent border-success"><a class="btn btn-success" style="float:right" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-sticky-note">新增備註</i></a></div>
+                </div>
+            }
+        </div>
+        <div class="col-6 col-md-4">
+            <!--TaskList Start-->
+            <div style="margin:10px">
+                <ul class="list-group" id="taskitem">
+                    @foreach (var _task in (List<Tasks>)ViewBag.LoadTask)
+                    {
+                        <li class="list-group-item draggable" data-tag="@_task.TaskName" data-tag2="@_task.TaskGUID">@_task.TaskName</li>
+                    }
+                </ul>
+            </div>
+            <!--TaskList End-->
+            <div class="col-sm">
+                <h5>工作描述</h5>
+                <div id="taskdescription" style="background:lightgray;height:100px;margin:10px;">
+
+                </div>
+                <button type="submit" class="btn btn-outline-success" id="submitBtn">分配完成</button>
+                <input type="hidden" id="rowcount" name="TotalRow" />
+                <a class="btn btn-outline-primary" id="reset">重新分配</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle">員工姓名</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" action="~/ProjectDetails/LeaveMessageTag" class="form-horizontal">
+                <input type="hidden" id="HideTaskGUID" name="TaskGUID" />
+                <div class="modal-body">
+                    <div class="container">
+                        <textarea placeholder="輸入留言" id="text" name="text" rows="5" style="overflow: hidden; word-wrap: break-word; resize: none; height: 160px; width:550px; "></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
+                    <button type="submit" class="btn btn-primary">確定留言</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section script{
+    <script>
+    $(document).ready(function ()
+    {
+        var topTable = $("#mappingTable>tbody");
+        var submitCount = 0;
+        $(".draggable").draggable({ drag: function (e, ui) { } });
+        $(".droppable").droppable({
+            drop: function (event, ui)
+            {
+                //ui.draggable.attr("style", "width:50px;").appendTo($(this))
+                ui.draggable.attr("style", "width:50px;").remove();
+                var empID = $(this).prev().children("p").data("tag");
+                var empName = $(this).prev().text();
+                var taskGUID = ui.draggable.data("tag2");
+                var taskName = ui.draggable.data("tag");
+
+                var cell1hid = $("<input/>").attr("name", "EmployeeGUID" + submitCount).attr("type", "hidden").val(empID);
+                var cell2hid = $("<input/>").attr("name", "TaskGUID" + submitCount).attr("type", "hidden").val(taskGUID);
+
+                var cell1 = $("<td></td>").text(empName);
+                var cell2 = $("<td></td>").text(taskName);
+                var cell3 = $('<td></td>').html('<a class="btn btn-danger mr-2" title="刪除"><i class="far fa-trash-alt"></i></a><a class="btn btn-success" title="備忘"><i class="far fa-comment"></i></a>');
+                var row = $("<tr></tr>").append([cell1, cell2, cell3, cell1hid, cell2hid]);
+                topTable.append(row);
+
+                submitCount++;
+                var TotalRow = $("#mappingTable").find('tr').length - 1;
+                $("#rowcount").val(TotalRow);
+            }
+        });
+
+        $("#mappingTable").on("click", 'a', function ()
+        {
+            var taskName = $(this).parent().prev().text();
+            var taskGUID = $(this).parent().next().next().val();
+            if ($(this).attr("title") == "刪除")
+            {
+                submitCount -= 1;
+                $(this).parent().parent().remove();
+                var backToList = $("<li></li>").attr("class", "list-group-item draggable").attr("data-tag", taskName).text(taskName).draggable();
+                $(".list-group").append(backToList);
+            }
+            else
+            {
+                var EmpName = $(this).parent().prev().prev().text()
+                $('#exampleModalCenter').modal('show');
+                //$('#hidexampleModalLongTitle').val();
+                $('#exampleModalCenter h4').text("你想對 " + EmpName + " 說?");
+                $("#HideTaskGUID").val(taskGUID);
+            }
+        });
+
+        $(".panel").slideToggle("slow");
+
+        $(function () //Task Table
+        {
+            $(".flip").click(function ()
+            {
+                $(".panel").slideToggle("slow");
+            });
+        });
+
+        $("#reset").click(function () //重新分配
+        {
+            topTable.children().remove();
+            submitCount = 0;
+            $.getJSON('@Url.Action("ReloadTaskList", "ProjectDetails")', function (datas)
+                {
+                    var list = $('#taskitem');
+                    var docFrag = $(document.createDocumentFragment());
+                    $.each(datas, function (idx, _task)
+                    {
+                        var li = $("<li></li>").text(_task.TaskName).attr("class", "list-group-item draggable")
+                            .attr("data-tag", _task.TaskName).attr("data-tag2", _task.TaskGUID).draggable();
+                        docFrag.append(li);
+                    })
+                   list.html(docFrag);
+            })
+        })
+    })
+    </script>
+}
+
+@section nav{
+    @Html.Partial("_PartialPageNav", "Shared")
+}
