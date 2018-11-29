@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link href="~/Content/Main.css" rel="stylesheet" />
+    <link href="~/Content/PagedList.css" rel="stylesheet" />
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    @RenderSection("style", false)
+</head>
+<body>
+    <nav class="top-navbar">
+        <span class="leftOpenbtn" style="cursor:pointer">&#9776;</span>
+        <a class="title" href="/">專案管理系統</a>
+        <div class="topnav-right">
+            <div class="dropdown">
+                <button id="logoutbtn" class="navdropbtn">Logout</button>
+            </div>
+            <div class="dropdown">
+                <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">@Request.Cookies["MemberID"].Value</button>
+            </div>
+        </div>
+    </nav>
+
+    <aside id="myLeftsidenav" class="left-sidenav left-sidenav-open">
+    </aside>
+
+    <article id="mainArticle" class="main main-left-toggle">
+        <div class="content-header">
+            <h2>等待管理員審核中....</h2>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fas fa-chart-pie"></i> @ViewBag.Activity</a></li>
+                <li class="active">@ViewBag.Title</li>
+            </ol>
+        </div>
+        @{ 
+            if (IsSectionDefined("nav"))
+            {
+                @RenderSection("nav", false);
+            }
+        }
+        <div class="content">
+            @RenderBody()
+            <aside id="myRightsidenav" class="right-sidenav" style="display: none;">
+                @{
+                    if (IsSectionDefined("asideRight"))
+                    {
+                        @RenderSection("asideRight", false);
+                    }
+                    else
+                    {
+                        <ul>
+                            <li>
+                                <a href="#"><i class="fas fa-tachometer-alt"></i><span>自己決定要放什麼</span></a>
+                            </li>
+                            <li>
+                                <button class="dropdown-btn">
+                                    <i class="fas fa-copy"></i><span>下拉式選單</span><i class="fa fa-caret-down"></i>
+                                </button>
+                                <ul class="dropdown-container">
+                                    <li>
+                                        <a href="#">選項1</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">選項2</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">選項3</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    }
+                }
+            </aside>
+        </div>
+    </article>
+    <footer></footer>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    @*<script src="~/Scripts/jquery-ui-1.12.1-Effects/jquery-ui.min.js"></script> 家豪先註解掉，如下，引用全部*@
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/Main.js"></script>
+
+    @RenderSection("script", false)
+</body>
+</html>

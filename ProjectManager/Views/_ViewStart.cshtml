@@ -1,3 +1,32 @@
 ﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string guid = "";
+    if (Request.Cookies["PermissionsGUID"] != null)
+    {
+        guid = Request.Cookies["PermissionsGUID"].Value;
+    }
+
+    switch (guid)
+    {
+        //admin
+        case "ac0a54f1-079b-4927-88af-bb94cb302834":
+            Layout = "~/Views/Shared/_AdminLayout.cshtml";
+            break;
+        //專案經理
+        case "a4be9619-e0f6-4716-b180-000534a3178f":
+            Layout = "~/Views/Shared/_PMLayout.cshtml";
+            break;
+        //工程師
+        case "6472fb52-c381-429f-aea1-a296bf9d0078":
+            Layout = "~/Views/Shared/_PGLayout.cshtml";
+            break;
+        //處長
+        case "818722f1-7a46-4847-832e-1c8205f609b1":
+            Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+            break;
+        //無權限
+        default:
+            Layout = "~/Views/Shared/_GuestLayout.cshtml";
+            break;
+    }
 }
