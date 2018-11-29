@@ -401,6 +401,7 @@
     <Content Include="Views\Shared\_PMLayout.cshtml" />
     <Content Include="Views\Shared\_PGLayout.cshtml" />
     <Content Include="Views\Shared\_ManagerLayout.cshtml" />
+    <Content Include="Views\Members\EditPermission.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
