@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjectManager.Models.DisplayResource>
+﻿@model IEnumerable<ProjectManager.Models.ProjectResourceVM>
 @{
     ViewBag.Activity = "成本管理";
     ViewBag.Title = "費用管理";
@@ -366,6 +366,15 @@
                     $("#dd_Subtot").text(Subtotal);
                     $("#dd_Description").text(Description);
                 }
+
+                $('.pagination > li > a').click(function (e) {
+                    e.preventDefault();
+                    var Action = $(this).attr("href");
+                    $("#PartialView").load(Action, function () {
+                        $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+                        Binding();
+                    });
+                })
             }
 
             $("#btn_ConfirmDelete").click(DeleteResource);
