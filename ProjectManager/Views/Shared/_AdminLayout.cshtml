@@ -55,7 +55,6 @@
                 </ul>
             </li>
             <li>
-            <li>
                 <a href="#"><i class="fas fa-tasks"></i><span>我的任務</span></a>
             </li>
             <li>
@@ -130,7 +129,7 @@
                 <li class="active">@ViewBag.Title</li>
             </ol>
         </div>
-        @{
+        @{ 
             if (IsSectionDefined("nav"))
             {
                 @RenderSection("nav", false);
@@ -191,6 +190,5 @@
     <script src="~/Scripts/Main.js"></script>
 
     @RenderSection("script", false)
-
 </body>
 </html>
