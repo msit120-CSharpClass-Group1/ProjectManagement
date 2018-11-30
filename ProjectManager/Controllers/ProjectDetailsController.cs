@@ -111,7 +111,14 @@ namespace ProjectManager.Controllers
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            ViewBag.LoadTask = TasksBL.GetLeafTasks(tasks.GetCollections().Where(t=>t.TaskStatusID ==2 && t.ProjectGUID == SendprojectGUID));
+            ViewBag.LoadTask = tasks.GetCollections().Where(t=>t.TaskStatusID ==2 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
+
+            //todo 工時改為百分比顯示
+            var Workload = from t in tasks.GetCollections().Where(t=>t.EmployeeGUID!=null/* && t.ProjectGUID == SendprojectGUID*/)
+                               group t by t.Employee.EmployeeName into g
+                               select new Group<string,DisplayWorkloadVM > { Key = g.Key, Sum = g.Sum(e=>e.EstWorkTime)};            
+
+            ViewBag.Workload = Workload;
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
 
@@ -151,11 +158,11 @@ namespace ProjectManager.Controllers
             return RedirectToAction("AssignTask");
         }
 
-        public ActionResult GetTaskDesc(Guid? TaskGUID)
+        public ActionResult GetTaskDesc(Guid TaskGUID)
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            var TaskName = tasks.GetCollections().Where(t => t.TaskGUID == TaskGUID).First().Description;
+            var TaskName = tasks.GetCollections().Where(t => t.TaskGUID == TaskGUID).FirstOrDefault().Description;
             return Content(TaskName);
         }
 

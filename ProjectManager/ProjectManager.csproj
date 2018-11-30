@@ -127,6 +127,7 @@
     <Content Include="Global.asax" />
     <Content Include="image\001.jpg" />
     <Content Include="image\ajax-loader.gif" />
+    <Content Include="image\arrow.gif" />
     <Content Include="image\avatar.png" />
     <Content Include="image\collapse.png" />
     <Content Include="image\expand.png" />
@@ -330,7 +331,7 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModel\BoardVM.cs" />
-    <Compile Include="Models\ViewModel\DisplayTaskDescVM.cs" />
+    <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
