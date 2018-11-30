@@ -20,6 +20,7 @@
         #projectMemberDivL1 {
             overflow: scroll;
             height: 500px;
+            background-color:rgba(128, 128, 128, 0.41);
         }
 
         .flip {
@@ -34,30 +35,37 @@
         .draggable {
             cursor: pointer;
         }
-
             .draggable:hover {
                 background-color: pink;
             }
+        .asidetitle {
+            color: rosybrown;
+            margin-left: 30px;
+            margin-top: 20px;
+        }
     </style>
 }
-<form method="post" action="~/ProjectDeltails/EditTask" class="form-horizontal">
-    <div class="flip">查看分配狀態</div>
-    <div class="panel">
-        <table class="table table-bordered" id="mappingTable">
-            <thead>
-                <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
-            </thead>
-            <tbody>
-                <!--RunIN-->
-            </tbody>
-        </table>
-    </div>
+<form method="post" action="~/ProjectDetails/EditTask" class="form-horizontal">  
     <div class="row no-gutters">
-        <div class="col-12 col-sm-6 col-md-8" id="projectMemberDivL1">
+        <div class="col-4">
+            <div class="flip">查看分配狀態</div>
+            <div class="panel">
+                <table class="table table-bordered" id="mappingTable">
+                    <thead>
+                        <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
+                    </thead>
+                    <tbody>
+                        <!--RunIN-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-6" id="projectMemberDivL1">
             @foreach (var _projectMember in Model)
             {
                 <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
-                    <div class="card-header bg-transparent border-success"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/MyImage/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
+                    <div class="card-header bg-transparent border-success"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
                     <ul class="card-body text-success droppable" style="height:50px;">
                         <!--TaskArea Start-->
                         <!--TaskArea End-->
@@ -66,9 +74,10 @@
                 </div>
             }
         </div>
-        <div class="col-6 col-md-4">
+        @section asideRight{
             <!--TaskList Start-->
-            <div style="margin:10px">
+            <h3 class="asidetitle">工作項目</h3>
+            <div style="margin:20px;overflow-y: scroll;">
                 <ul class="list-group" id="taskitem">
                     @foreach (var _task in (List<Tasks>)ViewBag.LoadTask)
                     {
@@ -77,17 +86,17 @@
                 </ul>
             </div>
             <!--TaskList End-->
+            <h3 class="asidetitle">工作描述</h3>
             <div class="col-sm">
-                <h5>工作描述</h5>
-                <div id="taskdescription" style="background:lightgray;height:100px;margin:10px;">
+                <div id="taskdescription" style="background:lightgray;height:200px;margin:10px;">
 
                 </div>
-                <button type="submit" class="btn btn-outline-success" id="submitBtn">分配完成</button>
+                <button type="submit" class="btn btn alert-light" id="submitBtn">分配完成</button>
                 <input type="hidden" id="rowcount" name="TotalRow" />
-                <a class="btn btn-outline-primary" id="reset">重新分配</a>
+                <input type="button" class="btn btn-danger" id="reset" value="重新分配">
             </div>
         </div>
-    </div>
+            }
 </form>
 
 <!-- Modal -->
@@ -104,7 +113,7 @@
                 <input type="hidden" id="HideTaskGUID" name="TaskGUID" />
                 <div class="modal-body">
                     <div class="container">
-                        <textarea placeholder="輸入留言" id="text" name="text" rows="5" style="overflow: hidden; word-wrap: break-word; resize: none; height: 160px; width:550px; "></textarea>
+                        <textarea placeholder="輸入留言" id="text" name="text" rows="5" style="overflow: hidden; word-wrap: break-word; resize: none; height: 160px; width:400px; "></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -117,17 +126,17 @@
 </div>
 
 @section script{
-    <script>
+<script>
     $(document).ready(function ()
     {
         var topTable = $("#mappingTable>tbody");
         var submitCount = 0;
-        $(".draggable").draggable({ drag: function (e, ui) { } });
+        $(".draggable").draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
         $(".droppable").droppable({
             drop: function (event, ui)
             {
-                //ui.draggable.attr("style", "width:50px;").appendTo($(this))
-                ui.draggable.attr("style", "width:50px;").remove();
+                ui.draggable.appendTo($(this))
+                //ui.draggable.attr("style", "width:50px;").remove();
                 var empID = $(this).prev().children("p").data("tag");
                 var empName = $(this).prev().text();
                 var taskGUID = ui.draggable.data("tag2");
@@ -196,8 +205,21 @@
                    list.html(docFrag);
             })
         })
+
+        $("#taskitem").on("click", 'li', function () //點擊工作描述show出
+        {
+            var TaskGUID = $(this).data("tag2");
+            $.getJSON('@Url.Action("GetTaskDesc", "ProjectDetails")', { "TaskGUID": TaskGUID }, function (TaskDesc)
+                {
+                    var descArea = $("#taskdescription");
+                    var p;
+                    alert(TaskDesc);
+                    p = $("<p></p>").text(TaskDesc)
+                    descArea.append(p);
+                })
+            })
     })
-    </script>
+</script>
 }
 
 @section nav{

@@ -78,11 +78,11 @@ namespace ProjectManager.Controllers
                         Description = tr.Description
                     };
 
-            var ProjectResourceList = q.ToList().ToPagedList(page ?? 1, 10);
+            var ProjectResourceList = q.ToList();
 
-            var Departments = DptRepo.GetCollections();
+            ViewBag.Count = ProjectResourceList.Count;
 
-            return PartialView(ProjectResourceList);
+            return PartialView(ProjectResourceList.ToPagedList(page ?? 1, 10));
         }
 
         public ActionResult AddTaskResource(TaskResource resource)
