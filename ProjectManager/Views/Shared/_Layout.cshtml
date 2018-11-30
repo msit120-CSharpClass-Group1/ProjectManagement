@@ -20,7 +20,7 @@
                 <button id="logoutbtn" class="navdropbtn">Logout</button>
             </div>
             <div class="dropdown">
-                <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">@Request.Cookies["MemberID"].Value</button>
+                <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">使用者名稱</button>
             </div>
             <div class="dropdown">
                 <button class="navdropbtn"><i class="far fa-envelope"></i><span class="label">9</span></button>
@@ -118,7 +118,9 @@
                     </li>
                 </ul>
             </li>
-
+            <li>
+                <a href="~/Members/Edit"><i class="fas fa-users"></i><span>修改密碼</span></a>
+            </li>
         </ul>
     </aside>
 
@@ -130,7 +132,7 @@
                 <li class="active">@ViewBag.Title</li>
             </ol>
         </div>
-        @{ 
+        @{
             if (IsSectionDefined("nav"))
             {
                 @RenderSection("nav", false);
@@ -191,5 +193,6 @@
     <script src="~/Scripts/Main.js"></script>
 
     @RenderSection("script", false)
+
 </body>
 </html>

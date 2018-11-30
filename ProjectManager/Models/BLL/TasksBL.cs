@@ -33,5 +33,21 @@ namespace ProjectManager.Models
             }
             return leafTasks;
         }
+        public static IEnumerable<Tasks> GetAllChildTasks(this Tasks task)
+        {            
+            TreeGridModel model = new TreeGridModel();
+            model.GetChildren(task, new Repository<Tasks>().GetCollections().ToList());
+            return model.ChildTasks;
+        }
+        public static bool IsAnyResource(this IEnumerable<Tasks> tasks)
+        {
+            Repository<TaskResource> resourceRepo = new Repository<TaskResource>();
+            foreach (var task in tasks)
+            {
+                if (resourceRepo.GetCollections().Where(r => r.TaskGUID == task.TaskGUID).Any())
+                    return true;
+            }
+            return false;
+        }
     }
 }

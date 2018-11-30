@@ -1,7 +1,6 @@
 ﻿@using ProjectManager.Models;
-@model IEnumerable<ProjectManager.Models.Members>
 @{
-    ViewBag.Title = "會員";
+    ViewBag.Title = "重設員工密碼";
 }
 
 <table class="table table-bordered table-hover">
@@ -13,8 +12,8 @@
             <th>新增日期</th>
             <th>修改日期</th>
             <th>最後登入日期</th>
-            <th>修改</th>
-            <th>刪除帳號</th>
+            <th>重設密碼</th>
+           
         </tr>
     </thead>
     <tbody>
@@ -27,12 +26,11 @@
                 <td>@_member.CreateDate</td>
                 <td>@_member.ModifiedDate</td>
                 <td>@_member.LastLoginDate</td>
-                <td><a href="~/Members/Edit/@_member.MemberGUID" class="btn btn-primary">修改</a></td>
-                <td><a href="~/Members/Delete/@_member.MemberGUID" class="btn btn-danger">刪除帳號</a></td>
+                <td><a href="~/Members/Reset/@_member.MemberGUID" class="btn btn-primary">重設密碼</a></td>
             </tr>
         }
     </tbody>
-    @*<a href="~/Members/Edit/@_member.PermissionsGUID" class="btn btn-primary">修改</a>*@
 </table>
+<p>@ViewBag.msg</p>
 
 

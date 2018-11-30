@@ -20,12 +20,17 @@
                 <button id="logoutbtn" class="navdropbtn">Logout</button>
             </div>
             <div class="dropdown">
-                <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">@Request.Cookies["MemberID"].Value</button>
+                <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">使用者名稱</button>
             </div>
         </div>
     </nav>
 
     <aside id="myLeftsidenav" class="left-sidenav left-sidenav-open">
+        <ul>
+            <li>
+                <a href="~/Members/Edit"><i class="fas fa-users"></i><span>修改密碼</span></a>
+            </li>
+        </ul>
     </aside>
 
     <article id="mainArticle" class="main main-left-toggle">
@@ -36,7 +41,7 @@
                 <li class="active">@ViewBag.Title</li>
             </ol>
         </div>
-        @{ 
+        @{
             if (IsSectionDefined("nav"))
             {
                 @RenderSection("nav", false);

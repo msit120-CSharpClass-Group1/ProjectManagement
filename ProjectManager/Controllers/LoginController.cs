@@ -38,22 +38,22 @@ namespace ProjectManager.Controllers
             }
             return View("Index");
         }
-        [HttpPost]
-        public ActionResult CreateAccount(Members members)
-        {
-            var hasMembers = memberRes.GetCollections().Where(n => n.MemberID.Trim() == members.MemberID).FirstOrDefault();
-            string memberMsg = "0";
-            if (hasMembers == null)
-            {
-                members.PermissionsGUID =new Guid("3f20a599-21a7-4848-9b0d-81b8146527b6");
-                members.MemberGUID = Guid.NewGuid();
-                members.CreateDate = DateTime.Now;
-                members.ModifiedDate = DateTime.Now;
-                memberRes.Add(members);
-                memberMsg = "1";
-            }
-            return Json(memberMsg);
-        }
+        //[HttpPost]
+        //public ActionResult CreateAccount(Members members)
+        //{
+        //    var hasMembers = memberRes.GetCollections().Where(n => n.MemberID.Trim() == members.MemberID).FirstOrDefault();
+        //    string memberMsg = "0";
+        //    if (hasMembers == null)
+        //    {
+        //        members.PermissionsGUID =new Guid("3f20a599-21a7-4848-9b0d-81b8146527b6");
+        //        members.MemberGUID = Guid.NewGuid();
+        //        members.CreateDate = DateTime.Now;
+        //        members.ModifiedDate = DateTime.Now;
+        //        memberRes.Add(members);
+        //        memberMsg = "1";
+        //    }
+        //    return Json(memberMsg);
+        //}
         public ActionResult Logout()
         {
             Session.Abandon();
