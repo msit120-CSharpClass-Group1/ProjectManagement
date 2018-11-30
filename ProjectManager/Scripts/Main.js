@@ -44,10 +44,9 @@
         leftnavli.removeClass('active');
         $(this).addClass('active');
     });
-
+    //登出按鈕
     $('#logoutbtn').click(function () {
         window.location.href = '/Login/Logout';
     });
-
 
 });

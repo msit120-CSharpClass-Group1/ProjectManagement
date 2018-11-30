@@ -396,6 +396,11 @@
     <Content Include="Views\ProjectDetails\AssignTask.cshtml" />
     <Content Include="Views\Shared\_PartialPageNav.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectDistribution.cshtml" />
+    <Content Include="Views\Shared\_GuestLayout.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Shared\_PMLayout.cshtml" />
+    <Content Include="Views\Shared\_PGLayout.cshtml" />
+    <Content Include="Views\Shared\_ManagerLayout.cshtml" />
     <Content Include="Views\Members\EditPermission.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

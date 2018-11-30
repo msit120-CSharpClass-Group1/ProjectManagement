@@ -182,12 +182,18 @@
                 });
             })
 
-            $('#signIn').click(function () {
+            $('#signIn').click(function () { 
                 var MemberID = $('#signInMemberID').val();
                 var Password = $('#signInPassword').val();
                 var signInMsg = $('#signIntext');
+                if (signInMsg.hasClass('badge badge-success'))
+                {
+                    signInMsg.text("");
+                    signInMsg.removeClass('badge badge-success').addClass('badge badge-danger');
+                }
+                  
                 $.ajax({
-                    url: "CreateAccount",
+                    url: "Login/CreateAccount",
                     method: "post",
                     data: { "MemberID": MemberID, "Password": Password },
                     dataType: "json"
@@ -199,6 +205,7 @@
                         signInMsg.removeClass('badge badge-danger').addClass('badge badge-success');
                     }
                     signInMsg.text(msg);
+                    
                 });
             })
            
