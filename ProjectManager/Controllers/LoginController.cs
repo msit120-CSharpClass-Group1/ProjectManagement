@@ -27,6 +27,8 @@ namespace ProjectManager.Controllers
             if (hasMembers != null)
             {
                 Response.Cookies["MemberGUID"].Value = hasMembers.MemberGUID.ToString() ;
+                Response.Cookies["MemberID"].Value = hasMembers.MemberID;
+                Response.Cookies["PermissionsGUID"].Value = hasMembers.PermissionsGUID.ToString();
                 Session["MemberGUID"] = hasMembers.MemberGUID;
                 if (keepLogin!=null)
                 {
@@ -43,7 +45,7 @@ namespace ProjectManager.Controllers
             string memberMsg = "0";
             if (hasMembers == null)
             {
-
+                members.PermissionsGUID =new Guid("3f20a599-21a7-4848-9b0d-81b8146527b6");
                 members.MemberGUID = Guid.NewGuid();
                 members.CreateDate = DateTime.Now;
                 members.ModifiedDate = DateTime.Now;

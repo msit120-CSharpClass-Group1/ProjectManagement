@@ -140,6 +140,7 @@ input::placeholder {
  * Page background
  */
 .user {
+    position:relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -148,6 +149,12 @@ input::placeholder {
   background: url("../image/001.jpg") no-repeat center;
   background-size: cover;
 }
+    .user::before {
+        content:"";
+        position:absolute;
+        opacity:0.5;
+        background-color:orange;
+    }
 .user_options-container {
   position: relative;
   width: 80%;
@@ -224,15 +231,15 @@ input::placeholder {
 .user_options-forms .user_forms-login {
   transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
 }
-.user_options-forms .forms_title {
-  margin-bottom: 45px;
-  font-size: 1.5rem;
-  font-weight: 500;
-  line-height: 1em;
-  text-transform: uppercase;
-  color: #e8716d;
-  letter-spacing: 0.1rem;
-}
+    .user_options-forms .forms_title {
+        margin-bottom: 45px;
+        font-size: 1.5rem;
+        font-weight: 500;
+        line-height: 1em;
+        text-transform: uppercase;
+        color: darkcyan;
+        letter-spacing: 0.1rem;
+    }
 .user_options-forms .forms_field:not(:last-of-type) {
   margin-bottom: 20px;
 }
@@ -266,21 +273,21 @@ input::placeholder {
 .user_options-forms .forms_buttons-forgot:hover {
   color: #b3b3b3;
 }
-.user_options-forms .forms_buttons-action {
-  background-color: #e8716d;
-  border-radius: 3px;
-  padding: 10px 35px;
-  font-size: 1rem;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 300;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
-  transition: background-color 0.2s ease-in-out;
-}
-.user_options-forms .forms_buttons-action:hover {
-  background-color: #e14641;
-}
+    .user_options-forms .forms_buttons-action {
+        background-color: darkcyan;
+        border-radius: 3px;
+        padding: 10px 35px;
+        font-size: 1rem;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 300;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.1rem;
+        transition: background-color 0.2s ease-in-out;
+    }
+        .user_options-forms .forms_buttons-action:hover {
+            background-color: #006363;
+        }
 .user_options-forms .user_forms-signup,
 .user_options-forms .user_forms-login {
   position: absolute;
