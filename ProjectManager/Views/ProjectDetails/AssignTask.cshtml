@@ -83,6 +83,7 @@
                                 int? valid = item.Sum;
                                 int total = 40;
 
+                                double rawercent = (double)(valid * 100) / total;
                                 if (valid > total)
                                 {
                                     valid = (int)valid - total;
@@ -92,15 +93,16 @@
 
                                 if (_projectMember.Employee.EmployeeName == item.Key)
                                 {
-                                    if (percent >= 80)
+                                   
+                                    if(rawercent>100)
                                     {
                                         <div class="progress">
-                                            <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@percent %</div>
+                                            <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
                                         </div>
                                     }
                                     else
                                     {
-                                        <div class="progress">
+                                         <div class="progress">
                                             <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
                                         </div>
                                     }
