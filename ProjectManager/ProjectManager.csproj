@@ -395,9 +395,11 @@
     <Content Include="Views\TaskStatus\Edit.cshtml" />
     <Content Include="Views\TaskStatus\Index.cshtml" />
     <Content Include="Views\TaskStatus\Insert.cshtml" />
-    <Content Include="Views\ProjectDetails\AssignTask.cshtml" />
     <Content Include="Views\Shared\_PartialPageNav.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectDistribution.cshtml" />
+    <Content Include="Views\ProjectDetails\TreeGridPartialView.cshtml" />
+    <Content Include="Views\ProjectDetails\AssignTask.cshtml" />
+    <Content Include="Views\Shared\_PartialPageNav.cshtml" />
     <Content Include="Views\Shared\_GuestLayout.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Shared\_PMLayout.cshtml" />

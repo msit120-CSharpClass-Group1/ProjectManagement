@@ -2,6 +2,7 @@
 using ProjectManager.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -85,7 +86,7 @@ namespace ProjectManager.Controllers
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());            
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
             return View(projectRepo.Find(_projectGUID));
         }
         [HttpPost]
@@ -170,25 +171,91 @@ namespace ProjectManager.Controllers
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());            
-            var tasks = taskRepo.GetCollections().OrderBy(t=>t.TaskID)
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
                 .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
             ViewBag.Projects = projectRepo.GetCollections().Where(p => p.ProjectGUID == _projectGUID).ToList();
             ViewBag.TaskStatuses = new SelectList(new Repository<TaskStatus>().GetCollections(), "TaskStatusID", "TaskStatusName");
 
             return View(tasks);
         }
-            
+        public ActionResult TreeGridPartialView()
+        {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
+                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
+            return PartialView(tasks);
+        }
+
         [HttpPost]
         public ActionResult InsertTask(Tasks task)
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());            
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
             task.ProjectGUID = _projectGUID;
             task.TaskGUID = Guid.NewGuid();
             taskRepo.Add(task);
             return RedirectToAction("ProjectDistribution");
+        }
+        [HttpGet]
+        public ActionResult EditTask(Guid? TaskGUID)
+        {
+            var task = taskRepo.Find(TaskGUID);
+            return Content(JsonConvert.SerializeObject(task), "application/json");
+        }
+        [HttpPost]
+        public ActionResult EditTask(Tasks _task)
+        {
+            Tasks recentTask = taskRepo.Find(_task.TaskGUID);
+            recentTask.TaskName = _task.TaskName;
+            recentTask.TaskStatusID = _task.TaskStatusID;
+            recentTask.Tag = _task.Tag;
+            recentTask.EstStartDate = _task.EstStartDate;
+            recentTask.EstEndDate = _task.EstEndDate;
+            recentTask.StartDate = _task.StartDate;
+            recentTask.EndDate = _task.EndDate;
+            recentTask.Description = _task.Description;
+
+            taskRepo.Update(recentTask);
+            return RedirectToAction("ProjectDistribution");
+        }
+        [HttpPost]
+        public ActionResult DeleteTasks(Tasks _task)
+        {
+            Tasks recentTask = taskRepo.Find(_task.TaskGUID);
+            string errorMsg = "";
+            var allTasks = recentTask.GetAllChildTasks().ToList();
+            allTasks.Insert(0, recentTask);
+            
+            if (allTasks.IsAnyResource())
+            {
+                errorMsg = "欲刪除的工作項目，有費用產生，不可刪除。";
+            }
+            else
+            {
+                try
+                {
+                    foreach (var child in allTasks.AsQueryable().Reverse())
+                    {
+                        taskRepo.Delete(taskRepo.Find(child.TaskGUID));
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            return Json(errorMsg, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult GetChildTaskCount(Tasks _task)
+        {
+            Tasks recentTask = taskRepo.Find(_task.TaskGUID);
+            var childTasks = recentTask.GetAllChildTasks();
+            return Json(childTasks.Count(),JsonRequestBehavior.AllowGet);
         }
     }
 }
