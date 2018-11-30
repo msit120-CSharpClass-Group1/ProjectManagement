@@ -219,28 +219,28 @@ namespace ProjectManager.Controllers
         public ActionResult DeleteTasks(Tasks _task)
         {
             Tasks recentTask = taskRepo.Find(_task.TaskGUID);
-            var childTasks = recentTask.GetAllChildTasks();
             string errorMsg = "";
-            try
+            var allTasks = recentTask.GetAllChildTasks().ToList();
+            allTasks.Insert(0, recentTask);
+            
+            if (allTasks.IsAnyResource())
             {
-                if (childTasks.Count() != 0)
+                errorMsg = "欲刪除的工作項目，有費用產生，不可刪除。";
+            }
+            else
+            {
+                try
                 {
-                    foreach (var child in childTasks.Reverse())
+                    foreach (var child in allTasks.AsQueryable().Reverse())
                     {
                         taskRepo.Delete(taskRepo.Find(child.TaskGUID));
                     }
                 }
-                taskRepo.Delete(recentTask);
+                catch (Exception ex)
+                {
+
+                }
             }
-            catch (SqlException ex)
-            {
-                errorMsg = "欲刪除的工作項目，有費用產生，不可刪除。";
-            }
-            catch (Exception ex)
-            {
-                errorMsg = "欲刪除的工作項目，有費用產生，不可刪除。";
-            }
-            
             return Json(errorMsg, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]

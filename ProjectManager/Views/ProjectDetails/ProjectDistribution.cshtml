@@ -45,15 +45,13 @@
 @section nav{
     @Html.Partial("_PartialPageNav", "Shared")
 }
-<div class="container">
 @foreach (var item in (List<Project>)ViewBag.Projects)
 {
     <h4>@item.ProjectID &nbsp; @item.ProjectName</h4>
 }
-</div>
 
 @*<input id="isGanttShowed" type="checkbox" /> Show Gantt*@
-<div id="tasks_layout" class="container">
+<div id="tasks_layout" >
     <div id="ganttContainer" style="width: 100%; height: 500px" hidden></div>
     <div id="treeGridContainer"></div>
 </div>
@@ -158,7 +156,7 @@
                 <div class="col-12 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().Description)
                     <br />
-                    <input name="Description" id="Description" type="text" class="form-control d-inline" value="@strDate" style="width:12em;" />
+                    <input name="Description" id="Description" type="text" class="form-control d-inline" value="@strDate" style="width:26em;" multiple />
                 </div>
             </div>
 
@@ -269,7 +267,7 @@
                         $('#btn_ConfirmDelete').text('全部刪除');
                         $('#DeleteAlarmModal').modal('show');
                     } else {
-                        $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + "  將被刪除");
+                        $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + "</em>  將被刪除");
                         $('#btn_ConfirmDelete').text('刪除');
                         $('#DeleteAlarmModal').modal('show');
                     }

@@ -3,10 +3,12 @@
 <table id="treeGrid" class="table table-bordered table-hover tree">
     <thead class="panel-heading">
         <tr>
-            <th>@Html.DisplayNameFor(m => m.TaskName)</th>
+            <th width="220px;">@Html.DisplayNameFor(m => m.TaskName)</th>
             <th><a href="#"><i class="fas fa-plus"></i></a></th>
             <th>@Html.DisplayNameFor(m => m.TaskStatusID)</th>
             <th>@Html.DisplayNameFor(m => m.EmployeeGUID)</th>
+            <th>預計區間</th>
+            <th>實際區間</th>
             <th>@Html.DisplayNameFor(m => m.Description)</th>
             <th>@Html.DisplayNameFor(m => m.Tag)</th>
         </tr>
@@ -22,6 +24,8 @@
                 <td><a href="#"><i class="fas fa-plus"></i></a></td>
                 <td>@task.TaskStatus.TaskStatusName</td>
                 <td>@Html.DisplayFor(m => task.Employee.EmployeeName)</td>
+                <td>@Html.DisplayFor(m=> task.EstStartDate) - @Html.DisplayFor(m=>task.EstEndDate)</td>
+                <td>@Html.DisplayFor(m=>task.StartDate) - @Html.DisplayFor(m=>task.EndDate)</td>
                 <td>@Html.DisplayFor(m => task.Description)</td>
                 <td>@Html.DisplayFor(m => task.Tag)</td>
             </tr>
