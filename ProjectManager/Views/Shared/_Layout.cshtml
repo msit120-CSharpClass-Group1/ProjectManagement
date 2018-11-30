@@ -189,7 +189,8 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     @*<script src="~/Scripts/jquery-ui-1.12.1-Effects/jquery-ui.min.js"></script> 家豪先註解掉，如下，引用全部*@
     <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
+    @*<script src="~/Scripts/bootstrap.min.js"></script> 改為引用打包popper.js+boostrap.js的bundle*@
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
     <script src="~/Scripts/Main.js"></script>
 
     @RenderSection("script", false)
