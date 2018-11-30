@@ -17,46 +17,52 @@ namespace ProjectManager.Controllers
           
             ViewBag.members = memberRepository.GetCollections().ToList();
 
-            return View(memberRepository.GetCollections());
+            return View();
         }
 
-        [HttpGet]
-        public ActionResult Edit(Guid? id)
+        public ActionResult Reset(Guid id)
         {
-            ViewBag.PermissonName = permissionsRepository.GetCollections().ToList();
-            return View(memberRepository.Find(id));
+            var member =  memberRepository.Find(id);
+            member.Password = member.MemberID;
+            memberRepository.Update(member);
+            ViewBag.msg = "重設成功";
+            ViewBag.members = memberRepository.GetCollections().ToList();
+            return View("Index");
         }
-
-        public ActionResult LoadMemberGUID(string PermissionsName)
+        public ActionResult Edit()
         {
-            var GUID = permissionsRepository.GetCollections().Where(p => p.PermissionsName == PermissionsName).FirstOrDefault().PermissionsGUID;
-            return Content(GUID.ToString());
-            
+            if (Request.Cookies["MemberGUID"] == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+            ViewBag.id= Request.Cookies["MemberGUID"].Value;
+            return View();
         }
-
         [HttpPost]
-        public ActionResult Edit(Members members)
+        public ActionResult _Edit(Members members,string NewPassword,string RepeatPassword)
         {
-            var MName = Request.Form["members"];
-            var pgID = Request.Form["PermissionsGUID"];
-            Members _members = memberRepository.Find(new Guid(MName));
-            _members.ModifiedDate = DateTime.Now;
-            _members.PermissionsGUID = new Guid(pgID);
-            memberRepository.Update(_members);
-            return RedirectToAction("Index");
-        }
-
-
-        public ActionResult Delete(Guid? id)
-        {
-
-
-            Members _members = memberRepository.Find(id);
-     
-
-            memberRepository.Delete(_members);
-
-            return RedirectToAction("Index");
+            ViewBag.msg = "密碼不符";
+            ViewBag.id = members.MemberGUID;
+            if (NewPassword != RepeatPassword)
+            {
+                return View("Edit");
+            }
+            else
+            {
+                var member = memberRepository.Find(members.MemberGUID);
+                if (members.Password != member.Password)
+                {
+                    return View("Edit");
+                }
+                else
+                {
+                    member.Password = NewPassword;
+                    memberRepository.Update(member);
+                    ViewBag.msg = "修改成功";
+                    return View("Edit");
+                }
+            }
+            
         }
     }
 }

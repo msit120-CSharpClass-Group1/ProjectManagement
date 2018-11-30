@@ -122,10 +122,12 @@
     <Content Include="Content\Main.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\skin-black.css" />
+    <Content Include="Content\WorkloadBar.css" />
     <Content Include="Content\_all-skins.css" />
     <Content Include="Global.asax" />
     <Content Include="image\001.jpg" />
     <Content Include="image\ajax-loader.gif" />
+    <Content Include="image\arrow.gif" />
     <Content Include="image\avatar.png" />
     <Content Include="image\collapse.png" />
     <Content Include="image\expand.png" />
@@ -218,6 +220,7 @@
     <Compile Include="Controllers\CostController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
+    <Compile Include="Controllers\EmployeesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\JobTitleController.cs" />
@@ -329,7 +332,7 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModel\BoardVM.cs" />
-    <Compile Include="Models\ViewModel\DisplayTaskDescVM.cs" />
+    <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
@@ -376,7 +379,6 @@
     <Content Include="Views\JobTitle\Edit.cshtml" />
     <Content Include="Views\JobTitle\Index.cshtml" />
     <Content Include="Views\JobTitle\Insert.cshtml" />
-    <Content Include="Views\Members\Edit.cshtml" />
     <Content Include="Views\Members\Index.cshtml" />
     <Content Include="Views\Permissions\Edit.cshtml" />
     <Content Include="Views\Permissions\Index.cshtml" />
@@ -403,7 +405,10 @@
     <Content Include="Views\Shared\_PMLayout.cshtml" />
     <Content Include="Views\Shared\_PGLayout.cshtml" />
     <Content Include="Views\Shared\_ManagerLayout.cshtml" />
-    <Content Include="Views\Members\EditPermission.cshtml" />
+    <Content Include="Views\Employees\Index.cshtml" />
+    <Content Include="Views\Employees\Edit.cshtml" />
+    <Content Include="Views\Employees\Add.cshtml" />
+    <Content Include="Views\Members\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

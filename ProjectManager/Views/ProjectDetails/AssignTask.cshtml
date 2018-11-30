@@ -1,4 +1,5 @@
 ﻿@using ProjectManager.Models
+@using System.Globalization;
 @model IEnumerable<ProjectManager.Models.ProjectMembers>
 @{
     ViewBag.Title = "分配工作";
@@ -6,6 +7,7 @@
 
 @section style
 {
+    <link href="~/Content/WorkloadBar.css" rel="stylesheet" />
     <style>
         /*div {
             border: 0.5px solid pink
@@ -20,7 +22,7 @@
         #projectMemberDivL1 {
             overflow: scroll;
             height: 500px;
-            background-color:rgba(128, 128, 128, 0.41);
+            background-color: rgba(128, 128, 128, 0.41);
         }
 
         .flip {
@@ -35,9 +37,11 @@
         .draggable {
             cursor: pointer;
         }
+
             .draggable:hover {
                 background-color: pink;
             }
+
         .asidetitle {
             color: rosybrown;
             margin-left: 30px;
@@ -45,7 +49,8 @@
         }
     </style>
 }
-<form method="post" action="~/ProjectDetails/EditTask" class="form-horizontal">  
+
+<form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal">
     <div class="row no-gutters">
         <div class="col-4">
             <div class="flip">查看分配狀態</div>
@@ -65,19 +70,53 @@
             @foreach (var _projectMember in Model)
             {
                 <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
-                    <div class="card-header bg-transparent border-success"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
-                    <ul class="card-body text-success droppable" style="height:50px;">
+                    <div class="card-header bg-transparent border-success" style="width:180px"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
+                    <div class="card-body text-success droppable" style="height:50px;">
                         <!--TaskArea Start-->
-                        <!--TaskArea End-->
-                    </ul>
-                    <div class="card-footer bg-transparent border-success"><a class="btn btn-success" style="float:right" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-sticky-note">新增備註</i></a></div>
+                        <!--TaskArea End-->                       
+                    </div>
+                    <div class="card-footer bg-transparent border-success">
+                        <h6>工作負荷</h6>
+                        @{
+                            foreach (var item in ViewBag.Workload as IEnumerable<Group<string, DisplayWorkloadVM>>)
+                            {
+                                int? valid = item.Sum;
+                                int total = 40;
+
+                                double rawercent = (double)(valid * 100) / total;
+                                if (valid > total)
+                                {
+                                    valid = (int)valid - total;
+                                }
+
+                                double percent = (double)(valid * 100) / total;
+
+                                if (_projectMember.Employee.EmployeeName == item.Key)
+                                {
+                                   
+                                    if(rawercent>100)
+                                    {
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                         <div class="progress">
+                                            <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
+                                        </div>
+                                    }
+                                }
+                            }
+                        }
+                    </div>
                 </div>
             }
         </div>
         @section asideRight{
             <!--TaskList Start-->
             <h3 class="asidetitle">工作項目</h3>
-            <div style="margin:20px;overflow-y: scroll;">
+            <div style="margin:20px;overflow-y: scroll;height:300px">
                 <ul class="list-group" id="taskitem">
                     @foreach (var _task in (List<Tasks>)ViewBag.LoadTask)
                     {
@@ -88,59 +127,62 @@
             <!--TaskList End-->
             <h3 class="asidetitle">工作描述</h3>
             <div class="col-sm">
-                <div id="taskdescription" style="background:lightgray;height:200px;margin:10px;">
+                <div id="taskdescription" style="background:lightgray;height:200px;margin:10px; width:230px">
 
                 </div>
-                <button type="submit" class="btn btn alert-light" id="submitBtn">分配完成</button>
+                <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
                 <input type="hidden" id="rowcount" name="TotalRow" />
                 <input type="button" class="btn btn-danger" id="reset" value="重新分配">
             </div>
         </div>
-            }
-</form>
+        }
+    </form>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="exampleModalLongTitle">員工姓名</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form method="post" action="~/ProjectDetails/LeaveMessageTag" class="form-horizontal">
-                <input type="hidden" id="HideTaskGUID" name="TaskGUID" />
-                <div class="modal-body">
-                    <div class="container">
-                        <textarea placeholder="輸入留言" id="text" name="text" rows="5" style="overflow: hidden; word-wrap: break-word; resize: none; height: 160px; width:400px; "></textarea>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLongTitle">員工姓名</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" action="~/ProjectDetails/LeaveMessageTag" class="form-horizontal">
+                    <input type="hidden" id="HideTaskGUID" name="TaskGUID" />
+                    <div class="modal-body">
+                        <div class="container">
+                            <textarea placeholder="輸入留言" id="text" name="text" rows="5" style="overflow: hidden; word-wrap: break-word; resize: none; height: 160px; width:400px; "></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
-                    <button type="submit" class="btn btn-primary">確定留言</button>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
+                        <button type="submit" class="btn btn-primary">確定留言</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-@section script{
-<script>
+    @section script{
+        <script>
     $(document).ready(function ()
     {
         var topTable = $("#mappingTable>tbody");
         var submitCount = 0;
+        var flag = true;
         $(".draggable").draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
         $(".droppable").droppable({
             drop: function (event, ui)
             {
-                ui.draggable.appendTo($(this))
-                //ui.draggable.attr("style", "width:50px;").remove();
                 var empID = $(this).prev().children("p").data("tag");
                 var empName = $(this).prev().text();
                 var taskGUID = ui.draggable.data("tag2");
                 var taskName = ui.draggable.data("tag");
+                var flipPanel = $(".flip");
+
+                ui.draggable.text("").attr("style", "width:1px;float:left;background-color:lightgreen;border-radius: 70%");
+                ui.draggable.appendTo($(this))
 
                 var cell1hid = $("<input/>").attr("name", "EmployeeGUID" + submitCount).attr("type", "hidden").val(empID);
                 var cell2hid = $("<input/>").attr("name", "TaskGUID" + submitCount).attr("type", "hidden").val(taskGUID);
@@ -154,6 +196,8 @@
                 submitCount++;
                 var TotalRow = $("#mappingTable").find('tr').length - 1;
                 $("#rowcount").val(TotalRow);
+                flipPanel.effect("bounce", "slow");
+                if (flag) { flipPanel.append("<img src='/image/arrow.gif' style='height:15px;'>"); flag = false }
             }
         });
 
@@ -173,7 +217,7 @@
                 var EmpName = $(this).parent().prev().prev().text()
                 $('#exampleModalCenter').modal('show');
                 //$('#hidexampleModalLongTitle').val();
-                $('#exampleModalCenter h4').text("你想對 " + EmpName + " 說?");
+                $('#exampleModalCenter h4').text("對 " + EmpName + "說明工作注意事項");
                 $("#HideTaskGUID").val(taskGUID);
             }
         });
@@ -199,29 +243,48 @@
                     $.each(datas, function (idx, _task)
                     {
                         var li = $("<li></li>").text(_task.TaskName).attr("class", "list-group-item draggable")
-                            .attr("data-tag", _task.TaskName).attr("data-tag2", _task.TaskGUID).draggable();
+                            .attr("data-tag", _task.TaskName).attr("data-tag2", _task.TaskGUID).draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5});
                         docFrag.append(li);
                     })
                    list.html(docFrag);
             })
+            $(".droppable").empty();
         })
 
-        $("#taskitem").on("click", 'li', function () //點擊工作描述show出
+        $("#taskitem").on("mouseover", 'li', function () //點擊工作描述show出
         {
             var TaskGUID = $(this).data("tag2");
-            $.getJSON('@Url.Action("GetTaskDesc", "ProjectDetails")', { "TaskGUID": TaskGUID }, function (TaskDesc)
-                {
-                    var descArea = $("#taskdescription");
-                    var p;
-                    alert(TaskDesc);
-                    p = $("<p></p>").text(TaskDesc)
-                    descArea.append(p);
-                })
-            })
-    })
-</script>
-}
+            var descArea = $("#taskdescription");
+            descArea.empty();
+            $.ajax({
+                        url: '@Url.Action("GetTaskDesc", "ProjectDetails")',
+                        data: { "TaskGUID": TaskGUID},
+                        success: function (data)
+                        {
+                            var p;
+                            p = $("<p style='overflow-wrap: break-word'></p>").text(data)
+                            descArea.append(p);
+                        }
+                    });
+        })
 
-@section nav{
-    @Html.Partial("_PartialPageNav", "Shared")
-}
+        $('.progress-value > span').each(function () //Wordload bar
+        {
+            $(this).prop('Counter', 0).animate({
+                Counter: $(this).text()
+            }, {
+                    duration: 1500,
+                    easing: 'swing',
+                    step: function (now)
+                    {
+                        $(this).text(Math.ceil(now));
+                    }
+                });
+        });
+    })
+        </script>
+    }
+
+    @section nav{
+        @Html.Partial("_PartialPageNav", "Shared")
+    }
