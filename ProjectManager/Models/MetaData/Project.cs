@@ -90,6 +90,12 @@ namespace ProjectManager.Models
         public virtual ICollection<ProjectMembers> ProjectMembers { get; set; }
         [JsonIgnore]
         public virtual ProjectCategory ProjectCategory { get; set; }
+        [JsonIgnore]
+        public virtual Employee Employee { get; set; }
+        [JsonIgnore]
+        public virtual Employee Employee1 { get; set; }
+        [JsonIgnore]
+        public virtual Employee Employee2 { get; set; }
 
     }
 }
