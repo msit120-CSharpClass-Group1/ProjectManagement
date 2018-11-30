@@ -123,7 +123,7 @@ namespace ProjectManager.Controllers
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
 
-        public ActionResult EditTask()
+        public ActionResult EditTaskM()
         {
             if (Request.Form["TotalRow"] != "")
             {
@@ -145,7 +145,7 @@ namespace ProjectManager.Controllers
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).ToList();
+            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 2).GetLeafTasks().ToList();
             return Content(JsonConvert.SerializeObject(taskList), "application/json");
         }
 

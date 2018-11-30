@@ -21,7 +21,7 @@ namespace ProjectManager.Models
         public K Key;//EmpName
         public IEnumerable<T> value;
 
-        [DisplayFormat(DataFormatString = "{0:P1}")]
+        //[DisplayFormat(DataFormatString = "{0:P1}")]
         public int? Sum; //算工時
     }
 }

@@ -50,7 +50,7 @@
     </style>
 }
 
-<form method="post" action="~/ProjectDetails/EditTask" class="form-horizontal">
+<form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal">
     <div class="row no-gutters">
         <div class="col-4">
             <div class="flip">查看分配狀態</div>
@@ -76,16 +76,34 @@
                         <!--TaskArea End-->                       
                     </div>
                     <div class="card-footer bg-transparent border-success">
+                        <h6>工作負荷</h6>
                         @{
-
                             foreach (var item in ViewBag.Workload as IEnumerable<Group<string, DisplayWorkloadVM>>)
-                            {                               
+                            {
+                                int? valid = item.Sum;
+                                int total = 40;
+
+                                if (valid > total)
+                                {
+                                    valid = (int)valid - total;
+                                }
+
+                                double percent = (double)(valid * 100) / total;
+
                                 if (_projectMember.Employee.EmployeeName == item.Key)
                                 {
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-striped bg-success" style="width:@item.Sum%;">@item.Sum%</div>
-                                    </div>
-                                    break;
+                                    if (percent >= 80)
+                                    {
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@percent %</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
+                                        </div>
+                                    }
                                 }
                             }
                         }
@@ -155,13 +173,14 @@
         $(".droppable").droppable({
             drop: function (event, ui)
             {
-                ui.draggable.text("").attr("style","width:1px;float:left;background-color:lightgreen;border-radius: 70%;")
-                ui.draggable.appendTo($(this))
                 var empID = $(this).prev().children("p").data("tag");
                 var empName = $(this).prev().text();
                 var taskGUID = ui.draggable.data("tag2");
                 var taskName = ui.draggable.data("tag");
                 var flipPanel = $(".flip");
+
+                ui.draggable.text("").attr("style", "width:1px;float:left;background-color:lightgreen;border-radius: 70%");
+                ui.draggable.appendTo($(this))
 
                 var cell1hid = $("<input/>").attr("name", "EmployeeGUID" + submitCount).attr("type", "hidden").val(empID);
                 var cell2hid = $("<input/>").attr("name", "TaskGUID" + submitCount).attr("type", "hidden").val(taskGUID);
@@ -222,11 +241,12 @@
                     $.each(datas, function (idx, _task)
                     {
                         var li = $("<li></li>").text(_task.TaskName).attr("class", "list-group-item draggable")
-                            .attr("data-tag", _task.TaskName).attr("data-tag2", _task.TaskGUID).draggable();
+                            .attr("data-tag", _task.TaskName).attr("data-tag2", _task.TaskGUID).draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5});
                         docFrag.append(li);
                     })
                    list.html(docFrag);
             })
+            $(".droppable").empty();
         })
 
         $("#taskitem").on("mouseover", 'li', function () //點擊工作描述show出
