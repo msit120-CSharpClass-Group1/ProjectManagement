@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "專案階段";
 }
-<a href="~/ProjectStatus/Insert" class="btn btn-warning">新增專案階段</a>
+<a href="~/ProjectStatus/Insert" class="btn btn-info">新增專案階段</a>
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -18,7 +18,7 @@
             <tr>
                 <td>@_projectstatus.ProjectStatusID</td>
                 <td>@_projectstatus.ProjectStatusName</td>
-                <td><a href="~/ProjectStatus/Edit/@_projectstatus.ProjectStatusID" class="btn btn-primary">修改</a></td>
+                <td><a href="~/ProjectStatus/Edit/@_projectstatus.ProjectStatusID" class="btn btn-info">修改</a></td>
                 <td><a href="~/ProjectStatus/Delete/@_projectstatus.ProjectStatusID" class="btn btn-danger">刪除</a></td>
             </tr>
         }

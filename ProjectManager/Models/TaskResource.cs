@@ -14,11 +14,11 @@ namespace ProjectManager.Models
     
     public partial class TaskResource
     {
-        public Nullable<System.Guid> TaskGUID { get; set; }
+        public System.Guid TaskGUID { get; set; }
         public System.Guid ResourceGUID { get; set; }
         public int ResourceID { get; set; }
         public string ResourceName { get; set; }
-        public Nullable<int> CategoryID { get; set; }
+        public int CategoryID { get; set; }
         public string Unit { get; set; }
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }

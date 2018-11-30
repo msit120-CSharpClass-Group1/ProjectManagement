@@ -1,10 +1,8 @@
 ﻿@using ProjectManager.Models;
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "員工";
 }
-
-<h2>Index</h2>
-<a href="~/Employees/Add" class="btn btn-primary">新增員工</a>
+<a href="~/Employees/Add" class="btn btn-info">新增員工</a>
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -37,7 +35,7 @@
                 }
             </td>
             <td>@_employee.JobTitle.TitleName</td>
-            <td><a href="~/Employees/Edit/@_employee.EmployeeGUID" class="btn btn-primary">修改</a></td>
+            <td><a href="~/Employees/Edit/@_employee.EmployeeGUID" class="btn btn-info">修改</a></td>
             <td><a href="~/Employees/Delete/@_employee.EmployeeGUID" class="btn btn-danger">刪除</a></td>
         </tr>
         }
