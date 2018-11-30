@@ -122,6 +122,7 @@
     <Content Include="Content\Main.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\skin-black.css" />
+    <Content Include="Content\WorkloadBar.css" />
     <Content Include="Content\_all-skins.css" />
     <Content Include="Global.asax" />
     <Content Include="image\001.jpg" />

@@ -6,6 +6,7 @@
 
 @section style
 {
+    <link href="~/Content/WorkloadBar.css" rel="stylesheet" />
     <style>
         /*div {
             border: 0.5px solid pink
@@ -64,14 +65,18 @@
         <div class="col-6" id="projectMemberDivL1">
             @foreach (var _projectMember in Model)
             {
-                <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
-                    <div class="card-header bg-transparent border-success"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
-                    <ul class="card-body text-success droppable" style="height:50px;">
-                        <!--TaskArea Start-->
-                        <!--TaskArea End-->
-                    </ul>
-                    <div class="card-footer bg-transparent border-success"><a class="btn btn-success" style="float:right" data-toggle="modal" data-target="#exampleModalCenter"><i class="far fa-sticky-note">新增備註</i></a></div>
+            <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
+                <div class="card-header bg-transparent border-success" style="width:180px"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
+                <div class="card-body text-success droppable" style="height:50px;">
+                    <!--TaskArea Start-->
+                    <!--TaskArea End-->
                 </div>
+                <div class="card-footer bg-transparent border-success">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-success" style="width:50%;">50%</div>
+                    </div>
+                </div>
+            </div>
             }
         </div>
         @section asideRight{
@@ -217,7 +222,21 @@
                     p = $("<p></p>").text(TaskDesc)
                     descArea.append(p);
                 })
-            })
+        })
+
+        $('.progress-value > span').each(function ()
+        {
+            $(this).prop('Counter', 0).animate({
+                Counter: $(this).text()
+            }, {
+                    duration: 1500,
+                    easing: 'swing',
+                    step: function (now)
+                    {
+                        $(this).text(Math.ceil(now));
+                    }
+                });
+        });
     })
 </script>
 }
