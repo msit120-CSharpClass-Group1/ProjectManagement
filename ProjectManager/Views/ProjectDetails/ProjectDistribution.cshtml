@@ -28,16 +28,29 @@
         .treegrid-expander-collapsed {
             background-image: url(../image/expand.png);
         }
-    </style>
+
+        .AlarmIcon {
+            font-size: 120%;
+            color: #dc3545;
+            margin-right: 5px;
+        }        
+
+        thead {
+            background-color: black;
+            color: white;
+            text-align: center;
+        }
+    </style>    
 }
 @section nav{
     @Html.Partial("_PartialPageNav", "Shared")
 }
-
+<div class="container">
 @foreach (var item in (List<Project>)ViewBag.Projects)
 {
     <h4>@item.ProjectID &nbsp; @item.ProjectName</h4>
 }
+</div>
 
 @*<input id="isGanttShowed" type="checkbox" /> Show Gantt*@
 <div id="tasks_layout" class="container">
@@ -45,31 +58,53 @@
     <div id="treeGridContainer"></div>
 </div>
 
-<div class="modal fade" style="top:50px;" id="DeleteAlarmModal" tabindex="-1" role="dialog" aria-labelledby="DeleteExpModalLabel" aria-hidden="true">
+<!--Modal For Delete Comfirm-->
+<div class="modal fade" style="top:120px;" id="DeleteAlarmModal" tabindex="-1" role="dialog" aria-labelledby="DeleteAlarmModalTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius:3px 4px;">
             <div class="modal-header">
-                <h5 class="modal-title" id="DeleteAlarmModalTitle">確定要刪除嗎?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <div class="modal-body pl-3">
-                    <p></p>
+                <h5 class="modal-title" id="DeleteAlarmModalTitle"><span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>刪除確認</h5>
+            </div>
+            <div class="modal-body pl-3">
+                <div class="row">
+                    <h6 id="deleteAlarm" class="col-12"></h6>
                 </div>
+                <div id="deleteAlarm_detail"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" id="btn_ConfirmDelete" class="btn btn-danger">確認刪除</button>
+                <button type="button" id="btn_ConfirmDelete" class="btn btn-danger">全部刪除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal For Delete Rejected-->
+<div class="modal fade" style="top:150px;" id="DeleteRejectedModal" tabindex="-1" role="dialog" aria-labelledby="DeleteAlarmModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:3px 4px;">
+            <div class="modal-header">
+                <h5 class="modal-title"><span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>不可刪除</h5>
+            </div>
+            <div class="modal-body pl-3">
+                <div class="row">
+                    <h6 id="deleteRejectedMsg" class="col-12"></h6>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">確定</button>
             </div>
         </div>
     </div>
 </div>
 
 
+
 @section asideRight{
     <div class="container text-light mt-3">
         <h4 id="ModeTitle">新增工作項目</h4>
-        <form id="TaskForm" class="form-horizontal " action="@Url.Action("InsertTask", "ProjectDetails")" method="post">
+        <form id="TaskForm" class="form-horizontal" method="put">
+            @*action="@Url.Action("InsertTask", "ProjectDetails")" method="post"*@
             <input name="ParentTaskGUID" id="ParentTaskGUID" type="text" hidden />
             <input name="TaskGUID" id="TaskGUID" type="text" hidden />@**@
             <div class="form-group">
@@ -131,7 +166,7 @@
                 <button id="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
                 <button id="ConfirmedAddBtn" type="button" class="btn btn-primary py-1 px-5">確認新增</button>
                 <button id="ConfirmedModifyBtn" type="button" class="btn btn-primary py-1 px-5">確認修改</button>
-                <br /><button id="DeleteBtn" class="btn btn-danger py-1 px-3 mt-3">刪除工作項目</button>
+                <br /><button id="DeleteBtn" type="button" class="btn btn-danger py-1 px-3 mt-3">刪除工作項目</button>
             </div>
         </form>
     </div>
@@ -164,7 +199,6 @@
                         }
                         SetRightAsideToModify();
                     $.getJSON('@Url.Action("EditTask", "ProjectDetails")', { TaskGUID: $(this).attr('data-taskGUID') }, function (task) {
-                            console.log(task)
                             $('#TaskName').val(task.TaskName);
                             $('#TaskStatusID').val(task.TaskStatusID);
                             $('#Tag').val(task.Tag);
@@ -211,7 +245,8 @@
             }
             $('#ConfirmedAddBtn').click(function () {
                 var data = taskForm.serialize();
-                $.post("@Url.Action("InsertTask", "ProjectDetails")",data, function () {
+                $.post("@Url.Action("InsertTask", "ProjectDetails")", data, function () {
+                    $('.rightOpenbtn').click();
                      treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
                 });
             });
@@ -223,13 +258,36 @@
             });
             $('#CancelBtn').click(function () { $('.rightOpenbtn').click(); });
             $('#DeleteBtn').click(function () {
-                var data = taskForm.serialize();
-                $.getJSON("@Url.Action("GetChildTaskCount", "ProjectDetails")", data, function (strCount) {
-                    if (strCount != "0") {
-                        $('#DeleteAlarmModal').find('p').text("工作項目 " + $('#TaskName').val() + " 有" + strCount + "個子項目");
+                $.ajax({
+                    url: "@Url.Action("GetChildTaskCount", "ProjectDetails")",
+                    method: "get",
+                    data: taskForm.serialize(),
+                    dataType: "json"
+                }).done(function (data) {
+                    if (parseInt(data) != 0) {
+                        $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + " </em>  有" + data + "個子項目");
+                        $('#btn_ConfirmDelete').text('全部刪除');
+                        $('#DeleteAlarmModal').modal('show');
+                    } else {
+                        $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + "  將被刪除");
+                        $('#btn_ConfirmDelete').text('刪除');
                         $('#DeleteAlarmModal').modal('show');
                     }
-
+                });
+            });
+            $('#btn_ConfirmDelete').click(function () {
+                $.ajax({
+                    url: "@Url.Action("DeleteTasks", "ProjectDetails")",
+                    method: "post",
+                    data: taskForm.serialize(),
+                    dataType: "json"
+                }).done(function (data) {
+                    $('#DeleteAlarmModal').modal('hide');
+                    if (data.length > 0) {
+                        $('#deleteRejectedMsg').text(data);
+                        $('#DeleteRejectedModal').modal('show');
+                    }
+                    treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
                 });
             });
 
@@ -240,8 +298,9 @@
             border: 0px solid;
         }
 
-        .table-bordered tr {
+        .table-bordered tbody tr {
             border: 1px solid #dee2e6;
+            background-color:white;
         }
     </style>
 }

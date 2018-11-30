@@ -2,6 +2,7 @@
 using ProjectManager.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -85,7 +86,7 @@ namespace ProjectManager.Controllers
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());            
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
             return View(projectRepo.Find(_projectGUID));
         }
         [HttpPost]
@@ -158,13 +159,13 @@ namespace ProjectManager.Controllers
             var TaskName = tasks.GetCollections().Where(t => t.TaskGUID == TaskGUID).First().Description;
             return Content(TaskName);
         }
-        
+
         public ActionResult ProjectDistribution()
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());            
-            var tasks = taskRepo.GetCollections().OrderBy(t=>t.TaskID)
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
                 .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
             ViewBag.Projects = projectRepo.GetCollections().Where(p => p.ProjectGUID == _projectGUID).ToList();
             ViewBag.TaskStatuses = new SelectList(new Repository<TaskStatus>().GetCollections(), "TaskStatusID", "TaskStatusName");
@@ -186,7 +187,7 @@ namespace ProjectManager.Controllers
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());            
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
             task.ProjectGUID = _projectGUID;
             task.TaskGUID = Guid.NewGuid();
             taskRepo.Add(task);
@@ -209,28 +210,45 @@ namespace ProjectManager.Controllers
             recentTask.EstEndDate = _task.EstEndDate;
             recentTask.StartDate = _task.StartDate;
             recentTask.EndDate = _task.EndDate;
+            recentTask.Description = _task.Description;
 
             taskRepo.Update(recentTask);
             return RedirectToAction("ProjectDistribution");
         }
         [HttpPost]
-        public ActionResult DeleteTask(Tasks _task)
+        public ActionResult DeleteTasks(Tasks _task)
         {
             Tasks recentTask = taskRepo.Find(_task.TaskGUID);
             var childTasks = recentTask.GetAllChildTasks();
-            foreach (var child in childTasks.Reverse())
+            string errorMsg = "";
+            try
             {
-                taskRepo.Delete(taskRepo.Find(child.TaskGUID));
+                if (childTasks.Count() != 0)
+                {
+                    foreach (var child in childTasks.Reverse())
+                    {
+                        taskRepo.Delete(taskRepo.Find(child.TaskGUID));
+                    }
+                }
+                taskRepo.Delete(recentTask);
             }
-            taskRepo.Delete(recentTask);
-            return RedirectToAction("ProjectDistribution");
+            catch (SqlException ex)
+            {
+                errorMsg = "欲刪除的工作項目，有費用產生，不可刪除。";
+            }
+            catch (Exception ex)
+            {
+                errorMsg = "欲刪除的工作項目，有費用產生，不可刪除。";
+            }
+            
+            return Json(errorMsg, JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
         public ActionResult GetChildTaskCount(Tasks _task)
         {
             Tasks recentTask = taskRepo.Find(_task.TaskGUID);
             var childTasks = recentTask.GetAllChildTasks();
-
-            return Content(childTasks.Count().ToString(), "application/json");
+            return Json(childTasks.Count(),JsonRequestBehavior.AllowGet);
         }
     }
 }
