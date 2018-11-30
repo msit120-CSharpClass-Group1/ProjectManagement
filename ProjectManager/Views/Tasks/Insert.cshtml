@@ -1,0 +1,83 @@
+﻿@model IEnumerable<ProjectManager.Models.Tasks>
+@{
+    ViewBag.Activity = "任務";
+    ViewBag.Title = "新增任務";
+}
+
+<form method="post" action="~/Tasks/Insert" class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-2 control-label">直屬任務名稱</label>
+        <div class="col-sm-2">
+            <select class="form-control" name="ParentTaskGUID">
+                <option value="0">-</option>
+                @foreach (var _tasks in Model)
+                {
+                    <option value="@_tasks.TaskGUID">@_tasks.TaskName</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">任務名稱</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" name="TaskName" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">預計開始日期</label>
+        <div class="col-sm-2">
+            <input type="date" class="form-control" name="EstStartDate" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">預計結束日期</label>
+        <div class="col-sm-2">
+            <input type="date" class="form-control" name="EstEndDate" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">實際開始日期</label>
+        <div class="col-sm-2">
+            <input type="date" class="form-control" name="StartDate" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">實際結束日期</label>
+        <div class="col-sm-2">
+            <input type="date" class="form-control" name="EndDate" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">預計工作時間</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" name="EstWorkTime" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">實際工作時間</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" name="WorkTime" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">標籤</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" name="Tag" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">描述</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" name="Description" />
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">新增</button>
+        </div>
+    </div>
+</form>
+
+

@@ -10,7 +10,14 @@
     <div class="form-group">
         <label class="col-md-2 control-label">員工名稱</label>
         <div class="col-md-2">
-            <input id="mbGUID" type="hidden" name="members" value="@Model.MemberGUID" />
+            <input type="hidden" name="EmployeeGUID" value="@ViewBag.EmployeeGUID" id="empGUID"/>
+            @*<select id="select2">
+                <option value="0">請選擇</option>
+                @foreach (var _employee in (List<Employee>)ViewBag.EmployeeName)
+                {
+                    <option>@_employee.EmployeeName</option>
+                }
+            </select>*@
             <input type="text" name="EmployeeName" value="@Model.Employee.EmployeeName" />
             @*@Html.DropDownList("EmployeeGUID", (SelectList)ViewBag.employee, "請選擇")*@
         </div>
@@ -19,7 +26,7 @@
     <div class="form-group">
         <label class="col-md-2 control-label">權限等級</label>
         <div class="col-md-2">
-            <input type="hidden" name="PermissionsGUID" value="@Model.PermissionsGUID" id="pMGUID" />
+            <input type="hidden" name="PermissionsGUID" value="@Model.PermissionsGUID" id="perGUID" />
             <select id="select1">
                 <option value="0">請選擇</option>
                 @foreach (var _permission in (List<Permissions>)ViewBag.PermissonName)
@@ -44,11 +51,23 @@
     $("#select1").change(function () {
         var PermissionsName = $(this).find(":selected").val();
         $.ajax({
-                url: '@Url.Action("LoadMemberGUID", "Members")',
+                url: '@Url.Action("LoadPermissionsGUID", "Members")',
                 data: { "PermissionsName": PermissionsName},
                 success: function (data)
                 {
-                    $("#pMGUID").val(data);       
+                    $("#perGUID").val(data);       
+                }
+               });
+    });
+
+    $("#select2").change(function () {
+        var EmployeeName = $(this).find(":selected").val();
+        $.ajax({
+                url: '@Url.Action("LoadEmpolyeeGUID", "Members")',
+                data: { "EmployeeName": EmployeeName},
+                success: function (data)
+                {
+                    $("#empGUID").val(data);       
                 }
                });
     });

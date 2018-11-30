@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a9db548aea894af79cca73d6cdff3121" Name="Diagram1">
+      <Diagram DiagramId="a9db548aea894af79cca73d6cdff3121" Name="Diagram1" ZoomLevel="73">
         <EntityTypeShape EntityType="ProjectManagementModel.Calendar" Width="1.5" PointX="5" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.Dashboard" Width="1.5" PointX="5" PointY="7.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.Department" Width="1.5" PointX="0.5" PointY="3" IsExpanded="true" />
