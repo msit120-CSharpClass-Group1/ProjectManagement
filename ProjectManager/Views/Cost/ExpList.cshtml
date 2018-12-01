@@ -1,15 +1,12 @@
-﻿@model IEnumerable<ProjectManager.Models.DisplayResource>
+﻿@model IEnumerable<ProjectManager.Models.ProjectResourceVM>
 @{
     ViewBag.Activity = "成本管理";
     ViewBag.Title = "費用管理";
 }
 
 @section style{
-    <style>
 
-        table {
-            background-color: white
-        }
+    <style>
 
         thead {
             background-color: darkcyan;
@@ -17,6 +14,16 @@
             text-align: center;
         }
 
+            thead a, thead a:hover {
+                color: white;
+                text-decoration: none;
+            }
+
+            thead i {
+                float: right;
+                height: 24px;
+                padding: 4px 0;
+            }
     </style>
 }
 <div>
@@ -150,64 +157,88 @@
 
 @section asideRight{
     <div class="container text-light mt-3" style="min-width:350px;">
-        <form id="f_EditResource">
+        <form class="needs-validation" id="f_EditResource" novalidate>
             <h4 id="asideTitle" style="display:inline">新增專案費用</h4>
             <button id="btn_reset" type="reset" class="btn btn-danger ml-3">清除重填</button>
-            <div class="form-group">
-                <label for="ResourceName">費用名稱：</label>
-                <input id="ResourceGUID" name="ResourceGUID" style="display:none;" />
-                <input id="ResourceName" name="ResourceName" class="form-control" style="width:18em;" />
+            <div>
+                <div class="row col-12">
+                    <div class="form-group mb-0">
+                        <label for="ResourceName">費用名稱：</label>
+                        <input id="ResourceGUID" name="ResourceGUID" style="display:none;" />
+                        <input id="ResourceName" name="ResourceName" class="form-control" style="width:18em;" required />
+                        <div class="invalid-tooltip">
+                            費用名稱不可為空
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="form-group mt-3 mb-0">
+                        <lable for="date">費用發生日期：</lable>
+                        <input id="date" name="date" type="date" class="form-control d-inline" required />
+                        <div class="invalid-tooltip">
+                            請選擇日期
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="form-group mt-3 mb-0">
+                        <lable for="TaskGUID">費用歸屬工作名稱：</lable>
+                        <select id="TaskGUID" name="TaskGUID" class="form-control custom-select" required>
+                            <option value="">請先選擇專案</option>
+                        </select>
+                        <div class="invalid-tooltip">
+                            請選擇工作項目
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="form-group mt-3 mb-0">
+                        <lable for="CategoryID">費用類別：</lable><br />
+                        @Html.DropDownList("CategoryID", (SelectList)ViewBag.ExpCats, "請選擇類別", new { @class = "form-control custom-select", required = true })
+                        <div class="invalid-tooltip">
+                            請選擇費用類別
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="form-group mr-5  mt-3 mb-0">
+                        <lable for="UnitPrice">單價：</lable>
+                        <input id="UnitPrice" name="UnitPrice" class="form-control" style="width:7em;" required />
+                        <div class="invalid-tooltip">
+                            請輸入單價
+                        </div>
+                    </div>
+                    <div class="form-group  mt-3 mb-0">
+                        <lable for="Quantity">數量：</lable>
+                        <input id="Quantity" name="Quantity" class="form-control" style="width:7em;" required />
+                        <div class="invalid-tooltip">
+                            請輸入數量
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="form-group  mt-3 mb-0">
+                        <lable for="Description">備註：</lable>
+                        <textarea id="Description" name="Description" class="form-control" style="width:300px;height:150px;resize:none"></textarea>
+                        <div class="invalid-tooltip">                            
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="row col-12">
-                <div class="form-group">
-                    <lable for="date">費用發生日期：</lable>
-                    <input id="date" name="date" type="date" class="form-control d-inline" />
+                <div class="row col-12">
+                    <div id="formBtns" class="mt-3 mx-auto text-center">
+                        <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
+                        <button id="btn_ConfirmAdd" type="button" class="btn btn-primary py-1 px-3">確認新增</button>
+                        <button id="btn_ConfirmModify" type="button" class="btn btn-success py-1 px-3">確認修改</button>
+                        @*<button id="btn_Validate" type="button" class="btn btn-info py-1 px-3">驗證</button>*@
+                    </div>
                 </div>
-            </div>
-
-            <div class="row col-12">
-                <div class="form-group">
-                    <lable for="TaskGUID">費用歸屬工作名稱：</lable>
-                    <select id="TaskGUID" name="TaskGUID" class="form-control custom-select">
-                        <option>請先選擇專案</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row col-12">
-                <div class="form-group">
-                    <lable for="CategoryID">費用類別：</lable><br />
-                    @Html.DropDownList("CategoryID", (SelectList)ViewBag.ExpCats, "請選擇類別", new { @class = "form-control custom-select" })
-                </div>
-            </div>
-
-            <div class="row col-12">
-                <div class="form-group mr-5">
-                    <lable for="UnitPrice">單價：</lable>
-                    <input id="UnitPrice" name="UnitPrice" class="form-control" style="width:7em;" />
-                </div>
-                <div class="form-group">
-                    <lable for="Quantity">數量：</lable>
-                    <input id="Quantity" name="Quantity" class="form-control" style="width:7em;" />
-                </div>
-            </div>
-
-            <div class="row col-12">
-                <div class="form-group">
-                    <lable for="Description">備註：</lable>
-                    <textarea id="Description" name="Description" class="form-control" style="width:300px;height:150px;resize:none"></textarea>
-                </div>
-            </div>
-
-            <div class="row col-12">
-                <div id="formBtns" class="mt-1 mx-auto text-center">
-                    <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
-                    <button id="btn_ConfirmAdd" type="button" class="btn btn-primary py-1 px-3">確認新增</button>
-                    <button id="btn_ConfirmModify" type="button" class="btn btn-success py-1 px-3">確認修改</button>
-                </div>
-            </div>
-        </form>
+</form>
     </div>
 }
 
@@ -219,7 +250,7 @@
 
             function LoadProjects()
             {
-                var optionlabel = $("<option></option>").text("請選擇專案");
+                var optionlabel = $("<option></option>").text("請選擇專案").val("");
                 $("#Select_ProjectName").html(optionlabel);
                 $("#result").hide();
 
@@ -261,7 +292,7 @@
                 var ProjectGuid = $("#Select_ProjectName>:selected").data('projectguid');
                 $.getJSON("/Cost/GetTaskListByProjectGuid", { ProjectGuid: ProjectGuid }, function (tasks)
                 {
-                    var optionlabel = $("<option></option>").text("請選擇工作");
+                    var optionlabel = $("<option></option>").text("請選擇工作").val("");
                     var docFrag = $(document.createDocumentFragment());
                     docFrag.append(optionlabel);
                     $.each(tasks, function (index, task)
@@ -283,32 +314,157 @@
                 $("#ResourceGUID").val("");
             }
 
+            $("#btn_reset").click(function ()
+            {
+                $('#f_EditResource').removeClass('was-validated');
+            })
+
             $("#btn_CancelEdit").click(function ()
             {
                 $('#myRightsidenav').slideUp();
+                $('#f_EditResource').removeClass('was-validated');
             })
 
             $("#btn_ConfirmAdd").click(AddResource);
-
             function AddResource()
             {
-                var data = $("#f_EditResource").serialize();
-                $.post("/Cost/AddTaskResource", data, function ()
+                var form = document.getElementById("f_EditResource")
+                var data = $(form).serialize();
+
+                if (form.checkValidity() && Validate())
                 {
-                    LoadResources();
-                });
+                    $.post("/Cost/AddTaskResource", data, function ()
+                    {
+                        LoadResources();
+                    });
+                }
+                else
+                {
+                    form.classList.add('was-validated');
+                }
             }
 
             $("#btn_ConfirmModify").click(UpdateResource);
-                        
             function UpdateResource()
             {
-                var data = $("#f_EditResource").serialize();
-                $.post("/Cost/UpdateTaskResource", data, function ()
+                var form = document.getElementById("f_EditResource")
+                var data = $(form).serialize();
+
+                if (form.checkValidity() && Validate())
                 {
-                    LoadResources();
-                });
-                $('#myRightsidenav').slideUp();
+                    $.post("/Cost/UpdateTaskResource", data, function ()
+                    {
+                        LoadResources();
+                    });
+                    $('#myRightsidenav').slideUp();
+                }
+                else
+                {
+                    form.classList.add('was-validated');
+                }
+            }
+
+            //輸入驗證
+            $("#ResourceName").keyup(function ()
+            {
+                var regexp = /^[\u4e00-\u9fa5_a-zA-Z0-9]*$/;
+                var NameCheck = regexp.test($(this).val());
+                var invalidTip = $(this).siblings(".invalid-tooltip");
+
+                if (!NameCheck)
+                {
+                    invalidTip.show();
+                    invalidTip.html("名稱不可包含特殊字元")
+                }
+                else if ($(this).val() == "")
+                {
+                    invalidTip.show();
+                    invalidTip.html("名稱不可為空")
+                }
+                else
+                {
+                    invalidTip.hide();
+                }
+            })
+            $("#UnitPrice").keyup(function ()
+            {
+                var regexp = /^([\d]+).?[\d]{0,4}$/;
+                var UnitPriceCheck = regexp.test($("#UnitPrice").val());
+                var invalidTip = $(this).parent("div").children(".invalid-tooltip");
+
+                if (!UnitPriceCheck)
+                {
+                    invalidTip.show();
+                    invalidTip.html("單價必須為小數位不超過4位之數字")
+                }
+                else if ($(this).val() == "")
+                {
+                    invalidTip.show();
+                    invalidTip.html("單價不可為空")
+                }
+                else
+                {
+                    invalidTip.hide();
+                }
+            })
+            $("#Quantity").keyup(function ()
+            {
+                var regexp = /^([\d]+)$/;
+                var QuantityCheck = regexp.test($(this).val());
+                var invalidTip = $(this).parent("div").children(".invalid-tooltip");
+
+                if (!QuantityCheck)
+                {
+                    invalidTip.show();
+                    invalidTip.html("數量必須為整數")
+                }
+                else if ($(this).val() == "")
+                {
+                    invalidTip.show();
+                    invalidTip.html("數量不可為空")
+                }
+                else
+                {
+                    invalidTip.hide();
+                }
+            })
+            $("#Description").keyup(function ()
+            {
+                var regexp = /^[\u4e00-\u9fa5_a-zA-Z0-9]*$/;
+                var DescriptionCheck = regexp.test($(this).val());
+                var invalidTip = $(this).parent("div").children(".invalid-tooltip");
+
+                if (!DescriptionCheck)
+                {
+                    invalidTip.show();
+                    invalidTip.html("備註內容不可包含特殊字元")
+                }
+                else
+                {
+                    invalidTip.hide();
+                }
+            })
+
+            function Validate()
+            {
+                var regexp_Name = /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/;
+                var regexp_Num = /^([\d]+).?[\d]{0,4}$/;
+                var regexp_Description = /^[\u4e00-\u9fa5_a-zA-Z0-9]*$/;
+                var NameCheck = regexp_Name.test($("#ResourceName").val());
+                var UnitPriceCheck = regexp_Num.test($("#UnitPrice").val());
+                var QuantityCheck = regexp_Num.test($("#Quantity").val());
+                var DescriptionCheck = regexp_Description.test($("#Description").val());
+                                
+                //console.log("NameCheck:" + NameCheck);
+                //console.log("UnitPriceCheck:" + UnitPriceCheck);
+                //console.log("QuantityCheck:" + QuantityCheck);
+                //console.log("DescriptionCheck:" + DescriptionCheck);
+
+                var result = NameCheck && UnitPriceCheck && QuantityCheck && DescriptionCheck
+
+                //console.log("result：" + result);
+
+                return result;
             }
 
             function Binding()
@@ -366,10 +522,31 @@
                     $("#dd_Subtot").text(Subtotal);
                     $("#dd_Description").text(Description);
                 }
+
+                $('.pagination a').click(function (e)
+                {
+                    e.preventDefault();
+                    var Action = $(this).attr("href");
+                    $("#PartialView").load(Action, function ()
+                    {
+                        $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+                        Binding();
+                    });
+                })
+
+                $('#tb_TaskResources > thead a').click(function (e)
+                {
+                    e.preventDefault();
+                    var Action = $(this).attr("href");
+                    $("#PartialView").load(Action, function ()
+                    {
+                        $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+                        Binding();
+                    });
+                })
             }
 
             $("#btn_ConfirmDelete").click(DeleteResource);
-
             function DeleteResource()
             {
                 var ResourceGuid = this.dataset.resourceguid;
@@ -380,11 +557,6 @@
                 });
             }
 
-            $("#date").change(function ()
-            {
-                console.log($(this).val());
-            })
-            
         });
     </script>
 }

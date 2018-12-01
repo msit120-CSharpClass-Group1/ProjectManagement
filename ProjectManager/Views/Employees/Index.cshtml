@@ -1,0 +1,44 @@
+﻿@using ProjectManager.Models;
+@{
+    ViewBag.Title = "員工";
+}
+<a href="~/Employees/Add" class="btn btn-info">新增員工</a>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>員工編號</th>
+            <th>員工名稱</th>
+            <th>部門</th>
+            <th>直屬主管</th>
+            <th>職稱</th>
+            <th>修改</th>
+            <th>刪除</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var _employee in (List<Employee>)ViewBag.employees)
+        {
+        <tr>
+            <td>@_employee.EmployeeID</td>
+            <td>@_employee.EmployeeName</td>
+            <td>@_employee.Department.DepartmentName</td>
+
+            <td>
+                @if (_employee.ManagerGUID != null)
+                {
+                    @_employee.Employee2.EmployeeName
+
+                }
+                else
+                {
+                    <text>-</text>
+                }
+            </td>
+            <td>@_employee.JobTitle.TitleName</td>
+            <td><a href="~/Employees/Edit/@_employee.EmployeeGUID" class="btn btn-info">修改</a></td>
+            <td><a href="~/Employees/Delete/@_employee.EmployeeGUID" class="btn btn-danger">刪除</a></td>
+        </tr>
+        }
+    </tbody>
+</table>
+

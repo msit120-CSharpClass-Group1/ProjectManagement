@@ -3,7 +3,7 @@
     ViewBag.Title = "職稱";
 }
 
-<a href="~/JobTitle/Insert" class="btn btn-warning">新增職稱</a>
+<a href="~/JobTitle/Insert" class="btn btn-info">新增職稱</a>
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -19,7 +19,7 @@
             <tr>
                 <td>@Html.DisplayFor(p => _jobTitle.TitleID)</td>
                 <td>@Html.DisplayFor(p => _jobTitle.TitleName)</td>
-                <td><a href="~/JobTitle/Edit/@_jobTitle.TitleGUID" class="btn btn-primary">修改</a></td>
+                <td><a href="~/JobTitle/Edit/@_jobTitle.TitleGUID" class="btn btn-info">修改</a></td>
                 <td><a href="~/JobTitle/Delete/@_jobTitle.TitleGUID" class="btn btn-danger">刪除</a></td>
             </tr>
         }

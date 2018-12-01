@@ -1,9 +1,9 @@
 ﻿@model IEnumerable<ProjectManager.Models.Department>
 @{
-    ViewBag.Title = "Insert";
+    ViewBag.Activity = "部門";
+    ViewBag.Title = "新增部門";
 }
 
-<h2>新增部門</h2>
 <form method="post" action="~/Department/Insert" class="form-horizontal">
     <div class="form-group">
         <label class="col-sm-2 control-label">直屬部門名稱</label>
@@ -26,7 +26,7 @@
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default">新增</button>
+            <button type="submit" class="btn btn-info">新增</button>
         </div>
     </div>
 </form>

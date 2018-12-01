@@ -1,9 +1,8 @@
 ﻿@model IEnumerable<ProjectManager.Models.Department>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "部門";
 }
-<h2>部門</h2>
-<a class="btn btn-default" href="~/Department/Insert/">新增部門</a>
+<a href="~/Department/Insert/" class="btn btn-info">新增部門</a>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -30,8 +29,8 @@
                     }
                 </td>
                 <td>@_department.DepartmentName</td>
-                <td><a class="btn btn-default" href="~/Department/Edit/@_department.DepartmentGUID">修改</a></td>
-                <td><a class="btn btn-default" href="~/Department/Delete/@_department.DepartmentGUID">刪除</a></td>
+                <td><a class="btn btn-info" href="~/Department/Edit/@_department.DepartmentGUID" >修改</a></td>
+                <td><a class="btn btn-danger" href="~/Department/Delete/@_department.DepartmentGUID">刪除</a></td>
             </tr>
         }
     </tbody>
