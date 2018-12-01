@@ -42,7 +42,7 @@
                 <input name="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
             </div>
         </div>
-        <div class="row ">
+        <div class="row" id="ActualDurationGroup">
             <div class="col-6 form-group">
                 @Html.LabelFor(m => m.StartDate)
                 @{
@@ -92,6 +92,34 @@
         </div>
     </form>
 </div>
+
+@section script{
+    <script>
+        $(document).ready(function () {
+            $('#RequiredDeptGUID').change(GetEmployees);
+            $('#ProjectStatusID').change(IsProjectInProgress);
+            IsProjectInProgress();
+
+            function GetEmployees() {
+                $.getJSON("@Url.Action("GetEmployeesByDept","Projects")", { DeptGUID : $(this).val()}, function (data) {
+                    var docFrag = $(document.createDocumentFragment());
+                    $.each(data, function (index,emp) {
+                        var opt = $('<option></option>').text(emp.EmployeeName).val(emp.EmployeeGUID);
+                        docFrag.append(opt);                       
+                    });
+                    $('#RequiredDeptPMGUID').html(docFrag);
+                });
+            }
+            function IsProjectInProgress() {
+                if ($('#ProjectStatusID').children(':selected').text() == "進行中") {
+                    $('#ActualDurationGroup').hide();
+                } else {
+                    $('#ActualDurationGroup').show();
+                }
+            }
+        });
+    </script>    
+}
 
 
 
