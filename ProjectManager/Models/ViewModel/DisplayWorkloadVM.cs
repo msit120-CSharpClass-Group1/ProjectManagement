@@ -20,6 +20,6 @@ namespace ProjectManager.Models
     {
         public K Key;
         public IEnumerable<T> value;
-        public int? Sum; //算工時
+        public int? Sum; 
     }
 }

@@ -64,6 +64,17 @@ namespace ProjectManager.Controllers
             var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID);
             return Content(JsonConvert.SerializeObject(pjmb), "application/json");
         }
+
+        public ActionResult TaskExist(Guid? memberGUID)
+        {
+            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID).Select(t=>t.EmployeeGUID).FirstOrDefault();
+            if (q!=null)
+            {
+                return Content("HasTask");
+            }
+            return Content("NoTask");
+        }
+
         public ActionResult ProjectReport(Guid? ProjectGUID)
         {
             if (ProjectGUID != null)

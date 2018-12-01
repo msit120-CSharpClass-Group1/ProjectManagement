@@ -1,0 +1,66 @@
+﻿@using ProjectManager.Models;
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .card-container {
+        font-family: 'Open Sans', sans serif;
+        font-size: 120px;
+        font-weight: bold;
+        width: 400px;
+        height: 250px;
+        margin: 80px auto;
+        border-radius: 10px;    }
+
+    .card {
+        height: 100%;
+        border-radius: 10px;
+        width: 100%;
+        transform-style: preserve-3d;
+    }
+
+    .front,
+    .back {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        justify-content: center;
+        align-items: center;
+        backface-visibility: hidden;
+    }
+
+    .front {
+        color: #fff;
+        background: #2196f3;
+    }
+
+    .back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: rotateY(180deg);
+        color: #2196f3;
+        background: #fff;
+    }
+</style>
+<h2>Performance Review</h2>
+
+<div class="container" style="height:200px">
+            @foreach (var item in (List<Project>)ViewBag.InProgress)
+            {
+                <div class="card-container">
+                    <div class="card">
+                        <div class="front">
+                            <a href="~/Performance/InProgressProject?ProjectGUID=@item.ProjectGUID" data-ProjectGUID="@item.ProjectGUID"></a>
+                            <p style="font-size:30px">@item.ProjectName</p>
+                        </div>
+                        <div class="back">
+                            B
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    

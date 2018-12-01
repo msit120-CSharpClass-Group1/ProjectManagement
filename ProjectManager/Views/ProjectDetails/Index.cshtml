@@ -43,9 +43,9 @@
             cursor: pointer;
             font-family: 'Arial';
         }
-        .rounded-circle
-        {
-            margin:2px;
+
+        .rounded-circle {
+            margin: 2px;
         }
     </style>
 }
@@ -54,7 +54,7 @@
     <div class="row">
         <div class="col-sm">
             <label>選擇部門</label>
-            <select id="sel1">                
+            <select id="sel1">
                 <option>所有部門</option>
                 @foreach (var _dep in Model)
                 {
@@ -63,10 +63,10 @@
             </select>
             <div id="teamcount" style="float:right">
                 <div class="flip"><i class="fas fa-users"></i>目前團隊成員</div>
-                <div class="panel">
+                <div class="panel" id="teamPanel">
                     @foreach (var _ProjectMemeber in (List<ProjectMembers>)ViewBag.ThisProjectMember)
                     {
-                        <img  src="~/image/avatar.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID"/>
+                        <img src="~/image/avatar.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" />
                     }
                 </div>
             </div>
@@ -89,8 +89,29 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">     
+                <a class="btn btn-danger" href="@Url.Action("AssignTask","ProjectDetails")">點我查看成員目前承接工作</a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="no">取消</button>
+                <button type="button" class="btn btn-primary" id="yes">確定移出團隊</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section script{
-    <script>
+<script>
     $(document).ready(function ()
     {
         var selecter = $("#sel1");
@@ -133,8 +154,7 @@
                         url: '@Url.Action("AddProjectMember", "ProjectDetails")',
                         data: { "memberID": memberGUID},
                         success: function ()
-                        {
-                         /*   alert("success Insert"); *///when DB insert data success,must append empImg In teamCount Div
+                        {                      
                             ReloadTeamCount();
                         }
                         , error: function () { alert(memberName+" 已存在於此專案")}
@@ -160,11 +180,10 @@
             $.getJSON('@Url.Action("ReloadTeamCount", "ProjectDetails")', { "projectID": $("#PJGUID").text() }, function (datas)
             {
                 var docFrag = $(document.createDocumentFragment());
-                var teamcountDIV = $("#teamcount");
                 var panel = $(".panel");
                 $.each(datas, function (idx, _emp)
                 {
-                    var empImg = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("title", _emp.EmployeeName);               
+                    var empImg = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("title", _emp.Employee.EmployeeName).attr("data-guid", _emp.EmployeeGUID)
                     docFrag.append(empImg);
                 })
                 panel.html(docFrag);
@@ -178,30 +197,52 @@
             });
         });
 
-        $(".panel img").mouseenter(function ()
-        {
-            $(this).attr("src", "/image/CancelIcon.png").attr("class", "rounded-circle").attr("style","opacity:0.4");
+        $("#teamPanel").on("mouseenter", "img", function (){
+            $(this).attr("src", "/image/CancelIcon.png").attr("class", "rounded-circle").attr("style", "opacity:0.4");
         })
-        $(".panel img").mouseleave(function () {
+        $("#teamPanel").on("mouseleave", "img", function () {
             $(this).attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("style", "opacity:1");
         })
 
-        $(".panel img").click(function ()
-        {          
-            var circleimg = $(this);
-            $.ajax({
-                        url: '@Url.Action("DeleteProjectMember", "ProjectDetails")',
-                data: { "memberID": circleimg.data("guid")},
-                        success: function ()
-                        {
-                            circleimg.remove();
-                            circleimg.next("p").remove();
-                        }
-                    });
+        $("#teamPanel").on("click", "img", function () {
+              var circleimg = $(this);
+            var EmpName = circleimg.attr("title");
+            var memberGUID = circleimg.data("guid");
+             $.ajax({
+                    url: '@Url.Action("TaskExist", "ProjectDetails")',
+                    data: { "memberGUID": memberGUID },
+                 success: function (data)
+                 {
+                     if (data != "NoTask") {
+                         $('#myModal').modal('show');
+                         $("#myModalLabel").text(EmpName + " 還有承接工作! 確定要移出團隊嗎?");
+                     }
+                     else
+                     {
+                         RemoveMember();
+                     }
+                 }
         })
 
+            $("#yes").click(function ()
+            {
+                RemoveMember();
+                $('#myModal').modal('hide');
+            })
+
+            function RemoveMember()
+            {
+                  $.ajax({
+                             url: '@Url.Action("DeleteProjectMember", "ProjectDetails")',
+                             data: { "memberID": memberGUID },
+                              success: function (){
+                               circleimg.remove();
+                            }
+                          });
+            }
+        })
     })
-    </script>
+</script>
 }
 
 @section nav{
