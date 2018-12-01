@@ -259,7 +259,11 @@
             .checkListCkeck i {
                 color: #000;
                 width: 20px;
+                display:none;
             }
+        .show {
+            display:block;
+        }
 
         .checkListContent {
             word-break: break-word;
@@ -333,11 +337,11 @@
             <span class="checklist-completed-text hide quie">待辦清單的所有事項都完成囉！</span>
         </div>
         <div class="checkLists">
-            <div class="checkListItem">
+            @*<div class="checkListItem">
                 <div class="checkListCkeck"></div>
                 <div class="checkListContent">@td.TaskDetailName</div>
                 <div class="cardDetailDelete"><i class="far fa-minus-square"></i></div>
-            </div>
+            </div>*@
         </div>
         <div class="listNewItem">
             <textarea name="newItem" id="newItem">新增項目...</textarea>
@@ -393,17 +397,31 @@
                         $('.desContent>textArea').text(data.Description);
 
                     });
-                    });
+                });
                 $.ajax({
-                    type: 'Get',
+                    type: 'Post',
                     url: '@Url.Action("GetDetail", "Myboard")',
                     data: { id: cardID },
                     dataType: 'json'
                 }).done(function (datas) {
-                        console.log(datas);
+                    $('.checkLists').html("");
+                    $(datas).each(function (id, data) {
+                        var checkListItem = $('<div class="checkListItem"></div>');
+                        var checkListCkeck = $('<div class="checkListCkeck" data-statusID="' + data.TaskDetailStatusID + '"  data-detailGuid="' + data.TaskDetailGUID + '"><i class="fas fa-check"></i></div>');
+                        checkListItem.append(checkListCkeck);
+                        if (data.TaskDetailStatusID === 2)
+                        {
+                            checkListCkeck.children().attr("Style", "display: inline;");     
+                        }
+                       checkListItem.append($('<div class="checkListContent"></div>').text(data.TaskDetailName));
+                        checkListItem.append($('<div class="cardDetailDelete"><i class="far fa-minus-square"></i></div>'));
+                        $('.checkLists').append(checkListItem);
+                        
+                    });
                 });
+                
                 badgeText = $(this).find('#badge-text');
-
+                
 
             });
 
@@ -414,23 +432,20 @@
             }).blur(function () {
                 btnInsert.hide();
             });
-            var cardDetailID = 0;
             $('.btn-insert').mousedown(function () {
                 if (cardID !== null) {
-                    cardDetailID += 1;
                     var userNewList = $('#newItem').val();
                     var checkListItem = $('<div class="checkListItem"></div>');
-                    checkListItem.append('<div class="checkListCkeck"><i class="fas fa-check"></i></div>');
-                    checkListItem.append('<div class="checkListContent" id="list' + cardDetailID + '"></div>');
-                    checkListItem.append('<div class="cardDetailDelete"><i class="far fa-minus-square"></i></div>');
+                    checkListItem.append($('<div class="checkListCkeck" data-statusID="1"><i class="fas fa-check"></i></div>'));
+                    var statusID  = $('<div class="checkListCkeck" data-statusID="1"><i class="fas fa-check"></i></div>').attr("data-statusID");
+                    checkListItem.append($('<div class="checkListContent"></div>').text(userNewList));
+                    checkListItem.append($('<div class="cardDetailDelete"><i class="far fa-minus-square"></i></div>'));
                     $('.checkLists').append(checkListItem);
-                    $('#list' + cardDetailID).text(userNewList);
                     $('#newItem').val("新增項目...");
-
                     $.ajax({
                         type: 'Post',
                         url: '@Url.Action("InsertDetailTask", "Myboard")',
-                        data: { TaskGUID: cardID, TaskDetailName: userNewList },
+                        data: { TaskGUID: cardID, TaskDetailName: userNewList, TaskDetailStatusID: statusID },
                         dataType: "json"
                     }).done(function (datas) {
                         badgeText.text(datas);
@@ -445,10 +460,9 @@
             function editContent() {
                 editbtn();
                 var edittext = $(this);
-                var id = edittext.attr('id');
                 var btn = $('<button type="button" class="btn btn-edit btn-light btn-sm ">修改</button>');
                 $('.cardDetailDelete').hide();
-                var editinput = $('<input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm id="'+id+'/>');
+                var editinput = $('<input type="text" class="form-control edit-input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm id="/>');
                 $(this).after(editinput.val(edittext.text()));
                 $(this).parent().after(btn);
                 btn.click(savebtn);
@@ -457,7 +471,7 @@
             }
             function editbtn() {
                 var editinput = $('.checkListItem>input');
-                var edittext = $('<div class="checkListContent" id="' + editinput.attr('id') + '"></div>');
+                var edittext = $('<div class="checkListContent"></div>');
                 editinput.after(edittext.html(editinput.val()));
                 edittext.click(editContent);
                 editinput.remove();
@@ -469,8 +483,57 @@
             }
             $('#newItem').focus(editbtn);
 
-
         });
+
+        $(".checkLists").on('click', '.checkListCkeck', function () {
+            $(this).children().toggle();
+            
+            if ($(this).children().is(':hidden')) {
+
+                $(this).attr({ 'data-statusID': '1' });  
+
+            } else
+            {
+                $(this).attr({ 'data-statusID': '2' });  
+               
+            }
+            var taskDetailStatusID = $(this).attr("data-statusID");
+            var taskDetailGUID = $(this).attr("data-detailguid");
+            $.ajax({
+                type: "Post",
+                url: '@Url.Action("GetDetailStatus", "Myboard")',
+                data: { "id": taskDetailGUID ,"TaskDetailStatusID": taskDetailStatusID },
+                dataType: 'json'
+            }).done();
+           
+        });
+
+        $(".checkLists").on('mousedown', ':button', function () {
+            var editinputTxt = $(this).parent().find('.edit-input').val();
+            var taskDetailGUID = $(this).parent().find('.checkListCkeck').attr('data-detailguid');
+            $.ajax({
+                type: "Post",
+                url: '@Url.Action("EditTaskDatail", "Myboard")',
+                data: { "id": taskDetailGUID, "TaskDetailName": editinputTxt },
+                dataType: 'json'
+            }).done();
+
+            
+        });
+
+        $(".checkLists").on('mousedown', '.cardDetailDelete', function () {
+            var taskDetailGUID = $(this).parent().find('.checkListCkeck').attr('data-detailguid');
+            $(this).parent().children('.checkListItem').html("");
+            $(this).parent().children('.checkListItem').remove();
+            
+            $.ajax({
+                type: "Post",
+                url: '@Url.Action("DeleteTaskDatail", "Myboard")',
+                data: { "id": taskDetailGUID },
+                dataType: 'json'
+            }).done();
+        });
+        
 
     </script>
 }
