@@ -7,6 +7,7 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize(Roles = "管理員")]
     public class TaskStatusController : Controller
     {
         private IRepository<TaskStatus> taskStatusRepository = new Repository<TaskStatus>();

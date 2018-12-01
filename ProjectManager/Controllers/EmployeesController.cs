@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize(Roles = "管理員")]
     public class EmployeesController : Controller
     {
         // GET: Employees

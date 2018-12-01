@@ -8,6 +8,7 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize(Roles = "管理員")]
     public class ProjectStatusController : Controller
     {
         private IRepository<ProjectStatus> ProStatusRepository = new Repository<ProjectStatus>();
