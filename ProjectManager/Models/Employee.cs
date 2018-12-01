@@ -30,7 +30,7 @@ namespace ProjectManager.Models
         }
     
         public System.Guid EmployeeGUID { get; set; }
-        public int EmployeeID { get; set; }
+        public Nullable<int> EmployeeID { get; set; }
         public string EmployeeName { get; set; }
         public Nullable<System.Guid> ManagerGUID { get; set; }
         public Nullable<System.Guid> DepartmentGUID { get; set; }

@@ -14,7 +14,6 @@ namespace ProjectManager.Controllers
         private IRepository<Employee> employeeRepository = new Repository<Employee>();
         private IRepository<Department> departmentRepository = new Repository<Department>();
         private IRepository<JobTitle> jobTitleRepository = new Repository<JobTitle>();
-        private IRepository<Permissions> permissionsRepository = new Repository<Permissions>();
 
 
         public ActionResult Index()
@@ -27,10 +26,9 @@ namespace ProjectManager.Controllers
             ViewBag.employees = employeeRepository.GetCollections().ToList();
             ViewBag.department = departmentRepository.GetCollections().ToList();
             ViewBag.jobTitle = jobTitleRepository.GetCollections().ToList();
-            ViewBag.permissions = permissionsRepository.GetCollections().ToList();
             return View();
         }
-        public ActionResult _Add(Employee employee,string PermissionsGUID)
+        public ActionResult _Add(Employee employee)
         {
             var addEmployeeID = employeeRepository.GetCollections().Select(n => n.EmployeeID).Max();
             if (addEmployeeID < 100000)
@@ -43,15 +41,7 @@ namespace ProjectManager.Controllers
             }
             employee.EmployeeGUID = Guid.NewGuid();
             employee.EmployeeID = addEmployeeID;
-            Members members = new Members();
-            members.MemberGUID = Guid.NewGuid();
-            members.EmployeeGUID = employee.EmployeeGUID;
-            members.MemberID = employee.EmployeeID.ToString();
-            members.Password = employee.EmployeeID.ToString();
-            members.CreateDate = DateTime.Now;
-            members.PermissionsGUID = new Guid(PermissionsGUID);
             employeeRepository.Add(employee);
-            memberRepository.Add(members);
             return RedirectToAction("Index", "Employees");
         }
         public ActionResult Edit(Guid id)
@@ -61,13 +51,11 @@ namespace ProjectManager.Controllers
             ViewBag.employees = employeeRepository.GetCollections().ToList();
             ViewBag.department = departmentRepository.GetCollections().ToList();
             ViewBag.jobTitle = jobTitleRepository.GetCollections().ToList();
-            ViewBag.permissions = permissionsRepository.GetCollections().ToList();
             return View();
         }
-        public ActionResult _Edit(Employee employee, string PermissionsGUID)
+        public ActionResult _Edit(Employee employee)
         {
             var members = memberRepository.GetCollections().Where(n => n.EmployeeGUID == employee.EmployeeGUID).FirstOrDefault();
-            members.PermissionsGUID = new Guid(PermissionsGUID);
             memberRepository.Update(members);
             employeeRepository.Update(employee);
             return RedirectToAction("Index", "Employees");
