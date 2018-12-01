@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "待辦事項狀態";
 }
-<a href="~/TaskDetailStatus/Insert" class="btn btn-warning">新增事項</a>
+<a href="~/TaskDetailStatus/Insert" class="btn btn-info">新增事項</a>
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -18,7 +18,7 @@
             <tr>
                 <td>@_taskDetailStatus.TaskDetailStatusID</td>
                 <td>@_taskDetailStatus.TaskDetailStatusName</td>
-                <td><a href="~/TaskDetailStatus/Edit/@_taskDetailStatus.TaskDetailStatusID" class="btn btn-primary">修改</a></td>
+                <td><a href="~/TaskDetailStatus/Edit/@_taskDetailStatus.TaskDetailStatusID" class="btn btn-info">修改</a></td>
                 <td><a href="~/TaskDetailStatus/Delete/@_taskDetailStatus.TaskDetailStatusID" class="btn btn-danger">刪除</a></td>
             </tr>
         }
