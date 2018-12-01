@@ -46,8 +46,7 @@ namespace ProjectManager.Controllers
             pm.ProjectGUID = new Guid(Session["ProjectGUID"].ToString());
             pm.EmployeeGUID = memberID;
             projectMembers.Add(pm);
-            return Content("html...");
-            //return RedirectToAction("ProjectReport", "ProjectDetails");
+            return RedirectToAction("Index", "ProjectDetails");
         }
 
         public ActionResult DeleteProjectMember()
@@ -56,8 +55,7 @@ namespace ProjectManager.Controllers
             Guid memberID = new Guid(Request.QueryString["memberID"]);
             Guid InvitePJGUID = new Guid(Session["ProjectGUID"].ToString());
             projectMembers.Delete(projectMembers.Find(memberID, InvitePJGUID));
-            return Content("html...");
-            //return RedirectToAction("ProjectReport", "ProjectDetails");
+            return RedirectToAction("Index", "ProjectDetails");
         }
 
         public ActionResult ReloadTeamCount()
@@ -112,14 +110,8 @@ namespace ProjectManager.Controllers
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            ViewBag.LoadTask = tasks.GetCollections().Where(t=>t.TaskStatusID ==2 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
-
-            //todo 工時改為百分比顯示
-            var Workload = from t in tasks.GetCollections().Where(t=>t.EmployeeGUID!=null/* && t.ProjectGUID == SendprojectGUID*/)
-                               group t by t.Employee.EmployeeName into g
-                               select new Group<string,DisplayWorkloadVM > { Key = g.Key, Sum = g.Sum(e=>e.EstWorkTime)};            
-
-            ViewBag.Workload = Workload;
+            ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 2 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
+            ViewBag.Workload = tasks.GetCollections().GetTeamWorkLoad();
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
 

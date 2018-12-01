@@ -2,7 +2,6 @@
 @model IEnumerable<ProjectManager.Models.Department>
 @{
     ViewBag.Title = "專案成員邀請";
-    //Layout = "~/Views/Shared/_LayoutPage1.cshtml";
 }
 
 @section style{
@@ -44,13 +43,18 @@
             cursor: pointer;
             font-family: 'Arial';
         }
+        .rounded-circle
+        {
+            margin:2px;
+        }
     </style>
 }
 
 <div class="container">
     <div class="row">
         <div class="col-sm">
-            <select id="sel1">
+            <label>選擇部門</label>
+            <select id="sel1">                
                 <option>所有部門</option>
                 @foreach (var _dep in Model)
                 {
@@ -58,11 +62,11 @@
                 }
             </select>
             <div id="teamcount" style="float:right">
-                <div class="flip"><i class="fas fa-users"></i></div>
+                <div class="flip"><i class="fas fa-users"></i>目前團隊成員</div>
                 <div class="panel">
                     @foreach (var _ProjectMemeber in (List<ProjectMembers>)ViewBag.ThisProjectMember)
                     {
-                        <img src="~/image/avatar.png" class="rounded-circle" /><p>@_ProjectMemeber.Employee.EmployeeName</p>
+                        <img  src="~/image/avatar.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID"/>
                     }
                 </div>
             </div>
@@ -160,9 +164,8 @@
                 var panel = $(".panel");
                 $.each(datas, function (idx, _emp)
                 {
-                    var empImg = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle");
-                    var empP = $("<p></p>").text(_emp.Employee.EmployeeName);
-                    docFrag.append([empImg, empP]);
+                    var empImg = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("title", _emp.EmployeeName);               
+                    docFrag.append(empImg);
                 })
                 panel.html(docFrag);
             })
@@ -174,6 +177,29 @@
                 $(".panel").slideToggle("slow");
             });
         });
+
+        $(".panel img").mouseenter(function ()
+        {
+            $(this).attr("src", "/image/CancelIcon.png").attr("class", "rounded-circle").attr("style","opacity:0.4");
+        })
+        $(".panel img").mouseleave(function () {
+            $(this).attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("style", "opacity:1");
+        })
+
+        $(".panel img").click(function ()
+        {          
+            var circleimg = $(this);
+            $.ajax({
+                        url: '@Url.Action("DeleteProjectMember", "ProjectDetails")',
+                data: { "memberID": circleimg.data("guid")},
+                        success: function ()
+                        {
+                            circleimg.remove();
+                            circleimg.next("p").remove();
+                        }
+                    });
+        })
+
     })
     </script>
 }

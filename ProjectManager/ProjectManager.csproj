@@ -129,6 +129,7 @@
     <Content Include="image\ajax-loader.gif" />
     <Content Include="image\arrow.gif" />
     <Content Include="image\avatar.png" />
+    <Content Include="image\CancelIcon.png" />
     <Content Include="image\collapse.png" />
     <Content Include="image\expand.png" />
     <Content Include="image\loading.gif" />
@@ -225,6 +226,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\JobTitleController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\PerfomanceController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\ProjectCategoryController.cs" />
     <Compile Include="Controllers\ProjectDetailsController.cs" />
@@ -416,7 +418,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Perfomance\" />
+  </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
