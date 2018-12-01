@@ -7,6 +7,7 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize(Roles = "管理員")]
     public class JobTitleController : Controller
     {
         private IRepository<JobTitle> jobTRepository = new Repository<JobTitle>();
