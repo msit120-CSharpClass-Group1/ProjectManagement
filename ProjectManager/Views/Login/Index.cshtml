@@ -127,7 +127,7 @@
                         </fieldset>
                         <div class="keepLoginFlex">
                             <label class="switch ">
-                                <input id="keepLogin" name="keepLogin" type="checkbox" >
+                                <input id="keepLogin" name="keepLogin" value="on" type="checkbox" >
                                 <span class="slider round"></span>
                             </label>
                             <p class="keepLogin">保持登入</p>
@@ -168,8 +168,8 @@
             $('#logIn').click(function () {
 
                 var MemberID = $('#logInMemberID').val();
-                var Password = $('#logInPassword').val(); 
-                var keepLogin = $('#keepLogin').val();
+                var Password = $('#logInPassword').val();
+                var keepLogin = $('#keepLogin').prop("checked");
                 var loginmsg = $('#logIntext');
                 if (loginmsg.hasClass('badge badge-danger')) {
                     loginmsg.text("");
