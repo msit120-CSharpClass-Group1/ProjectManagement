@@ -83,7 +83,18 @@ namespace ProjectManager.Controllers
                 Response.Cookies["ProjectGUID"].Value = ProjectGUID.ToString();
                 Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddDays(7);
             }
+
             return View();
+        }
+        public ActionResult RootTasksCompletedRate()
+        {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            var rootTasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).GetRootTasks();
+            ViewBag.RootTasks = rootTasks.Select(t=>t.TaskName);
+            ViewBag.RootTasksCompletedRate = rootTasks.GetRootTasksCompletedRate();
+            return Json("success",JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public ActionResult ProjectEdit()

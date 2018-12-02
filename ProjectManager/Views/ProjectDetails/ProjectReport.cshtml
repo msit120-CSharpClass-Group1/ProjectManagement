@@ -4,6 +4,39 @@
 }
 
 @section nav{
-    @Html.Partial("_PartialPageNav","Shared")
+    @Html.Partial("_PartialPageNav", "Shared")
 }
 
+<div class="row">
+    <div class="col-6">
+        <div id="RootTasksCompletedRateContainer" class="chart-container">
+            <canvas id="RootTasksCompletedRateChart"></canvas>
+        </div>
+    </div>
+    <div class="col-6"></div>
+</div>
+
+
+@section script{
+    <script src="~/Scripts/Chart.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var RootTasksChart = $('#RootTasksCompletedRateChart');
+            $.getJSON(@Url.Action("RootTasksCompletedRate", "ProjectDetails"), function (data) { });
+            TasksCompletedRateChart = new Chart(RootTasksChart, {
+                type: 'horizontalBar', data: {
+                    labels: ["Task1", "Task2", "Task3", "Task4", "Task5", "Task6"],
+                    datasets: [{
+                        label: "My First dataset",
+                        backgroundColor: '#007BFF',
+                        borderColor: '#007BFF',
+                        data: [0, 10, 5, 2, 20, 30],
+                    }]
+                }, option: {}
+            });
+
+
+
+        });
+    </script>
+}

@@ -7,6 +7,14 @@ namespace ProjectManager.Models
 {
     public static class TasksBL
     {
+        public enum Task_Status
+        {
+            Discussing = 1,
+            InProgress,
+            WaitForConfirmed,
+            Completed,
+            Ended
+        }
         /// <summary>
         /// 回傳帶有orderID、parentOrderID排序完成的List&lt;Task>
         /// </summary>
@@ -33,6 +41,33 @@ namespace ProjectManager.Models
             }
             return leafTasks;
         }
+        public static IEnumerable<Tasks> GetRootTasks(this IEnumerable<Tasks> tasks)
+        {
+            return tasks.Where(t => t.ParentTaskGUID == null).ToList();
+        }
+        public static IEnumerable<int> GetRootTasksCompletedRate(this IEnumerable<Tasks> rootTasks)
+        {
+            List<int> rootTasksCompletedRate = new List<int>();
+            TreeGridModel treeGrid = new TreeGridModel();
+            foreach (var root in rootTasks)
+            {
+                treeGrid.GetChildLeafTasks(root);
+                int completedLeafTaskCount = 0;
+                int totalLeafCount = treeGrid.ChildLeafTasks.Count();
+                foreach (var leaf in treeGrid.ChildLeafTasks)
+                {                    
+                    string status = (leaf.TaskStatusID ?? default(int)).ToString();
+                    Task_Status leaf_Status = (Task_Status)Enum.Parse(typeof(Task_Status), status);
+                    if (leaf_Status == Task_Status.Completed)
+                    {
+                        completedLeafTaskCount++;
+                    }
+                }
+                rootTasksCompletedRate.Add(completedLeafTaskCount / totalLeafCount * 100);
+            }
+
+            return rootTasksCompletedRate;
+        } 
         public static IEnumerable<Tasks> GetAllChildTasks(this Tasks task)
         {            
             TreeGridModel model = new TreeGridModel();
