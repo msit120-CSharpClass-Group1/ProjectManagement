@@ -154,7 +154,7 @@
                         url: '@Url.Action("AddProjectMember", "ProjectDetails")',
                         data: { "memberID": memberGUID},
                         success: function ()
-                        {                      
+                        {
                             ReloadTeamCount();
                         }
                         , error: function () { alert(memberName+" 已存在於此專案")}
@@ -204,8 +204,8 @@
             $(this).attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("style", "opacity:1");
         })
 
-        $("#teamPanel").on("click", "img", function () {
-              var circleimg = $(this);
+        $("#teamPanel").on("click", "img", function () { //直接由專案成員方塊刪除
+            var circleimg = $(this);
             var EmpName = circleimg.attr("title");
             var memberGUID = circleimg.data("guid");
              $.ajax({
@@ -238,7 +238,11 @@
                               success: function (){
                                circleimg.remove();
                             }
-                          });
+                });
+                if ($("#scrollDiv input").val() == memberGUID)
+                {
+                    $("#scrollDiv input").prop('checked', false);
+                }
             }
         })
     })

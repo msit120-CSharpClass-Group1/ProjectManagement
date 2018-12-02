@@ -94,19 +94,28 @@
                                 if (_projectMember.Employee.EmployeeName == item.Key)
                                 {
 
-                                    if (rawercent > 100)
+                                    if (rawercent >= 100 && rawercent < 200)
                                     {
                                         <div class="progress">
                                             <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
                                         </div>
+                                        break;
+                                    }
+                                    else if (rawercent > 200)
+                                    {
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped bg-danger" style="width:@percent%;">@rawercent %</div>
+                                        </div>
+                                        break;
                                     }
                                     else
                                     {
                                         <div class="progress">
                                             <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
                                         </div>
+                                        break;
                                     }
-                                }                              
+                                }
                             }
                         }
                     </div>

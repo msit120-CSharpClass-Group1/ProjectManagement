@@ -4,8 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a9db548aea894af79cca73d6cdff3121" Name="Diagram1">
-        <EntityTypeShape EntityType="ProjectManagementModel.Calendar" Width="1.5" PointX="5.25" PointY="27" />
+      <Diagram DiagramId="a9db548aea894af79cca73d6cdff3121" Name="Diagram1" ZoomLevel="88">
         <EntityTypeShape EntityType="ProjectManagementModel.Dashboard" Width="1.5" PointX="5.25" PointY="30.625" />
         <EntityTypeShape EntityType="ProjectManagementModel.Department" Width="1.5" PointX="0.75" PointY="12.875" />
         <EntityTypeShape EntityType="ProjectManagementModel.Employee" Width="1.5" PointX="3" PointY="15.75" />
@@ -28,7 +27,6 @@
         <EntityTypeShape EntityType="ProjectManagementModel.Tasks" Width="1.5" PointX="10.5" PointY="15.625" />
         <EntityTypeShape EntityType="ProjectManagementModel.TaskStatus" Width="1.5" PointX="8.25" PointY="12.5" />
         <EntityTypeShape EntityType="ProjectManagementModel.WidgetDetail" Width="1.5" PointX="7.5" PointY="30.875" />
-        <AssociationConnector Association="ProjectManagementModel.FK_Calendar_Employee" />
         <AssociationConnector Association="ProjectManagementModel.FK_Dashboard_Employee" />
         <AssociationConnector Association="ProjectManagementModel.FK_WidgetDetail_Dashboard" />
         <AssociationConnector Association="ProjectManagementModel.FK_Department_Department" />
@@ -61,6 +59,7 @@
         <AssociationConnector Association="ProjectManagementModel.FK_TaskResource_Tasks" />
         <AssociationConnector Association="ProjectManagementModel.FK_Tasks_TaskStatus" />
         <AssociationConnector Association="ProjectManagementModel.ProjectRelationDept" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Calendar" Width="1.5" PointX="1" PointY="21.125" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
