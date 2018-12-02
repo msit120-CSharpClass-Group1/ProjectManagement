@@ -215,6 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\CalendarController.cs" />
     <Compile Include="Controllers\CostController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
@@ -407,6 +408,7 @@
     <Content Include="Views\Tasks\Index.cshtml" />
     <Content Include="Views\Tasks\Insert.cshtml" />
     <Content Include="Views\Tasks\Edit.cshtml" />
+    <Content Include="Views\Calendar\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

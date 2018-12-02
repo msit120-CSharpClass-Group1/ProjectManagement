@@ -16,14 +16,12 @@ namespace ProjectManager.Models
     {
         public System.Guid CalendarGUID { get; set; }
         public Nullable<System.Guid> EmployeeGUID { get; set; }
-        public Nullable<System.DateTime> StartTime { get; set; }
-        public Nullable<System.DateTime> EndTime { get; set; }
-        public string EventTitle { get; set; }
-        public Nullable<int> Opacity { get; set; }
-        public Nullable<int> Red { get; set; }
-        public Nullable<int> Green { get; set; }
-        public Nullable<int> Blue { get; set; }
-    
-        public virtual Employee Employee { get; set; }
+        public string Subject { get; set; }
+        public string Description { get; set; }
+        public System.DateTime Start { get; set; }
+        public Nullable<System.DateTime> EndDay { get; set; }
+        public string ThemeColor { get; set; }
+        public bool IsFullDay { get; set; }
+        public int EventID { get; set; }
     }
 }
