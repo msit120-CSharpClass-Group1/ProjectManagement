@@ -190,10 +190,11 @@
                 editable: true,
                 eventDrop: function (event) {
                     var data = {
+                        CalendarGUID: guid(),
                         EventID: event.eventID,
                         Subject: event.title,
-                        Start: event.start.format('DD/MM/YYYY HH:mm A'),
-                        End: event.end != null ? event.end.format('DD/MM/YYYY HH:mm A') : null,
+                        Start: event.start.format('MM/DD/YYYY HH:mm A'),
+                        EndDay: event.end != null ? event.end.format('MM/DD/YYYY HH:mm A') : null,
                         Description: event.description,
                         ThemeColor: event.color,
                         IsFullDay: event.allDay
