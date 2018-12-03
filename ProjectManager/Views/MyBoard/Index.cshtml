@@ -407,7 +407,6 @@
         
     </style>
 }
-
 <h2> @Model.Project.First().ProjectName</h2>
 <div class="wrapper">
     <div class="boardSec">
@@ -684,7 +683,19 @@
                 });
             });
 
+        $(".checkLists").on('mousedown', '.cardDetailDelete', function () {
+            var taskDetailGUID = $(this).parent().find('.checkListCkeck').attr('data-detailguid');
+            $(this).parent().children('.checkListItem').html("");
+            $(this).parent().children('.checkListItem').remove();
+            
+            $.ajax({
+                type: "Post",
+                url: '@Url.Action("DeleteTaskDatail", "Myboard")',
+                data: { "id": taskDetailGUID },
+                dataType: 'json'
+            }).done();
         });
+        
 
 </script>
 }
