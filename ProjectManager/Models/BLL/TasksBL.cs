@@ -45,12 +45,13 @@ namespace ProjectManager.Models
         {
             return tasks.Where(t => t.ParentTaskGUID == null).ToList();
         }
-        public static IEnumerable<int> GetRootTasksCompletedRate(this IEnumerable<Tasks> rootTasks)
+        public static IEnumerable<int> GetRootTasksCompletedRate(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
         {
             List<int> rootTasksCompletedRate = new List<int>();
-            TreeGridModel treeGrid = new TreeGridModel();
+            TreeGridModel treeGrid = new TreeGridModel(tasksFromRepo.ToList());
             foreach (var root in rootTasks)
             {
+                treeGrid.ChildLeafTasks = new List<Tasks>();
                 treeGrid.GetChildLeafTasks(root);
                 int completedLeafTaskCount = 0;
                 int totalLeafCount = treeGrid.ChildLeafTasks.Count();
@@ -60,10 +61,23 @@ namespace ProjectManager.Models
                     Task_Status leaf_Status = (Task_Status)Enum.Parse(typeof(Task_Status), status);
                     if (leaf_Status == Task_Status.Completed)
                     {
-                        completedLeafTaskCount++;
+                       completedLeafTaskCount++;
                     }
                 }
-                rootTasksCompletedRate.Add(completedLeafTaskCount / totalLeafCount * 100);
+                int rate = 0;
+                if (totalLeafCount == 0)
+                {
+                    string status = (root.TaskStatusID ?? default(int)).ToString();
+                    Task_Status root_Status = (Task_Status)Enum.Parse(typeof(Task_Status), status);
+                    if (root_Status == Task_Status.Completed)
+                        rate = 100;
+                }
+                else
+                {
+                    rate = completedLeafTaskCount * 100 / totalLeafCount;
+                }
+
+                rootTasksCompletedRate.Add(rate);               
             }
 
             return rootTasksCompletedRate;

@@ -115,11 +115,11 @@
             <div class="row " id="ActualDurationGroup">
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().StartDate)
-                    <input name="StartDate" type="date" class="form-control d-inline" />
+                    <input name="StartDate" id="StartDate" type="date" class="form-control d-inline" />
                 </div>
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EndDate)
-                    <input name="EndDate" type="date" class="form-control d-inline" />
+                    <input name="EndDate" id="EndDate" type="date" class="form-control d-inline" />
                 </div>
             </div>
 
@@ -188,13 +188,13 @@
                     $('#RequiredDeptPMGUID').html(docFrag);
                 });
             }
-            function IsProjectInProgress() {
-                if ($('#ProjectStatusID').children(':selected').text() == "進行中") {
-                    $('#ActualDurationGroup').hide();
-                } else {
-                    $('#ActualDurationGroup').show();
-                }
-            }
+            //function IsProjectInProgress() {
+            //    if ($('#ProjectStatusID').children(':selected').text() == "進行中") {
+            //        $('#EndDate').hide();
+            //    } else {
+            //        $('#EndDate').show();
+            //    }
+            //}
 
         });
     </script>

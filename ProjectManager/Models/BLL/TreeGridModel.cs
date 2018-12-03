@@ -78,7 +78,7 @@ namespace ProjectManager.Models
         {            
             var NotLeafTasks = tasksFromRepo.Where(t => t.ParentTaskGUID != null)
                         .Select(t => t.ParentTaskGUID).Distinct().ToList();
-            var q = tasksFromRepo.Where(t => t.ParentTaskGUID == rootTask.TaskGUID);
+            var q = tasksFromRepo.Where(t => t.ParentTaskGUID != null && t.ParentTaskGUID == rootTask.TaskGUID);
             foreach (var task in q)
             {
                 if (!NotLeafTasks.Where(id=>id == task.TaskGUID).Any())

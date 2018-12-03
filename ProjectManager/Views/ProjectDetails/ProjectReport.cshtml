@@ -6,10 +6,17 @@
 @section nav{
     @Html.Partial("_PartialPageNav", "Shared")
 }
+@section style{
+<style>
+    .font-style { 
+        font-family: "Noto Sans CJK TC"; 
 
-<div class="row">
+    }
+</style>
+}
+<div class="row font-style" >
     <div class="col-6">
-        <div id="RootTasksCompletedRateContainer" class="chart-container">
+        <div id="RootTasksCompletedRateContainer" class="chart-container bg-light p-3">
             <canvas id="RootTasksCompletedRateChart"></canvas>
         </div>
     </div>
@@ -21,22 +28,53 @@
     <script src="~/Scripts/Chart.min.js"></script>
     <script>
         $(document).ready(function () {
+            Chart.defaults.global.defaultFontFamily = 'Noto Sans CJK TC';
+
             var RootTasksChart = $('#RootTasksCompletedRateChart');
-            $.getJSON(@Url.Action("RootTasksCompletedRate", "ProjectDetails"), function (data) { });
-            TasksCompletedRateChart = new Chart(RootTasksChart, {
-                type: 'horizontalBar', data: {
-                    labels: ["Task1", "Task2", "Task3", "Task4", "Task5", "Task6"],
-                    datasets: [{
-                        label: "My First dataset",
-                        backgroundColor: '#007BFF',
-                        borderColor: '#007BFF',
-                        data: [0, 10, 5, 2, 20, 30],
-                    }]
-                }, option: {}
-            });
+            var RootTasksCompletedRateData;
+            GetRootTasksCompletedRateData();
 
-
+            function GetRootTasksCompletedRateData() {
+                $.getJSON("@Url.Action("RootTasksCompletedRate", "ProjectDetails")", null, function (datas) {
+                    var TasksCompletedRateChart = new Chart(RootTasksChart, {
+                        type: 'horizontalBar',
+                        data: datas,
+                        options: {
+                            elements: {
+                                rectangle: {
+                                    borderWidth: 0,
+                                }
+                            },
+                            responsive: true,
+                            legend: {
+                                position: 'bottom',
+                            },
+                            title: {
+                                display: true,
+                                text: '根工作項目完成度',
+                                fontSize: 16
+                            },
+                            scales: {
+                                yAxes: [{
+                                    gridLines: { display: false }
+                                }],
+                                xAxes: [{
+                                    gridLines: { display: true },
+                                    ticks: {
+                                        min: 0,
+                                        max: 100,
+                                        stepSize: 10
+                                    }
+                                }]
+                            },
+                            
+                        }
+                    });
+                });
+            }
 
         });
     </script>
+    <style>
+    </style>
 }
