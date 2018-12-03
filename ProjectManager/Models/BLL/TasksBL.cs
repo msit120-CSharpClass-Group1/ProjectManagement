@@ -51,9 +51,9 @@ namespace ProjectManager.Models
         }
         public static IEnumerable<Group<string, DisplayWorkloadVM>>GetTeamWorkLoad (this IEnumerable<Tasks> tasks)
         {
-            Repository<Tasks> resourceRepo = new Repository<Tasks>();
-            var workload = resourceRepo.GetCollections().Where(t => t.EmployeeGUID != null).GroupBy(g => g.Employee.EmployeeName)
-                                           .Select(g => new Group<string, DisplayWorkloadVM> { Key = g.Key, Sum = g.Sum(e => e.EstWorkTime) });
+            Repository<Tasks> tasksRepo = new Repository<Tasks>();
+            var workload = tasksRepo.GetCollections().Where(t => t.EmployeeGUID != null && t.TaskStatusID ==2).GroupBy(g => g.Employee.EmployeeName)
+                                           .Select(g => new Group<string, DisplayWorkloadVM> { Key = g.Key, Sum = g.Sum(e => e.EstWorkTime) }).OrderByDescending(g=>g.Sum);
             return workload;
         }
     }
