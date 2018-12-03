@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjectManager.Models.Project>
+﻿@model IEnumerable<ProjectManager.Models.ProjectMembers>
 @{
     ViewBag.Title = "選擇專案";
 }
@@ -10,9 +10,9 @@
     }
     .projectLink {
         position: absolute;
-        width:100%;
-        height:100%;
-        display:block;
+        width: 100%;
+        height: 100%;
+        display: block;
     }
     .progressBar {
         position: absolute;
@@ -63,7 +63,7 @@
         <div class="progressBar"></div>
         <div class="bar"></div>
         <span class="barNum">50%</span>
-        <p>@p.ProjectName</p>
+        <p>@p.Project.ProjectName</p>
     </div>
     }
 </div>

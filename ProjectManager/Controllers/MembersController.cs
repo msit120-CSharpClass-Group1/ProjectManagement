@@ -12,10 +12,10 @@ namespace ProjectManager.Controllers
     {
         private IRepository<Members> memberRepository = new Repository<Members>();
         private IRepository<Permissions> permissionsRepository = new Repository<Permissions>();
+        private IRepository<Employee> empRepository = new Repository<Employee>();
         ProjectManagementEntities db = new ProjectManagementEntities();
         public ActionResult Index()
-        {
-          
+        {       
             ViewBag.members = memberRepository.GetCollections().ToList();
 
             return View();
