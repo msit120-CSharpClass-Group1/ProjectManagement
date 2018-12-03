@@ -335,6 +335,7 @@
     </Compile>
     <Compile Include="Models\ViewModel\BoardVM.cs" />
     <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
+    <Compile Include="Models\ViewModel\EmployeeInfo.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
