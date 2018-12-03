@@ -14,7 +14,6 @@ namespace ProjectManager.Controllers
         {
             ViewBag.InProgress = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 1).ToList();
             ViewBag.Closed = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 3).ToList();
-
             return View();
         }
     }
