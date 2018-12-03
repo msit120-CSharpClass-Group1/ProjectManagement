@@ -24,6 +24,11 @@
                 height: 24px;
                 padding: 4px 0;
             }
+
+        .invalid {
+            border-color: #dc3545 !important;
+        }
+
     </style>
 }
 <div>
@@ -317,12 +322,16 @@
             $("#btn_reset").click(function ()
             {
                 $('#f_EditResource').removeClass('was-validated');
+                $('.invalid-tooltip').hide();
+                $('.invalid').removeClass('invalid');
             })
 
             $("#btn_CancelEdit").click(function ()
             {
                 $('#myRightsidenav').slideUp();
                 $('#f_EditResource').removeClass('was-validated');
+                $('.invalid-tooltip').hide();
+                $('.invalid').removeClass('invalid');
             })
 
             $("#btn_ConfirmAdd").click(AddResource);
@@ -375,15 +384,18 @@
                 {
                     invalidTip.show();
                     invalidTip.html("名稱不可包含特殊字元")
+                    $(this).addClass("invalid");
                 }
                 else if ($(this).val() == "")
                 {
                     invalidTip.show();
                     invalidTip.html("名稱不可為空")
+                    $(this).addClass("invalid");
                 }
                 else
                 {
                     invalidTip.hide();
+                    $(this).removeClass("invalid");
                 }
             })
             $("#UnitPrice").keyup(function ()
@@ -396,15 +408,18 @@
                 {
                     invalidTip.show();
                     invalidTip.html("單價必須為小數位不超過4位之數字")
+                    $(this).addClass("invalid");
                 }
                 else if ($(this).val() == "")
                 {
                     invalidTip.show();
                     invalidTip.html("單價不可為空")
+                    $(this).addClass("invalid");
                 }
                 else
                 {
                     invalidTip.hide();
+                    $(this).removeClass("invalid");
                 }
             })
             $("#Quantity").keyup(function ()
@@ -416,16 +431,19 @@
                 if (!QuantityCheck)
                 {
                     invalidTip.show();
-                    invalidTip.html("數量必須為整數")
+                    invalidTip.html("數量必須為整數");
+                    $(this).addClass("invalid");
                 }
                 else if ($(this).val() == "")
                 {
                     invalidTip.show();
-                    invalidTip.html("數量不可為空")
+                    invalidTip.html("數量不可為空");
+                    $(this).addClass("invalid");
                 }
                 else
                 {
                     invalidTip.hide();
+                    $(this).removeClass("invalid");
                 }
             })
             $("#Description").keyup(function ()
@@ -437,11 +455,13 @@
                 if (!DescriptionCheck)
                 {
                     invalidTip.show();
-                    invalidTip.html("備註內容不可包含特殊字元")
+                    invalidTip.html("備註內容不可包含特殊字元");
+                    $(this).addClass("invalid");
                 }
                 else
                 {
                     invalidTip.hide();
+                    $(this).removeClass("invalid");
                 }
             })
 
@@ -478,7 +498,7 @@
                     $("#btn_ConfirmModify").show();
                     $('#myRightsidenav').slideDown();
 
-                    var Date = $(this).parents("tr").children("td:nth-child(1)").text();
+                    var DateArray = $(this).parents("tr").children("td:nth-child(1)").text().split('/');
                     var TaskGUID = $(this).parents("tr").children("td:nth-child(2)").data('taskguid');
                     var ResourceGuid = $(this).parents("tr").children("td:nth-child(3)").data('resourceguid');
                     var ResourceName = $(this).parents("tr").children("td:nth-child(3)").text();
@@ -488,8 +508,14 @@
                     var Description = $(this).parents("tr").children("td:nth-child(8)").text();
 
                     $("#ResourceGUID").val(ResourceGuid);
-                    $("#ResourceName").val(ResourceName);
-                    $("#date").val(Date.replace("/", "-").replace("/", "-"));
+                    $("#ResourceName").val(ResourceName);                    
+
+                    var year = DateArray[0];
+                    var month = DateArray[1].length == 1 ? "0" + DateArray[1] : DateArray[1];
+                    var day = DateArray[2].length == 1 ? "0" + DateArray[2] : DateArray[2];
+                    var formattedDate = year + "-" + month + "-" + day;
+
+                    $("#date").val(formattedDate);
                     $("#TaskGUID").val(TaskGUID);
                     $("#CategoryID").val(CatID);
                     $("#Quantity").val(Quantity);
