@@ -97,8 +97,8 @@
     <script>
         $(document).ready(function () {
             $('#RequiredDeptGUID').change(GetEmployees);
-            $('#ProjectStatusID').change(IsProjectInProgress);
-            IsProjectInProgress();
+            //$('#ProjectStatusID').change(IsProjectInProgress);
+            //IsProjectInProgress();
 
             function GetEmployees() {
                 $.getJSON("@Url.Action("GetEmployeesByDept","Projects")", { DeptGUID : $(this).val()}, function (data) {

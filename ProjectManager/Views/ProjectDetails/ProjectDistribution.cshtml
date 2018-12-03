@@ -229,6 +229,8 @@
                 $('#ConfirmedAddBtn').hide();
                 $('#ConfirmedModifyBtn').show();
                 $('#DeleteBtn').show();
+                $('#EstStartDate').unbind('change', bindingStartTime);
+                $('#EstEndDate').unbind('change', bindingEndTime);
 
             }
             function SetRightAsideToAdd() {
@@ -240,7 +242,13 @@
                 taskForm.find('input[type="text"]').val("");
                 taskForm.find('textarea').val("");
                 taskForm.find('input[type="date"]').val("@string.Format("{0:yyyy-MM-dd}", DateTime.Now)");
+                $('#EstStartDate').change(bindingStartTime );
+                $('#EstEndDate').change(bindingEndTime);
             }
+            function bindingStartTime() { $('#StartDate').val($(this).val()); };
+            function bindingEndTime() { $('#EndDate').val($(this).val()); };
+
+
             $('#ConfirmedAddBtn').click(function () {
                 var data = taskForm.serialize();
                 $.post("@Url.Action("InsertTask", "ProjectDetails")", data, function () {

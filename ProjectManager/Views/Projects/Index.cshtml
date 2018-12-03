@@ -105,11 +105,11 @@
             <div class="row ">
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstStartDate)
-                    <input name="EstStartDate" type="date" class="form-control d-inline" />
+                    <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" />
                 </div>
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstEndDate)
-                    <input name="EstEndDate" type="date" class="form-control d-inline" />
+                    <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" />
                 </div>
             </div>
             <div class="row " id="ActualDurationGroup">
@@ -175,8 +175,10 @@
             });
 
             $('#RequiredDeptGUID').change(GetEmployees);
-            $('#ProjectStatusID').change(IsProjectInProgress);
-            IsProjectInProgress();
+            //$('#ProjectStatusID').change(IsProjectInProgress);
+            $('#EstStartDate').change(function () { $('#StartDate').val($(this).val());}); 
+            $('#EstEndDate').change(function () { $('#EndDate').val($(this).val()); }); 
+
 
             function GetEmployees() {
                 $.getJSON("@Url.Action("GetEmployeesByDept","Projects")", { DeptGUID : $(this).val()}, function (data) {
