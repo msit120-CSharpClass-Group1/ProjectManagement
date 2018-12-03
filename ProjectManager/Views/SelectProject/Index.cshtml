@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjectManager.Models.Project>
+﻿@model IEnumerable<ProjectManager.Models.ProjectMembers>
 @{
     ViewBag.Title = "選擇專案";
 }
@@ -63,7 +63,7 @@
         <div class="progressBar"></div>
         <div class="bar"></div>
         <span class="barNum">50%</span>
-        <p>@p.ProjectName</p>
+        <p>@p.Project.ProjectName</p>
     </div>
     }
 </div>

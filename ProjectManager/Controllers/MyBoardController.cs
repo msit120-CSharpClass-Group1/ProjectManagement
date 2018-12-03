@@ -52,14 +52,15 @@ namespace ProjectManager.Controllers
             BoardVM VM = new BoardVM();
             VM.TaskDetail = td.GetCollections().Where(n => n.TaskGUID == id).ToList();
             return Json(VM.TaskDetail.Select(n => new { n.TaskDetailName, n.TaskDetailGUID, n.TaskDetailStatusID }).ToList());
-
-        public ActionResult DeleteTaskDatail(Guid id)
-        {
-            BoardVM VM = new BoardVM();
-            VM.TaskDetails = td.Find(id);
-            td.Delete(VM.TaskDetails);
-            return Json(true);
         }
+
+        //public ActionResult DeleteTaskDatail(Guid id)
+        //{
+        //    BoardVM VM = new BoardVM();
+        //    VM.TaskDetails = td.Find(id);
+        //    td.Delete(VM.TaskDetails);
+        //    return Json(true);
+        //}
         public ActionResult EditTaskStatusID(Guid id, int TaskStatusID)
         {
             BoardVM VM = new BoardVM();

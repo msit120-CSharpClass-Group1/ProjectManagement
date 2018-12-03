@@ -414,7 +414,7 @@
         {
             <div class="board">
                 <div class="listContent" data-taskStatusid="@s.TaskStatusID" id="listContent-@s.TaskStatusID" ondragover="dragoverHandler(event)" ondrop="dropHandler(event)">
-                    <div class="listHeader" ondragstart="return false">
+                    <div class="listHeader" @*ondragstart="return false"*@>
                         <div class="listHeaderTitle">@s.TaskStatusName</div>
                     </div>
                     @foreach (var t in Model.Tasks.Where(x => x.TaskStatusID == s.TaskStatusID))
@@ -683,18 +683,20 @@
                 });
             });
 
-        $(".checkLists").on('mousedown', '.cardDetailDelete', function () {
-            var taskDetailGUID = $(this).parent().find('.checkListCkeck').attr('data-detailguid');
-            $(this).parent().children('.checkListItem').html("");
-            $(this).parent().children('.checkListItem').remove();
+            $(".checkLists").on('mousedown', '.cardDetailDelete', function () {
+                var taskDetailGUID = $(this).parent().find('.checkListCkeck').attr('data-detailguid');
+                $(this).parent().children('.checkListItem').html("");
+                $(this).parent().children('.checkListItem').remove();
             
-            $.ajax({
-                type: "Post",
-                url: '@Url.Action("DeleteTaskDatail", "Myboard")',
-                data: { "id": taskDetailGUID },
-                dataType: 'json'
-            }).done();
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("DeleteTaskDatail", "Myboard")',
+                    data: { "id": taskDetailGUID },
+                    dataType: 'json'
+                }).done();
+            });
         });
+    
         
 
 </script>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjectManager.Models.Employee>
+﻿@model IEnumerable<ProjectManager.Models.ProjectMembers>
 @{
     ViewBag.Title = "Index";
 }
@@ -35,7 +35,7 @@
     {
         <div class="Member">
             <a class="MemberLink" href="@Url.Action("Index", "MyBoard",new { id= p.EmployeeGUID})"></a>
-            <p>@p.EmployeeName</p>
+            <p>@p.Employee.EmployeeName</p>
         </div>
     }
 </div>
