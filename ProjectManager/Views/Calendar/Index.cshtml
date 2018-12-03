@@ -42,19 +42,19 @@
 <div id="myModalSave" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Save Event</h4>
+                <h4 class="modal-title">新增事件</h4>
             </div>
             <div class="modal-body">
                 <form class="col-md-12 form-horizontal">
                     <input type="hidden" id="hdEventID" value="0" />
                     <div class="form-group">
-                        <label>Subject</label>
+                        <label>新增標題</label>
                         <input type="text" id="txtSubject" class="form-control" />
                     </div>
                     <div class="form-group">
-                        <label>Start</label>
+                        <label>開始時間</label>
                         <div class="input-group date" id="dtp1">
                             <input type="text" id="txtStart" class="form-control" />
                             <span class="input-group-addon">
@@ -64,11 +64,11 @@
                     </div>
                     <div class="form-group">
                         <div class="checkbox">
-                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" />  Is Full Day event</label>
+                            <label><input type="checkbox" id="chkIsFullDay" checked="checked" />  當天活動</label>
                         </div>
                     </div>
                     <div class="form-group" id="divEndDate" style="display:none">
-                        <label>End</label>
+                        <label>結束時間</label>
                         <div class="input-group date" id="dtp2">
                             <input type="text" id="txtEnd" class="form-control" />
                             <span class="input-group-addon">
@@ -77,11 +77,11 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Description</label>
+                        <label>敘述事情</label>
                         <textarea id="txtDescription" rows="3" class="form-control"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Theme Color</label>
+                        <label>主題顏色</label>
                         <select id="ddThemeColor" class="form-control">
                             <option value="">Default</option>
                             <option value="red">Red</option>
