@@ -188,7 +188,7 @@
                         loginmsg.removeClass('badge badge-success').addClass('badge badge-danger');
                     } else
                     {
-                        window.location.href="/Home/Index/"
+                        window.location.pathname = data;
                     }
                     loginmsg.text(msg);
                 });
