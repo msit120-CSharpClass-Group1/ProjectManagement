@@ -12,12 +12,14 @@ namespace ProjectManager.Models
         {
             SortedTasks = new List<Tasks>();
             ChildTasks = new List<Tasks>();
+            ChildLeafTasks = new List<Tasks>();
         }
         
         public TreeGridModel(List<Tasks> tasksFromRepo)
         {
             SortedTasks = new List<Tasks>();
             ChildTasks = new List<Tasks>();
+            ChildLeafTasks = new List<Tasks>();
             TasksFromRepo = tasksFromRepo;
         }
         private List<Tasks> tasksFromRepo;
@@ -26,6 +28,7 @@ namespace ProjectManager.Models
         /// </summary>
         public List<Tasks> SortedTasks { get; set; }
         public List<Tasks> ChildTasks { get; set; }
+        public List<Tasks> ChildLeafTasks { get; set; }
         public List<Tasks> TasksFromRepo
         { 
             set
@@ -70,6 +73,20 @@ namespace ProjectManager.Models
                 }
             }
 
+        }
+        public void GetChildLeafTasks(Tasks rootTask)
+        {            
+            var NotLeafTasks = tasksFromRepo.Where(t => t.ParentTaskGUID != null)
+                        .Select(t => t.ParentTaskGUID).Distinct().ToList();
+            var q = tasksFromRepo.Where(t => t.ParentTaskGUID != null && t.ParentTaskGUID == rootTask.TaskGUID);
+            foreach (var task in q)
+            {
+                if (!NotLeafTasks.Where(id=>id == task.TaskGUID).Any())
+                {
+                    ChildLeafTasks.Add(task);
+                }
+                GetChildLeafTasks(task);
+            }            
         }
     }
 }

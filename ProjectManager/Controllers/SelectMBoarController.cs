@@ -10,11 +10,12 @@ namespace ProjectManager.Controllers
     
     public class SelectMBoarController : Controller
     {
-        Repository<ProjectManager.Models.Employee> f = new Repository<ProjectManager.Models.Employee>();
+        Repository<ProjectManager.Models.ProjectMembers> pm = new Repository<ProjectManager.Models.ProjectMembers>();
+        Repository<ProjectManager.Models.Project> p = new Repository<ProjectManager.Models.Project>();
         // GET: SelectMBoar
         public ActionResult Index(Guid id)
         {
-            var MenberBoard = f.GetCollections();
+            var MenberBoard = pm.GetCollections().Where(x => x.ProjectGUID == id);
             Response.Cookies["PID"].Value = id.ToString();
             return View(MenberBoard);
           

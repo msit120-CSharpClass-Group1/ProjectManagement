@@ -21,7 +21,17 @@
         {
             <tr>
                 <td>@_member.MemberID</td>
-                <td>@_member.Employee.EmployeeName</td>
+                <td>
+                    @{ if (_member.EmployeeGUID != null)
+                        {
+                            @_member.Employee.EmployeeName;
+                        }
+                        else
+                        {
+                            <text>-</text>
+                        }
+                    }
+                </td>
                 <td>@_member.Permissions.PermissionsName</td>
                 <td>@_member.CreateDate</td>
                 <td>@_member.ModifiedDate</td>
