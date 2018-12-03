@@ -18,10 +18,8 @@ namespace ProjectManager.Models
 
     public class Group<K, T>
     {
-        public K Key;//EmpName
+        public K Key;
         public IEnumerable<T> value;
-
-        //[DisplayFormat(DataFormatString = "{0:P1}")]
-        public int? Sum; //算工時
+        public int? Sum; 
     }
 }
