@@ -14,6 +14,5 @@ namespace ProjectManager.Models
         public Tasks Task { get; set; }
         public IEnumerable<TaskDetail> TaskDetail { get; set; }
         public TaskDetail TaskDetails { get; set; }
-
     }
 }

@@ -22,19 +22,22 @@ namespace ProjectManager.Controllers
         {
             BoardVM VM = new BoardVM();
             var PID = Request.Cookies["PID"].Value;
-            VM.TaskStatus = s.GetCollections();
-            VM.Tasks = t.GetCollections().Where(x => x.ProjectGUID.ToString() == PID && x.EmployeeGUID == id).ToList();
-            VM.Project = p.GetCollections().Where(x => x.ProjectGUID.ToString() == PID).ToList();
-            VM.TaskDetail = td.GetCollections();
-
-           
-           
-
             var q = from parentTask in t.GetCollections()
                     join childrenTask in t.GetCollections() on parentTask.TaskGUID equals childrenTask.ParentTaskGUID
                     select childrenTask;
-
+            VM.TaskStatus = s.GetCollections();
+            VM.Tasks = q.Where(x => x.ProjectGUID.ToString() == PID && x.EmployeeGUID == id).ToList();
+            VM.Project = p.GetCollections().Where(x => x.ProjectGUID.ToString() == PID).ToList();
+            VM.TaskDetail = td.GetCollections();
+            q.ToList();
             return View(VM);
+        }
+        public ActionResult GetDetailTask(Guid id)
+        {
+            BoardVM VM = new BoardVM();
+            VM.TaskDetail = td.GetCollections().Where(x => x.TaskGUID == id && x.TaskDetailStatusID == 2).ToList();
+            return Json(VM.TaskDetail.Count());
+
         }
         public ActionResult GetCard(Guid id)
         {
@@ -45,23 +48,57 @@ namespace ProjectManager.Controllers
         }
         public ActionResult GetDetail(Guid id)
         {
+
             BoardVM VM = new BoardVM();
             VM.TaskDetail = td.GetCollections().Where(n => n.TaskGUID == id).ToList();
-            return Content(JsonConvert.SerializeObject(VM.TaskDetail.Select(n=>n.TaskDetailName).ToList()), "application/Json");
+            return Json(VM.TaskDetail.Select(n => new { n.TaskDetailName, n.TaskDetailGUID, n.TaskDetailStatusID }).ToList());
 
         }
-
+        public ActionResult EditTaskStatusID(Guid id, int TaskStatusID)
+        {
+            BoardVM VM = new BoardVM();
+            VM.Task = t.Find(id);
+            VM.Task.TaskStatusID = TaskStatusID;
+            t.Update(VM.Task);
+            return Json(true);
+        }
         public ActionResult InsertDetailTask(TaskDetail taskDetail)
         {
-            if (taskDetail!=null)
+            if (taskDetail != null)
             {
                 taskDetail.TaskDetailGUID = Guid.NewGuid();
-                taskDetail.TaskDetailStatusID = 1;
                 taskDetail.StartDate = DateTime.Now;
                 taskDetail.EndDate = DateTime.Now;
                 td.Add(taskDetail);
             }
-            return Json(td.GetCollections().Where(x=>x.TaskGUID==new Guid (Request.Form["TaskGUID"])).Count());
+            return Json(td.GetCollections().Where(x => x.TaskGUID == new Guid(Request.Form["TaskGUID"])).Select(x=>x.TaskDetailGUID).ToList());
         }
+        public ActionResult EditDetailStatus(Guid id, int TaskDetailStatusID)
+        {
+            BoardVM VM = new BoardVM();
+            VM.TaskDetails = td.Find(id);
+            VM.TaskDetails.TaskDetailStatusID = TaskDetailStatusID;
+            td.Update(VM.TaskDetails);
+            return Json(true);
+        }
+
+        public ActionResult EditTaskDatail(Guid id, string TaskDetailName)
+        {
+            BoardVM VM = new BoardVM();
+            VM.TaskDetails = td.Find(id);
+            VM.TaskDetails.TaskDetailName = TaskDetailName;
+            td.Update(VM.TaskDetails);
+            return Json(true);
+        }
+
+        public ActionResult DeleteTaskDatail(Guid id)
+        {
+            BoardVM VM = new BoardVM();
+            VM.TaskDetails = td.Find(id);
+            td.Delete(VM.TaskDetails);
+            return Json(td.GetCollections().Where(x => x.TaskGUID == new Guid(Request.Form["TaskGUID"])).Count());
+        }
+
+        
     }
 }
