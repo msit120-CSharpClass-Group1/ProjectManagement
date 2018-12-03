@@ -10,18 +10,17 @@ namespace ProjectManager.Controllers
 {
     public class SelectProjectController : Controller
     {
-        Repository<ProjectManager.Models.Project> p = new Repository<ProjectManager.Models.Project>();
-       
+        Repository<ProjectManager.Models.ProjectMembers> pm = new Repository<ProjectManager.Models.ProjectMembers>();
+        Repository<ProjectManager.Models.Members> m = new Repository<ProjectManager.Models.Members>();
+
         // GET: SelectProject
         public ActionResult Index()
         {
-            var ProjectList = p.GetCollections();
+            var members = m.Find(new Guid(Request.Cookies["MemberGUID"].Value));
+            var ProjectList = pm.GetCollections().Where(x=>x.EmployeeGUID==members.EmployeeGUID);
             return View(ProjectList);
         }
-        public ActionResult GetPath()
-        {
-            return View();
-        }
+
         
     }
 }

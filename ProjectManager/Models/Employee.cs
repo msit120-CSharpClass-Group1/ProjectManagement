@@ -38,7 +38,6 @@ namespace ProjectManager.Models
         public string Picture { get; set; }
         public byte[] BytesPicture { get; set; }
     
-        public virtual Calendar Calendar { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Dashboard> Dashboard { get; set; }
         public virtual Department Department { get; set; }

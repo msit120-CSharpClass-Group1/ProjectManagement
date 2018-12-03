@@ -1,46 +1,87 @@
 ﻿@model ProjectManager.Models.BoardVM
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "看板";
 }
 @section style{
     <style>
-
         * {
             margin: 0;
             padding: 0;
         }
 
+        .content > h2 {
+            margin-left: 60px;
+        }
+        .wrapper {
+            display: flex;
+            flex: 1 1 auto;
+            min-width: 920px;
+            position: relative;
+            justify-content: center;
+            padding:0 50px;
+        }
         .boardSec {
             display: flex;
-            overflow-x: auto;
+            margin-top: 20px;
+            justify-content: center;
+            flex: 1.5 1 800px;
+            margin-left: 0;
+        }
+        .detailsection {
+            background-color: #fff;
+            flex: 0 1 600px;
+            height: auto;
+            margin-left: 10px;
+            margin-top: 20px;
+            flex-direction: column;
+            border-radius: 4px 4px 0 0;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.15);
         }
 
         .board {
-            width: 272px;
             margin: 0 4px;
             height: 100%;
             box-sizing: border-box;
             display: inline-block;
             vertical-align: top;
-            white-space: nowrap;
+            flex: 1 1 360px;
+        }
+        .slide:hover,
+        .slide:focus {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        }
+
+        .slide {
+            cursor: pointer;
+            display: inline-block;
+            background: #ed2553;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            color: #ffffff;
+            text-decoration: none;
+            border: none;
+            transition: 0.3s ease;
+        }
+
+        .btn-insert {
+            padding: 3px 15px;
         }
 
         .listContent {
             background-color: #dfe3e6;
             border-radius: 3px;
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
             max-height: 100%;
-            position: relative;
-            white-space: normal;
+            height:auto;/*116px*/
         }
 
         .listHeader {
             flex: 0 0 auto;
-            padding: 10px 8px 8px;
+            padding:8px;
             position: relative;
             min-height: 20px;
+            font-weight:700;
+            font-size:20px;
         }
 
         .listHeaderTitle {
@@ -65,7 +106,6 @@
             cursor: pointer;
             display: block;
             margin-bottom: 8px;
-            max-width: 300px;
             min-height: 20px;
             position: relative;
             text-decoration: none;
@@ -79,8 +119,9 @@
             margin: 0 0 4px;
             overflow: hidden;
             text-decoration: none;
-            word-wrap: break-word;
             color: #17394d;
+            font-size: 18px;
+            word-break:break-word;
         }
 
         .badge {
@@ -97,55 +138,388 @@
         }
 
         .cardDetailHeader {
-            margin: 12px 40px 8px 56px;
+            margin: 10px 10px;
             min-height: 32px;
+            display: flex;
+            justify-content: flex-start;
+            font-size: 20px;
             position: relative;
-            z-index: 1;
-            color: #fff;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e6e8;
+            color: #000;
         }
+        .cardDetailTitle {
+            margin-left: 8px;
+        }
+
+        .cardDetailIcon i {
+            width: 25px;
+            color: #000;
+        }
+        .detail-close {
+            position: absolute;
+            right: -10px;
+            top: 5px;
+            width: 30px;
+            height: 30px;
+        }
+        .detail-close i {
+            width: 100%;
+            height: 100%;
+        }
+        .cardDetailContent {
+            margin: 10px 0;
+            font-size: 20px;
+            min-height: 24px;
+            position: relative;
+            width: 100%;
+            z-index: 0;
+            color: #000;
+        }
+        .itemTitle {
+            display: flex;
+            margin: 10px 10px;
+        }
+
+        /*-----------代辦清單------------*/
+        .todo {
+            margin-bottom: 0;
+        }
+
+        .desContent {
+            margin: 5px 10px;
+            border-bottom: 1px solid #e0e6e8;
+            padding-bottom: 15px;
+        }
+
+        .desContent textarea {
+            overflow-y: auto;
+            height: 100px;
+            width: 100%;
+            resize:none
+        }
+
+        .cardDetailContent > button {
+            margin: 0 10px 5px 10px;
+        }
+
+        .checklist-progress {
+            height: 25px;
+            display: flex;
+            margin: 5px 10px 5px 10px;
+            align-items: center;
+        }
+
+        .checklist-progress-percentage {
+            color: #000;
+            font-size: 16px;
+            flex: 0 1 30px;
+        }
+
+        .checklist-progress-bar {
+            background-color: rgba(248,248,255,0.8);
+            border-radius: 4px;
+            height: 10px;
+            margin: 5px 0 5px 5px;
+            overflow: hidden;
+            position: relative;
+            flex: 0 1 88%;
+        }
+
+        .checklist-progress-bar-current {
+            background: #5ba4cf;
+            bottom: 0;
+            left: 0;
+            position: absolute;
+            top: 0;
+            transition: width .14s ease-in,background .14s ease-in;
+            width: 30%;
+        }
+        .checkLists {
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .listNewItem {
+            margin: 5px 10px;
+            color: #000;
+        }
+
+        .listNewItem textarea {
+            height: 40px;
+            width: 100%;
+            resize: none;
+            font-size: 20px;
+            background: transparent;
+            border: 1px solid transparent;
+            box-shadow: none;
+            color: #000;
+            cursor: pointer;
+            min-height: 35px;
+            margin: 4px 0 0;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .listNewItem textarea:focus {
+            background: #fff;
+            border: 1px solid #5ba4cf;
+            box-shadow: 0 0 0 1px #5ba4cf;
+            color: #17394d;
+            cursor: text;
+        }
+
+        .checkListItem {
+            border-radius: 3px;
+            margin: 0 10px 0 10px;
+            display: flex;
+            -webkit-transform-origin: left bottom;
+            transform-origin: left bottom;
+            transition-property: opacity,height,padding,margin,-webkit-transform;
+            transition-property: transform,opacity,height,padding,margin;
+            transition-property: transform,opacity,height,padding,margin,-webkit-transform;
+            transition-duration: .14s;
+            transition-timing-function: ease-in;
+            cursor: pointer;
+            align-items: center;
+            overflow: hidden;
+            justify-content: space-around;
+            padding: 5px 0;
+        }
+
+        .checkListItem:hover {
+            /*background-color: rgba(9,45,66,0.8);*/
+            background: #EFEFEF;
+            color: rgba(9,45,66,0.9);
+        }
+
+        .checkListCkeck {
+            background: #fff;
+            border-radius: 3px;
+            box-sizing: border-box;
+            line-height: 20px;
+            margin-right: 10px;
+            text-align: center;
+            height: 30px;
+            margin-top: 2px;
+            flex: 0 1 30px;
+            border: 1px solid #000;
+        }
+
+        .checkListCkeck i {
+            color: #000;
+            width: 20px;
+            display:none;
+        }
+        .show {
+            display:block;
+        }
+
+        .checkListContent {
+            word-break: break-word;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            letter-spacing: 3px;
+            font-size: 20px;
+            flex: 0 1 80%;
+        }
+
+        .cardDetailDelete i {
+            width: 20px;
+            height: 20px;
+        }
+
+        .listEdit {
+            display: block;
+            z-index: 50;
+            width: 100%;
+        }
+
+        .listEditContent {
+            overflow: hidden;
+            overflow-wrap: break-word;
+            resize: none;
+            height: 35px;
+            font-size: 16px;
+        }
+
+        .form-control {
+            padding: 0;
+            flex: 0 1 80%;
+        }
+
+        .btn-edit {
+            margin: 10px 0 10px 15px;
+        }
+
+        .checkLists > span {
+            width: 25px;
+            height: 25px;
+            display: inline-block;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+
+        .checkLists > span > i {
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            display: block;
+            
+        }
+       
+        .listHeaderTitle {
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+        /*.badge-text {
+            visibility:hidden;
+        }*/
+        /*rightnav
+        .right-sidenav {
+            min-width: 280px;
+            right: 15px;
+            border-radius: 10px;
+        }
+        .hidenav {
+            transform: translateX(295px);
+            transition-duration: 0.5s;
+        }
+        .shownav {
+            transform: translateX(0px);
+            transition-duration: 0.5s;
+        }
+        button.rightOpenbtn, button.dropupbtn {
+            outline: none;
+        }
+        button.rightOpenbtn {
+            top:70px;
+            right:15px;
+        }*/
+        .left-sidenav ul:first-child {
+            margin-top: 20px;
+        }
+        .dropdown button:hover {
+            background-color: rgba(225,225,225,0.8);
+        }
+        
     </style>
 }
-@section asideRight
-{
-    <div class="cardDetailHeader">
-
-        <div class="cardDetailTitle"></div>
-
-    </div>
-}
 <h2> @Model.Project.First().ProjectName</h2>
-<div class="boardSec">
-    @foreach (var s in Model.TaskStatus)
-    {
-        <div class="board">
-            <div class="listContent">
-                <div class="listHeader">
-                    <div class="listHeaderTitle">@s.TaskStatusName</div>
-                </div>
-                <div class="listCards">
+<div class="wrapper">
+    <div class="boardSec">
+        @foreach (var s in Model.TaskStatus)
+        {
+            <div class="board">
+                <div class="listContent" data-taskStatusid="@s.TaskStatusID" id="listContent-@s.TaskStatusID" ondragover="dragoverHandler(event)" ondrop="dropHandler(event)">
+                    <div class="listHeader" @*ondragstart="return false"*@>
+                        <div class="listHeaderTitle">@s.TaskStatusName</div>
+                    </div>
                     @foreach (var t in Model.Tasks.Where(x => x.TaskStatusID == s.TaskStatusID))
                     {
-                        <a class="listCard" data-tid="@t.TaskGUID">
-                            <span class="listCardTitle">@t.TaskName</span>
-                            <div class="badges">
-                                <div class="badge" title="待辦清單項目">
-                                    @*<span class="badge-icon icon-sm icon-checklist"></span>*@
-                                    <span class="badge-text">0/3</span>
+                        <div class="listCards" data-tguid="@t.TaskGUID" draggable="true" ondragstart="dragstart(event)">
+                            <a class="listCard" data-tid="@t.TaskGUID">
+                                <span class="listCardTitle">@t.TaskName</span>
+                                <div class="badges">
+                                    <div class="badge" title="待辦清單項目">
+                                        <span class="completeDT">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID && x.TaskDetailStatusID == 2).Count()</span>
+                                        <span>/</span>
+                                        <span class="badge-text totalDT" id="badge-text">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID).Count()</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
                     }
+
                 </div>
             </div>
+        }
+    </div>
+    <div class="detailsection">
+        <div class="cardDetailHeader">
+            <span class="cardDetailIcon"><i class="far fa-sticky-note"></i></span>
+            <div>任務名稱  :</div>
+            <div class="cardDetailTitle"></div>
+            <span class="detail-close"><i class="fas fa-times"></i></span>
         </div>
-    }
+        <div class="cardDetailContent">
+            <div class="itemTitle">
+                <span class="cardDetailIcon"><i class="fas fa-align-left"></i></span>
+                <div class="">描述</div>
+            </div>
+            <div class="desContent">
+                <textarea readonly></textarea>
+            </div>
+        </div>
+        <div class="cardDetailContent">
+            <div class="itemTitle todo">
+                <span class="cardDetailIcon"><i class="far fa-check-square"></i></span>
+                <div class="">代辦清單</div>
+            </div>
+            <div class="checklist-progress">
+                <span class="checklist-progress-percentage">0%</span>
+                <div class="checklist-progress-bar">
+                    <div class="checklist-progress-bar-current" style="width: 30%;"></div>
+                </div>
+                @*<span class="checklist-completed-text hide quie">待辦清單的所有事項都完成囉！</span>*@
+            </div>
+            <div class="checkLists"></div>
+            <div class="listNewItem">
+                <textarea name="newItem" id="newItem">新增項目...</textarea>
+            </div>
+            <button type="button" class="@*btn*@ slide btn-insert @*btn-light*@">新增</button>
+        </div>
+    </div>
 </div>
 @section script
 {
-    <script>
+<script>
+        var cardID = null;
+        var cardGuid;
+        var btnInsert = $('.btn-insert');
+        var badgeText;
+        var completeDT;
+        var moveItem = document.getElementsByClassName('listCards');
+
+        //拖拉放
+        function dragstart(e)
+        {
+            for (let i = 0; i < moveItem.length; i++)
+            {
+                moveItem[i].setAttribute('id', 'listcard' + i);
+                e.dataTransfer.setData("id", e.target.id);
+            }
+            cardGuid = e.target.getAttribute("data-tguid"); 
+        }
+
+        function dragoverHandler(e) {
+            e.preventDefault();
+        }
+
+        function dropHandler(e) {
+            e.preventDefault();
+            var id = e.dataTransfer.getData('id');
+            var elem = document.getElementById(id);
+            e.currentTarget.appendChild(elem.parentNode.removeChild(elem));
+            var taskStatusid = e.currentTarget.getAttribute("data-taskStatusid");
+            $.ajax({
+                type: 'Post',
+                url: '@Url.Action("EditTaskStatusID", "Myboard")',
+                data: { id: cardGuid, TaskStatusID: taskStatusid },
+                dataType: 'json'
+            }).done();  
+        }
+
         $(document).ready(function () {
+            //load cardDetail   
+            $(".detail-close").mousedown(function () {
+                $('.detailsection').hide();
+            });
             $('.listCard').click(function () {
-                var cardID = $(this).data("tid");
+                $('.detailsection').show();
+                cardID = $(this).data("tid");
                 $.ajax({
                     type: 'Get',
                     url: '@Url.Action("GetCard", "Myboard")',
@@ -154,9 +528,176 @@
                 }).done(function (datas) {
                     $(datas.Task).each(function (id, data) {
                         $('.cardDetailTitle').text(data.TaskName);
+                        $('.desContent>textArea').text(data.Description);
+                    });
+                });
+                $.ajax({
+                    type: 'Post',
+                    url: '@Url.Action("GetDetail", "Myboard")',
+                    data: { id: cardID },
+                    dataType: 'json'
+                }).done(function (datas) {
+                    $('.checkLists').html("");
+                    $(datas).each(function (id, data) {
+                        var checkListItem = $('<div class="checkListItem"></div>');
+                        var checkListCkeck = $('<div class="checkListCkeck" data-statusID="' + data.TaskDetailStatusID + '"  data-detailGuid="' + data.TaskDetailGUID + '"><i class="fas fa-check"></i></div>');
+                        checkListItem.append(checkListCkeck);
+                        if (data.TaskDetailStatusID === 2)
+                        {
+                            checkListCkeck.children().attr("Style", "display: inline;");
+                        }
+                        checkListItem.append($('<div class="checkListContent"></div>').text(data.TaskDetailName));
+                        checkListItem.append($('<div class="cardDetailDelete"><i class="far fa-minus-square"></i></div>'));
+                        $('.checkLists').append(checkListItem);
+                    });
+                });
+
+                badgeText = $(this).find('#badge-text');
+                completeDT = $(this).find('.completeDT');
+            });
+
+            //設定rightsection按鈕效果
+            btnInsert.hide();
+            $('.listNewItem textarea').focus(function () {
+                btnInsert.show();
+            }).blur(function () {
+                btnInsert.hide();
+            });
+
+            //taskDetail insert
+            $('.btn-insert').mousedown(function () {
+             
+                if (cardID !== null) {
+                    var userNewList = $('#newItem').val();
+                    var checkListItem = $('<div class="checkListItem"></div>');
+                    var checkListCkeck = $('<div class="checkListCkeck" data-detailGuid="" data-statusID="1"><i class="fas fa-check"></i></div>');
+                    checkListItem.append(checkListCkeck);
+                    var statusID  = $('<div class="checkListCkeck" data-statusID="1"><i class="fas fa-check"></i></div>').attr("data-statusID");
+                    checkListItem.append($('<div class="checkListContent"></div>').text(userNewList));
+                    checkListItem.append($('<div class="cardDetailDelete"><i class="far fa-minus-square"></i></div>'));
+                    $('.checkLists').append(checkListItem);
+                    $('#newItem').val("新增項目...");
+                    $.ajax({
+                        type: 'Post',
+                        url: '@Url.Action("InsertDetailTask", "Myboard")',
+                        data: { TaskGUID: cardID, TaskDetailName: userNewList, TaskDetailStatusID: statusID },
+                        dataType: "json"
+                    }).done(function (datas) {
+                        $(datas).each(function (id, data) {
+                            badgeText.text(datas.length);
+                            checkListCkeck.attr("data-detailGuid", data);
+                        });
+                    });
+                } else
+                {
+                    alert("請選擇任務");
+                }
+                 
+            });
+
+            //設定rightsection內容樣式
+            $('.checkLists').on("click", ".checkListContent", editContent);
+            $('.checkLists').on("mousedown", ".edit-close", editbtn);
+            function editContent() {
+                editbtn();
+                var edittext = $(this);
+                var btn = $('<button type="button" class="btn btn-edit slide">修改</button>');
+                $('.cardDetailDelete').css("visibility", "hidden");
+                var editinput = $('<input type="text" class="form-control edit-input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm id="/>');
+                var editClose = $('<span class="edit-close "><i class="fas fa-times"></i></span>');
+                $(this).after(editinput.val(edittext.text()));
+                $(this).parent().after(editClose);
+                $(this).parent().after(btn);
+                btn.click(savebtn);
+                $(this).remove();
+                btnInsert.hide();
+            }
+            function editbtn() {
+                var editinput = $('.checkListItem>input');
+                var edittext = $('<div class="checkListContent"></div>');
+                editinput.after(edittext.html(editinput.val()));
+                edittext.click(editContent);
+                editinput.remove();
+                $('.checkListItem').next('button').remove();
+                $('.checkListItem').next('span').remove();
+                $('.cardDetailDelete').css("visibility", "visible");
+            }
+            function savebtn() {
+                editbtn();
+            }
+            $('#newItem').focus(editbtn);
+
+             //change Detail Status
+            $(".checkLists").on('click', '.checkListCkeck', function () {
+                $(this).children().toggle();
+
+                if ($(this).children().is(':hidden')) {
+
+                    $(this).attr({ 'data-statusID': '1' });
+
+                } else {
+                    $(this).attr({ 'data-statusID': '2' });
+
+                }
+                var taskDetailStatusID = $(this).attr("data-statusID");
+                var taskDetailGUID = $(this).attr("data-detailguid");
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("EditDetailStatus", "Myboard")',
+                    data: { "id": taskDetailGUID, "TaskDetailStatusID": taskDetailStatusID },
+                    dataType: 'json'
+                }).done(function (datas) {
+                    $.ajax({
+                        type: 'Post',
+                        url: '@Url.Action("GetDetailTask", "Myboard")',
+                        data: { id: cardID },
+                        dataType: 'json'
+                    }).done(function (datas) {
+                        completeDT.text(datas);
                     });
                 });
             });
+            //Edit
+            $(".checkLists").on('mousedown', ':button', function () {
+                var editinputTxt = $(this).parent().find('.edit-input').val();
+                var taskDetailGUID = $(this).parent().find('.checkListCkeck').attr('data-detailguid');
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("EditTaskDatail", "Myboard")',
+                    data: { "id": taskDetailGUID, "TaskDetailName": editinputTxt },
+                    dataType: 'json'
+                }).done();
+            });
+
+            //Delete
+            $(".checkLists").on('mousedown', '.cardDetailDelete', function () {
+                var taskDetailGUID = $(this).parent().find('.checkListCkeck').attr('data-detailguid');
+                $(this).parent().remove();
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("DeleteTaskDatail", "Myboard")',
+                    data: { "id": taskDetailGUID, "TaskGUID": cardID },
+                    dataType: 'json'
+                }).done(function (datas) {
+                    badgeText.text(datas);
+                });
+            });
+
+            $(".checkLists").on('mousedown', '.cardDetailDelete', function () {
+                var taskDetailGUID = $(this).parent().find('.checkListCkeck').attr('data-detailguid');
+                $(this).parent().children('.checkListItem').html("");
+                $(this).parent().children('.checkListItem').remove();
+            
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("DeleteTaskDatail", "Myboard")',
+                    data: { "id": taskDetailGUID },
+                    dataType: 'json'
+                }).done();
+            });
         });
-    </script>
+    
+        
+
+</script>
 }
