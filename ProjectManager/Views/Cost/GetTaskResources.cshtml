@@ -6,14 +6,14 @@
 <table id="tb_TaskResources" class="table table-bordered" data-count="@ViewBag.Count">
     <thead>
         <tr>
-            <td width="130px">@Html.DisplayNameFor(p => p.First().Date)</td>
-            <td>@Html.DisplayNameFor(p => p.First().TaskName)</td>
-            <td>@Html.DisplayNameFor(p => p.First().ResourceName)</td>
-            <td width="130px">@Html.DisplayNameFor(p => p.First().CategoryName)</td>
-            <td width="75px">@Html.DisplayNameFor(p => p.First().Quantity)</td>
-            <td width="100px">@Html.DisplayNameFor(p => p.First().UnitPrice)</td>
-            <td width="150px">@Html.DisplayNameFor(p => p.First().SubTotal)</td>
-            <td width="300px">@Html.DisplayNameFor(p => p.First().Description)</td>
+            <td style="min-width:150px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().Date).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByDate })<i class="fas fa-sort"></i></td>
+            <td style="min-width:150px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().TaskName).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByTaskName })<i class="fas fa-sort"></i></td>
+            <td style="min-width:150px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().ResourceName).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByResourceName })<i class="fas fa-sort"></i></td>
+            <td style="min-width:130px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().CategoryName).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByResourceCat })<i class="fas fa-sort"></i></td>
+            <td style="min-width:75px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().Quantity).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByQuantity })<i class="fas fa-sort"></i></td>
+            <td style="min-width:100px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().UnitPrice).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByUnitPrice })<i class="fas fa-sort"></i></td>
+            <td style="min-width:150px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().SubTotal).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortBySubTotal })<i class="fas fa-sort"></i></td>
+            <td style="min-width:60px;width:300px;">@Html.DisplayNameFor(p => p.First().Description)</td>
             <td colspan="2">編輯</td>
         </tr>
     </thead>

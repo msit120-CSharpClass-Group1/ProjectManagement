@@ -822,6 +822,7 @@
     <edmx:ConceptualModels>
       <Schema Namespace="ProjectManagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="ProjectManagementEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Calendar" EntityType="ProjectManagementModel.Calendar" />
           <EntitySet Name="Dashboard" EntityType="ProjectManagementModel.Dashboard" />
           <EntitySet Name="Department" EntityType="ProjectManagementModel.Department" />
           <EntitySet Name="Employee" EntityType="ProjectManagementModel.Employee" />
@@ -844,6 +845,10 @@
           <EntitySet Name="Tasks" EntityType="ProjectManagementModel.Tasks" />
           <EntitySet Name="TaskStatus" EntityType="ProjectManagementModel.TaskStatus" />
           <EntitySet Name="WidgetDetail" EntityType="ProjectManagementModel.WidgetDetail" />
+          <AssociationSet Name="FK_Calendar_Employee" Association="ProjectManagementModel.FK_Calendar_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="Calendar" EntitySet="Calendar" />
+          </AssociationSet>
           <AssociationSet Name="FK_Dashboard_Employee" Association="ProjectManagementModel.FK_Dashboard_Employee">
             <End Role="Employee" EntitySet="Employee" />
             <End Role="Dashboard" EntitySet="Dashboard" />
@@ -974,6 +979,22 @@
           </AssociationSet>
           <EntitySet Name="Calendar" EntityType="ProjectManagementModel.Calendar" />
         </EntityContainer>
+        </EntityContainer>
+        <EntityType Name="Calendar">
+          <Key>
+            <PropertyRef Name="CalendarGUID" />
+          </Key>
+          <Property Name="CalendarGUID" Type="Guid" Nullable="false" />
+          <Property Name="EmployeeGUID" Type="Guid" />
+          <Property Name="StartTime" Type="DateTime" Precision="3" />
+          <Property Name="EndTime" Type="DateTime" Precision="3" />
+          <Property Name="EventTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Opacity" Type="Int32" />
+          <Property Name="Red" Type="Int32" />
+          <Property Name="Green" Type="Int32" />
+          <Property Name="Blue" Type="Int32" />
+          <NavigationProperty Name="Employee" Relationship="ProjectManagementModel.FK_Calendar_Employee" FromRole="Calendar" ToRole="Employee" />
+        </EntityType>
         <EntityType Name="Dashboard">
           <Key>
             <PropertyRef Name="DashBoardGUID" />
@@ -1015,6 +1036,7 @@
           <Property Name="TitleGUID" Type="Guid" />
           <Property Name="Picture" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BytesPicture" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="Calendar" Relationship="ProjectManagementModel.FK_Calendar_Employee" FromRole="Employee" ToRole="Calendar" />
           <NavigationProperty Name="Dashboard" Relationship="ProjectManagementModel.FK_Dashboard_Employee" FromRole="Employee" ToRole="Dashboard" />
           <NavigationProperty Name="Department" Relationship="ProjectManagementModel.FK_Employee_Department" FromRole="Employee" ToRole="Department" />
           <NavigationProperty Name="Employee1" Relationship="ProjectManagementModel.FK_Employee_Employee" FromRole="Employee" ToRole="Employee1" />
@@ -1274,6 +1296,18 @@
           <Property Name="DashBoardGUID" Type="Guid" />
           <NavigationProperty Name="Dashboard" Relationship="ProjectManagementModel.FK_WidgetDetail_Dashboard" FromRole="WidgetDetail" ToRole="Dashboard" />
         </EntityType>
+        <Association Name="FK_Calendar_Employee">
+          <End Type="ProjectManagementModel.Employee" Role="Employee" Multiplicity="1" />
+          <End Type="ProjectManagementModel.Calendar" Role="Calendar" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="EmployeeGUID" />
+            </Principal>
+            <Dependent Role="Calendar">
+              <PropertyRef Name="CalendarGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Dashboard_Employee">
           <End Type="ProjectManagementModel.Employee" Role="Employee" Multiplicity="0..1" />
           <End Type="ProjectManagementModel.Dashboard" Role="Dashboard" Multiplicity="*" />
@@ -1670,6 +1704,21 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ProjectManagementModelStoreContainer" CdmEntityContainer="ProjectManagementEntities">
+          <EntitySetMapping Name="Calendar">
+            <EntityTypeMapping TypeName="ProjectManagementModel.Calendar">
+              <MappingFragment StoreEntitySet="Calendar">
+                <ScalarProperty Name="Blue" ColumnName="Blue" />
+                <ScalarProperty Name="Green" ColumnName="Green" />
+                <ScalarProperty Name="Red" ColumnName="Red" />
+                <ScalarProperty Name="Opacity" ColumnName="Opacity" />
+                <ScalarProperty Name="EventTitle" ColumnName="EventTitle" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />
+                <ScalarProperty Name="CalendarGUID" ColumnName="CalendarGUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Dashboard">
             <EntityTypeMapping TypeName="ProjectManagementModel.Dashboard">
               <MappingFragment StoreEntitySet="Dashboard">

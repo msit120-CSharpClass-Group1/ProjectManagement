@@ -9,13 +9,15 @@ namespace ProjectManager.Models
     public class TreeGridModel
     {
         public TreeGridModel()
-        { 
-
+        {
+            SortedTasks = new List<Tasks>();
+            ChildTasks = new List<Tasks>();
         }
         
         public TreeGridModel(List<Tasks> tasksFromRepo)
         {
             SortedTasks = new List<Tasks>();
+            ChildTasks = new List<Tasks>();
             TasksFromRepo = tasksFromRepo;
         }
         private List<Tasks> tasksFromRepo;
@@ -23,6 +25,7 @@ namespace ProjectManager.Models
         /// 回傳帶有orderID、parentOrderID排序完成的List&lt;Task>
         /// </summary>
         public List<Tasks> SortedTasks { get; set; }
+        public List<Tasks> ChildTasks { get; set; }
         public List<Tasks> TasksFromRepo
         { 
             set
@@ -44,6 +47,15 @@ namespace ProjectManager.Models
             {
                 SortedTasks.Add(task);
                 GetChildren(task);
+            }
+        }
+        public void GetChildren(Tasks parentTask,List<Tasks> tasksFromRepo)
+        {
+            var q = tasksFromRepo.Where(w => w.ParentTaskGUID == parentTask.TaskGUID);
+            foreach (var task in q)
+            {
+                ChildTasks.Add(task);
+                GetChildren(task,tasksFromRepo);
             }
         }
         public void GetOrderIDParentOrderID()

@@ -7,21 +7,21 @@
 <form method="post" action="~/JobTitle/Edit" class="form-horizontal">
 
     <div class="form-group">
-        <label class="col-md-2 control-label">TitleID</label>
+        <label class="col-md-2 control-label">職稱編號</label>
         <div class="col-md-2">
             <input type="hidden" name="TitleGUID" value="@Model.TitleGUID" />
             <input type="text" class="form-control" name="TitleID" value="@Model.TitleID" />
         </div>
     </div>
     <div class="form-group">
-        <label class="col-md-2 control-label">TitleName</label>
+        <label class="col-md-2 control-label">職稱姓名</label>
         <div class="col-md-2">
             <input type="text" class="form-control" name="TitleName" value="@Model.TitleName" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-default">Edit</button>
+            <button type="submit" class="btn btn-info">Edit</button>
         </div>
     </div>
 </form>

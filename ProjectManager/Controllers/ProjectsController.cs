@@ -5,12 +5,14 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Runtime.Serialization.Json;
+using Newtonsoft.Json;
 
 namespace ProjectManager.Controllers
 {
     public class ProjectsController : Controller
     {
         Repository<Project> projectRepo = new Repository<Project>();
+        Repository<Employee> employeeRepo = new Repository<Employee>();
         // GET: Projects
         public ActionResult Index(int ProjectStatusID=1)
         {
@@ -40,5 +42,13 @@ namespace ProjectManager.Controllers
             projectRepo.Add(project);
             return RedirectToAction("Index","Projects");
         }
+        public ActionResult GetEmployeesByDept(Guid? DeptGUID)
+        {
+            var emps = employeeRepo.GetCollections()
+                .Where(e => e.Department.DepartmentGUID == DeptGUID)
+                .Select(e => new { e.EmployeeGUID, e.EmployeeName });
+            return Content(JsonConvert.SerializeObject(emps), "application/json");
+        }
+
     }
 }

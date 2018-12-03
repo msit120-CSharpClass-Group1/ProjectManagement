@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
@@ -11,6 +12,7 @@ namespace ProjectManager.Controllers
     {
         // GET: Login
         private IRepository<Members> memberRes = new Repository<Members>();
+        private IRepository<Employee> employeeRes = new Repository<Employee>();
         public ActionResult Index()
         {
             if (Request.Cookies["MemberGUID"] != null)
@@ -20,32 +22,41 @@ namespace ProjectManager.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Login(Members members, string keepLogin)
+        public ActionResult Login(Members members, bool keepLogin)
         {
             var hasMembers = memberRes.GetCollections().Where(n => n.MemberID.Trim() == members.MemberID && n.Password == members.Password).FirstOrDefault();
-            ViewBag.msg = "帳號密碼錯誤";
+            int Msg = 0;
             if (hasMembers != null)
             {
-                Response.Cookies["MemberGUID"].Value = hasMembers.MemberGUID.ToString() ;
-                Response.Cookies["MemberID"].Value = hasMembers.MemberID;
-                Response.Cookies["PermissionsGUID"].Value = hasMembers.PermissionsGUID.ToString();
-                Session["MemberGUID"] = hasMembers.MemberGUID;
-                if (keepLogin!=null)
+                Response.Cookies["MemberGUID"].Value = hasMembers.MemberGUID.ToString();
+                Response.Cookies["TitleGUID"].Value = hasMembers.Employee.TitleGUID.ToString();
+                if (keepLogin)
                 {
                     Response.Cookies["MemberGUID"].Expires = DateTime.Now.AddDays(1);
+                    Response.Cookies["TitleGUID"].Expires = DateTime.Now.AddDays(1);
                 }
+                hasMembers.LastLoginDate = DateTime.Now;
+                memberRes.Update(hasMembers);
+                Msg = 1;
+                LoginProcess(hasMembers, keepLogin);
                 return RedirectToAction("Index", "Home");
             }
-            return View("Index");
+            else
+            {
+                return Json(Msg);
+            }
         }
         [HttpPost]
-        public ActionResult CreateAccount(Members members)
+        public ActionResult CreateAccount(Members members,int EmployeeID)
         {
-            var hasMembers = memberRes.GetCollections().Where(n => n.MemberID.Trim() == members.MemberID).FirstOrDefault();
+            var allMember = memberRes.GetCollections();
+            var hasMembers = allMember.Where(n => n.MemberID.Trim() == members.MemberID).FirstOrDefault();
+            var hasEmployeeID = employeeRes.GetCollections().Where(n=>n.EmployeeID == EmployeeID).FirstOrDefault();
+            var hasAccount = allMember.Where(n => n.EmployeeGUID == hasEmployeeID.EmployeeGUID).FirstOrDefault();
             string memberMsg = "0";
-            if (hasMembers == null)
+            if (hasMembers == null&& hasEmployeeID!=null && hasAccount==null)
             {
-                members.PermissionsGUID =new Guid("3f20a599-21a7-4848-9b0d-81b8146527b6");
+                members.EmployeeGUID = hasEmployeeID.EmployeeGUID;
                 members.MemberGUID = Guid.NewGuid();
                 members.CreateDate = DateTime.Now;
                 members.ModifiedDate = DateTime.Now;
@@ -56,9 +67,31 @@ namespace ProjectManager.Controllers
         }
         public ActionResult Logout()
         {
-            Session.Abandon();
+            Session.RemoveAll();
             Response.Cookies["MemberGUID"].Expires = DateTime.Now.AddSeconds(-1);
+            Response.Cookies["TitleGUID"].Expires = DateTime.Now.AddSeconds(-1);
+            Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddSeconds(-1);
+            FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Login");
+        }
+        private void LoginProcess(Members members, bool keepLogin)
+        {
+            var ticket = new FormsAuthenticationTicket(
+                version: 1,
+                name: members.MemberGUID.ToString(),
+                issueDate: DateTime.Now,
+                expiration: DateTime.Now.AddDays(1),
+                isPersistent: keepLogin,
+                userData: members.Employee.JobTitle.TitleName,
+                cookiePath: FormsAuthentication.FormsCookiePath);
+           
+            var encryptedTicket = FormsAuthentication.Encrypt(ticket);
+            var cookie = new HttpCookie(FormsAuthentication.FormsCookieName,encryptedTicket);
+            if (keepLogin)
+            {
+                cookie.Expires = DateTime.Now.AddDays(1);
+            }
+            Response.Cookies.Add(cookie);
         }
 
     }

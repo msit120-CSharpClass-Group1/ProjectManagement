@@ -3,7 +3,7 @@
     ViewBag.Title = "任務階段";
 }
 
-<a href="~/TaskStatus/Insert" class="btn btn-warning">新增任務階段</a>
+<a href="~/TaskStatus/Insert" class="btn btn-info">新增任務階段</a>
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -19,7 +19,7 @@
             <tr>
                 <td>@_taskStatus.TaskStatusID</td>
                 <td>@_taskStatus.TaskStatusName</td>
-                <td><a href="~/TaskStatus/Edit/@_taskStatus.TaskStatusID" class="btn btn-primary">修改</a></td>
+                <td><a href="~/TaskStatus/Edit/@_taskStatus.TaskStatusID" class="btn btn-info">修改</a></td>
                 <td><a href="~/TaskStatus/Delete/@_taskStatus.TaskStatusID" class="btn btn-danger">刪除</a></td>
             </tr>
         }

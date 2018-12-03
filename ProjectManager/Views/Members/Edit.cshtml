@@ -1,76 +1,36 @@
-﻿@using ProjectManager.Models;
-@model ProjectManager.Models.Members
-@*@{
-    ViewBag.Activity = "會員";
-    ViewBag.Title = "修改會員權限";  
-}*@
+﻿
+@{
+    ViewBag.Title = "修改密碼";
+}
 
-<form method="post" action="~/Members/Edit" class="form-horizontal">
-
-    <div class="form-group">
-        <label class="col-md-2 control-label">員工名稱</label>
-        <div class="col-md-2">
-            <input type="hidden" name="EmployeeGUID" value="@ViewBag.EmployeeGUID" id="empGUID"/>
-            @*<select id="select2">
-                <option value="0">請選擇</option>
-                @foreach (var _employee in (List<Employee>)ViewBag.EmployeeName)
-                {
-                    <option>@_employee.EmployeeName</option>
-                }
-            </select>*@
-            <input type="text" name="EmployeeName" value="@Model.Employee.EmployeeName" />
-            @*@Html.DropDownList("EmployeeGUID", (SelectList)ViewBag.employee, "請選擇")*@
-        </div>
-    </div>
+<h2>Edit</h2>
+<form method="post" action="~/Members/_Edit" class="form-horizontal">
 
     <div class="form-group">
-        <label class="col-md-2 control-label">權限等級</label>
+        <label class="col-md-2 control-label">舊密碼</label>
         <div class="col-md-2">
-            <input type="hidden" name="PermissionsGUID" value="@Model.PermissionsGUID" id="perGUID" />
-            <select id="select1">
-                <option value="0">請選擇</option>
-                @foreach (var _permission in (List<Permissions>)ViewBag.PermissonName)
-                {
-                    <option>@_permission.PermissionsName</option>
-                }
-            </select>
-                @*@Html.DropDownList("PermissionsGUID", (SelectList)ViewBag.permissions, "請選擇")*@
+            <input type="hidden" name="MemberGUID" value="@ViewBag.id" />
+            <input type="password" name="Password"/>
         </div>
     </div>
-
+    <div class="form-group">
+        <label class="col-md-2 control-label">新密碼</label>
+        <div class="col-md-2">
+            <input type="password" name="NewPassword" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">確認密碼</label>
+        <div class="col-md-2">
+            <input type="password" name="RepeatPassword"/>
+        </div>
+    </div>
+    <p>@ViewBag.msg</p>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-default">修改</button>
+            <button type="submit" class="btn btn-info">確認</button>
+            <a href="~/Employees/Index" class="btn btn-dark">取消</a>
         </div>
     </div>
 </form>
-
-@section script
-{
-<script>
-    $("#select1").change(function () {
-        var PermissionsName = $(this).find(":selected").val();
-        $.ajax({
-                url: '@Url.Action("LoadPermissionsGUID", "Members")',
-                data: { "PermissionsName": PermissionsName},
-                success: function (data)
-                {
-                    $("#perGUID").val(data);       
-                }
-               });
-    });
-
-    $("#select2").change(function () {
-        var EmployeeName = $(this).find(":selected").val();
-        $.ajax({
-                url: '@Url.Action("LoadEmpolyeeGUID", "Members")',
-                data: { "EmployeeName": EmployeeName},
-                success: function (data)
-                {
-                    $("#empGUID").val(data);       
-                }
-               });
-    });
-</script>
-}
 

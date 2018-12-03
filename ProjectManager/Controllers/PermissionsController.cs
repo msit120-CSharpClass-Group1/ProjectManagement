@@ -7,6 +7,7 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize(Roles = "管理員")]
     public class PermissionsController : Controller
     {
         private IRepository<Permissions> permissionsRepository = new Repository<Permissions>();
