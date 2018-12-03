@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "新增員工";
+    var departments = (IEnumerable<ProjectManager.Models.Department>)ViewBag.department;
+    var jobTitle = (IEnumerable<ProjectManager.Models.JobTitle>)ViewBag.jobTitle;
+    var employees = (IEnumerable<ProjectManager.Models.Employee>)ViewBag.employees;
+}
+
+
+
+<form method="post" action="~/Employees/_Add" class="form-horizontal">
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">員工名稱</label>
+        <div class="col-md-2">
+            <input type="text" name="EmployeeName" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">部門</label>
+        <div class="col-md-2">
+            <select name="DepartmentGUID" id="select1">
+                <option value="0">請選擇</option>
+                @foreach(var _departments in departments)
+                {
+                    <option value="@_departments.DepartmentGUID">@_departments.DepartmentName</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">直屬主管</label>
+        <div class="col-md-2">
+            <select name="ManagerGUID" id="select1">
+                <option value="0">請選擇</option>
+                @foreach (var _employees in employees)
+                {
+                    <option value="@_employees.EmployeeGUID">@_employees.EmployeeName</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">職稱</label>
+        <div class="col-md-2">
+            <select name="TitleGUID" id="select1">
+                <option value="0">請選擇</option>
+                @foreach (var _jobTitle in jobTitle)
+                {
+                    <option value="@_jobTitle.TitleGUID">@_jobTitle.TitleName</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-info">確認</button>
+            <a href="~/Employees/Index" class="btn btn-dark">取消</a>
+        </div>
+    </div>
+</form>

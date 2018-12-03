@@ -58,6 +58,12 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
@@ -114,13 +120,16 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Login.css" />
     <Content Include="Content\Main.css" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\PagedList.css" />
     <Content Include="Content\skin-black.css" />
+    <Content Include="Content\WorkloadBar.css" />
     <Content Include="Content\_all-skins.css" />
     <Content Include="Global.asax" />
     <Content Include="image\001.jpg" />
     <Content Include="image\ajax-loader.gif" />
+    <Content Include="image\arrow.gif" />
     <Content Include="image\avatar.png" />
+    <Content Include="image\CancelIcon.png" />
     <Content Include="image\collapse.png" />
     <Content Include="image\expand.png" />
     <Content Include="image\loading.gif" />
@@ -212,10 +221,12 @@
     <Compile Include="Controllers\CostController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
+    <Compile Include="Controllers\EmployeesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\JobTitleController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\PerfomanceController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\ProjectCategoryController.cs" />
     <Compile Include="Controllers\ProjectDetailsController.cs" />
@@ -323,7 +334,8 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModel\BoardVM.cs" />
-    <Compile Include="Models\ViewModel\DisplayResource.cs" />
+    <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
+    <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
@@ -369,7 +381,6 @@
     <Content Include="Views\JobTitle\Edit.cshtml" />
     <Content Include="Views\JobTitle\Index.cshtml" />
     <Content Include="Views\JobTitle\Insert.cshtml" />
-    <Content Include="Views\Members\Edit.cshtml" />
     <Content Include="Views\Members\Index.cshtml" />
     <Content Include="Views\Permissions\Edit.cshtml" />
     <Content Include="Views\Permissions\Index.cshtml" />
@@ -386,9 +397,21 @@
     <Content Include="Views\TaskStatus\Edit.cshtml" />
     <Content Include="Views\TaskStatus\Index.cshtml" />
     <Content Include="Views\TaskStatus\Insert.cshtml" />
-    <Content Include="Views\ProjectDetails\AssignTask.cshtml" />
     <Content Include="Views\Shared\_PartialPageNav.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectDistribution.cshtml" />
+    <Content Include="Views\ProjectDetails\TreeGridPartialView.cshtml" />
+    <Content Include="Views\ProjectDetails\AssignTask.cshtml" />
+    <Content Include="Views\Shared\_PartialPageNav.cshtml" />
+    <Content Include="Views\Shared\_GuestLayout.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Shared\_PMLayout.cshtml" />
+    <Content Include="Views\Shared\_PGLayout.cshtml" />
+    <Content Include="Views\Shared\_ManagerLayout.cshtml" />
+    <Content Include="Views\Employees\Index.cshtml" />
+    <Content Include="Views\Employees\Edit.cshtml" />
+    <Content Include="Views\Employees\Add.cshtml" />
+    <Content Include="Views\Members\Edit.cshtml" />
+    <Content Include="Views\Perfomance\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

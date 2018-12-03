@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "修改";
+    var departments = (IEnumerable<ProjectManager.Models.Department>)ViewBag.department;
+    var jobTitle = (IEnumerable<ProjectManager.Models.JobTitle>)ViewBag.jobTitle;
+    var employees = (IEnumerable<ProjectManager.Models.Employee>)ViewBag.employees;
+    var editemployee = (ProjectManager.Models.Employee)ViewBag.editemployee;
+    var editmember = (ProjectManager.Models.Members)ViewBag.editmember;
+}
+
+
+
+<form method="post" action="~/Employees/_Edit" class="form-horizontal">
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">員工名稱</label>
+        <div class="col-md-2">
+            <input type="hidden" name="EmployeeGUID" value="@editemployee.EmployeeGUID" />
+            <input type="text" name="EmployeeName" value="@editemployee.EmployeeName" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">部門</label>
+        <div class="col-md-2">
+            <input type="hidden" id="_DepartmentGUID" value="@editemployee.DepartmentGUID" />
+            <select name="DepartmentGUID" id="DepartmentGUID">
+                <option value="0">請選擇</option>
+                @foreach (var _departments in departments)
+                {
+                    if (@editemployee.DepartmentGUID == _departments.DepartmentGUID)
+                    {
+                        <option selected value="@_departments.DepartmentGUID">@_departments.DepartmentName</option>
+                    }
+                    else
+                    {
+                        <option value="@_departments.DepartmentGUID">@_departments.DepartmentName</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">直屬主管</label>
+        <div class="col-md-2">
+            <input type="hidden" id="_ManagerGUID" value="@editemployee.ManagerGUID" />
+            <select name="ManagerGUID" id="ManagerGUID">
+                <option value="0">請選擇</option>
+                @foreach (var _employees in employees)
+                {
+                    if (@editemployee.ManagerGUID == _employees.EmployeeGUID)
+                    {
+                        <option selected value="@_employees.EmployeeGUID">@_employees.EmployeeName</option>
+                    }
+                    else
+                    {
+                        <option value="@_employees.EmployeeGUID">@_employees.EmployeeName</option>
+
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">職稱</label>
+        <div class="col-md-2">
+            <input type="hidden" id="_TitleGUID" value="@editemployee.TitleGUID" />
+            <select name="TitleGUID" id="TitleGUID">
+                <option value="0">請選擇</option>
+                @foreach (var _jobTitle in jobTitle)
+                {
+                    if (@editemployee.TitleGUID == _jobTitle.TitleGUID)
+                    {
+                        <option selected value="@_jobTitle.TitleGUID">@_jobTitle.TitleName</option>
+                    }
+                    else
+                    {
+                        <option value="@_jobTitle.TitleGUID">@_jobTitle.TitleName</option>
+                    }
+
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-info">確認</button>
+            <a href="~/Employees/Index" class="btn btn-dark">取消</a>
+        </div>
+    </div>
+</form>

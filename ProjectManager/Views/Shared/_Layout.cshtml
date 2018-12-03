@@ -7,6 +7,7 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link href="~/Content/Main.css" rel="stylesheet" />
+    <link href="~/Content/PagedList.css" rel="stylesheet" />
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
     @RenderSection("style", false)
 </head>
@@ -63,13 +64,13 @@
                 </button>
                 <ul class="dropdown-container hide">
                     <li>
-                        <a href="#">專案清單</a>
-                    </li>
-                    <li>
                         <a href="~/Cost/ExpList">費用管理</a>
                     </li>
                     <li>
                         <a href="~/Cost/ExpCatMgr">費用類別管理</a>
+                    </li>
+                    <li>
+                        <a href="#">統計與圖表</a>
                     </li>
                 </ul>
             </li>
@@ -117,7 +118,9 @@
                     </li>
                 </ul>
             </li>
-
+            <li>
+                <a href="~/Members/Edit"><i class="fas fa-users"></i><span>修改密碼</span></a>
+            </li>
         </ul>
     </aside>
 
@@ -129,7 +132,7 @@
                 <li class="active">@ViewBag.Title</li>
             </ol>
         </div>
-        @{ 
+        @{
             if (IsSectionDefined("nav"))
             {
                 @RenderSection("nav", false);
@@ -138,14 +141,14 @@
         <div class="content">
             @RenderBody()
             <div class="dropup">
-                <button class="dropupbtn" title="Message"><i class="fas fa-comments"></i><span class="message">20</span></button>
+                <button class="dropupbtn" title="Message" type="button"><i class="fas fa-comments"></i><span class="message">20</span></button>
                 <div class="dropup-content">
                     <a href="#">message1</a>
                     <a href="#">message2</a>
                     <a href="#">message3</a>
                 </div>
             </div>
-            <button class="rightOpenbtn" title="Go to top">&#9776;</button>
+            <button type="button" class="rightOpenbtn" title="Go to top">&#9776;</button>
 
             <aside id="myRightsidenav" class="right-sidenav" style="display: none;">
                 @{
@@ -186,9 +189,11 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     @*<script src="~/Scripts/jquery-ui-1.12.1-Effects/jquery-ui.min.js"></script> 家豪先註解掉，如下，引用全部*@
     <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
+    @*<script src="~/Scripts/bootstrap.min.js"></script> 改為引用打包popper.js+boostrap.js的bundle*@
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
     <script src="~/Scripts/Main.js"></script>
 
     @RenderSection("script", false)
+
 </body>
 </html>

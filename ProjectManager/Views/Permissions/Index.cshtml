@@ -3,7 +3,7 @@
     ViewBag.Title = "權限";
 }
 
-<a href="~/Permissions/Insert" class="btn btn-warning">新增權限</a>
+<a href="~/Permissions/Insert" class="btn btn-info">新增權限</a>
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -19,7 +19,7 @@
             <tr>
                 <td>@_permissions.PermissionsID</td>
                 <td>@_permissions.PermissionsName</td>
-                <td><a href="~/Permissions/Edit/@_permissions.PermissionsGUID" class="btn btn-primary">修改</a></td>
+                <td><a href="~/Permissions/Edit/@_permissions.PermissionsGUID" class="btn btn-info">修改</a></td>
                 <td><a href="~/Permissions/Delete/@_permissions.PermissionsGUID" class="btn btn-danger">刪除</a></td>
             </tr>
         }

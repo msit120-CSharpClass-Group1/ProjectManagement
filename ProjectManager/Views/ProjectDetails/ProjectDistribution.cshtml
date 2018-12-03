@@ -28,98 +28,83 @@
         .treegrid-expander-collapsed {
             background-image: url(../image/expand.png);
         }
-    </style>
+
+        .AlarmIcon {
+            font-size: 120%;
+            color: #dc3545;
+            margin-right: 5px;
+        }        
+
+        thead {
+            background-color: black;
+            color: white;
+            text-align: center;
+        }
+    </style>    
 }
 @section nav{
     @Html.Partial("_PartialPageNav", "Shared")
 }
-
 @foreach (var item in (List<Project>)ViewBag.Projects)
 {
     <h4>@item.ProjectID &nbsp; @item.ProjectName</h4>
 }
 
 @*<input id="isGanttShowed" type="checkbox" /> Show Gantt*@
-<div id="tasks_layout" class="container">
+<div id="tasks_layout" >
     <div id="ganttContainer" style="width: 100%; height: 500px" hidden></div>
-    <div id="treeGridContainer">
-        <table id="treeGrid" class="table table-bordered table-hover tree">
-            <thead class="panel-heading">
-                <tr>
-                    <th>@Html.DisplayNameFor(m => m.TaskName)</th>
-                    <th><a href="#"><i class="fas fa-plus"></i></a></th>
-                    <th>@Html.DisplayNameFor(m => m.TaskStatusID)</th>
-                    <th>@Html.DisplayNameFor(m => m.EmployeeGUID)</th>
-                    <th>@Html.DisplayNameFor(m => m.Description)</th>
-                    <th>@Html.DisplayNameFor(m => m.Tag)</th>
-                </tr>
-            </thead>
-            <tbody>
+    <div id="treeGridContainer"></div>
+</div>
 
-                @foreach (var task in @Model)
-                {
-                    var class1 = "treegrid-" + task.orderID;
-                    var class2 = task.parentOrderID == 0 ? "" : "treegrid-parent-" + task.parentOrderID;
-                    <tr class="@class1 @class2" data-orderID="@task.orderID" data-taskGUID="@task.TaskGUID" >
-                        <td>@task.TaskName</td>
-                        <td><a href="#"><i class="fas fa-plus"></i></a></td>
-                        <td>@task.TaskStatus.TaskStatusName</td>
-                        <td>@Html.DisplayFor(m => task.Employee.EmployeeName)</td>
-                        <td>@Html.DisplayFor(m => task.Description)</td>
-                        <td>@Html.DisplayFor(m => task.Tag)</td>
-                    </tr>
-
-                }
-            </tbody>
-        </table>
-
-        <div class="modal fade" id="treeGridFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalCenterTitle"></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post" action="~/ProjectDetails/Edit" enctype="application/x-www-form-urlencoded">
-                            <input name="TaskGUID" class="form-control d-inline" style="width:10em;" />@*type="hidden"*@
-                            <div class="form-group">
-                                @*@Html.DisplayNameFor(m => m.TaskName) @Html.TextBoxFor() <input name="TaskName" type="text" class="form-control d-inline" style="width:10em;" />*@
-                            </div>
-
-                            <div class="row ">
-                                <div class="col-6 form-group">
-                                    需求部門
-
-                                </div>
-                                <div class="col-6 form-group">
-                                    需求部門PM
-
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-2"><button type="button" class="btn btn-danger float-left">刪除</button></div>
-                                <div class="col-5"></div>
-                                <div class="col-5">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                                    <button type="submit" class="btn btn-primary">確認修改</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<!--Modal For Delete Comfirm-->
+<div class="modal fade" style="top:120px;" id="DeleteAlarmModal" tabindex="-1" role="dialog" aria-labelledby="DeleteAlarmModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:3px 4px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DeleteAlarmModalTitle"><span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>刪除確認</h5>
+            </div>
+            <div class="modal-body pl-3">
+                <div class="row">
+                    <h6 id="deleteAlarm" class="col-12"></h6>
                 </div>
+                <div id="deleteAlarm_detail"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="btn_ConfirmDelete" class="btn btn-danger">全部刪除</button>
             </div>
         </div>
     </div>
 </div>
+
+<!--Modal For Delete Rejected-->
+<div class="modal fade" style="top:150px;" id="DeleteRejectedModal" tabindex="-1" role="dialog" aria-labelledby="DeleteAlarmModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:3px 4px;">
+            <div class="modal-header">
+                <h5 class="modal-title"><span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>不可刪除</h5>
+            </div>
+            <div class="modal-body pl-3">
+                <div class="row">
+                    <h6 id="deleteRejectedMsg" class="col-12"></h6>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @section asideRight{
     <div class="container text-light mt-3">
-        <h4>新增工作項目</h4>
-        <form class="form-horizontal " action="~/ProjectDetails/InsertTask" method="post">
-            <input name="ParentTaskGUID" id="ParentTaskGUID" type="hidden"  />
+        <h4 id="ModeTitle">新增工作項目</h4>
+        <form id="TaskForm" class="form-horizontal" method="put">
+            @*action="@Url.Action("InsertTask", "ProjectDetails")" method="post"*@
+            <input name="ParentTaskGUID" id="ParentTaskGUID" type="text" hidden />
+            <input name="TaskGUID" id="TaskGUID" type="text" hidden />@**@
             <div class="form-group">
                 @Html.LabelFor(m => m.FirstOrDefault().TaskName)
                 @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:12em;" })
@@ -141,14 +126,14 @@
                     @{
                         string strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
                     }<br />
-                    <input name="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
+                    <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
                 </div>
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().EstEndDate)
                     @{
                         strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
                     }<br />
-                    <input name="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
+                    <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
                 </div>
             </div>
             <div class="row ">
@@ -157,20 +142,29 @@
                     @{
                         strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
                     }<br />
-                    <input name="StartDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
+                    <input name="StartDate" id="StartDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
                 </div>
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().EndDate)
                     @{
                         strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
                     }<br />
-                    <input name="EndDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
+                    <input name="EndDate" id="EndDate" type="date" class="form-control d-inline" value="@strDate" style="width:12em;" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 form-group">
+                    @Html.LabelFor(m => m.FirstOrDefault().Description)
+                    <br />
+                    <input name="Description" id="Description" type="text" class="form-control d-inline" value="@strDate" style="width:26em;" multiple />
                 </div>
             </div>
 
             <div id="formBtns" class="mt-5 mx-auto text-center ">
-                <button id="cancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
-                <button id="confiredBtn" type="submit" class="btn btn-primary py-1 px-5">確認</button>
+                <button id="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
+                <button id="ConfirmedAddBtn" type="button" class="btn btn-primary py-1 px-5">確認新增</button>
+                <button id="ConfirmedModifyBtn" type="button" class="btn btn-primary py-1 px-5">確認修改</button>
+                <br /><button id="DeleteBtn" type="button" class="btn btn-danger py-1 px-3 mt-3">刪除工作項目</button>
             </div>
         </form>
     </div>
@@ -180,36 +174,120 @@
     <script src="~/Scripts/jquery.treegrid.min.js"></script>
     <script>
         $(document).ready(function () {
-            var treeGrid = $('#treeGrid');
-            var formModal = $('#treeGridFormModal');
-            treeGrid.treegrid();
+            $('.rightOpenbtn').html('<i class="fas fa-plus"></i>').click(SetRightAsideToAdd);
+            $('#DeleteBtn').hide();
 
             var tasks_layout = $('#tasks_layout');
             var treeGridContainer = $('#treeGridContainer');
             var ganttContainer = $('#ganttContainer');
+            var taskForm = $('#TaskForm');
 
-            treeGrid.find('tr').each(function () {
-                $(this).on("dblclick", function () {
-                    ShowByGUID();
+            treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
 
-
-                });
-
-            });
-            treeGrid.find('tr a').each(function () {
-                $(this).on("click", function () {
-                    if ($('#myRightsidenav').css('display') == "none") {
-                        $('button.rightOpenbtn').click();
-                    }
-                    $('#ParentTaskGUID').val($(this).parents('tr').attr('data-taskGUID'));
-                });
-
-            });
-
-            function ShowByGUID() {
-                var _taskGUID = $(this).attr('data-taskGUID');
-                
+            function SetTreeGrid() {
+                $(this).find('table').treegrid();
+                $(this).find('tr').each(DoubleClickToModifyTask);
+                $(this).find('tr a').each(ClickPlusIconToAddTask);
             }
+
+            function DoubleClickToModifyTask() {
+                $(this).on("dblclick", function () {
+                        if ($('#myRightsidenav').css('display') == "none") {
+                            $('button.rightOpenbtn').click();
+                        }
+                        SetRightAsideToModify();
+                    $.getJSON('@Url.Action("EditTask", "ProjectDetails")', { TaskGUID: $(this).attr('data-taskGUID') }, function (task) {
+                            $('#TaskName').val(task.TaskName);
+                            $('#TaskStatusID').val(task.TaskStatusID);
+                            $('#Tag').val(task.Tag);
+                            $('#EstStartDate').val(ConvertDatetime(task.EstStartDate));
+                            $('#EstEndDate').val(ConvertDatetime(task.EstEndDate));
+                            $('#StartDate').val(ConvertDatetime(task.StartDate));
+                            $('#EndDate').val(ConvertDatetime(task.EndDate));
+                            $('#Description').val(task.Description);
+                            $('#ParentTaskGUID').val(task.ParentTaskGUID);
+                            $('#TaskGUID').val(task.TaskGUID);
+                        });
+                });
+            }
+            function ConvertDatetime(_date) {
+                date = _date.split("T");
+                return date[0];
+            }
+            function ClickPlusIconToAddTask() {
+                $(this).on("click", function () {
+                        SetRightAsideToAdd();
+                        if ($('#myRightsidenav').css('display') == "none") {
+                            $('button.rightOpenbtn').click();
+                        }
+                        $('#ParentTaskGUID').val($(this).parents('tr').attr('data-taskGUID'));
+                });
+            }
+
+            function SetRightAsideToModify() {
+                $('#ModeTitle').text("修改工作項目");
+                $('#ConfirmedAddBtn').hide();
+                $('#ConfirmedModifyBtn').show();
+                $('#DeleteBtn').show();
+
+            }
+            function SetRightAsideToAdd() {
+                $('#ModeTitle').text("新增工作項目");
+                $('#ConfirmedAddBtn').show();
+                $('#ConfirmedModifyBtn').hide();
+                $('#DeleteBtn').hide();
+
+                taskForm.find('input[type="text"]').val("");
+                taskForm.find('textarea').val("");
+                taskForm.find('input[type="date"]').val("@string.Format("{0:yyyy-MM-dd}", DateTime.Now)");
+            }
+            $('#ConfirmedAddBtn').click(function () {
+                var data = taskForm.serialize();
+                $.post("@Url.Action("InsertTask", "ProjectDetails")", data, function () {
+                    $('.rightOpenbtn').click();
+                     treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                });
+            });
+            $('#ConfirmedModifyBtn').click(function () {
+                var data = taskForm.serialize();
+                $.post("@Url.Action("EditTask", "ProjectDetails")",data, function () {
+                     treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                });
+            });
+            $('#CancelBtn').click(function () { $('.rightOpenbtn').click(); });
+            $('#DeleteBtn').click(function () {
+                $.ajax({
+                    url: "@Url.Action("GetChildTaskCount", "ProjectDetails")",
+                    method: "get",
+                    data: taskForm.serialize(),
+                    dataType: "json"
+                }).done(function (data) {
+                    if (parseInt(data) != 0) {
+                        $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + " </em>  有" + data + "個子項目");
+                        $('#btn_ConfirmDelete').text('全部刪除');
+                        $('#DeleteAlarmModal').modal('show');
+                    } else {
+                        $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + "</em>  將被刪除");
+                        $('#btn_ConfirmDelete').text('刪除');
+                        $('#DeleteAlarmModal').modal('show');
+                    }
+                });
+            });
+            $('#btn_ConfirmDelete').click(function () {
+                $.ajax({
+                    url: "@Url.Action("DeleteTasks", "ProjectDetails")",
+                    method: "post",
+                    data: taskForm.serialize(),
+                    dataType: "json"
+                }).done(function (data) {
+                    $('#DeleteAlarmModal').modal('hide');
+                    if (data.length > 0) {
+                        $('#deleteRejectedMsg').text(data);
+                        $('#DeleteRejectedModal').modal('show');
+                    }
+                    treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                });
+            });
 
         });
     </script>
@@ -218,8 +296,10 @@
             border: 0px solid;
         }
 
-        .table-bordered tr {
+        .table-bordered tbody tr {
             border: 1px solid #dee2e6;
+            background-color:white;
         }
     </style>
 }
+
