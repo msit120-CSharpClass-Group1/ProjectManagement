@@ -83,7 +83,26 @@ namespace ProjectManager.Controllers
                 Response.Cookies["ProjectGUID"].Value = ProjectGUID.ToString();
                 Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddDays(7);
             }
+
             return View();
+        }
+        public ActionResult RootTasksCompletedRate()
+        {
+            if (Session["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
+            var rootTasks = _tasks.GetRootTasks();
+            
+            ChartData _data = new ChartData();
+            _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
+            _data.datasets.Add(new ChartDataset() {
+                label="項目完成度",
+                backgroundColor= "#007BFF",
+                borderColor= "#007BFF",
+                data = rootTasks.GetRootTasksCompletedRate(_tasks).ToList()
+            });
+            return Json(_data,JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public ActionResult ProjectEdit()
