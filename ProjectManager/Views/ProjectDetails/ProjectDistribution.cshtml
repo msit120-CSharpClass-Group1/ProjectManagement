@@ -102,9 +102,8 @@
     <div class="container text-light mt-3">
         <h4 id="ModeTitle">新增工作項目</h4>
         <form id="TaskForm" class="form-horizontal" method="put">
-            @*action="@Url.Action("InsertTask", "ProjectDetails")" method="post"*@
             <input name="ParentTaskGUID" id="ParentTaskGUID" type="text" hidden />
-            <input name="TaskGUID" id="TaskGUID" type="text" hidden />@**@
+            <input name="TaskGUID" id="TaskGUID" type="text" hidden />
             <div class="form-group">
                 @Html.LabelFor(m => m.FirstOrDefault().TaskName)
                 @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:12em;" })
@@ -261,6 +260,7 @@
                 $.post("@Url.Action("EditTask", "ProjectDetails")",data, function () {
                      treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
                 });
+                $('button.rightOpenbtn').click();
             });
             $('#CancelBtn').click(function () { $('.rightOpenbtn').click(); });
             $('#DeleteBtn').click(function () {
