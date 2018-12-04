@@ -18,5 +18,14 @@ namespace ProjectManager.Controllers
             ViewBag.GroupMember = ProjectMembersRepo.GetCollections().GroupBy(p => p.Project.ProjectName).ToList();      
             return View();
         }
+        public ActionResult Score()
+        {
+            return View();
+        }
+        public ActionResult Watch()
+        {
+            return View();
+        }
+
     }
 }

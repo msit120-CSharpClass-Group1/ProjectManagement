@@ -7,21 +7,22 @@
     <div class="row">
         <div class="col-6">
             @foreach (var item in (List<Project>)ViewBag.InProgress)
-            {
+            {            
             <div class="alert alert-info" role="alert">
-
-                @foreach (var _member in ViewBag.GroupMember as List<IGrouping<string, ProjectMembers>>)
+                <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
+                <a href="~/Perfomance/Score?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>我要評分</a>
+                @*@foreach (var _member in ViewBag.GroupMember as List<IGrouping<string, ProjectMembers>>)
                 {
                     if (item.ProjectName == _member.Key)
                     {
-                    <img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="float:right;width:40px"/>
+                        <img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="float:right;width:40px" />
                     }
-                }
-                    <h4 class="alert-heading">@item.ProjectName</h4>
-                    <p>@item.ProjectStatus.ProjectStatusName</p>
-                    <hr>
-                    <p class="mb-0"></p>
-                </div>
+                }*@
+                <h4 class="alert-heading">@item.ProjectName</h4>
+                <p>@item.ProjectStatus.ProjectStatusName</p>
+                <hr>
+                <p class="mb-0"></p>
+            </div>
             }
         </div>
         <div class="col-6">
