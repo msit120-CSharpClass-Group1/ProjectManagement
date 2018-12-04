@@ -100,7 +100,7 @@ namespace ProjectManager.Models
             List<int> rootResourceSum = new List<int>();
             foreach (var root in rootTasks)
             {
-                int _sum = 0;
+                int _sum = (int)root.TaskResource.Select(r => r.UnitPrice * r.Quantity).Sum();
                 foreach (var child in root.GetAllChildTasks())
                 {
                     // _sum += (int)resourceFromRepo.Where(r => r.TaskGUID == child.TaskGUID).Select(r => r.UnitPrice * r.Quantity).Sum();   
