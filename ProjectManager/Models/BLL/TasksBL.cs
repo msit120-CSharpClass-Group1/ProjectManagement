@@ -95,6 +95,21 @@ namespace ProjectManager.Models
             }
             return rootTasksWorkTimeSum;
         }
+        public static IEnumerable<int> GetRootTasksResourceSum(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
+        {
+            List<int> rootResourceSum = new List<int>();
+            foreach (var root in rootTasks)
+            {
+                int _sum = 0;
+                foreach (var child in root.GetAllChildTasks())
+                {
+                    // _sum += (int)resourceFromRepo.Where(r => r.TaskGUID == child.TaskGUID).Select(r => r.UnitPrice * r.Quantity).Sum();   
+                    _sum += (int)child.TaskResource.Select(r => r.UnitPrice * r.Quantity).Sum();
+                }
+                rootResourceSum.Add(_sum);                
+            }
+            return rootResourceSum;
+        }
         public static IEnumerable<Tasks> GetAllChildTasks(this Tasks task)
         {            
             TreeGridModel model = new TreeGridModel();

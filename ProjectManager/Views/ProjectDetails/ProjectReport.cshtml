@@ -25,7 +25,10 @@
             <canvas id="MemberWorkTimeSumChart"></canvas>
         </div>
     </div>
-    <div class="col-6">        
+    <div class="col-6">
+        <div id="RootTasksSumOfResourceContainer" class="chart-container bg-light p-3">
+            <canvas id="RootTasksSumOfResourceChart"></canvas>
+        </div>
     </div>
 </div>
 
@@ -41,6 +44,7 @@
             BuildRootTasks_CompletedRateChart();
             BuildRootTasks_SumOfWorkTimeChart();
             BuildMembers_SumOfWorkTimeChart();
+            BuildRootTasks_SumOfResourceChart();
 
             function BuildRootTasks_CompletedRateChart() {
                 $.getJSON("@Url.Action("RootTasksCompletedRate", "ProjectDetails")", null, function (datas) {
@@ -166,8 +170,31 @@
                                 }
                             }
                         });
-                    });                
-
+                    });               
+            }
+            function BuildRootTasks_SumOfResourceChart(){
+                $.getJSON("@Url.Action("RootTasksResourceSum", "ProjectDetails")", null, function (datas) {
+                    var RootTasksSumOfResourceChart = new Chart($('#RootTasksSumOfResourceChart'), {
+                        type: 'doughnut',
+                        data: datas,
+                        options: {
+                            responsive: true,
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: '根工作項目費用總和',
+                                fontSize: 20,
+                                padding: 10,
+                            },
+                            animation: {
+                                animateScale: true,
+                                animateRotate: true
+                            },                            
+                        }
+                    });
+                });
             }
 
         });
