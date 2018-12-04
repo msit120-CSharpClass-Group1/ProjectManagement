@@ -50,8 +50,8 @@
 }
 
 <form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal">
-    <div class="formdiv">
-        <div class="col" style="margin-top:60px">
+    <div class="row">
+        <div  class=""style="margin-top:60px">
             <div class="flip"><font color="red">查看分配狀態</font></div>
             <div class="panel">
                 <table class="table table-bordered" id="mappingTable">
@@ -65,7 +65,7 @@
             </div>
         </div>
         <div></div>
-        <div class="col" id="projectMemberDivL1">
+        <div class="col-9" id="projectMemberDivL1">
             @foreach (var _projectMember in Model)
             {
                 <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
