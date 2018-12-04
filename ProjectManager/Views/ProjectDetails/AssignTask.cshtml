@@ -14,14 +14,12 @@
         }*/
 
         #projectMemberDivL2 {
-            width: auto;
+            width: 180px;
             float: left;
             margin: 5px;
         }
 
         #projectMemberDivL1 {
-            overflow: scroll;
-            height: 500px;
             background-color: rgba(128, 128, 128, 0.41);
         }
 
@@ -29,7 +27,7 @@
             margin: 0px;
             padding: 5px;
             text-align: center;
-            background: #E09697;
+            background: darkcyan;
             cursor: pointer;
             font-family: 'Arial';
         }
@@ -53,7 +51,7 @@
 <form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal">
     <div class="row no-gutters">
         <div class="col-4">
-            <div class="flip">查看分配狀態</div>
+            <div class="flip"><font color="red">查看分配狀態</font></div>
             <div class="panel">
                 <table class="table table-bordered" id="mappingTable">
                     <thead>
@@ -65,25 +63,27 @@
                 </table>
             </div>
         </div>
-
+        <div></div>
         <div class="col-6" id="projectMemberDivL1">
             @foreach (var _projectMember in Model)
             {
                 <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
                     <div class="card-header bg-transparent border-success" style="width:180px"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
-                    <div class="card-body text-success droppable" style="height:50px;">
+                    <div class="card-body text-success droppable" style="height:50px;border-style:dashed;">
                         <!--TaskArea Start-->
-                        <!--TaskArea End-->                       
+                        <!--TaskArea End-->
                     </div>
                     <div class="card-footer bg-transparent border-success">
                         <h6>工作負荷</h6>
                         @{
+                            double rawercent;
+                            bool flag =true;
                             foreach (var item in ViewBag.Workload as IEnumerable<Group<string, DisplayWorkloadVM>>)
                             {
                                 int? valid = item.Sum;
                                 int total = 40;
 
-                                double rawercent = (double)(valid * 100) / total;
+                                rawercent = (double)(valid * 100) / total;
                                 if (valid > total)
                                 {
                                     valid = (int)valid - total;
@@ -94,19 +94,34 @@
                                 if (_projectMember.Employee.EmployeeName == item.Key)
                                 {
 
-                                    if (rawercent > 100)
+                                    if (rawercent >= 100 && rawercent < 200)
                                     {
                                         <div class="progress">
                                             <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
                                         </div>
+                                        flag = false;
+                                    }
+                                    else if (rawercent >= 200)
+                                    {
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped bg-danger" style="width:@percent%;">@rawercent %</div>
+                                        </div>
+                                        flag = false;
                                     }
                                     else
                                     {
                                         <div class="progress">
                                             <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
                                         </div>
-                                    }
-                                }                              
+                                        flag = false;
+                                    }                                   
+                                }
+                            }
+                            if (flag)
+                            {
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped bg-success" style="width:0%;"><font color="red">目前無承接工作</font></div>
+                                </div>
                             }
                         }
                     </div>
@@ -171,7 +186,7 @@
         var topTable = $("#mappingTable>tbody");
         var submitCount = 0;
         var flag = true;
-        $(".draggable").draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
+        $(".draggable").draggable({ drag: function (e, ui) {}, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
         $(".droppable").droppable({
             drop: function (event, ui)
             {
@@ -181,7 +196,7 @@
                 var taskName = ui.draggable.data("tag");
                 var flipPanel = $(".flip");
 
-                ui.draggable.text("").attr("style", "width:1px;float:left;background-color:lightgreen;border-radius: 70%");
+                ui.draggable.text("").attr("style", "width:1px;float:left;background-color:lightgreen;border-radius: 80%");
                 ui.draggable.appendTo($(this))
 
                 var cell1hid = $("<input/>").attr("name", "EmployeeGUID" + submitCount).attr("type", "hidden").val(empID);
@@ -216,7 +231,6 @@
             {
                 var EmpName = $(this).parent().prev().prev().text()
                 $('#exampleModalCenter').modal('show');
-                //$('#hidexampleModalLongTitle').val();
                 $('#exampleModalCenter h4').text("對 " + EmpName + "說明工作注意事項");
                 $("#HideTaskGUID").val(taskGUID);
             }
@@ -251,7 +265,7 @@
             $(".droppable").empty();
         })
 
-        $("#taskitem").on("mouseover", 'li', function () //點擊工作描述show出
+        $("#taskitem").on("click", 'li', function () //點擊工作描述show出
         {
             var TaskGUID = $(this).data("tag2");
             var descArea = $("#taskdescription");

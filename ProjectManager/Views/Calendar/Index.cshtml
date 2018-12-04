@@ -19,21 +19,21 @@
 <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title"><span id="eventTitle"></span></h4>
             </div>
             <div class="modal-body">
                 <button id="btnDelete" class="btn btn-default btn-sm pull-right">
-                    <span class="glyphicon glyphicon-remove"></span> Remove
+                    <span class="glyphicon glyphicon-remove"></span> 刪除
                 </button>
                 <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
-                    <span class="glyphicon glyphicon-pencil"></span> Edit
+                    <span class="glyphicon glyphicon-pencil"></span> 更新
                 </button>
                 <p id="pDetails"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
             </div>
         </div>
     </div>
@@ -44,7 +44,7 @@
         <div class="modal-content">
             <div class="">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">新增事件</h4>
+                <h4 class="modal-title">儲存事件</h4>
             </div>
             <div class="modal-body">
                 <form class="col-md-12 form-horizontal">
@@ -77,28 +77,29 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>敘述事情</label>
+                        <label>敘述 :</label>
                         <textarea id="txtDescription" rows="3" class="form-control"></textarea>
                     </div>
                     <div class="form-group">
                         <label>主題顏色</label>
                         <select id="ddThemeColor" class="form-control">
-                            <option value="">不使用顏色</option>
-                            <option value="red">紅色</option>
-                            <option value="blue">藍色</option>
-                            <option value="black">黑色</option>
-                            <option value="green">綠色</option>
+                            <option value="">請選擇</option>
+                            <option value="Pink">粉色</option>
+                            <option value="Beige">黃色</option>
+                            <option value="Turquoise">綠色</option>
+                            <option value="Periwinkle">藍色</option>
                         </select>
                     </div>
-                    <button type="button" id="btnSave" class="btn btn-success">Save</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="btnSave" class="btn btn-success">儲存</button>
+                    <input  type="hidden" id="calGUID"/>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<p id="mytime">我的時間</p>
+@*<p id="mytime">我的時間</p>*@
 
 @section script{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
@@ -116,7 +117,7 @@
 
 
     <script>
-    $(document).ready(function () {
+    $(document).ready(function () {       
         var events = [];
         var selectedEvent = null;
         FetchEventAndRenderCalendar();
@@ -128,6 +129,7 @@
                 success: function (data) {
                     $.each(data, function (i, v) {
                         events.push({
+                            CalendarGUID: v.CalendarGUID,
                             eventID: v.EventID,
                             title: v.Subject,
                             description: v.Description,
@@ -136,6 +138,7 @@
                             color: v.ThemeColor,
                             allDay: v.IsFullDay
                         });
+                        CalGUID = v.CalendarGUID;
                     })
 
                     GenerateCalender(events);
@@ -149,7 +152,7 @@
         function GenerateCalender(events) {
             $('#calender').fullCalendar('destroy');
             $('#calender').fullCalendar({
-                contentHeight: 800,
+                contentHeight: 580,
                 defaultDate: new Date(),
                 timeFormat: 'h(:mm)a',
                 header: {
@@ -164,14 +167,16 @@
                     selectedEvent = calEvent;
                     $('#myModal #eventTitle').text(calEvent.title);
                     var $description = $('<div/>');
-                    $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
+                    $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("MM/DD/YYYY HH:mm A")));
                     if (calEvent.end != null) {
-                        $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
+                        $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("MM/DD/YYYY HH:mm A")));
                     }
                     $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
+                    $("#calGUID").val(calEvent.CalendarGUID)
+                    
                     $('#myModal #pDetails').empty().html($description);
 
-                    $('#myModal').modal();
+                    $('#myModal').modal(); //Show出填寫的Modal
                 },
                 selectable: true,
                 select: function (start, end) {
@@ -184,13 +189,13 @@
                         allDay: false,
                         color: ''
                     };
-                    openAddEditForm();
+                    AddForm();
                     $('#calendar').fullCalendar('unselect');
                 },
                 editable: true,
                 eventDrop: function (event) {
                     var data = {
-                        CalendarGUID: guid(),
+                        CalendarGUID: event.CalendarGUID,
                         EventID: event.eventID,
                         Subject: event.title,
                         Start: event.start.format('MM/DD/YYYY HH:mm A'),
@@ -204,12 +209,14 @@
             })
         }
 
+        $(".fc-view-container").attr("style", "background-color:darkcyan");
+
         $('#btnEdit').click(function () {
             //Open modal dialog for edit event
-            openAddEditForm();
+            EditForm();
         })
         $('#btnDelete').click(function () {
-            if (selectedEvent != null && confirm('Are you sure?')) {
+            if (selectedEvent != null && confirm('確定要刪除嗎?')) {
                 $.ajax({
                     type: "POST",
                     url: '@Url.Action("DeleteEvent", "Calendar")',
@@ -241,8 +248,26 @@
             }
         });
 
-        function openAddEditForm() {
+        function AddForm() {
+            if (selectedEvent != null)
+            {               
+                $("#calGUID").val(guid());
+                $('#hdEventID').val(selectedEvent.eventID);
+                $('#txtSubject').val(selectedEvent.title);
+                $('#txtStart').val(selectedEvent.start.format('MM/DD/YYYY HH:mm A'));
+                $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
+                $('#chkIsFullDay').change();
+                $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('MM/DD/YYYY HH:mm A') : '');
+                $('#txtDescription').val(selectedEvent.description);
+                $('#ddThemeColor').val(selectedEvent.color);
+            }
+            $('#myModal').modal('hide');
+            $('#myModalSave').modal();
+        }
+
+        function EditForm() {
             if (selectedEvent != null) {
+                $("#calGUID").val();
                 $('#hdEventID').val(selectedEvent.eventID);
                 $('#txtSubject').val(selectedEvent.title);
                 $('#txtStart').val(selectedEvent.start.format('MM/DD/YYYY HH:mm A'));
@@ -271,8 +296,8 @@
                 return;
             }
             else {
-                var startDate = moment($('#txtStart').val(), "DD/MM/YYYY HH:mm A").toDate();
-                var endDate = moment($('#txtEnd').val(), "DD/MM/YYYY HH:mm A").toDate();
+                var startDate = moment($('#txtStart').val(), "MM/DD/YYYY HH:mm A").toDate();
+                var endDate = moment($('#txtEnd').val(), "MM/DD/YYYY HH:mm A").toDate();
                 if (startDate > endDate) {
                     alert('無效的日期!');
                     return;
@@ -282,7 +307,7 @@
 
             
             var data = {
-                CalendarGUID: guid(),
+                CalendarGUID: $("#calGUID").val(),
                 EventID: $('#hdEventID').val(),
                 Subject: $('#txtSubject').val().trim(),
                 Start: $('#txtStart').val().trim(),

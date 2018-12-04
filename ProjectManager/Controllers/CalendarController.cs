@@ -33,13 +33,15 @@ namespace ProjectManager.Controllers
                     var v = CalRepo.GetCollections().Where(a => a.EventID == e.EventID).FirstOrDefault();
                     if (v != null)
                     {
-                        //v.CalendarGUID = Guid.NewGuid();
+                    //v.CalendarGUID = Guid.NewGuid();                       
+                        v.CalendarGUID = e.CalendarGUID;
                         v.Subject = e.Subject;
                         v.Start = e.Start;
                         v.EndDay = e.EndDay;
                         v.Description = e.Description;
                         v.IsFullDay = e.IsFullDay;
                         v.ThemeColor = e.ThemeColor;
+                        CalRepo.Update(v);
                     }
                 }
                 else
