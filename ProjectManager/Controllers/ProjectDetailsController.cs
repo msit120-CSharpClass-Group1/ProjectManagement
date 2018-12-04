@@ -284,7 +284,7 @@ namespace ProjectManager.Controllers
                         taskRepo.Delete(taskRepo.Find(child.TaskGUID));
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
 
                 }
