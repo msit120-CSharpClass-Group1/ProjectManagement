@@ -50,7 +50,11 @@
                         <div class="card-header bg-dark">
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().CompletedRate)</span>
                             <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                                @{ 
+                                    string percent = string.Format("{0}%",item.CompletedRate);
+                                    string value = item.CompletedRate.ToString();
+                                }
+                                <div class="progress-bar" role="progressbar" style="width: @percent;" aria-valuenow="@value" aria-valuemin="0" aria-valuemax="100">@percent</div>
                             </div>
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().DurationSavedRate)</span>
                             <div class="progress ">

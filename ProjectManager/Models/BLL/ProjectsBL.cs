@@ -2,11 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using static ProjectManager.Models.TasksBL;
 
 namespace ProjectManager.Models
 {
     public static class ProjectsBL
     {
+        public enum Project_Status
+        {
+            InProgress=1,
+            WaitForConfirmed,
+            Completed,
+        }
         /// <summary>
         /// 回傳去掉開頭P的最後一個專案編號
         /// </summary>
@@ -33,6 +40,38 @@ namespace ProjectManager.Models
                 .OrderBy(p => p.ProjectID)
                 .GroupBy(p => p.Department.DepartmentName)
                 .Select(g => new GroupedProject() { DepartmentName = g.Key, group = g }).ToList();
+        }
+        public static void LoadProjectsCompletedRate(this IEnumerable<Project> projects, IEnumerable<Tasks> taskFromRepo)
+        {
+            foreach (var project in projects)
+            {
+                var leafTasks = taskFromRepo.Where(t => t.ProjectGUID == project.ProjectGUID).GetLeafTasks();
+                int completedLeafTaskCount = 0;
+                int totalLeafCount = leafTasks.Count();
+                foreach (var leaf in leafTasks)
+                {
+                    string status = (leaf.TaskStatusID ?? default(int)).ToString();
+                    Task_Status leaf_Status = (Task_Status)Enum.Parse(typeof(Task_Status), status);
+                    if (leaf_Status == Task_Status.Completed)
+                    {
+                        completedLeafTaskCount++;
+                    }
+                }
+                int rate = 0;
+                if (totalLeafCount == 0)
+                {
+                    string status = (project.ProjectStatusID ?? default(int)).ToString();
+                    Project_Status project_Status = (Project_Status)Enum.Parse(typeof(Project_Status), status);
+                    if (project_Status == Project_Status.Completed)
+                        rate = 100;
+                }
+                else
+                {
+                    rate = completedLeafTaskCount * 100 / totalLeafCount;
+                }
+                project.CompletedRate = rate;
+            }
+            
         }
     }
 }
