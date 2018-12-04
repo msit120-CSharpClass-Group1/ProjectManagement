@@ -13,6 +13,7 @@ namespace ProjectManager.Controllers
     {
         Repository<Project> projectRepo = new Repository<Project>();
         Repository<Employee> employeeRepo = new Repository<Employee>();
+        Repository<Tasks> taskRepo = new Repository<Tasks>();
         // GET: Projects
         public ActionResult Index(int ProjectStatusID=1)
         {
@@ -21,7 +22,10 @@ namespace ProjectManager.Controllers
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
-            var datas = projectRepo.GetCollections().Where(p => p.ProjectStatusID == ProjectStatusID).GetGroupedProject();
+            var projects = projectRepo.GetCollections().OrderBy(p => p.ProjectID).Where(p => p.ProjectStatusID == ProjectStatusID);
+            projects.LoadProjectsCompletedRate(taskRepo.GetCollections());  
+
+            var datas = projects.GetGroupedProject();
             return View(datas);
         }
         public ActionResult Projects()
