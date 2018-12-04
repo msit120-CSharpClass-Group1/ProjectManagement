@@ -424,6 +424,7 @@
     <Content Include="Views\Members\Edit.cshtml" />
     <Content Include="Views\Perfomance\Index.cshtml" />
     <Content Include="Views\Perfomance\Score.cshtml" />
+    <Content Include="Views\Perfomance\Watch.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
