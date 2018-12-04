@@ -149,6 +149,9 @@
             })
         }
 
+
+
+
         function GenerateCalender(events) {
             $('#calender').fullCalendar('destroy');
             $('#calender').fullCalendar({
@@ -209,12 +212,18 @@
             })
         }
 
-        $(".fc-view-container").attr("style", "background-color:darkcyan");
+
+
+
+        //$(".fc-view-container").attr("style", "background-color:darkcyan");
 
         $('#btnEdit').click(function () {
             //Open modal dialog for edit event
             EditForm();
         })
+
+
+
         $('#btnDelete').click(function () {
             if (selectedEvent != null && confirm('確定要刪除嗎?')) {
                 $.ajax({
@@ -235,9 +244,14 @@
             }
         })
 
+
+
+
         $('#dtp1,#dtp2').datetimepicker({
             format: 'MM/DD/YYYY HH:mm A'
         });
+
+
 
         $('#chkIsFullDay').change(function () {
             if ($(this).is(':checked')) {
@@ -247,6 +261,9 @@
                 $('#divEndDate').show();
             }
         });
+
+
+
 
         function AddForm() {
             if (selectedEvent != null)
@@ -265,6 +282,8 @@
             $('#myModalSave').modal();
         }
 
+
+
         function EditForm() {
             if (selectedEvent != null) {
                 $("#calGUID").val();
@@ -280,6 +299,8 @@
             $('#myModal').modal('hide');
             $('#myModalSave').modal();
         }
+
+
 
         $('#btnSave').click(function () {    
             //Validation/
@@ -303,8 +324,6 @@
                     return;
                 }
             }
-
-
             
             var data = {
                 CalendarGUID: $("#calGUID").val(),
@@ -319,6 +338,8 @@
             SaveEvent(data);
             // call function for submit data to the server
         })
+
+
 
         function SaveEvent(data) {
             $.ajax({
@@ -337,6 +358,7 @@
                 }
             });
         }
+
 
         function guid() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
