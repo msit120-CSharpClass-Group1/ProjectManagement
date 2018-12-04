@@ -17,7 +17,14 @@ namespace ProjectManager.Controllers
         {
             if (Request.Cookies["MemberGUID"] != null)
             {
-                return RedirectToAction("Index", "Home");
+                if (Request.Cookies["TitleGUID"].Value == "9fb6f389-1a8b-4dd6-9682-2674dc31584b")
+                {
+                    return RedirectToAction("Index", "SelectProject");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Projects");                    
+                }
             }
             return View();
         }
@@ -39,7 +46,14 @@ namespace ProjectManager.Controllers
                 memberRes.Update(hasMembers);
                 Msg = 1;
                 LoginProcess(hasMembers, keepLogin);
-                return RedirectToAction("Index", "Home");
+                if (hasMembers.Employee.TitleGUID.ToString() == "9fb6f389-1a8b-4dd6-9682-2674dc31584b")
+                {
+                    return Json("SelectProject/Index/");
+                }
+                else
+                {
+                    return Json("Projects/Index/");
+                }
             }
             else
             {
