@@ -77,6 +77,7 @@
                         <h6>工作負荷</h6>
                         @{
                             double rawercent;
+                            bool flag =true;
                             foreach (var item in ViewBag.Workload as IEnumerable<Group<string, DisplayWorkloadVM>>)
                             {
                                 int? valid = item.Sum;
@@ -98,20 +99,29 @@
                                         <div class="progress">
                                             <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
                                         </div>
+                                        flag = false;
                                     }
                                     else if (rawercent >= 200)
                                     {
                                         <div class="progress">
                                             <div class="progress-bar progress-bar-striped bg-danger" style="width:@percent%;">@rawercent %</div>
                                         </div>
+                                        flag = false;
                                     }
                                     else
                                     {
                                         <div class="progress">
                                             <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
                                         </div>
-                                    }
+                                        flag = false;
+                                    }                                   
                                 }
+                            }
+                            if (flag)
+                            {
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped bg-success" style="width:0%;"><font color="red">目前無承接工作</font></div>
+                                </div>
                             }
                         }
                     </div>
