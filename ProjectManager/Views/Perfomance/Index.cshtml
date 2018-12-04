@@ -9,7 +9,7 @@
             @foreach (var item in (List<Project>)ViewBag.InProgress)
             {            
             <div class="alert alert-info" role="alert">
-                <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
+                <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
                 <a href="~/Perfomance/Score?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>我要評分</a>
                 @*@foreach (var _member in ViewBag.GroupMember as List<IGrouping<string, ProjectMembers>>)
                 {
@@ -21,20 +21,22 @@
                 <h4 class="alert-heading">@item.ProjectName</h4>
                 <p>@item.ProjectStatus.ProjectStatusName</p>
                 <hr>
-                <p class="mb-0"></p>
+                <p class="mb-0">團隊成員平均表現</p>
             </div>
             }
         </div>
         <div class="col-6">
             @foreach (var item in (List<Project>)ViewBag.Closed)
-            {
-                <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading">@item.ProjectName</h4>
-                    <p>@item.ProjectStatus.ProjectStatusName</p>
-                    <hr>
-                    <p class="mb-0"></p>
-                </div>       
-            }           
+            {               
+            <div class="alert alert-success" role="alert">
+                <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
+                <a href="~/Perfomance/Score?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>我要評分</a>
+                <h4 class="alert-heading">@item.ProjectName</h4>
+                <p>@item.ProjectStatus.ProjectStatusName</p>
+                <hr>
+                <p class="mb-0">團隊成員平均表現</p>
+            </div>
+            }
         </div>
     </div>
 </div>

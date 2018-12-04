@@ -16,11 +16,8 @@
         #projectMemberDivL2 {
             width: 180px;
             float: left;
-            margin: 5px;
-        }
-
-        #projectMemberDivL1 {
-            background-color: rgba(128, 128, 128, 0.41);
+            margin: 10px;
+            box-shadow: 5px 5px;
         }
 
         .flip {
@@ -45,12 +42,16 @@
             margin-left: 30px;
             margin-top: 20px;
         }
+        #projectMemberDivL1
+        {
+            margin-top:50px;
+        }
     </style>
 }
 
 <form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal">
-    <div class="row no-gutters">
-        <div class="col-4">
+    <div>
+        <div class="col" style="margin-top:60px">
             <div class="flip"><font color="red">查看分配狀態</font></div>
             <div class="panel">
                 <table class="table table-bordered" id="mappingTable">
@@ -64,7 +65,7 @@
             </div>
         </div>
         <div></div>
-        <div class="col-6" id="projectMemberDivL1">
+        <div class="col" id="projectMemberDivL1">
             @foreach (var _projectMember in Model)
             {
                 <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
@@ -142,7 +143,7 @@
             <!--TaskList End-->
             <h3 class="asidetitle">工作描述</h3>
             <div class="col-sm">
-                <div id="taskdescription" style="background:lightgray;height:200px;margin:10px; width:230px">
+                <div id="taskdescription" style="height:200px;margin:10px; width:230px;background-color:lightcyan">
 
                 </div>
                 <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>

@@ -15,7 +15,12 @@ namespace ProjectManager.Controllers
         {
             ViewBag.InProgress = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 1).ToList();
             ViewBag.Closed = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 2).ToList();
-            ViewBag.GroupMember = ProjectMembersRepo.GetCollections().GroupBy(p => p.Project.ProjectName).ToList();      
+            ViewBag.GroupMember = ProjectMembersRepo.GetCollections().GroupBy(p => p.Project.ProjectName).ToList();
+
+            //var teamrate = ProjectMembersRepo.GetCollections().Where(t => t.EmployeeGUID != null).GroupBy(g => g.ProjectGUID)
+            //                              .Select(g => new Group<Guid, Double?> { Key = g.Key, value = (Double?)g.Average(p=>p.PMscore) })
+
+
             return View();
         }
         public ActionResult Score()
