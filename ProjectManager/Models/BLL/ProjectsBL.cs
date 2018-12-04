@@ -73,5 +73,16 @@ namespace ProjectManager.Models
             }
             
         }
+        public static IEnumerable<int> GetWorkTimeSumOfProjectMembers(this IEnumerable<ProjectMembers> projectMembers, IEnumerable<Tasks> tasksFromRepo)
+        {
+            List<int> workTimeSums = new List<int>();
+            var leafTasks = tasksFromRepo.GetLeafTasks();
+            foreach (var member in projectMembers)
+            {
+               int _sum = (int)leafTasks.Where(t => t.EmployeeGUID == member.EmployeeGUID).Select(t => t.EstWorkTime).Sum();
+                workTimeSums.Add(_sum);
+            }
+            return workTimeSums;
+        }
     }
 }

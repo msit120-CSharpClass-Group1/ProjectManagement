@@ -6,15 +6,8 @@
 @section nav{
     @Html.Partial("_PartialPageNav", "Shared")
 }
-@section style{
-<style>
-    .font-style { 
-        font-family: "Noto Sans CJK TC"; 
 
-    }
-</style>
-}
-<div class="row font-style" >
+<div class="row mb-3" >
     <div class="col-6">
         <div id="RootTasksCompletedRateContainer" class="chart-container bg-light p-3">
             <canvas id="RootTasksCompletedRateChart"></canvas>
@@ -26,6 +19,15 @@
         </div>
     </div>
 </div>
+<div class="row mb-3">
+    <div class="col-6">
+        <div id="MemberWorkTimeContainer" class="chart-container bg-light p-3">
+            <canvas id="MemberWorkTimeSumChart"></canvas>
+        </div>
+    </div>
+    <div class="col-6">        
+    </div>
+</div>
 
 
 @section script{
@@ -35,9 +37,10 @@
             Chart.defaults.global.defaultFontFamily = 'Noto Sans CJK TC';
             Chart.defaults.global.defaultFontSize = 16;
             Chart.defaults.global.tooltips.titleFontStyle = 'normal';
-            BuildRootTasks_CompletedRateChart();
 
-            GetRootTasks_SumOfWorkTimeChart();
+            BuildRootTasks_CompletedRateChart();
+            BuildRootTasks_SumOfWorkTimeChart();
+            BuildMembers_SumOfWorkTimeChart();
 
             function BuildRootTasks_CompletedRateChart() {
                 $.getJSON("@Url.Action("RootTasksCompletedRate", "ProjectDetails")", null, function (datas) {
@@ -52,6 +55,7 @@
                             },
                             responsive: true,
                             legend: {
+                                display: false,
                                 position: 'bottom',
                             },
                             title: {
@@ -70,11 +74,12 @@
                                     ticks: {
                                         min: 0,
                                         max: 100,
-                                        stepSize: 10,
-                                        //callback: function (value, index, values) {
-                                        //    return value + '%';
-                                        //}
-                                    }
+                                        stepSize: 10,                                        
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: '完成百分比(%)',
+                                    },
                                 }]
                             },
                             tooltips: {
@@ -91,7 +96,7 @@
                     });
                 });
             }
-            function GetRootTasks_SumOfWorkTimeChart(){
+            function BuildRootTasks_SumOfWorkTimeChart(){
                 $.getJSON("@Url.Action("RootTasksEstWorkTimeSum", "ProjectDetails")", null, function (datas) {
                     var TasksSumOfWorkTimeChart = new Chart($('#RootTasksSumOfWorkTimeChart'), {
                         type: 'doughnut',
@@ -114,6 +119,55 @@
                         }
                     });
                 });
+            } 
+            function BuildMembers_SumOfWorkTimeChart() {
+                $.getJSON("@Url.Action("ProjectMembersEstWorkTimeSum", "ProjectDetails")", null, function (datas) {
+                    var MembersSumOfWorkTimeChart = new Chart($('#MemberWorkTimeSumChart'),
+                        {
+                            type: 'line',
+                            data: datas,
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    display: false,
+                                },
+                                title: {
+                                    display: true,
+                                    text: '專案成員工時總數',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                tooltips: {
+                                    mode: 'index',
+                                    intersect: false,
+                                },
+                                hover: {
+                                    mode: 'nearest',
+                                    intersect: true
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        display: true,
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: '專案成員'
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        display: true,
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: '工時總和'
+                                        },
+                                        ticks: {
+                                            min: 0,                                            
+                                        },
+                                    }]
+                                }
+                            }
+                        });
+                    });                
+
             }
 
         });
