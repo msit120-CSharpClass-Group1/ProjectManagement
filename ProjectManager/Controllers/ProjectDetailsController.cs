@@ -84,12 +84,12 @@ namespace ProjectManager.Controllers
                 Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddDays(7);
             }
 
+            //if (Session["ProjectGUID"] == null)
+            //    return RedirectToAction("Index", "Projects");
             return View();
         }
         public ActionResult RootTasksCompletedRate()
         {
-            if (Session["ProjectGUID"] == null)
-                return RedirectToAction("Index", "Projects");
             Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
@@ -106,8 +106,6 @@ namespace ProjectManager.Controllers
         }
         public ActionResult RootTasksEstWorkTimeSum()
         {
-            if (Session["ProjectGUID"] == null)
-                return RedirectToAction("Index", "Projects");
             Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
@@ -120,6 +118,21 @@ namespace ProjectManager.Controllers
                 backgroundColor = colors,
                 borderColor = colors,
                 data = rootTasks.GetRootTasksWorkTimeSum(_tasks).ToList()
+            });
+            return Json(_data, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult ProjectMembersEstWorkTimeSum()
+        {
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            var members = projectMembers.GetCollections().Where(m => m.ProjectGUID == _projectGUID).Distinct();
+            ChartData<BarChartDataset> _data = new ChartData<BarChartDataset>();
+            _data.labels.AddRange(members.Select(m => m.Employee.EmployeeName));
+            _data.datasets.Add(new BarChartDataset() {
+                label = "工時總和",
+                backgroundColor = "#007BFF",
+                borderColor = "#007BFF",
+                data = members.GetWorkTimeSumOfProjectMembers(taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID)),
+                fill = false,
             });
             return Json(_data, JsonRequestBehavior.AllowGet);
         }

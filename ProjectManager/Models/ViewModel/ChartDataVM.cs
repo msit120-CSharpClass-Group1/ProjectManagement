@@ -32,6 +32,7 @@ namespace ProjectManager.Models
         public string label { get; set; }
         public string backgroundColor { get; set; } 
         public string borderColor { get; set; }
+        public bool fill { get; set; }
         /// <summary>
         /// 個別資料數值
         /// </summary>
