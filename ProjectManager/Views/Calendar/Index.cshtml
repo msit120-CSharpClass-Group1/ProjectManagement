@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "行事曆";
 }
 
 
@@ -9,8 +9,13 @@
     <link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css" rel="stylesheet" media="print" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
     <style>
-        .modal-dialog {
-            z-index: 1500;
+        .rightOpenbtn{
+            display:none !important;
+        }
+
+        .fc-widget-header > table > thead {
+            color: white;
+            background-color: darkcyan;
         }
     </style>
 }
@@ -126,7 +131,8 @@
             $.ajax({
                 type: "GET",
                 url: '@Url.Action("GetEvents", "Calendar")',
-                success: function (data) {
+                success: function (data) 
+                {
                     $.each(data, function (i, v) {
                         events.push({
                             CalendarGUID: v.CalendarGUID,
@@ -210,6 +216,16 @@
                     SaveEvent(data);
                 }
             })
+            $(".fc-today-button").text("今日");
+            $(".fc-month-button").text("月");
+            $(".fc-basicWeek-button").text("周");
+            $(".fc-basicDay-button").text("日");
+            $(".fc-agenda-button").text("時間表");
+            //$(".dropdown-btn").click(function ()
+            //{
+            //    $(this.nextElementSibling).slideToggle();
+            //});
+
         }
 
 
@@ -366,9 +382,6 @@
                 return v.toString(16);
             });
         }
-
-        
-
 
     });
     </script>

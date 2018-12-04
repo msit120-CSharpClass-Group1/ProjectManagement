@@ -114,7 +114,21 @@
 
             <div class="user_options-forms" id="user_options-forms">
                 <div class="user_forms-login">
-                    <h2 class="forms_title">登入</h2>
+                    <h2 style="margin-bottom:15px" class="forms_title">登入</h2>
+                    <div style="margin-bottom:10px" class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label  class="btn btn-secondary active">
+                            <input type="radio" name="options" id="dmAdmin" autocomplete="off"> 管理員
+                        </label>
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="options" id="dmManager" autocomplete="off"> 主管
+                        </label>
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="options" id="dmPM" autocomplete="off"> 專案經理
+                        </label>
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="options" id="dmPG" autocomplete="off"> 工程師
+                        </label>
+                    </div>
                     <form method="post" action="~/Login/Login" class="forms_form">
                         <fieldset class="forms_fieldset">
                             <div class="forms_field">
@@ -127,7 +141,7 @@
                         </fieldset>
                         <div class="keepLoginFlex">
                             <label class="switch ">
-                                <input id="keepLogin" name="keepLogin" value="on" type="checkbox" >
+                                <input id="keepLogin" name="keepLogin" value="on" type="checkbox">
                                 <span class="slider round"></span>
                             </label>
                             <p class="keepLogin">保持登入</p>
@@ -165,6 +179,22 @@
     <script src="~/Scripts/login.js"></script>
     <script>
         $(document).ready(function () {
+            $('#dmAdmin').click(function () {
+                $('#logInMemberID').val('admin');
+                $('#logInPassword').val('admin');
+            })
+            $('#dmPM').click(function () {
+                $('#logInMemberID').val('ji3g4vul3eji');
+                $('#logInPassword').val('ji3g4vul3eji');
+            })
+            $('#dmManager').click(function () {
+                $('#logInMemberID').val('100021');
+                $('#logInPassword').val('100021');
+            })
+            $('#dmPG').click(function () {
+                $('#logInMemberID').val('100003');
+                $('#logInPassword').val('100003');
+            })
             $('#logIn').click(function () {
 
                 var MemberID = $('#logInMemberID').val();
@@ -188,7 +218,7 @@
                         loginmsg.removeClass('badge badge-success').addClass('badge badge-danger');
                     } else
                     {
-                        window.location.href="/Home/Index/"
+                        window.location.pathname = data;
                     }
                     loginmsg.text(msg);
                 });
@@ -219,7 +249,8 @@
                     }
                     signInMsg.text(msg);
                     
-                });
+                    });
+               
             })
            
         })

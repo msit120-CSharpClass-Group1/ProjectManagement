@@ -50,7 +50,11 @@
                         <div class="card-header bg-dark">
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().CompletedRate)</span>
                             <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                                @{ 
+                                    string percent = string.Format("{0}%",item.CompletedRate);
+                                    string value = item.CompletedRate.ToString();
+                                }
+                                <div class="progress-bar" role="progressbar" style="width: @percent;" aria-valuenow="@value" aria-valuemin="0" aria-valuemax="100">@percent</div>
                             </div>
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().DurationSavedRate)</span>
                             <div class="progress ">
@@ -105,11 +109,11 @@
             <div class="row ">
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstStartDate)
-                    <input name="EstStartDate" type="date" class="form-control d-inline" />
+                    <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" />
                 </div>
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstEndDate)
-                    <input name="EstEndDate" type="date" class="form-control d-inline" />
+                    <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" />
                 </div>
             </div>
             <div class="row " id="ActualDurationGroup">
@@ -175,8 +179,10 @@
             });
 
             $('#RequiredDeptGUID').change(GetEmployees);
-            $('#ProjectStatusID').change(IsProjectInProgress);
-            IsProjectInProgress();
+            //$('#ProjectStatusID').change(IsProjectInProgress);
+            $('#EstStartDate').change(function () { $('#StartDate').val($(this).val());}); 
+            $('#EstEndDate').change(function () { $('#EndDate').val($(this).val()); }); 
+
 
             function GetEmployees() {
                 $.getJSON("@Url.Action("GetEmployeesByDept","Projects")", { DeptGUID : $(this).val()}, function (data) {

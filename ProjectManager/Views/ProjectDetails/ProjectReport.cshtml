@@ -6,21 +6,30 @@
 @section nav{
     @Html.Partial("_PartialPageNav", "Shared")
 }
-@section style{
-<style>
-    .font-style { 
-        font-family: "Noto Sans CJK TC"; 
 
-    }
-</style>
-}
-<div class="row font-style" >
+<div class="row mb-3" >
     <div class="col-6">
         <div id="RootTasksCompletedRateContainer" class="chart-container bg-light p-3">
             <canvas id="RootTasksCompletedRateChart"></canvas>
         </div>
     </div>
-    <div class="col-6"></div>
+    <div class="col-6">
+        <div id="RootTasksSumOfWorkTimeContainer" class="chart-container bg-light p-3">
+            <canvas id="RootTasksSumOfWorkTimeChart"></canvas>
+        </div>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-6">
+        <div id="MemberWorkTimeContainer" class="chart-container bg-light p-3">
+            <canvas id="MemberWorkTimeSumChart"></canvas>
+        </div>
+    </div>
+    <div class="col-6">
+        <div id="RootTasksSumOfResourceContainer" class="chart-container bg-light p-3">
+            <canvas id="RootTasksSumOfResourceChart"></canvas>
+        </div>
+    </div>
 </div>
 
 
@@ -29,14 +38,17 @@
     <script>
         $(document).ready(function () {
             Chart.defaults.global.defaultFontFamily = 'Noto Sans CJK TC';
+            Chart.defaults.global.defaultFontSize = 16;
+            Chart.defaults.global.tooltips.titleFontStyle = 'normal';
 
-            var RootTasksChart = $('#RootTasksCompletedRateChart');
-            var RootTasksCompletedRateData;
-            GetRootTasksCompletedRateData();
+            BuildRootTasks_CompletedRateChart();
+            BuildRootTasks_SumOfWorkTimeChart();
+            BuildMembers_SumOfWorkTimeChart();
+            BuildRootTasks_SumOfResourceChart();
 
-            function GetRootTasksCompletedRateData() {
+            function BuildRootTasks_CompletedRateChart() {
                 $.getJSON("@Url.Action("RootTasksCompletedRate", "ProjectDetails")", null, function (datas) {
-                    var TasksCompletedRateChart = new Chart(RootTasksChart, {
+                    var TasksCompletedRateChart = new Chart($('#RootTasksCompletedRateChart'), {
                         type: 'horizontalBar',
                         data: datas,
                         options: {
@@ -47,27 +59,139 @@
                             },
                             responsive: true,
                             legend: {
+                                display: false,
                                 position: 'bottom',
                             },
                             title: {
                                 display: true,
                                 text: '根工作項目完成度',
-                                fontSize: 16
+                                fontSize: 20,
+                                padding: 10,
                             },
                             scales: {
                                 yAxes: [{
-                                    gridLines: { display: false }
+                                    gridLines: { display: false },
+                                    fontSize: 16
                                 }],
                                 xAxes: [{
                                     gridLines: { display: true },
                                     ticks: {
                                         min: 0,
                                         max: 100,
-                                        stepSize: 10
-                                    }
+                                        stepSize: 10,                                        
+                                    },
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: '完成百分比(%)',
+                                    },
                                 }]
                             },
-                            
+                            tooltips: {
+                                yPadding: 10,
+                                xPadding: 10,
+                                bodySpacing: 10,
+                                //callbacks: {
+                                //    afterLabel: function (tooltipItem, chart) {
+                                //        return "%";
+                                //    }
+                                //},
+                            }
+                        }
+                    });
+                });
+            }
+            function BuildRootTasks_SumOfWorkTimeChart(){
+                $.getJSON("@Url.Action("RootTasksEstWorkTimeSum", "ProjectDetails")", null, function (datas) {
+                    var TasksSumOfWorkTimeChart = new Chart($('#RootTasksSumOfWorkTimeChart'), {
+                        type: 'doughnut',
+                        data: datas,
+                        options: {
+                            responsive: true,
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: '根工作項目工時總數',
+                                fontSize: 20,
+                                padding: 10,
+                            },
+                            animation: {
+                                animateScale: true,
+                                animateRotate: true
+                            }
+                        }
+                    });
+                });
+            } 
+            function BuildMembers_SumOfWorkTimeChart() {
+                $.getJSON("@Url.Action("ProjectMembersEstWorkTimeSum", "ProjectDetails")", null, function (datas) {
+                    var MembersSumOfWorkTimeChart = new Chart($('#MemberWorkTimeSumChart'),
+                        {
+                            type: 'line',
+                            data: datas,
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    display: false,
+                                },
+                                title: {
+                                    display: true,
+                                    text: '專案成員工時總數',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                tooltips: {
+                                    mode: 'index',
+                                    intersect: false,
+                                },
+                                hover: {
+                                    mode: 'nearest',
+                                    intersect: true
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        display: true,
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: '專案成員'
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        display: true,
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: '工時總和'
+                                        },
+                                        ticks: {
+                                            min: 0,                                            
+                                        },
+                                    }]
+                                }
+                            }
+                        });
+                    });               
+            }
+            function BuildRootTasks_SumOfResourceChart(){
+                $.getJSON("@Url.Action("RootTasksResourceSum", "ProjectDetails")", null, function (datas) {
+                    var RootTasksSumOfResourceChart = new Chart($('#RootTasksSumOfResourceChart'), {
+                        type: 'doughnut',
+                        data: datas,
+                        options: {
+                            responsive: true,
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: '根工作項目費用總和',
+                                fontSize: 20,
+                                padding: 10,
+                            },
+                            animation: {
+                                animateScale: true,
+                                animateRotate: true
+                            },                            
                         }
                     });
                 });

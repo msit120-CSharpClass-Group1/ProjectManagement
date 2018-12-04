@@ -107,10 +107,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\ProjectManagement.mdf" />
-    <Content Include="App_Data\ProjectManagement_log.ldf">
-      <DependentUpon>ProjectManagement.mdf</DependentUpon>
-    </Content>
     <Content Include="Content\AdminLTE.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -176,6 +172,8 @@
     <Content Include="Models\ProjectManagerModel.edmx.diagram">
       <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -340,6 +338,7 @@
     <Compile Include="Models\ViewModel\BoardVM.cs" />
     <Compile Include="Models\ViewModel\ChartDataVM.cs" />
     <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
+    <Compile Include="Models\ViewModel\EmployeeInfo.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\ViewModel\TaskVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
@@ -366,7 +365,6 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Dashboard\Index.cshtml" />
     <Content Include="Views\Cost\ExpCatMgr.cshtml" />
     <Content Include="Views\Cost\ExpList.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -403,7 +401,6 @@
     <Content Include="Views\TaskStatus\Edit.cshtml" />
     <Content Include="Views\TaskStatus\Index.cshtml" />
     <Content Include="Views\TaskStatus\Insert.cshtml" />
-    <Content Include="Views\Shared\_PartialPageNav.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectDistribution.cshtml" />
     <Content Include="Views\ProjectDetails\TreeGridPartialView.cshtml" />
     <Content Include="Views\ProjectDetails\AssignTask.cshtml" />
@@ -430,7 +427,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
