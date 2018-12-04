@@ -51,7 +51,6 @@ namespace ProjectManager.Controllers
 
         public ActionResult DeleteProjectMember()
         {
-
             Guid memberID = new Guid(Request.QueryString["memberID"]);
             Guid InvitePJGUID = new Guid(Session["ProjectGUID"].ToString());
             projectMembers.Delete(projectMembers.Find(memberID, InvitePJGUID));
@@ -67,7 +66,8 @@ namespace ProjectManager.Controllers
 
         public ActionResult TaskExist(Guid? memberGUID)
         {
-            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID).Select(t=>t.EmployeeGUID).FirstOrDefault();
+            Guid projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID && t.ProjectGUID == projectGUID).Select(t=>t.EmployeeGUID).FirstOrDefault();
             if (q!=null)
             {
                 return Content("HasTask");
@@ -314,7 +314,7 @@ namespace ProjectManager.Controllers
                         taskRepo.Delete(taskRepo.Find(child.TaskGUID));
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
 
                 }
