@@ -18,6 +18,7 @@ namespace ProjectManager.Controllers
         Repository<ProjectManager.Models.TaskStatus> s = new Repository<ProjectManager.Models.TaskStatus>();
         Repository<ProjectManager.Models.Tasks> t = new Repository<ProjectManager.Models.Tasks>();
         Repository<ProjectManager.Models.Project> p = new Repository<ProjectManager.Models.Project>();
+        Repository<ProjectManager.Models.Members> m = new Repository<ProjectManager.Models.Members>();
         public ActionResult Index(Guid id)
         {
             BoardVM VM = new BoardVM();
@@ -42,7 +43,7 @@ namespace ProjectManager.Controllers
         public ActionResult GetCard(Guid id)
         {
             BoardVM VM = new BoardVM();
-            VM.Task = t.Find(id);
+            VM.Task = t.Find(id);            
             return Content(JsonConvert.SerializeObject(VM),"application/Json");
 
         }
@@ -54,13 +55,7 @@ namespace ProjectManager.Controllers
             return Json(VM.TaskDetail.Select(n => new { n.TaskDetailName, n.TaskDetailGUID, n.TaskDetailStatusID }).ToList());
         }
 
-        //public ActionResult DeleteTaskDatail(Guid id)
-        //{
-        //    BoardVM VM = new BoardVM();
-        //    VM.TaskDetails = td.Find(id);
-        //    td.Delete(VM.TaskDetails);
-        //    return Json(true);
-        //}
+
         public ActionResult EditTaskStatusID(Guid id, int TaskStatusID)
         {
             BoardVM VM = new BoardVM();
@@ -76,9 +71,10 @@ namespace ProjectManager.Controllers
                 taskDetail.TaskDetailGUID = Guid.NewGuid();
                 taskDetail.StartDate = DateTime.Now;
                 taskDetail.EndDate = DateTime.Now;
+                taskDetail.EmployeeGUID = m.Find(new Guid(Request.Cookies["MemberGUID"].Value)).EmployeeGUID;
                 td.Add(taskDetail);
             }
-            return Json(td.GetCollections().Where(x => x.TaskGUID == new Guid(Request.Form["TaskGUID"])).Select(x=>x.TaskDetailGUID).ToList());
+            return Json(taskDetail.TaskDetailGUID);
         }
         public ActionResult EditDetailStatus(Guid id, int TaskDetailStatusID)
         {
@@ -98,14 +94,13 @@ namespace ProjectManager.Controllers
             return Json(true);
         }
 
-        public ActionResult DeleteTaskDatail(Guid id)
+        public ActionResult DeleteTaskDatail(Guid id,Guid cardID)
         {
             BoardVM VM = new BoardVM();
             VM.TaskDetails = td.Find(id);
             td.Delete(VM.TaskDetails);
-            return Json(td.GetCollections().Where(x => x.TaskGUID == new Guid(Request.Form["TaskGUID"])).Count());
+            return Json(td.GetCollections().Where(x => x.TaskGUID == cardID).Count());
         }
 
-        
     }
 }

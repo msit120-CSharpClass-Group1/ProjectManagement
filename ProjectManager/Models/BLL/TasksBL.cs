@@ -81,7 +81,20 @@ namespace ProjectManager.Models
             }
 
             return rootTasksCompletedRate;
-        } 
+        }
+        public static IEnumerable<int> GetRootTasksWorkTimeSum(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
+        {
+            List<int> rootTasksWorkTimeSum = new List<int>();
+            TreeGridModel treeGrid = new TreeGridModel(tasksFromRepo.ToList());
+            foreach (var root in rootTasks)
+            {
+                treeGrid.ChildLeafTasks = new List<Tasks>();
+                treeGrid.GetChildLeafTasks(root);
+                int _sum = (int)treeGrid.ChildLeafTasks.ToList().Select(t => t.EstWorkTime).Sum();
+                rootTasksWorkTimeSum.Add(_sum);
+            }
+            return rootTasksWorkTimeSum;
+        }
         public static IEnumerable<Tasks> GetAllChildTasks(this Tasks task)
         {            
             TreeGridModel model = new TreeGridModel();
