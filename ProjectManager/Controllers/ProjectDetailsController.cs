@@ -136,6 +136,23 @@ namespace ProjectManager.Controllers
             });
             return Json(_data, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult RootTasksResourceSum()
+        {
+            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
+            var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
+            var rootTasks = _tasks.GetRootTasks();
+            ChartData<PieChartDataset> _data = new ChartData<PieChartDataset>();
+            _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
+            _data.datasets.Add(new PieChartDataset()
+            {
+                label = "dataset",
+                backgroundColor = colors,
+                borderColor = colors,
+                data = rootTasks.GetRootTasksResourceSum(_tasks/*,new Repository<TaskResource>().GetCollections()*/).ToList()
+            });
+            return Json(_data, JsonRequestBehavior.AllowGet);
+        }
         [HttpGet]
         public ActionResult ProjectEdit()
         {
