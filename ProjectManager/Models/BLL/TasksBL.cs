@@ -24,8 +24,7 @@ namespace ProjectManager.Models
         {
             TreeGridModel treeGrid = new TreeGridModel(tasks.ToList());
             return treeGrid.SortedTasks;
-        }
-        
+        }        
         public static IEnumerable<Tasks> GetLeafTasks(this IEnumerable<Tasks> tasks)
         {
             var parentTasks = tasks.Where(t=>t.ParentTaskGUID != null)
@@ -132,6 +131,22 @@ namespace ProjectManager.Models
             var workload = tasksRepo.GetCollections().Where(t => t.EmployeeGUID != null && t.TaskStatusID ==2).GroupBy(g => g.Employee.EmployeeName)
                                            .Select(g => new Group<string, DisplayWorkloadVM> { Key = g.Key, Sum = g.Sum(e => e.EstWorkTime) }).OrderByDescending(g=>g.Sum);
             return workload;
+        }
+        public static int GetEstWorkTime(this Tasks task, HolidaysVM holidays)
+        {
+            int estWorkDays = 0;
+            DateTime estStart = (DateTime)task.EstStartDate;
+            DateTime estEnd = (DateTime)task.EstEndDate;
+            while (estStart.Date<=estEnd.Date)
+            {
+                var q = holidays.result.results.Select(r => new{ date = DateTime.Parse(r.date), r.isHoliday });
+                if (!(q.AsEnumerable().Where(r => r.date.Date == estStart.Date).Select(r => r.isHoliday).FirstOrDefault() == "是"))
+                {                    
+                    estWorkDays++;                    
+                }
+                estStart = estStart.AddDays(1);
+            }
+            return estWorkDays*8;
         }
     }
 }
