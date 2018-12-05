@@ -21,7 +21,13 @@
                 <h4 class="alert-heading">@item.ProjectName</h4>
                 <p>@item.ProjectStatus.ProjectStatusName</p>
                 <hr>
-                <p class="mb-0">團隊成員平均表現</p>
+                @foreach (var _pmscore in ViewBag.GetPMscore as IEnumerable<Group<string, ProjectMemberScoreVM>>)
+                {
+                    if(_pmscore.Key == item.ProjectName)
+                    { 
+                    <p class="mb-0">團隊成員平均表現 :@_pmscore.Avg</p>
+                    }
+                }
             </div>
             }
         </div>
