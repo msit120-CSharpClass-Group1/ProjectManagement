@@ -296,14 +296,9 @@
                     treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
                 });
             });
-            
-            //if (!sessionStorage.getItem('Holidays')) {
-            //    GetHolidays();
-            //}
-            if ('<%=Session["Holidays"] != null%>' == false) {
-                GetHolidays();
-            }
-                
+
+            GetHolidays();   
+
             function GetHolidays() {/*?scope=resourceAquire&rid=b0011e96-3fc3-43ec-8bf5-07fb46dd22bb&offset=599*/
                 $.getJSON("https://data.taipei/opendata/datalist/apiAccess", { scope:'resourceAquire', rid:'b0011e96-3fc3-43ec-8bf5-07fb46dd22bb',offset:599}, function (holidays) {
                     $.ajax({

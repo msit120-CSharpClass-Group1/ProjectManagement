@@ -144,7 +144,7 @@ namespace ProjectManager.Models
                 {                    
                     estWorkDays++;                    
                 }
-                estStart.AddDays(1);
+                estStart = estStart.AddDays(1);
             }
             return estWorkDays*8;
         }

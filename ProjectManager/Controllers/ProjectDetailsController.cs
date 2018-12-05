@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Windows;
 using System.Web;
 using System.Web.Mvc;
 
@@ -268,9 +269,10 @@ namespace ProjectManager.Controllers
             Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
             task.ProjectGUID = _projectGUID;
             task.TaskGUID = Guid.NewGuid();
-            task.EstWorkTime = task.GetEstWorkTime((HolidaysVM)Session["Holidays"]);
+            task.EstWorkTime = task.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
             taskRepo.Add(task);
-            return RedirectToAction("ProjectDistribution");
+            return Json("success", JsonRequestBehavior.AllowGet);
+            //return RedirectToAction("ProjectDistribution");
         }
         [HttpGet]
         public ActionResult EditTask(Guid? TaskGUID)
@@ -290,10 +292,11 @@ namespace ProjectManager.Controllers
             recentTask.StartDate = taskModified.StartDate;
             recentTask.EndDate = taskModified.EndDate;
             recentTask.Description = taskModified.Description;
-            recentTask.EstWorkTime = taskModified.GetEstWorkTime((HolidaysVM)Session["Holidays"]);
+            recentTask.EstWorkTime = taskModified.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
 
-            taskRepo.Update(recentTask);
-            return RedirectToAction("ProjectDistribution");
+            taskRepo.Update(recentTask);            
+            return Json("success", JsonRequestBehavior.AllowGet);
+            //return RedirectToAction("ProjectDistribution");
         }
         [HttpPost]
         public ActionResult DeleteTasks(Tasks _task)
@@ -333,7 +336,10 @@ namespace ProjectManager.Controllers
         [HttpPost]
         public ActionResult LoadHolidays(HolidaysVM holidays)
         {
-            Session["Holidays"] = holidays;
+            //Session["Holidays"] = holidays;
+            System.Web.HttpContext.Current.Application.Lock();
+            System.Web.HttpContext.Current.Application["Holidays"] = holidays;
+            System.Web.HttpContext.Current.Application.UnLock();
             return Json("success", JsonRequestBehavior.AllowGet);
         }
     }
