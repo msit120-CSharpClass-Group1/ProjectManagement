@@ -44,11 +44,10 @@ namespace ProjectManager.Models
             return avgSelfScore;
         }
 
-        public static IEnumerable<Group<string, ProjectMemberScoreVM>> GroupMembers(this IEnumerable<ProjectMembers> projectMembers)
+        public static IEnumerable<Group<string, ProjectMembers>> GroupMembersScore (this IEnumerable<ProjectMembers> projectMembers)
         {
             var groupList = projectMembers.Where(p => p.EmployeeGUID != null).GroupBy(g => g.Project.ProjectName)
-                                            .Select(g => new Group<string, ProjectMemberScoreVM> {Key = g.Key});
-            List<Group<string, ProjectMemberScoreVM>> avgSelfScore = new List<Group<string, ProjectMemberScoreVM>>();
+                                            .Select(g => new Group<string,ProjectMembers> { Key=g.Key, value = g });         
             return groupList;
         }
     }

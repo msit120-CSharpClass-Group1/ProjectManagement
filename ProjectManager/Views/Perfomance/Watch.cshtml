@@ -1,9 +1,8 @@
-﻿
+﻿@model ProjectManager.Models.ProjectMemberScoreVM
 @{
     ViewBag.Title = "成員評分細項";
 }
 
-<h2>Watch</h2>
 <div class="container">
     <div class="row">
         <div class="col-sm">
@@ -45,20 +44,29 @@
     </div>
 </div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>團隊成員</th>
-            <th>平均</th>
-            <th>表現等級</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Michael</td>
-            <td>80</td>
-            <td>普通</td>
-        </tr>
-    </tbody>
-</table>
+
+    <table class="table table-bordered" style="margin: 0px auto;" >
+        <thead>
+            <tr>
+                <th>團隊成員</th>
+                <th>PM評分紀錄</th>
+                <th>自評紀錄</th>
+                <th>表現等級</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var _member in Model.GroupMembersScore)
+            {
+                foreach (var item in _member.value)
+                {
+                    <tr>
+                        <td>@item.Employee.EmployeeName</td>
+                        <td>@item.PMscore</td>
+                        <td>@item.Selfscore</td>
+                        <td>評價等級</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 

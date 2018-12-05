@@ -6,7 +6,7 @@
 <h2>Score</h2>
 <h1>ViewModel Test</h1>
 
-@foreach (var item in Model.GetMemberCount)
+@*@foreach (var item in Model.GetMemberCount)
 {
     <p>@item.Count</p>
 }
@@ -14,7 +14,10 @@
 
 @foreach (var item in Model.GroupMember)
 {
-    <p>@item</p>
-}
+    foreach (var i in item.value)
+    {
+        <p>@i.Employee.EmployeeName</p>
+    }
+}*@
 
 

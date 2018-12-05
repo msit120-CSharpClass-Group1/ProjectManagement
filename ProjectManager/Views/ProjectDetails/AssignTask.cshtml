@@ -34,11 +34,11 @@
         }
 
             .draggable:hover {
-                background-color: pink;
+                background-color: aliceblue;
             }
 
         .asidetitle {
-            color: rosybrown;
+            color: aliceblue;
             margin-left: 30px;
             margin-top: 20px;
         }
@@ -53,7 +53,7 @@
     <div class="row">
         <div class="col-3">
             <div class="" style="margin-top:60px">
-                <div class="flip"><font color="red">查看分配狀態</font></div>
+                <div class="flip"><font color="aliceblue">查看分配狀態</font></div>
                 <div class="panel">
                     <table class="table table-bordered" id="mappingTable">
                         <thead>
@@ -70,9 +70,9 @@
             <div class="col-7" id="projectMemberDivL1">
                 @foreach (var _projectMember in Model)
                 {
-                    <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
+                    <div class="card border-primary mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
                         <div class="card-header bg-transparent border-success" style="width:180px"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
-                        <div class="card-body text-success droppable" style="height:50px;border-style:dashed;">
+                        <div class="card-body text-primary droppable" style="height:50px;border-style:dashed;">
                             <!--TaskArea Start-->
                             <!--TaskArea End-->
                         </div>
@@ -214,8 +214,8 @@
                 submitCount++;
                 var TotalRow = $("#mappingTable").find('tr').length - 1;
                 $("#rowcount").val(TotalRow);
-                flipPanel.effect("bounce", "slow");
-                if (flag) { flipPanel.append("<img src='/image/arrow.gif' style='height:15px;'>"); flag = false }
+                flipPanel.effect("bounce", "slow");                
+                if (flag) { $(".panel").slideToggle("slow"); flag = false }
             }
         });
 
