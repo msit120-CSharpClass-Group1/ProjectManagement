@@ -268,6 +268,7 @@ namespace ProjectManager.Controllers
             Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
             task.ProjectGUID = _projectGUID;
             task.TaskGUID = Guid.NewGuid();
+            task.EstWorkTime = task.GetEstWorkTime((HolidaysVM)Session["Holidays"]);
             taskRepo.Add(task);
             return RedirectToAction("ProjectDistribution");
         }
@@ -278,17 +279,18 @@ namespace ProjectManager.Controllers
             return Content(JsonConvert.SerializeObject(task), "application/json");
         }
         [HttpPost]
-        public ActionResult EditTask(Tasks _task)
+        public ActionResult EditTask(Tasks taskModified)
         {
-            Tasks recentTask = taskRepo.Find(_task.TaskGUID);
-            recentTask.TaskName = _task.TaskName;
-            recentTask.TaskStatusID = _task.TaskStatusID;
-            recentTask.Tag = _task.Tag;
-            recentTask.EstStartDate = _task.EstStartDate;
-            recentTask.EstEndDate = _task.EstEndDate;
-            recentTask.StartDate = _task.StartDate;
-            recentTask.EndDate = _task.EndDate;
-            recentTask.Description = _task.Description;
+            Tasks recentTask = taskRepo.Find(taskModified.TaskGUID);
+            recentTask.TaskName = taskModified.TaskName;
+            recentTask.TaskStatusID = taskModified.TaskStatusID;
+            recentTask.Tag = taskModified.Tag;
+            recentTask.EstStartDate = taskModified.EstStartDate;
+            recentTask.EstEndDate = taskModified.EstEndDate;
+            recentTask.StartDate = taskModified.StartDate;
+            recentTask.EndDate = taskModified.EndDate;
+            recentTask.Description = taskModified.Description;
+            recentTask.EstWorkTime = taskModified.GetEstWorkTime((HolidaysVM)Session["Holidays"]);
 
             taskRepo.Update(recentTask);
             return RedirectToAction("ProjectDistribution");
@@ -327,6 +329,12 @@ namespace ProjectManager.Controllers
             Tasks recentTask = taskRepo.Find(_task.TaskGUID);
             var childTasks = recentTask.GetAllChildTasks();
             return Json(childTasks.Count(),JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult LoadHolidays(HolidaysVM holidays)
+        {
+            Session["Holidays"] = holidays;
+            return Json("success", JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -255,11 +255,11 @@
                      treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
                 });
             });
-            $('#ConfirmedModifyBtn').click(function () {
+            $('#ConfirmedModifyBtn').click(function () {                
                 var data = taskForm.serialize();
                 $.post("@Url.Action("EditTask", "ProjectDetails")",data, function () {
                      treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
-                });
+                });                
                 $('button.rightOpenbtn').click();
             });
             $('#CancelBtn').click(function () { $('.rightOpenbtn').click(); });
@@ -296,7 +296,24 @@
                     treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
                 });
             });
-
+            
+            //if (!sessionStorage.getItem('Holidays')) {
+            //    GetHolidays();
+            //}
+            if ('<%=Session["Holidays"] != null%>' == false) {
+                GetHolidays();
+            }
+                
+            function GetHolidays() {/*?scope=resourceAquire&rid=b0011e96-3fc3-43ec-8bf5-07fb46dd22bb&offset=599*/
+                $.getJSON("https://data.taipei/opendata/datalist/apiAccess", { scope:'resourceAquire', rid:'b0011e96-3fc3-43ec-8bf5-07fb46dd22bb',offset:599}, function (holidays) {
+                    $.ajax({
+                        url: "@Url.Action("LoadHolidays", "ProjectDetails")",
+                        method: "post",
+                        data: holidays,
+                        dataType: "json"
+                    });
+                });                
+            }
         });
     </script>
     <style>

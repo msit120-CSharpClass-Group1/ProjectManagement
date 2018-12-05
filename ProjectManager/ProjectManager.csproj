@@ -172,6 +172,7 @@
     <Content Include="Models\ProjectManagerModel.edmx.diagram">
       <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
     </Content>
+    <Content Include="App_Data\2018-2019Holiday.json" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
@@ -251,6 +252,7 @@
     <Compile Include="Models\Dashboard.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataObject\AllowCrossSiteJsonAttribute.cs" />
     <Compile Include="Models\DataObject\GroupedProject.cs" />
     <Compile Include="Models\Department.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
@@ -339,6 +341,7 @@
     <Compile Include="Models\ViewModel\ChartDataVM.cs" />
     <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
     <Compile Include="Models\ViewModel\EmployeeInfo.cs" />
+    <Compile Include="Models\ViewModel\HolidaysVM.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\ViewModel\TaskVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
@@ -427,9 +430,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
