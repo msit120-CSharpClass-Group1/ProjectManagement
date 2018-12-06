@@ -154,7 +154,7 @@
                 </div>
                 <div class="user_forms-signup">
                     <h2 class="forms_title">註冊</h2>
-                    <form class="forms_form">
+                    <form class="forms_form" method="post" action="~/Login/CreateAccount">
                         <fieldset class="forms_fieldset">
                             <div class="forms_field">
                                 <input id="signInEmployeeID" name="EmployeeID" type="text" placeholder="員工編號" class="forms_field-input" required />
@@ -207,7 +207,7 @@
 
                 }
                 $.ajax({
-                    url: "Login/Login",
+                    url: "Login",
                     method: "Post",
                     data: { "MemberID": MemberID, "Password": Password, "keepLogin": keepLogin },
                     datatype: "json"
@@ -236,8 +236,8 @@
                 }
                   
                 $.ajax({
-                    url: "Login/CreateAccount",
-                    method: "post",
+                    url: "CreateAccount",
+                    method: "Post",
                     data: { "MemberID": MemberID, "Password": Password, "EmployeeID": EmployeeID },
                     dataType: "json"
                 }).done(function (data) {

@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
-    
+    [Authorize]
     public class SelectMBoarController : Controller
     {
         Repository<ProjectManager.Models.ProjectMembers> pm = new Repository<ProjectManager.Models.ProjectMembers>();
