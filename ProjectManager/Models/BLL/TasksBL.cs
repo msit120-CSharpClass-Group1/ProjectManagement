@@ -24,8 +24,7 @@ namespace ProjectManager.Models
         {
             TreeGridModel treeGrid = new TreeGridModel(tasks.ToList());
             return treeGrid.SortedTasks;
-        }
-        
+        }        
         public static IEnumerable<Tasks> GetLeafTasks(this IEnumerable<Tasks> tasks)
         {
             var parentTasks = tasks.Where(t=>t.ParentTaskGUID != null)
@@ -133,5 +132,70 @@ namespace ProjectManager.Models
                                            .Select(g => new Group<string, DisplayWorkloadVM> { Key = g.Key, Sum = g.Sum(e => e.EstWorkTime) }).OrderByDescending(g=>g.Sum);
             return workload;
         }
+        public static int GetEstWorkTime(this Tasks task, HolidaysVM holidays)
+        {
+            int estWorkDays = 0;
+            DateTime estStart = (DateTime)task.EstStartDate;
+            DateTime estEnd = (DateTime)task.EstEndDate;
+            if (holidays != null)
+            {                
+                var q = holidays.result.results.Select(r => new { date = DateTime.Parse(r.date), r.isHoliday });
+                while (estStart.Date <= estEnd.Date)
+                {
+                    if (!(q.AsEnumerable().Where(r => r.date.Date == estStart.Date).Select(r => r.isHoliday).FirstOrDefault() == "是"))
+                    {
+                        estWorkDays++;
+                    }
+                    estStart = estStart.AddDays(1);
+                }
+            }
+            else
+            {
+                //if api not work, turn to simple mode forbidding Weekends
+                while (estStart.Date <= estEnd.Date)
+                {
+                    if (estStart.DayOfWeek != DayOfWeek.Saturday && estStart.DayOfWeek != DayOfWeek.Sunday)
+                    {
+                        estWorkDays++;
+                    }
+                    estStart = estStart.AddDays(1);
+                }
+            }
+
+            return estWorkDays * 8;
+        }
+        public static int GetWorkTime(this Tasks task, HolidaysVM holidays)
+        {
+            int WorkDays = 0;
+            DateTime startDate = (DateTime)task.StartDate;
+            DateTime endDate = (DateTime)task.EndDate;
+            if (holidays != null)
+            {
+                var q = holidays.result.results.Select(r => new { date = DateTime.Parse(r.date), r.isHoliday });
+                while (startDate.Date <= endDate.Date)
+                {
+                    if (!(q.AsEnumerable().Where(r => r.date.Date == startDate.Date).Select(r => r.isHoliday).FirstOrDefault() == "是"))
+                    {
+                        WorkDays++;
+                    }
+                    startDate = startDate.AddDays(1);
+                }
+            }
+            else
+            {
+                //if api not work, turn to simple mode forbidding Weekends
+                while (startDate.Date <= endDate.Date)
+                {
+                    if (startDate.DayOfWeek != DayOfWeek.Saturday && startDate.DayOfWeek != DayOfWeek.Sunday)
+                    {
+                        WorkDays++;
+                    }
+                    startDate = startDate.AddDays(1);
+                }
+            }
+
+            return WorkDays * 8;
+        }
+
     }
 }

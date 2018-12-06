@@ -64,11 +64,15 @@ namespace ProjectManager.Controllers
         public ActionResult CreateAccount(Members members,int EmployeeID)
         {
             var allMember = memberRes.GetCollections();
-            var hasMembers = allMember.Where(n => n.MemberID.Trim() == members.MemberID).FirstOrDefault();
-            var hasEmployeeID = employeeRes.GetCollections().Where(n=>n.EmployeeID == EmployeeID).FirstOrDefault();
-            var hasAccount = allMember.Where(n => n.EmployeeGUID == hasEmployeeID.EmployeeGUID).FirstOrDefault();
+            Employee hasEmployeeID = employeeRes.GetCollections().Where(n => n.EmployeeID == EmployeeID).FirstOrDefault();
+            Members hasMembers = allMember.Where(n => n.MemberID.Trim() == members.MemberID).FirstOrDefault() ;
+            Members hasAccount =null;
+            if (hasEmployeeID != null)
+            {
+                hasAccount = allMember.Where(n => n.EmployeeGUID == hasEmployeeID.EmployeeGUID).FirstOrDefault();
+            }
             string memberMsg = "0";
-            if (hasMembers == null&& hasEmployeeID!=null && hasAccount==null)
+            if (hasEmployeeID != null && hasMembers == null&& hasAccount==null)
             {
                 members.EmployeeGUID = hasEmployeeID.EmployeeGUID;
                 members.MemberGUID = Guid.NewGuid();
@@ -86,7 +90,7 @@ namespace ProjectManager.Controllers
             Response.Cookies["TitleGUID"].Expires = DateTime.Now.AddSeconds(-1);
             Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddSeconds(-1);
             FormsAuthentication.SignOut();
-            return RedirectToAction("Index", "Login");
+            return RedirectToAction("Index", "Home");
         }
         private void LoginProcess(Members members, bool keepLogin)
         {

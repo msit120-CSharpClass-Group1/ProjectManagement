@@ -24,7 +24,7 @@ namespace ProjectManager.Models
         public List<T> datasets { get; set; }
     }
 
-    public class BarChartDataset
+    public class SingleColorChartDataset
     {
         /// <summary>
         /// 表格資料名稱
@@ -38,7 +38,7 @@ namespace ProjectManager.Models
         /// </summary>
         public IEnumerable<int> data { get; set; }
     }
-    public class PieChartDataset
+    public class MutiColorChartDataset
     {
         /// <summary>
         /// 表格資料名稱
