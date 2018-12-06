@@ -236,13 +236,13 @@
     <Compile Include="Controllers\SelectMBoarController.cs" />
     <Compile Include="Controllers\SelectProjectController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
-    <Compile Include="Controllers\TaskDetailStatusController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\TaskStatusController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BLL\CostBL.cs" />
+    <Compile Include="Models\BLL\ProjectMemberBL.cs" />
     <Compile Include="Models\BLL\ProjectsBL.cs" />
     <Compile Include="Models\BLL\TasksBL.cs" />
     <Compile Include="Models\BLL\TreeGridModel.cs" />
@@ -252,6 +252,7 @@
     <Compile Include="Models\Dashboard.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataObject\AllowCrossSiteJsonAttribute.cs" />
     <Compile Include="Models\DataObject\GroupedProject.cs" />
     <Compile Include="Models\Department.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
@@ -340,12 +341,15 @@
     <Compile Include="Models\ViewModel\ChartDataVM.cs" />
     <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
     <Compile Include="Models\ViewModel\EmployeeInfo.cs" />
+    <Compile Include="Models\ViewModel\ProjectMemberScoreVM.cs" />
+    <Compile Include="Models\ViewModel\HolidaysVM.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\ViewModel\TaskVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\Shared\Link.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -422,6 +426,8 @@
     <Content Include="Views\Members\Edit.cshtml" />
     <Content Include="Views\Perfomance\Index.cshtml" />
     <Content Include="Views\Cost\Charts.cshtml" />
+    <Content Include="Views\Perfomance\Score.cshtml" />
+    <Content Include="Views\Perfomance\Watch.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

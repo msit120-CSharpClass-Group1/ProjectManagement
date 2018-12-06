@@ -1,4 +1,5 @@
 ﻿@using ProjectManager.Models.ViewModel
+@using ProjectManager.Views.Shared
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,27 +37,27 @@
 
     <aside id="myLeftsidenav" class="left-sidenav left-sidenav-open">
         <ul>
-            @*<li>
+            <li>
                 <a href="#"><i class="fas fa-tachometer-alt"></i><span>儀錶板</span></a>
-            </li>*@
+            </li>
             <li>
                 <button class="dropdown-btn">
                     <i class="fas fa-copy"></i><span>專案列表</span><i class="fa fa-caret-down"></i>
                 </button>
                 <ul class="dropdown-container hide">
                     <li>
-                        <a href="~/Projects/Index?ProjectStatusID=1">進行中</a>
+                        <a href="~/@Link.Do">進行中</a>
                     </li>
                     <li>
-                        <a href="~/Projects/Index?ProjectStatusID=2">審議中</a>
+                        <a href="~/@Link.Check">審議中</a>
                     </li>
                     <li>
-                        <a href="~/Projects/Index?ProjectStatusID=3">已結案</a>
+                        <a href="~/@Link.Done">已結案</a>
                     </li>
                 </ul>
             </li>
             <li>
-                <a href="~/SelectProject/Index"><i class="fas fa-tasks"></i><span>我的任務</span></a>
+                <a href="~/@Link.Tasks"><i class="fas fa-tasks"></i><span>我的任務</span></a>
             </li>
             <li>
                 <button class="dropdown-btn">
@@ -64,65 +65,64 @@
                 </button>
                 <ul class="dropdown-container hide">
                     <li>
-                        <a href="~/Cost/ExpList">費用管理</a>
+                        <a href="~/@Link.ExpList">費用管理</a>
                     </li>
                     <li>
-                        <a href="~/Cost/ExpCatMgr">費用類別管理</a>
+                        <a href="~/@Link.ExpCatMgr">費用類別管理</a>
                     </li>
                     <li>
-                        <a href="~/Cost/Charts">統計與圖表</a>
+                        <a href="~/@Link.ExpChart">統計與圖表</a>
                     </li>
                 </ul>
             </li>
             <li>
-                <a href="~/Calendar/Index"><i class="fas fa-calendar-alt"></i><span>行事曆</span></a>
+                <a href="~/@Link.Calendar"><i class="fas fa-calendar-alt"></i><span>行事曆</span></a>
             </li>
             @*<li>
-                <a href="#"><i class="fas fa-users"></i><span>會議記錄</span></a>
-            </li>*@
-
+            <a href="#"><i class="fas fa-users"></i><span>會議記錄</span></a>
+              </li>*@
+            <li>
+                <a href="~/Perfomance/Index"><i class="fas fa-chalkboard"></i><span>專案評分</span></a>
+            </li>
             <li>
                 <button class="dropdown-btn">
                     <i class="fas fa-tasks"></i><span>後臺管理</span><i class="fa fa-caret-down"></i>
                 </button>
                 <ul class="dropdown-container hide">
                     <li>
-                        <a href="">專案</a>
+                        <a href="~/@Link.BackStage_Project">專案</a>
                     </li>
                     <li>
-                        <a href="~/ProjectCategory/Index">專案類型</a>
+                        <a href="~/@Link.BackStage_ProjectCategory">專案類型</a>
                     </li>
                     <li>
-                        <a href="~/ProjectStatus/Index">專案階段</a>
+                        <a href="~/@Link.BackStage_ProjectStatus">專案階段</a>
                     </li>
                     <li>
-                        <a href="">任務</a>
+                        <a href="~/@Link.BackStage_Tasks">任務</a>
                     </li>
                     <li>
-                        <a href="~/TaskStatus/Index">任務階段</a>
+                        <a href="~/@Link.BackStage_TaskStatus">任務階段</a>
                     </li>
                     <li>
-                        <a href="~/TaskDetailStatus/Index">待辦事項狀態</a>
+                        <a href="~/@Link.BackStage_Employees">員工</a>
                     </li>
                     <li>
-                        <a href="~/Employees/Index">員工</a>
+                        <a href="~/@Link.BackStage_Members">重設員工密碼</a>
                     </li>
                     <li>
-                        <a href="~/Members/Index">重設員工密碼</a>
+                        <a href="~/@Link.BackStage_JobTitle">職稱</a>
                     </li>
                     <li>
-                        <a href="~/JobTitle/Index">職稱</a>
+                        <a href="~/@Link.BackStage_Department">部門</a>
                     </li>
                     <li>
-                        <a href="~/Department/Index/">部門</a>
-                    </li>
-                    <li>
-                        <a href="~/Permissions/Index">權限</a>
+                        <a href="~/@Link.BackStage_Permissions">權限</a>
                     </li>
                 </ul>
             </li>
             <li>
-                <a href="~/Members/Edit"><i class="fas fa-users"></i><span>修改密碼</span></a>
+                <a href="~/@Link.ChangePassword"><i class="fas fa-users"></i><span>修改密碼</span></a>
             </li>
 
         </ul>

@@ -1,4 +1,5 @@
-﻿@using ProjectManager.Models;
+﻿@model ProjectManager.Models.ProjectMemberScoreVM
+@*@using ProjectManager.Models;*@
 @{
     ViewBag.Title = "專案表現評分";
 }
@@ -6,35 +7,70 @@
 <div class="container" style="height:200px">
     <div class="row">
         <div class="col-6">
-            @foreach (var item in (List<Project>)ViewBag.InProgress)
+            @foreach (var item in Model.InProgressProject)
             {
             <div class="alert alert-info" role="alert">
-
-                @foreach (var _member in ViewBag.GroupMember as List<IGrouping<string, ProjectMembers>>)
+                @if (item.ProjectMembers.FirstOrDefault() != null)
                 {
-                    if (item.ProjectName == _member.Key)
+                    <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
+                    <a href="~/Perfomance/Score?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>我要評分</a>
+                }
+                else
+                {
+                    <a href="~/ProjectDetails/Index" class="btn btn-light" style="float:right">尚未加入成員，前往加入成員</a>
+                }
+                <h4 class="alert-heading">@item.ProjectName</h4>
+                <p>@item.ProjectStatus.ProjectStatusName</p>
+                <hr>
+                @foreach (var _member in Model.GetMemberCount)
+                {
+                    if (_member.Key == item.ProjectName)
                     {
-                    <img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="float:right;width:40px"/>
+                        <p class="mb-0" style="float:right">團隊成員數量: @_member.Count</p>
                     }
                 }
-                    <h4 class="alert-heading">@item.ProjectName</h4>
-                    <p>@item.ProjectStatus.ProjectStatusName</p>
-                    <hr>
-                    <p class="mb-0"></p>
-                </div>
+                @foreach (var _pmscore in Model.GetPMscore)
+                {
+                    if (_pmscore.Key == item.ProjectName)
+                    {
+                        <p class="mb-0">團隊成員平均表現 :@_pmscore.Avg</p>
+                    }
+                }
+            </div>
             }
         </div>
         <div class="col-6">
-            @foreach (var item in (List<Project>)ViewBag.Closed)
+            @foreach (var item in Model.ClosedProject)
             {
-                <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading">@item.ProjectName</h4>
-                    <p>@item.ProjectStatus.ProjectStatusName</p>
-                    <hr>
-                    <p class="mb-0"></p>
-                </div>       
-            }           
+            <div class="alert alert-success" role="alert">
+                @if (item.ProjectMembers.FirstOrDefault() != null)
+                {
+                    <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
+                    <a href="~/Perfomance/Score?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>我要評分</a>
+                }
+                else
+                {
+                    <a href="~/ProjectDetails/Index" class="btn btn-light" style="float:right">專案沒有成員!</a>
+                }
+                <h4 class="alert-heading">@item.ProjectName</h4>
+                <p>@item.ProjectStatus.ProjectStatusName</p>
+                <hr>
+                @foreach (var _member in Model.GetMemberCount)
+                {
+                    if (_member.Key == item.ProjectName)
+                    {
+                        <p class="mb-0" style="float:right">團隊成員數量: @_member.Count</p>
+                    }
+                }
+                @foreach (var _pmscore in Model.GetPMscore)
+                {
+                    if (_pmscore.Key == item.ProjectName)
+                    {
+                        <p class="mb-0">團隊成員平均表現 :@_pmscore.Avg</p>
+                    }
+                }
+            </div>
+            }
         </div>
     </div>
 </div>
-    

@@ -14,12 +14,15 @@ namespace ProjectManager.Models
         public Nullable<int> WorkTime { get; set; }
         public int Key { get; set; }
         public Nullable<System.Guid> EmployeeGUID { get; set; }
+        public string EmployeeName { get; set; }
     }
 
     public class Group<K, T>
     {
         public K Key;
         public IEnumerable<T> value;
-        public int? Sum; 
+        public int? Sum;
+        public double? Avg;
+        public int Count;
     }
 }

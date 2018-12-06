@@ -1,4 +1,5 @@
 ﻿@using ProjectManager.Models.ViewModel
+@using ProjectManager.Views.Shared
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,39 +25,39 @@
                 <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">@EmployeeInfo.EmployeeName</button>
             </div>
             @*<div class="dropdown">
-                <button class="navdropbtn"><i class="far fa-envelope"></i><span class="label">9</span></button>
-                <div class="dropdown-content">
-                    <a href="#">message1</a>
-                    <a href="#">message2</a>
-                    <a href="#">message3</a>
-                </div>
-            </div>*@
+                    <button class="navdropbtn"><i class="far fa-envelope"></i><span class="label">9</span></button>
+                    <div class="dropdown-content">
+                        <a href="#">message1</a>
+                        <a href="#">message2</a>
+                        <a href="#">message3</a>
+                    </div>
+                </div>*@
         </div>
     </nav>
 
     <aside id="myLeftsidenav" class="left-sidenav left-sidenav-open">
         <ul>
-            @*<li>
-                <a href="#"><i class="fas fa-tachometer-alt"></i><span>儀錶板</span></a>
-            </li>*@
+            <li>
+                    <a href="#"><i class="fas fa-tachometer-alt"></i><span>儀錶板</span></a>
+                </li>
             <li>
                 <button class="dropdown-btn">
                     <i class="fas fa-copy"></i><span>專案列表</span><i class="fa fa-caret-down"></i>
                 </button>
                 <ul class="dropdown-container hide">
                     <li>
-                        <a href="~/Projects/Index?ProjectStatusID=1">進行中</a>
+                        <a href="~/@Link.Do">進行中</a>
                     </li>
                     <li>
-                        <a href="~/Projects/Index?ProjectStatusID=2">審議中</a>
+                        <a href="~/@Link.Check">審議中</a>
                     </li>
                     <li>
-                        <a href="~/Projects/Index?ProjectStatusID=3">已結案</a>
+                        <a href="~/@Link.Done">已結案</a>
                     </li>
                 </ul>
             </li>
             <li>
-                <a href="#"><i class="fas fa-tasks"></i><span>我的任務</span></a>
+                <a href="~/@Link.Tasks"><i class="fas fa-tasks"></i><span>我的任務</span></a>
             </li>
             <li>
                 <button class="dropdown-btn">
@@ -64,24 +65,24 @@
                 </button>
                 <ul class="dropdown-container hide">
                     <li>
-                        <a href="~/Cost/ExpList">費用管理</a>
+                        <a href="~/@Link.ExpList">費用管理</a>
                     </li>
                     <li>
-                        <a href="~/Cost/ExpCatMgr">費用類別管理</a>
+                        <a href="~/@Link.ExpCatMgr">費用類別管理</a>
                     </li>
                     <li>
-                        <a href="~/Cost/Charts">統計與圖表</a>
+                        <a href="~/@Link.ExpChart">統計與圖表</a>
                     </li>
                 </ul>
             </li>
             <li>
-                <a href="~/Calendar/Index"><i class="fas fa-calendar-alt"></i><span>行事曆</span></a>
+                <a href="~/@Link.Calendar"><i class="fas fa-calendar-alt"></i><span>行事曆</span></a>
             </li>
             @*<li>
-                <a href="#"><i class="fas fa-users"></i><span>會議記錄</span></a>
-            </li>*@
+                    <a href="#"><i class="fas fa-users"></i><span>會議記錄</span></a>
+                </li>*@
             <li>
-                <a href="~/Members/Edit"><i class="fas fa-users"></i><span>修改密碼</span></a>
+                <a href="~/@Link.ChangePassword"><i class="fas fa-users"></i><span>修改密碼</span></a>
             </li>
         </ul>
     </aside>
@@ -103,13 +104,13 @@
         <div class="content">
             @RenderBody()
             @*<div class="dropup">
-                <button class="dropupbtn" title="Message" type="button"><i class="fas fa-comments"></i><span class="message">20</span></button>
-                <div class="dropup-content">
-                    <a href="#">message1</a>
-                    <a href="#">message2</a>
-                    <a href="#">message3</a>
-                </div>
-            </div>*@
+                    <button class="dropupbtn" title="Message" type="button"><i class="fas fa-comments"></i><span class="message">20</span></button>
+                    <div class="dropup-content">
+                        <a href="#">message1</a>
+                        <a href="#">message2</a>
+                        <a href="#">message3</a>
+                    </div>
+                </div>*@
             <button type="button" class="rightOpenbtn" title="Go to top">&#9776;</button>
 
             <aside id="myRightsidenav" class="right-sidenav" style="display: none;">

@@ -48,80 +48,82 @@
 
             function BuildRootTasks_CompletedRateChart() {
                 $.getJSON("@Url.Action("RootTasksCompletedRate", "ProjectDetails")", null, function (datas) {
-                    var TasksCompletedRateChart = new Chart($('#RootTasksCompletedRateChart'), {
-                        type: 'horizontalBar',
-                        data: datas,
-                        options: {
-                            elements: {
-                                rectangle: {
-                                    borderWidth: 0,
+                    var TasksCompletedRateChart = new Chart($('#RootTasksCompletedRateChart'),
+                        {
+                            type: 'horizontalBar',
+                            data: datas,
+                            options: {
+                                elements: {
+                                    rectangle: {
+                                        borderWidth: 0,
+                                    }
+                                },
+                                responsive: true,
+                                legend: {
+                                    display: false,
+                                    position: 'bottom',
+                                },
+                                title: {
+                                    display: true,
+                                    text: '根工作項目完成度',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        gridLines: { display: false },
+                                        fontSize: 16
+                                    }],
+                                    xAxes: [{
+                                        gridLines: { display: true },
+                                        ticks: {
+                                            min: 0,
+                                            max: 100,
+                                            stepSize: 10,                                        
+                                        },
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: '完成百分比(%)',
+                                        },
+                                    }]
+                                },
+                                tooltips: {
+                                    yPadding: 10,
+                                    xPadding: 10,
+                                    bodySpacing: 10,
+                                    //callbacks: {
+                                    //    afterLabel: function (tooltipItem, chart) {
+                                    //        return "%";
+                                    //    }
+                                    //},
                                 }
-                            },
-                            responsive: true,
-                            legend: {
-                                display: false,
-                                position: 'bottom',
-                            },
-                            title: {
-                                display: true,
-                                text: '根工作項目完成度',
-                                fontSize: 20,
-                                padding: 10,
-                            },
-                            scales: {
-                                yAxes: [{
-                                    gridLines: { display: false },
-                                    fontSize: 16
-                                }],
-                                xAxes: [{
-                                    gridLines: { display: true },
-                                    ticks: {
-                                        min: 0,
-                                        max: 100,
-                                        stepSize: 10,                                        
-                                    },
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: '完成百分比(%)',
-                                    },
-                                }]
-                            },
-                            tooltips: {
-                                yPadding: 10,
-                                xPadding: 10,
-                                bodySpacing: 10,
-                                //callbacks: {
-                                //    afterLabel: function (tooltipItem, chart) {
-                                //        return "%";
-                                //    }
-                                //},
                             }
-                        }
-                    });
+                        });
                 });
             }
             function BuildRootTasks_SumOfWorkTimeChart(){
                 $.getJSON("@Url.Action("RootTasksEstWorkTimeSum", "ProjectDetails")", null, function (datas) {
-                    var TasksSumOfWorkTimeChart = new Chart($('#RootTasksSumOfWorkTimeChart'), {
-                        type: 'doughnut',
-                        data: datas,
-                        options: {
-                            responsive: true,
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: '根工作項目工時總數',
-                                fontSize: 20,
-                                padding: 10,
-                            },
-                            animation: {
-                                animateScale: true,
-                                animateRotate: true
+                    var TasksSumOfWorkTimeChart = new Chart($('#RootTasksSumOfWorkTimeChart'),
+                        {
+                            type: 'doughnut',
+                            data: datas,
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: '根工作項目工時總數',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                animation: {
+                                    animateScale: true,
+                                    animateRotate: true
+                                }
                             }
-                        }
-                    });
+                        });
                 });
             } 
             function BuildMembers_SumOfWorkTimeChart() {
@@ -170,30 +172,31 @@
                                 }
                             }
                         });
-                    });               
+                });               
             }
             function BuildRootTasks_SumOfResourceChart(){
                 $.getJSON("@Url.Action("RootTasksResourceSum", "ProjectDetails")", null, function (datas) {
-                    var RootTasksSumOfResourceChart = new Chart($('#RootTasksSumOfResourceChart'), {
-                        type: 'doughnut',
-                        data: datas,
-                        options: {
-                            responsive: true,
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: '根工作項目費用總和',
-                                fontSize: 20,
-                                padding: 10,
-                            },
-                            animation: {
-                                animateScale: true,
-                                animateRotate: true
-                            },                            
-                        }
-                    });
+                    var RootTasksSumOfResourceChart = new Chart($('#RootTasksSumOfResourceChart'),
+                        {
+                            type: 'doughnut',
+                            data: datas,
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: '根工作項目費用總和',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                animation: {
+                                    animateScale: true,
+                                    animateRotate: true
+                                },                            
+                            }
+                        });
                 });
             }
 
