@@ -65,10 +65,16 @@ namespace ProjectManager.Models
             return memeberList;
         }
 
+        public static IEnumerable<Group<string, ProjectMembers>> GetNoneScore(this IEnumerable<ProjectMembers> projectMembers)
+        {
+            var memeberList = projectMembers.Where(p=>p.PMscore==null && p.EmployeeGUID != null).GroupBy(g => g.Employee.EmployeeName)
+                                         .Select(g => new Group<string, ProjectMembers> { Key = g.Key, value = g, Count = g.Count() });
+            return memeberList;
+        }
+
         public static List<ProjectMembers> GetAboveAVGMember(this IEnumerable<ProjectMembers> projectMembers)
         {
             List<ProjectMembers> aboveAvgMember = new List<ProjectMembers>();
-
             double? memberPMScoreAVG = projectMembers.GetTeamPMAvgScore().FirstOrDefault().Avg;
             var highestMemberPMScore = projectMembers.Where(p=>p.EmployeeGUID != null).GroupBy(g => g.Employee.EmployeeName)
                                          .Select(g => new Group<string, ProjectMembers> { Key = g.Key, value = g, Count = g.Count()});
@@ -88,7 +94,6 @@ namespace ProjectManager.Models
         public static List<ProjectMembers> GetUnderAVGMember(this IEnumerable<ProjectMembers> projectMembers)
         {
             List<ProjectMembers> AvgMemberScore = new List<ProjectMembers>();
-
             double? memberPMScoreAVG = projectMembers.GetTeamPMAvgScore().FirstOrDefault().Avg;
             var lowestMemberPMScore = projectMembers.Where(p => p.EmployeeGUID != null).GroupBy(g => g.Employee.EmployeeName)
                                          .Select(g => new Group<string, ProjectMembers> { Key = g.Key, value = g, Count = g.Count() });
@@ -104,7 +109,5 @@ namespace ProjectManager.Models
             }
             return AvgMemberScore;
         }
-
-
     }
 }

@@ -14,8 +14,8 @@ namespace ProjectManager.Controllers
         public ActionResult Index()
         {
             ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
-            vm.InProgressProject = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 1).ToList();           
-            vm.ClosedProject = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 2).ToList();
+            vm.InProgressProject = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 1).ToList();        
+            vm.ClosedProject = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 2 ).ToList();
             vm.GetPMscore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID != null).GetTeamPMAvgScore();
             vm.GetMemberCount = ProjectMembersRepo.GetCollections().GetTeamMemberCount();                  
             return View(vm);
@@ -36,7 +36,8 @@ namespace ProjectManager.Controllers
                 vm.GetMemberCount = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetTeamMemberCount();
                 vm.GetAboveAVGMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetAboveAVGMember();
                 vm.GetUnderAVGMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetUnderAVGMember();
-                vm.GetLowestMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetLowestMember();                               
+                vm.GetLowestMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetLowestMember();
+                vm.GetNoneScore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetNoneScore();
                 return View(vm);
             }
             return RedirectToAction("Index", "Perfomance");
