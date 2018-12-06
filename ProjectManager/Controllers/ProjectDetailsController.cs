@@ -345,10 +345,14 @@ namespace ProjectManager.Controllers
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult TaskAcceptance(Guid? taskGuid, bool IsConfirmed)
+        public ActionResult TaskAcceptance( bool isConfirmed,Guid? taskGuid, string Tag)
         {
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
-            _task.TaskStatusID = IsConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;            
+            if(Tag!="" )
+            {
+                _task.Tag = Tag;
+            }
+            _task.TaskStatusID = isConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;            
             taskRepo.Update(_task);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
