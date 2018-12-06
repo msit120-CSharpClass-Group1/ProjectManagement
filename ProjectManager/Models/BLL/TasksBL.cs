@@ -27,17 +27,18 @@ namespace ProjectManager.Models
         }        
         public static IEnumerable<Tasks> GetLeafTasks(this IEnumerable<Tasks> tasks)
         {
-            var parentTasks = tasks.Where(t=>t.ParentTaskGUID != null)
+            var parentTasks = tasks.Where(t => t.ParentTaskGUID != null)
                 .Select(t => t.ParentTaskGUID).Distinct().ToList();
 
             List<Tasks> leafTasks = new List<Tasks>();
             foreach (var item in tasks.Where(t => t.ParentTaskGUID != null))
             {
-                if(!parentTasks.Where(parentGuid => parentGuid == item.TaskGUID).Any())
+                if (!parentTasks.Where(parent => parent == item.ProjectGUID).Any())
                 {
                     leafTasks.Add(item);
                 }
             }
+
             return leafTasks;
         }
         public static IEnumerable<Tasks> GetRootTasks(this IEnumerable<Tasks> tasks)
