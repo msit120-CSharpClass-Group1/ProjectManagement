@@ -11,7 +11,7 @@
             <th>預計區間</th>
             <th>@Html.DisplayNameFor(m => m.Description)</th>
             <th>@Html.DisplayNameFor(m => m.Tag)</th>
-            <th>驗收</th>
+            <th>專案狀態檢核</th>
         </tr>
     </thead>
     <tbody>
@@ -34,7 +34,11 @@
                         if (status == TasksBL.Task_Status.WaitForConfirmed)
                         {
                             <button name="rejectAcceptBtn" class="btn btn-dark text-light mr-2 p-2" data-taskGUID="@task.TaskGUID">駁回</button>
-                            <button name="confirmAcceptBtn" class="btn btn-primary p-2" data-taskGUID="@task.TaskGUID">通過</button>
+                            <button name="confirmAcceptBtn" class="btn btn-primary p-2" data-taskGUID="@task.TaskGUID">驗收</button>
+                        }
+                        else if (status == TasksBL.Task_Status.Ended)
+                        {
+                             <button name="reviveBtn" class="btn btn-dark text-light-app p-2" data-taskGUID="@task.TaskGUID">恢復</button>
                         }
                     }
 

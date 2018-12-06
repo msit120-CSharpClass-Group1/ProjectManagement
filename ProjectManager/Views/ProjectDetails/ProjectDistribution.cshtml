@@ -40,9 +40,11 @@
             color: black;
             margin-right: 5px;
         }
-        .boldLabel{
-            font-weight:600;
+
+        .boldLabel {
+            font-weight: 600;
         }
+
         thead {
             background-color: black;
             color: white;
@@ -113,7 +115,7 @@
             </div>
             <div class="modal-body ">
                 <div class="container">
-                    <input name="AC_TaskGUID" id="AC_TaskGUID" type="text" hidden/>
+                    <input name="AC_TaskGUID" id="AC_TaskGUID" type="text" hidden />
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="boldLabel">工作項目名稱:</label>
@@ -142,83 +144,104 @@
     </div>
 </div>
 
-
-
-
-@section asideRight{
-    <div class="container text-light mt-3">
-        <h4 id="ModeTitle">新增工作項目</h4>
-        <form id="TaskForm" class="form-horizontal" method="put">
-            <input name="ParentTaskGUID" id="ParentTaskGUID" type="text" hidden />
-            <input name="TaskGUID" id="TaskGUID" type="text" hidden />
-            <input name="TaskStatusID" id="TaskStatusID" type="text" hidden />
-            <div class="form-group">
-                @Html.LabelFor(m => m.FirstOrDefault().TaskName)
-                @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:18em;" })
+<!--Modal For Reject Acceptance Comfirm-->
+<div class="modal fade" style="top:120px;" id="RejectAcceptanceModal" tabindex="-1" role="dialog" aria-labelledby="RejectAcceptanceModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:3px 4px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="RejectAcceptanceModalTitle"><span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>請選擇駁回或終止此工作項目</h5>
             </div>
-
-            <div class="row ">
-                <div class="col-12 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().EstStartDate)
-                    @{
-                        string strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-                    }<br />
-                    <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+            <div class="modal-body pl-3">
+                <input id="RA_taskGUID" type="text" hidden/>
+                <div class="row">                    
+                    <h6 class="col-12">&nbsp; 駁回的工作項目將回到進行中狀態</h6>
                 </div>
+                <div id="deleteAlarm_detail"></div>
             </div>
-            <div class="row ">
-                <div class="col-12 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().EstEndDate)
-                    @{
-                        strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-                    }<br />
-                    <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
-                </div>
+            <div class="modal-footer">
+                <button type="button" id="btn_AbortAccept" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="btn_EndTask" class="btn btn-danger px-4">終止</button>
+                <button type="button" id="btn_ConfirmRejectAccept" class="btn btn-dark text-light px-4">駁回</button>
             </div>
-
-            <div class="row hide">
-                <div class="col-6 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().StartDate)
-                    @{
-                        strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-                    }<br />
-                    <input name="StartDate" id="StartDate" type="date" class="form-control d-inline" value="@strDate" style="width:16em;" />
-                </div>
-                <div class="col-6 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().EndDate)
-                    @{
-                        strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-                    }<br />
-                    <input name="EndDate" id="EndDate" type="date" class="form-control d-inline" value="@strDate" style="width:16em;" />
-                </div>
-            </div>
-            <div class="row ">
-                <div class="col-12 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().Tag)
-                    @Html.TextBox("Tag", null, new { @class = "form-control", style = "width:18em; " })
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().Description)
-                    <br />
-                    <textarea name="Description" id="Description" class="form-control d-inline"  style="width:18em;height:8em;"></textarea>
-                </div>
-            </div>
-
-            <div id="formBtns" class="mt-2 mx-auto text-center ">
-                <button id="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
-                <button id="ConfirmedAddBtn" type="button" class="btn btn-primary py-1 px-5">確認新增</button>
-                <button id="ConfirmedModifyBtn" type="button" class="btn btn-primary py-1 px-5">確認修改</button>
-                <br /><button id="DeleteBtn" type="button" class="btn btn-danger py-1 px-3 mt-3">刪除工作項目</button>
-            </div>
-        </form>
+        </div>
     </div>
-}
+</div>
 
-@section script{
-    <script src="~/Scripts/jquery.treegrid.min.js"></script>
-    <script>
+
+    @section asideRight{
+        <div class="container text-light mt-3">
+            <h4 id="ModeTitle">新增工作項目</h4>
+            <form id="TaskForm" class="form-horizontal" method="put">
+                <input name="ParentTaskGUID" id="ParentTaskGUID" type="text" hidden />
+                <input name="TaskGUID" id="TaskGUID" type="text" hidden />
+                <input name="TaskStatusID" id="TaskStatusID" type="text" hidden />
+                <div class="form-group">
+                    @Html.LabelFor(m => m.FirstOrDefault().TaskName)
+                    @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:18em;" })
+                </div>
+
+                <div class="row ">
+                    <div class="col-12 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().EstStartDate)
+                        @{
+                            string strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+                        }<br />
+                        <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-12 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().EstEndDate)
+                        @{
+                            strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+                        }<br />
+                        <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+                    </div>
+                </div>
+
+                <div class="row hide">
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().StartDate)
+                        @{
+                            strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+                        }<br />
+                        <input name="StartDate" id="StartDate" type="date" class="form-control d-inline" value="@strDate" style="width:16em;" />
+                    </div>
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().EndDate)
+                        @{
+                            strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+                        }<br />
+                        <input name="EndDate" id="EndDate" type="date" class="form-control d-inline" value="@strDate" style="width:16em;" />
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-12 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().Tag)
+                        @Html.TextBox("Tag", null, new { @class = "form-control", style = "width:18em; " })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().Description)
+                        <br />
+                        <textarea name="Description" id="Description" class="form-control d-inline" style="width:18em;height:8em;"></textarea>
+                    </div>
+                </div>
+
+                <div id="formBtns" class="mt-2 mx-auto text-center ">
+                    <button id="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
+                    <button id="ConfirmedAddBtn" type="button" class="btn btn-primary py-1 px-5">確認新增</button>
+                    <button id="ConfirmedModifyBtn" type="button" class="btn btn-primary py-1 px-5">確認修改</button>
+                    <br /><button id="DeleteBtn" type="button" class="btn btn-danger py-1 px-3 mt-3">刪除工作項目</button>
+                </div>
+            </form>
+        </div>
+    }
+
+    @section script{
+        <script src="~/Scripts/jquery.treegrid.min.js"></script>
+        <script>
         $(document).ready(function () {
             $('.rightOpenbtn').html('<i class="fas fa-plus"></i>').click(SetRightAsideToAdd);
             $('#DeleteBtn').hide();
@@ -228,6 +251,7 @@
             var ganttContainer = $('#ganttContainer');
             var taskForm = $('#TaskForm');
             var acceptanceModal = $('#AcceptanceComfirmModal');
+            var rejectAcceptModal = $('#RejectAcceptanceModal');
 
             treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
 
@@ -349,22 +373,46 @@
                 });
             });
 
-            $('#btn_ConfirmAccept').click(function () { Acceptance(true, $('#AC_TaskGUID').val(), $('#AC_Tag').val()); });
+            $('#btn_ConfirmAccept').click(function () {
+                Acceptance(true, $('#AC_TaskGUID').val(), $('#AC_Tag').val());
+                acceptanceModal.modal('hide');
+            });
+
+            $('#btn_ConfirmRejectAccept').click(function () {
+                Acceptance(false, $('#RA_taskGUID').val(), "");
+                rejectAcceptModal.modal('hide');
+            });
+
+            $('#btn_EndTask').click(function () {
+                $.post("@Url.Action("EndTask", "ProjectDetails")", { taskGuid: $('#RA_taskGUID').val() }, function (data) {
+                        treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                });
+                rejectAcceptModal.modal('hide');
+            });
 
             function Acceptance(_confirm, _taskGUID, _tag) {
                 $.post("@Url.Action("TaskAcceptance", "ProjectDetails")", { isConfirmed: _confirm, taskGuid: _taskGUID, Tag:_tag }, function (data) {
                         treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
-                });
-                acceptanceModal.modal('hide');
+                });                
             }
+            
             function WhetherAcceptance() {
                 $(this).on("click", function () {
                     if ($(this).attr('name') == "confirmAcceptBtn") {
                         $('#AC_TaskGUID').val($(this).attr('data-taskGUID'));
                         $('#AC_TaskName').text($(this).parents('tr').children('td:first-child').text());
                         $('#AC_EmployeeName').text($(this).parents('tr').children('td:nth-child(4)').text());
-                        $('#AC_Tag').text($(this).parents('tr').children('td:nth-child(7)').text()); 
+                        $('#AC_Tag').text($(this).parents('tr').children('td:nth-child(7)').text());
                         acceptanceModal.modal('show');
+                    }
+                    else if ($(this).attr('name') == "rejectAcceptBtn") {
+                        $('#RA_taskGUID').val($(this).attr('data-taskGUID'));
+                        $('#RejectAcceptanceModal').modal('show');
+                    }
+                    else if ($(this).attr('name') == "reviveBtn"){
+                        $.post("@Url.Action("TaskRevivedToInProgress", "ProjectDetails")", { taskGuid: $(this).attr('data-taskGUID') }, function (data) {
+                            treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                        });
                     }
                 });
             }
@@ -385,17 +433,17 @@
                 });
             }
         });
-    </script>
-    <style>
-        .table-bordered td, .table-bordered th {
-            border: 0px solid;
-        }
+        </script>
+        <style>
+            .table-bordered td, .table-bordered th {
+                border: 0px solid;
+            }
 
-        .table-bordered tbody tr {
-            border: 1px solid #dee2e6;
-            background-color: white;
-            cursor: pointer;
-        }
-    </style>
-}
+            .table-bordered tbody tr {
+                border: 1px solid #dee2e6;
+                background-color: white;
+                cursor: pointer;
+            }
+        </style>
+    }
 
