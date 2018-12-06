@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize]
     public class PerfomanceController : Controller
     {
         Repository<Project> projectRepo = new Repository<Project>();
