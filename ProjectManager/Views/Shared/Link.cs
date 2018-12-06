@@ -16,7 +16,7 @@ namespace ProjectManager.Views.Shared
         //成本管理
         public static string ExpList = "Cost/ExpList";
         public static string ExpCatMgr = "Cost/ExpCatMgr";
-        public static string ExpChart = "#";
+        public static string ExpChart = "Cost/Charts";
         //行事曆
         public static string Calendar = "Calendar/Index";
         //專案評分

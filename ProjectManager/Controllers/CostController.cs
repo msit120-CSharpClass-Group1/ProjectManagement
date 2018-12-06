@@ -193,10 +193,10 @@ namespace ProjectManager.Controllers
                                             join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
                                             select d).Distinct().ToList();
 
-            ChartData<BarChartDataset> chartData = new ChartData<BarChartDataset>();
+            ChartData<SingleColorChartDataset> chartData = new ChartData<SingleColorChartDataset>();
             chartData.labels = departments.Select(d => d.DepartmentName).ToList();
 
-            chartData.datasets.Add(new BarChartDataset
+            chartData.datasets.Add(new SingleColorChartDataset
             {
                 label = "Total Cost",
                 backgroundColor = "Darkcyan",
@@ -209,7 +209,7 @@ namespace ProjectManager.Controllers
 
         public ActionResult OverallRates()
         {
-            ChartData<PieChartDataset> chartData = new ChartData<PieChartDataset>();
+            ChartData<MutiColorChartDataset> chartData = new ChartData<MutiColorChartDataset>();
 
 
 
