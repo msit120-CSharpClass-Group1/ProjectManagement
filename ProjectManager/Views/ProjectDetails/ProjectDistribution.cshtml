@@ -1,7 +1,7 @@
 ﻿@using ProjectManager.Models
 @model IEnumerable<ProjectManager.Models.Tasks>
 @{
-    ViewBag.Title = "工作項目";
+    ViewBag.Title = "新增工作";
 }
 
 @section style{
@@ -38,7 +38,7 @@
         thead {
             background-color: black;
             color: white;
-            /*text-align: center;*/
+            text-align: center;
         }
     </style>    
 }
@@ -255,11 +255,11 @@
                      treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
                 });
             });
-            $('#ConfirmedModifyBtn').click(function () {
+            $('#ConfirmedModifyBtn').click(function () {                
                 var data = taskForm.serialize();
                 $.post("@Url.Action("EditTask", "ProjectDetails")",data, function () {
                      treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
-                });
+                });                
                 $('button.rightOpenbtn').click();
             });
             $('#CancelBtn').click(function () { $('.rightOpenbtn').click(); });
@@ -273,11 +273,11 @@
                     if (parseInt(data) != 0) {
                         $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + " </em>  有" + data + "個子項目");
                         $('#btn_ConfirmDelete').text('全部刪除');
-                        $('#DeleteAlarmModal').modal('show');                        
+                        $('#DeleteAlarmModal').modal('show');
                     } else {
                         $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + "</em>  將被刪除");
                         $('#btn_ConfirmDelete').text('刪除');
-                        $('#DeleteAlarmModal').modal('show');                        
+                        $('#DeleteAlarmModal').modal('show');
                     }
                 });
             });
@@ -293,14 +293,11 @@
                         $('#deleteRejectedMsg').text(data);
                         $('#DeleteRejectedModal').modal('show');
                     }
-                    $('.rightOpenbtn').click();
                     treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
                 });
             });
-            var isHolidayLoaded = "@Session["Holidays"]";
-            if (!(isHolidayLoaded == "loaded")) {
-                GetHolidays();
-            }
+
+            GetHolidays();   
 
             function GetHolidays() {/*?scope=resourceAquire&rid=b0011e96-3fc3-43ec-8bf5-07fb46dd22bb&offset=599*/
                 $.getJSON("https://data.taipei/opendata/datalist/apiAccess", { scope:'resourceAquire', rid:'b0011e96-3fc3-43ec-8bf5-07fb46dd22bb',offset:599}, function (holidays) {
@@ -310,7 +307,7 @@
                         data: holidays,
                         dataType: "json"
                     });
-                });
+                });                
             }
         });
     </script>
@@ -322,7 +319,6 @@
         .table-bordered tbody tr {
             border: 1px solid #dee2e6;
             background-color:white;
-            cursor:pointer;
         }
     </style>
 }

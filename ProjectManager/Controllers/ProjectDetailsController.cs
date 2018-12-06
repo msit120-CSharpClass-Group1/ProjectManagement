@@ -271,8 +271,6 @@ namespace ProjectManager.Controllers
             task.ProjectGUID = _projectGUID;
             task.TaskGUID = Guid.NewGuid();
             task.EstWorkTime = task.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
-            task.StartDate = task.EstStartDate;
-            task.EndDate = task.EstEndDate;
             taskRepo.Add(task);
             return Json("success", JsonRequestBehavior.AllowGet);
             //return RedirectToAction("ProjectDistribution");
@@ -292,10 +290,11 @@ namespace ProjectManager.Controllers
             recentTask.Tag = taskModified.Tag;
             recentTask.EstStartDate = taskModified.EstStartDate;
             recentTask.EstEndDate = taskModified.EstEndDate;
-            recentTask.StartDate = taskModified.EstStartDate;
+            recentTask.StartDate = taskModified.StartDate;
+            recentTask.EndDate = taskModified.EndDate;
             recentTask.Description = taskModified.Description;
             recentTask.EstWorkTime = taskModified.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
-           
+
             taskRepo.Update(recentTask);            
             return Json("success", JsonRequestBehavior.AllowGet);
             //return RedirectToAction("ProjectDistribution");
@@ -338,7 +337,7 @@ namespace ProjectManager.Controllers
         [HttpPost]
         public ActionResult LoadHolidays(HolidaysVM holidays)
         {
-            Session["Holidays"] = "loaded";
+            //Session["Holidays"] = holidays;
             System.Web.HttpContext.Current.Application.Lock();
             System.Web.HttpContext.Current.Application["Holidays"] = holidays;
             System.Web.HttpContext.Current.Application.UnLock();
