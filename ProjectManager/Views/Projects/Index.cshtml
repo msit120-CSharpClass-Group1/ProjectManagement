@@ -28,7 +28,7 @@
 }
 
 
-<div id="btn-plus" class="position-fixed" style="bottom:6em; right:10px;">
+<div id="btn-plus" class="position-fixed" style="bottom:6em; right:10px;" hidden>
     <a href="#" class="btn btn-light rounded-circle shadow-lg"><span style="font-size:2em;color:lightgray"><i class="fas fa-plus"></i></span></a>
 </div>
 
@@ -93,54 +93,64 @@
             <input name="ProjectID" type="hidden" class="form-control d-inline" style="width:10em;" value="test" />
             <div class="form-group">
                 @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectName)
-                @Html.TextBox("ProjectName", null, new { @class = "form-control", style = "width:18em;" })
+                @Html.TextBox("ProjectName", null, new { @class = "form-control", style = "width:12em;" })
             </div>
 
             <div class="row ">
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().RequiredDeptGUID)
-                    @Html.DropDownList("RequiredDeptGUID", (SelectList)ViewBag.Departments, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    @Html.DropDownList("RequiredDeptGUID", (SelectList)ViewBag.Departments, "請選擇", new { @class = "form-control", style = "width:12em;" })
                 </div>
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().RequiredDeptPMGUID)
-                    @Html.DropDownList("RequiredDeptPMGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    @Html.DropDownList("RequiredDeptPMGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:12em;" })
                 </div>
             </div>
             <div class="row ">
                 <div class="col-6 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstStartDate)
-                    <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" />
+                    @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstStartDate)<br />
+                    <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" style="width:12em;" />
                 </div>
                 <div class="col-6 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstEndDate)
-                    <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" />
+                    @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EstEndDate)<br />
+                    <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" style="width:12em;" />
                 </div>
             </div>
-            <div class="row " id="ActualDurationGroup">
+            @*<div class="row hide" id="ActualDurationGroup">
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().StartDate)
-                    <input name="StartDate" id="StartDate" type="date" class="form-control d-inline" />
+                    <input name="StartDate" id="StartDate" type="date" class="form-control d-inline" style="width:12em;" />
                 </div>
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EndDate)
-                    <input name="EndDate" id="EndDate" type="date" class="form-control d-inline" />
+                    <input name="EndDate" id="EndDate" type="date" class="form-control d-inline" style="width:12em;" />
                 </div>
-            </div>
+            </div>*@
 
             <div class="row">
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectStatusID)
-                    @Html.DropDownList("ProjectStatusID", (SelectList)ViewBag.ProjectStatuses, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    @Html.DropDownList("ProjectStatusID", (SelectList)ViewBag.ProjectStatuses, "請選擇", new { @class = "form-control", style = "width:12em;" })
                 </div>
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectCategoryID)
-                    @Html.DropDownList("ProjectCategoryID", (SelectList)ViewBag.ProjectCategories, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    @Html.DropDownList("ProjectCategoryID", (SelectList)ViewBag.ProjectCategories, "請選擇", new { @class = "form-control", style = "width:12em;" })
                 </div>
             </div>
             <div class="row ">
                 <div class="col-6 form-group">
+                    @Html.Label("專案督導部門")
+                    @Html.DropDownList("ProjectSupervisorDeptGUID", (SelectList)ViewBag.Departments, "請選擇", new { @class = "form-control", style = "width:12em;" })
+                </div>
+                <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectSupervisorGUID)
-                    @Html.DropDownList("ProjectSupervisorGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    @Html.DropDownList("ProjectSupervisorGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:12em;" })
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-6 form-group">
+                    @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectBudget)
+                    <input name="ProjectBudget" id="ProjectBudget" type="text" class="form-control d-inline" style="width:12em;" />
                 </div>
                 <div class="col-6 form-group ">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().IsGeneralManagerConcerned)<br />
@@ -148,6 +158,7 @@
                     @Html.RadioButton("IsGeneralManagerConcerned", false, false, new { @class = "form-control d-inline align-middle", style = "width:1.2em;" })<span>否</span>
                 </div>
             </div>
+
             <div id="formBtns" class="mt-5 mx-auto text-center ">
                 <button id="cancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
                 <button id="confiredBtn" type="submit" class="btn btn-primary py-1 px-5">確認</button>
@@ -179,10 +190,9 @@
             });
 
             $('#RequiredDeptGUID').change(GetEmployees);
-            //$('#ProjectStatusID').change(IsProjectInProgress);
-            $('#EstStartDate').change(function () { $('#StartDate').val($(this).val());}); 
-            $('#EstEndDate').change(function () { $('#EndDate').val($(this).val()); }); 
-
+            $('#ProjectSupervisorDeptGUID').change(GetSupervisor);
+            //$('#EstStartDate').change(function () { $('#StartDate').val($(this).val());}); 
+            //$('#EstEndDate').change(function () { $('#EndDate').val($(this).val()); }); 
 
             function GetEmployees() {
                 $.getJSON("@Url.Action("GetEmployeesByDept","Projects")", { DeptGUID : $(this).val()}, function (data) {
@@ -194,13 +204,16 @@
                     $('#RequiredDeptPMGUID').html(docFrag);
                 });
             }
-            //function IsProjectInProgress() {
-            //    if ($('#ProjectStatusID').children(':selected').text() == "進行中") {
-            //        $('#EndDate').hide();
-            //    } else {
-            //        $('#EndDate').show();
-            //    }
-            //}
+            function GetSupervisor() {
+                $.getJSON("@Url.Action("GetEmployeesByDept","Projects")", { DeptGUID : $(this).val()}, function (data) {
+                    var docFrag = $(document.createDocumentFragment());
+                    $.each(data, function (index,emp) {
+                        var opt = $('<option></option>').text(emp.EmployeeName).val(emp.EmployeeGUID);
+                        docFrag.append(opt);                       
+                    });
+                    $('#ProjectSupervisorGUID').html(docFrag);
+                });
+            }
 
         });
     </script>
