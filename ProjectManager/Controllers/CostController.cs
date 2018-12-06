@@ -9,6 +9,7 @@ using PagedList.Mvc;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize]
     public class CostController : Controller
     {
         Repository<ResourceCategory> ResourceCatRepo = new Repository<ResourceCategory>();

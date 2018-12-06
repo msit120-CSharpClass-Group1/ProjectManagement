@@ -7,6 +7,7 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize]
     public class CalendarController : Controller
     {
         private Repository<Calendar> CalRepo = new Repository<Calendar>();
