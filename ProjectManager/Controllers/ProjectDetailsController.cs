@@ -10,6 +10,7 @@ using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize]
     public class ProjectDetailsController : Controller
     {
         Repository<Tasks> taskRepo = new Repository<Tasks>();
