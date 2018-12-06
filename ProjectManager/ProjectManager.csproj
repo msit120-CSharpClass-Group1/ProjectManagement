@@ -242,6 +242,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BLL\CostBL.cs" />
     <Compile Include="Models\BLL\ProjectsBL.cs" />
     <Compile Include="Models\BLL\TasksBL.cs" />
     <Compile Include="Models\BLL\TreeGridModel.cs" />
@@ -420,6 +421,7 @@
     <Content Include="Views\Employees\Add.cshtml" />
     <Content Include="Views\Members\Edit.cshtml" />
     <Content Include="Views\Perfomance\Index.cshtml" />
+    <Content Include="Views\Cost\Charts.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
