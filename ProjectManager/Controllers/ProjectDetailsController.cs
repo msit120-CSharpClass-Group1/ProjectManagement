@@ -22,7 +22,7 @@ namespace ProjectManager.Controllers
         Repository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
         Repository<Tasks> tasks = new Repository<Tasks>();
 
-        public ActionResult Index(/*Guid ProjectGUID*/)
+        public ActionResult Index()
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");

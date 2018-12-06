@@ -12,6 +12,7 @@ namespace ProjectManager.Controllers
     {
         Repository<Project> projectRepo = new Repository<Project>();
         Repository<ProjectMembers> ProjectMembersRepo = new Repository<ProjectMembers>();
+  
         public ActionResult Index()
         {
             ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
