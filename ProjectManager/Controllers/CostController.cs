@@ -17,21 +17,12 @@ namespace ProjectManager.Controllers
         Repository<Project> ProjectRepo = new Repository<Project>();
         Repository<Tasks> TaskRepo = new Repository<Tasks>();
 
-        // GET: Cost
-        public ActionResult Index()
-        {
-            return View();
-        }
-
+        #region Action For ExpList
         public ActionResult ExpList()
         {
-            var Departments = DptRepo.GetCollections();
-
-            var q = (from d in DptRepo.GetCollections()
-                     join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
-                     select d).Distinct();
-
-            ViewBag.Departments = q.ToList();
+            ViewBag.Departments = (from d in DptRepo.GetCollections()
+                                   join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
+                                   select d).Distinct().ToList();
 
             ViewBag.ExpCats = new SelectList(ResourceCatRepo.GetCollections(), "CategoryID", "CategoryName");
 
@@ -47,7 +38,7 @@ namespace ProjectManager.Controllers
 
         public ActionResult GetTaskListByProjectGuid(Guid ProjectGuid)
         {
-            List<Tasks> TaskList = TaskRepo.GetCollections().Where(t => t.ProjectGUID == ProjectGuid).Select(t => new Tasks { TaskGUID = t.TaskGUID, TaskName = t.TaskName }).ToList();
+            List<Tasks> TaskList = TaskRepo.GetCollections().Where(t => t.ProjectGUID == ProjectGuid).GetLeafTasks().Select(t => new Tasks { TaskGUID = t.TaskGUID, TaskName = t.TaskName }).ToList();
 
             return Json(TaskList, JsonRequestBehavior.AllowGet);
         }
@@ -158,8 +149,9 @@ namespace ProjectManager.Controllers
             ResourceRepo.Delete(ResourceRepo.Find(id));
             return RedirectToAction("ExpList");
         }
+        #endregion
 
-
+        #region Action For ExpCarMgr
         public ActionResult ExpCatMgr()
         {
             return View(ResourceCatRepo.GetCollections());
@@ -182,5 +174,48 @@ namespace ProjectManager.Controllers
             ResourceCatRepo.Delete(ResourceCatRepo.Find(id));
             return RedirectToAction("ExpCatMgr");
         }
+        #endregion
+
+        #region Action For Charts
+        public ActionResult Charts()
+        {
+            ViewBag.Departments = (from d in DptRepo.GetCollections()
+                                   join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
+                                   select d).Distinct().ToList();
+
+            return View();
+        }
+
+        public ActionResult CostsByDepartments()
+        {
+            List<Department> departments = (from d in DptRepo.GetCollections()
+                                            join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
+                                            select d).Distinct().ToList();
+
+            ChartData<BarChartDataset> chartData = new ChartData<BarChartDataset>();
+            chartData.labels = departments.Select(d => d.DepartmentName).ToList();
+
+            chartData.datasets.Add(new BarChartDataset
+            {
+                label = "Total Cost",
+                backgroundColor = "Darkcyan",
+                borderColor = "Darkcyan",
+                data = departments.GetSubtotalByDepartment()
+            });
+
+            return Json(chartData, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult OverallRates()
+        {
+            ChartData<PieChartDataset> chartData = new ChartData<PieChartDataset>();
+
+
+
+
+            return Json(chartData, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
     }
 }
