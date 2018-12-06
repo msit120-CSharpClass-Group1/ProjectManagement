@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Activity = "費用管理";
+    ViewBag.Title = "圖表與統計";
+}
+
+<div>
+    <form class="form-inline">
+        <div class="form-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="ProjectID">專案編號：</label>
+            </div>
+            <div>
+                <input class="form-control" id="ProjectID" name="ProjectID" placeholder="請輸入專案編號" style="width:9em" type="text" value="">
+                <div style="display:none">
+                    <ul>
+                        <li>
+                            <div id="showProjectID"></div>
+                            <div id="showProjectName"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group ml-3">
+            <div class="input-group-prepend">
+                <lable class="input-group-text" for="RequiredDeptGUID">需求部門：</lable>
+            </div>
+            @{
+                SelectList Departments = new SelectList(ViewBag.Departments, "DepartmentGUID", "DepartmentName");
+            }
+            @Html.DropDownList("RequiredDeptGUID", Departments, "請選擇部門", new { @class = "custom-select" })
+        </div>
+        <div class="form-group ml-3">
+            <div class="input-group-prepend">
+                <lable class="input-group-text" for="Select_ProjectName">專案名稱：</lable>
+            </div>
+            <select id="Select_ProjectName" class="custom-select"></select>
+        </div>
+    </form>
+</div>
+
+<div class="row mt-3 mb-3">
+    <div class="col-6">
+        <div id="CostsByDepartmentsContainer" class="chart-container bg-light p-3">
+            <canvas id="CostsByDepartmentsChart"></canvas>
+        </div>
+    </div>
+    <div class="col-6">
+        <div id="" class="chart-container bg-light p-3">
+            <canvas id=""></canvas>
+        </div>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-6">
+        <div id="" class="chart-container bg-light p-3">
+            <canvas id=""></canvas>
+        </div>
+    </div>
+    <div class="col-6">
+        <div id="" class="chart-container bg-light p-3">
+            <canvas id=""></canvas>
+        </div>
+    </div>
+</div>
+
+
+@section script{
+    <script src="~/Scripts/Chart.min.js"></script>
+    <script>
+        $(document).ready(function ()
+        {
+            function LoadProjects()
+            {
+                var optionlabel = $("<option></option>").text("請選擇專案").val("");
+                $("#Select_ProjectName").html(optionlabel);
+
+                $.getJSON("@Url.Action("GetProjectListByDptID", "Cost")", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
+                {
+                    var docFrag = $(document.createDocumentFragment());
+                    docFrag.append(optionlabel);
+                    $.each(projects, function (index, project)
+                    {
+                        var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectID).attr("data-projectguid", project.ProjectGUID);
+                        docFrag.append(opt);
+                    });
+                    $("#Select_ProjectName").html(docFrag);
+                });
+            }
+
+            LoadProjects();
+
+            $("#RequiredDeptGUID").change(LoadProjects);
+
+            Chart.defaults.global.defaultFontFamily = 'Noto Sans CJK TC';
+            Chart.defaults.global.defaultFontSize = 16;
+            Chart.defaults.global.tooltips.titleFontStyle = 'normal';
+
+            BuildRootTasks_SumOfResourceChart();
+
+            function BuildRootTasks_SumOfResourceChart()
+            {
+                $.getJSON("@Url.Action("CostsByDepartments", "Cost")", null, function (datas)
+                {
+                    var CostsByDepartmentsChart = new Chart($('#CostsByDepartmentsChart'),
+                        {
+                            type: 'bar',
+                            data: datas,
+                            options:
+                                {
+                                    responsive: true,
+                                    legend:
+                                {
+                                    position: 'top',
+                                },
+                                    title:
+                                {
+                                    display: true,
+                                    text: 'Project Consumption By Department',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                    animation:
+                                {
+                                    animateScale: true,
+                                    animateRotate: true
+                                },
+                            }
+                        });
+                });
+            }
+
+        });
+    </script>
+}

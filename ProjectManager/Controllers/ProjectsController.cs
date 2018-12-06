@@ -39,6 +39,8 @@ namespace ProjectManager.Controllers
             int lastProjectID = projectRepo.GetCollections().GetLastProjectIntID();
             project.ProjectID = "P" + DateTime.Now.Year.ToString().Substring(2, 2) + (lastProjectID + 1).ToString().Substring(2, 3);
             project.ProjectGUID = Guid.NewGuid();
+            project.StartDate = project.EstStartDate;
+            project.EndDate = project.EstEndDate;
 
             //Session["MemberGUID"] todo
             project.InChargeDeptGUID = new Guid("87be8dc8-3f70-43ce-847e-46e2d0c1d7a4");
