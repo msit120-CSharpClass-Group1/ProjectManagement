@@ -7,6 +7,7 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize]
     public class TasksController : Controller
     {
         private IRepository<Tasks> tasksRepository = new Repository<Tasks>();
