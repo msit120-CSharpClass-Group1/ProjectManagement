@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize]
     public class MyBoardController : Controller
     {
         // GET: MyBoard

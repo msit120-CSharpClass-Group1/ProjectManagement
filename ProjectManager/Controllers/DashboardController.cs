@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize]
     public class DashboardController : Controller
     {
         // GET: Dashboard

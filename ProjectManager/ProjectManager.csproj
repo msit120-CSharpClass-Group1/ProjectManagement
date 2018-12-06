@@ -236,7 +236,6 @@
     <Compile Include="Controllers\SelectMBoarController.cs" />
     <Compile Include="Controllers\SelectProjectController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
-    <Compile Include="Controllers\TaskDetailStatusController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\TaskStatusController.cs" />
     <Compile Include="Global.asax.cs">
@@ -251,6 +250,7 @@
     <Compile Include="Models\Dashboard.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataObject\AllowCrossSiteJsonAttribute.cs" />
     <Compile Include="Models\DataObject\GroupedProject.cs" />
     <Compile Include="Models\Department.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
@@ -339,12 +339,14 @@
     <Compile Include="Models\ViewModel\ChartDataVM.cs" />
     <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
     <Compile Include="Models\ViewModel\EmployeeInfo.cs" />
+    <Compile Include="Models\ViewModel\HolidaysVM.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\ViewModel\TaskVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\Shared\Link.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
