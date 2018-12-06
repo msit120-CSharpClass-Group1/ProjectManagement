@@ -21,7 +21,7 @@ namespace ProjectManager.Controllers
             return View(vm);
         }
         public ActionResult Score(Guid? ProjectGUID)
-        { 
+        {
             return View();
         }
         public ActionResult Watch(Guid? ProjectGUID)
@@ -31,6 +31,12 @@ namespace ProjectManager.Controllers
                 ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
                 vm.TeamMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID);
                 vm.GroupMembersScore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GroupMembersScore();
+                vm.GetHighestMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetHighestMember();
+                vm.GetPMscore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetTeamPMAvgScore();
+                vm.GetMemberCount = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetTeamMemberCount();
+                vm.GetAboveAVGMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetAboveAVGMember();
+                vm.GetUnderAVGMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetUnderAVGMember();
+                vm.GetLowestMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetLowestMember();                               
                 return View(vm);
             }
             return RedirectToAction("Index", "Perfomance");

@@ -16,8 +16,12 @@ namespace ProjectManager.Models
         public List<Project> InProgressProject { get; set; }
         public List<Project> ClosedProject { get; set; }
         public IEnumerable<Group<string, ProjectMembers>> GroupMembersScore { get; set; }
-        public IEnumerable<Group<string,ProjectMemberScoreVM>> GetPMscore { get; set; }
+        public IEnumerable<Group<string, ProjectMemberScoreVM>> GetPMscore { get; set; }
         public IEnumerable<Group<string, ProjectMemberScoreVM>> GetMemberCount { get; set; }
         public IEnumerable<ProjectMembers> TeamMember { get; set; }
-    }    
+        public IEnumerable<Group<string, ProjectMembers>> GetHighestMember { get; set; }
+        public IEnumerable<Group<string, ProjectMembers>> GetLowestMember { get; set; }
+        public List<ProjectMembers> GetAboveAVGMember { get; set; }
+        public List<ProjectMembers> GetUnderAVGMember { get; set; }
+    }
 }
