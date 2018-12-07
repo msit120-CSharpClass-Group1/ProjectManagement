@@ -112,9 +112,9 @@ namespace ProjectManager.Controllers
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
-            ChartData<MutiColorChartDataset> _data = new ChartData<MutiColorChartDataset>();
+            ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MutiColorChartDataset()
+            _data.datasets.Add(new MultiColorChartDataset()
             {
                 label = "dataset",
                 backgroundColor = colors,
@@ -144,9 +144,9 @@ namespace ProjectManager.Controllers
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
-            ChartData<MutiColorChartDataset> _data = new ChartData<MutiColorChartDataset>();
+            ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MutiColorChartDataset()
+            _data.datasets.Add(new MultiColorChartDataset()
             {
                 label = "dataset",
                 backgroundColor = colors,
@@ -345,10 +345,30 @@ namespace ProjectManager.Controllers
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult TaskAcceptance(Guid? taskGuid, bool IsConfirmed)
+        public ActionResult TaskAcceptance( bool isConfirmed,Guid? taskGuid, string Tag)
         {
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
-            _task.TaskStatusID = IsConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;            
+            if(Tag!="" )
+            {
+                _task.Tag = Tag;
+            }
+            _task.TaskStatusID = isConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;            
+            taskRepo.Update(_task);
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult TaskRevivedToInProgress(Guid? taskGuid)
+        {
+            Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
+            _task.TaskStatusID = (int)TasksBL.Task_Status.InProgress;
+            taskRepo.Update(_task);
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult EndTask(Guid? taskGuid)
+        {
+            Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
+            _task.TaskStatusID = (int)TasksBL.Task_Status.Ended;
             taskRepo.Update(_task);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
