@@ -69,7 +69,7 @@ namespace ProjectManager.Controllers
         public ActionResult TaskExist(Guid? memberGUID)
         {
             Guid projectGUID = new Guid(Session["ProjectGUID"].ToString());
-            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID && t.ProjectGUID == projectGUID).Select(t=>t.EmployeeGUID).FirstOrDefault();
+            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID && t.ProjectGUID == projectGUID && t.TaskStatusID==1).Select(t=>t.EmployeeGUID).FirstOrDefault();
             if (q!=null)
             {
                 return Content("HasTask");
@@ -218,7 +218,7 @@ namespace ProjectManager.Controllers
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 2).GetLeafTasks().ToList();
+            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).GetLeafTasks().ToList();
             return Content(JsonConvert.SerializeObject(taskList), "application/json");
         }
 
