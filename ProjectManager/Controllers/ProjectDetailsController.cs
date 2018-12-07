@@ -192,7 +192,7 @@ namespace ProjectManager.Controllers
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
             ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 2 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
-            ViewBag.Workload = tasks.GetCollections().GetTeamWorkLoad();
+            ViewBag.Workload = tasks.GetCollections().GetLeafTasks().GetTeamWorkLoad();
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
 
@@ -273,6 +273,7 @@ namespace ProjectManager.Controllers
             task.EstWorkTime = task.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
             task.StartDate = task.EstStartDate;
             task.EndDate = task.EstEndDate;
+            task.TaskStatusID = (int)ProjectManager.Models.TasksBL.Task_Status.Discussing;
             taskRepo.Add(task);
             return Json("success", JsonRequestBehavior.AllowGet);
             //return RedirectToAction("ProjectDistribution");
@@ -287,8 +288,7 @@ namespace ProjectManager.Controllers
         public ActionResult EditTask(Tasks taskModified)
         {
             Tasks recentTask = taskRepo.Find(taskModified.TaskGUID);
-            recentTask.TaskName = taskModified.TaskName;
-            recentTask.TaskStatusID = taskModified.TaskStatusID;
+            recentTask.TaskName = taskModified.TaskName;            
             recentTask.Tag = taskModified.Tag;
             recentTask.EstStartDate = taskModified.EstStartDate;
             recentTask.EstEndDate = taskModified.EstEndDate;
@@ -342,6 +342,14 @@ namespace ProjectManager.Controllers
             System.Web.HttpContext.Current.Application.Lock();
             System.Web.HttpContext.Current.Application["Holidays"] = holidays;
             System.Web.HttpContext.Current.Application.UnLock();
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult TaskAcceptance(Guid? taskGuid, bool IsConfirmed)
+        {
+            Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
+            _task.TaskStatusID = IsConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;            
+            taskRepo.Update(_task);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
     }

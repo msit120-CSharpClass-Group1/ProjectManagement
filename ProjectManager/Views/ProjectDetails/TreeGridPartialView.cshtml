@@ -35,14 +35,14 @@
                         TasksBL.Task_Status status = (TasksBL.Task_Status)Enum.Parse(typeof(TasksBL.Task_Status), task.TaskStatusID.ToString());
                         if (status == TasksBL.Task_Status.WaitForConfirmed)
                         {
-                            <button class="btn btn-default mr-2 p-2" data-taskGUID="@task.TaskGUID">駁回</button>
-                            <button class="btn btn-info p-2" data-taskGUID="@task.TaskGUID">通過</button>
+                            <button name="rejectAcceptBtn" class="btn btn-dark text-light mr-2 p-2" data-taskGUID="@task.TaskGUID">駁回</button>
+                            <button name="confirmAcceptBtn" class="btn btn-primary p-2" data-taskGUID="@task.TaskGUID">通過</button>
                         }
                     }
 
                 </td>
             </tr>
-}
-    /**/
+        }
+    
     </tbody>
 </table>

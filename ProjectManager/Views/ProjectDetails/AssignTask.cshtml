@@ -16,11 +16,8 @@
         #projectMemberDivL2 {
             width: 180px;
             float: left;
-            margin: 5px;
-        }
-
-        #projectMemberDivL1 {
-            background-color: rgba(128, 128, 128, 0.41);
+            margin: 10px;
+            box-shadow: 5px 5px;
         }
 
         .flip {
@@ -37,119 +34,125 @@
         }
 
             .draggable:hover {
-                background-color: pink;
+                background-color: aliceblue;
             }
 
         .asidetitle {
-            color: rosybrown;
+            color: aliceblue;
             margin-left: 30px;
             margin-top: 20px;
+        }
+        #projectMemberDivL1
+        {
+            margin-top:50px;
         }
     </style>
 }
 
-<form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal">
-    <div class="row no-gutters">
-        <div class="col-4">
-            <div class="flip"><font color="red">查看分配狀態</font></div>
-            <div class="panel">
-                <table class="table table-bordered" id="mappingTable">
-                    <thead>
-                        <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
-                    </thead>
-                    <tbody>
-                        <!--RunIN-->
-                    </tbody>
-                </table>
+<form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal" style="margin:auto">
+    <div class="row">
+        <div class="col-3">
+            <div class="" style="margin-top:60px">
+                <div class="flip"><font color="aliceblue">查看分配狀態</font></div>
+                <div class="panel">
+                    <table class="table table-bordered" id="mappingTable">
+                        <thead>
+                            <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
+                        </thead>
+                        <tbody>
+                            <!--RunIN-->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div></div>
-        <div class="col-6" id="projectMemberDivL1">
-            @foreach (var _projectMember in Model)
-            {
-                <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
-                    <div class="card-header bg-transparent border-success" style="width:180px"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
-                    <div class="card-body text-success droppable" style="height:50px;border-style:dashed;">
-                        <!--TaskArea Start-->
-                        <!--TaskArea End-->
+          </div>
+            <div></div>
+            <div class="col-7" id="projectMemberDivL1">
+                @foreach (var _projectMember in Model)
+                {
+                    <div class="card border-primary mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
+                        <div class="card-header bg-transparent border-success" style="width:180px"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
+                        <div class="card-body text-primary droppable" style="height:50px;border-style:dashed;">
+                            <!--TaskArea Start-->
+                            <!--TaskArea End-->
+                        </div>
+                        <div class="card-footer bg-transparent border-success">
+                            <h6>工作負荷</h6>
+                            @{
+                                double rawercent;
+                                bool flag = true;
+                                foreach (var item in ViewBag.Workload as IEnumerable<Group<string, DisplayWorkloadVM>>)
+                                {
+                                    int? valid = item.Sum;
+                                    int total = 40;
+
+                                    rawercent = (double)(valid * 100) / total;
+                                    if (valid > total)
+                                    {
+                                        valid = (int)valid - total;
+                                    }
+
+                                    double percent = (double)(valid * 100) / total;
+
+                                    if (_projectMember.Employee.EmployeeName == item.Key)
+                                    {
+
+                                        if (rawercent >= 100 && rawercent < 200)
+                                        {
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
+                                            </div>
+                                            flag = false;
+                                        }
+                                        else if (rawercent >= 200)
+                                        {
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped bg-danger" style="width:@percent%;">@rawercent %</div>
+                                            </div>
+                                            flag = false;
+                                        }
+                                        else
+                                        {
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
+                                            </div>
+                                            flag = false;
+                                        }
+                                    }
+                                }
+                                if (flag)
+                                {
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-striped bg-success" style="width:0%;"><font color="red">目前無承接工作</font></div>
+                                    </div>
+                                }
+                            }
+                        </div>
                     </div>
-                    <div class="card-footer bg-transparent border-success">
-                        <h6>工作負荷</h6>
-                        @{
-                            double rawercent;
-                            bool flag =true;
-                            foreach (var item in ViewBag.Workload as IEnumerable<Group<string, DisplayWorkloadVM>>)
-                            {
-                                int? valid = item.Sum;
-                                int total = 40;
-
-                                rawercent = (double)(valid * 100) / total;
-                                if (valid > total)
-                                {
-                                    valid = (int)valid - total;
-                                }
-
-                                double percent = (double)(valid * 100) / total;
-
-                                if (_projectMember.Employee.EmployeeName == item.Key)
-                                {
-
-                                    if (rawercent >= 100 && rawercent < 200)
-                                    {
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
-                                        </div>
-                                        flag = false;
-                                    }
-                                    else if (rawercent >= 200)
-                                    {
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-striped bg-danger" style="width:@percent%;">@rawercent %</div>
-                                        </div>
-                                        flag = false;
-                                    }
-                                    else
-                                    {
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
-                                        </div>
-                                        flag = false;
-                                    }                                   
-                                }
-                            }
-                            if (flag)
-                            {
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped bg-success" style="width:0%;"><font color="red">目前無承接工作</font></div>
-                                </div>
-                            }
+                }
+            </div>
+            @section asideRight{
+                <!--TaskList Start-->
+                <h3 class="asidetitle">工作項目</h3>
+                <div style="margin:20px;overflow-y: scroll;height:300px">
+                    <ul class="list-group" id="taskitem">
+                        @foreach (var _task in (List<Tasks>)ViewBag.LoadTask)
+                        {
+                            <li class="list-group-item draggable" data-tag="@_task.TaskName" data-tag2="@_task.TaskGUID">@_task.TaskName</li>
                         }
-                    </div>
+                    </ul>
                 </div>
-            }
-        </div>
-        @section asideRight{
-            <!--TaskList Start-->
-            <h3 class="asidetitle">工作項目</h3>
-            <div style="margin:20px;overflow-y: scroll;height:300px">
-                <ul class="list-group" id="taskitem">
-                    @foreach (var _task in (List<Tasks>)ViewBag.LoadTask)
-                    {
-                        <li class="list-group-item draggable" data-tag="@_task.TaskName" data-tag2="@_task.TaskGUID">@_task.TaskName</li>
-                    }
-                </ul>
-            </div>
-            <!--TaskList End-->
-            <h3 class="asidetitle">工作描述</h3>
-            <div class="col-sm">
-                <div id="taskdescription" style="background:lightgray;height:200px;margin:10px; width:230px">
+                <!--TaskList End-->
+                <h3 class="asidetitle">工作描述</h3>
+                <div class="col-sm">
+                    <div id="taskdescription" style="height:200px;margin:10px; width:230px;background-color:lightcyan">
 
+                    </div>
+                    <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
+                    <input type="hidden" id="rowcount" name="TotalRow" />
+                    <input type="button" class="btn btn-danger" id="reset" value="重新分配">
                 </div>
-                <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
-                <input type="hidden" id="rowcount" name="TotalRow" />
-                <input type="button" class="btn btn-danger" id="reset" value="重新分配">
             </div>
-        </div>
         }
     </form>
 
@@ -186,7 +189,7 @@
         var topTable = $("#mappingTable>tbody");
         var submitCount = 0;
         var flag = true;
-        $(".draggable").draggable({ drag: function (e, ui) {}, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
+        $(".draggable").draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
         $(".droppable").droppable({
             drop: function (event, ui)
             {
@@ -211,8 +214,8 @@
                 submitCount++;
                 var TotalRow = $("#mappingTable").find('tr').length - 1;
                 $("#rowcount").val(TotalRow);
-                flipPanel.effect("bounce", "slow");
-                if (flag) { flipPanel.append("<img src='/image/arrow.gif' style='height:15px;'>"); flag = false }
+                flipPanel.effect("bounce", "slow");                
+                if (flag) { $(".panel").slideToggle("slow"); flag = false }
             }
         });
 
