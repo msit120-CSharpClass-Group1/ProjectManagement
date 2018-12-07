@@ -9,6 +9,7 @@
             <th>@Html.DisplayNameFor(m => m.TaskStatusID)</th>
             <th>@Html.DisplayNameFor(m => m.EmployeeGUID)</th>
             <th>預計區間</th>
+            <th>預計工時</th>
             <th>@Html.DisplayNameFor(m => m.Description)</th>
             <th>@Html.DisplayNameFor(m => m.Tag)</th>
             <th>專案狀態檢核</th>
@@ -26,6 +27,7 @@
                 <td>@task.TaskStatus.TaskStatusName</td>
                 <td>@Html.DisplayFor(m => task.Employee.EmployeeName)</td>
                 <td>@Html.DisplayFor(m => task.EstStartDate) - @Html.DisplayFor(m => task.EstEndDate)</td>
+                <td>@Html.DisplayFor(m=> task.EstWorkTime)</td>
                 <td>@Html.DisplayFor(m => task.Description)</td>
                 <td>@Html.DisplayFor(m => task.Tag)</td>
                 <td class="p-0 align-middle">

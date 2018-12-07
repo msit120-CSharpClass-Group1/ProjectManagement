@@ -245,6 +245,9 @@
           <Property Name="Tag" Type="nvarchar" MaxLength="10" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="TaskStatusIDChanged" Type="int" />
+          <Property Name="AssignedDate" Type="datetime" />
+          <Property Name="IsRead" Type="bit" />
+          <Property Name="ReviewScore" Type="tinyint" />
         </EntityType>
         <EntityType Name="TaskStatus">
           <Key>
@@ -1101,6 +1104,9 @@
           <NavigationProperty Name="TaskModified" Relationship="Self.FK_TaskModified_Tasks" FromRole="Tasks" ToRole="TaskModified" />
           <NavigationProperty Name="TaskResource" Relationship="Self.FK_TaskResource_Tasks" FromRole="Tasks" ToRole="TaskResource" />
           <NavigationProperty Name="TaskStatus" Relationship="Self.FK_Tasks_TaskStatus" FromRole="Tasks" ToRole="TaskStatus" />
+          <Property Name="AssignedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="ReviewScore" Type="Byte" />
         </EntityType>
         <EntityType Name="TaskStatus">
           <Key>
@@ -1889,6 +1895,9 @@
           <EntitySetMapping Name="Tasks">
             <EntityTypeMapping TypeName="ProjectManagementModel.Tasks">
               <MappingFragment StoreEntitySet="Tasks">
+                <ScalarProperty Name="ReviewScore" ColumnName="ReviewScore" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="AssignedDate" ColumnName="AssignedDate" />
                 <ScalarProperty Name="ProjectGUID" ColumnName="ProjectGUID" />
                 <ScalarProperty Name="TaskGUID" ColumnName="TaskGUID" />
                 <ScalarProperty Name="ParentTaskGUID" ColumnName="ParentTaskGUID" />
