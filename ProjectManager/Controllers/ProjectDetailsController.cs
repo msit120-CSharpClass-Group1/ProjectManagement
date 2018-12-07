@@ -112,9 +112,9 @@ namespace ProjectManager.Controllers
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
-            ChartData<MutiColorChartDataset> _data = new ChartData<MutiColorChartDataset>();
+            ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MutiColorChartDataset()
+            _data.datasets.Add(new MultiColorChartDataset()
             {
                 label = "dataset",
                 backgroundColor = colors,
@@ -144,9 +144,9 @@ namespace ProjectManager.Controllers
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
-            ChartData<MutiColorChartDataset> _data = new ChartData<MutiColorChartDataset>();
+            ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MutiColorChartDataset()
+            _data.datasets.Add(new MultiColorChartDataset()
             {
                 label = "dataset",
                 backgroundColor = colors,

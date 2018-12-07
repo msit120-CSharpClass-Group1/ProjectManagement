@@ -14,6 +14,7 @@ namespace ProjectManager.Controllers
     {
         Repository<ResourceCategory> ResourceCatRepo = new Repository<ResourceCategory>();
         Repository<TaskResource> ResourceRepo = new Repository<TaskResource>();
+        Repository<TaskStatus> StatusRepo = new Repository<TaskStatus>();
         Repository<Department> DptRepo = new Repository<Department>();
         Repository<Project> ProjectRepo = new Repository<Project>();
         Repository<Tasks> TaskRepo = new Repository<Tasks>();
@@ -44,7 +45,7 @@ namespace ProjectManager.Controllers
             return Json(TaskList, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetTaskResources(Guid id,int? page,string sortBy)
+        public ActionResult GetTaskResources(Guid id, int? page, string sortBy)
         {
             var q = from p in ProjectRepo.GetCollections()
                     join t in TaskRepo.GetCollections() on p.ProjectGUID equals t.ProjectGUID
@@ -198,9 +199,9 @@ namespace ProjectManager.Controllers
 
             chartData.datasets.Add(new SingleColorChartDataset
             {
-                label = "Total Cost",
-                backgroundColor = "Darkcyan",
-                borderColor = "Darkcyan",
+                label = "Cost",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
                 data = departments.GetSubtotalByDepartment()
             });
 
@@ -209,14 +210,50 @@ namespace ProjectManager.Controllers
 
         public ActionResult OverallRates()
         {
-            ChartData<MutiColorChartDataset> chartData = new ChartData<MutiColorChartDataset>();
+            ChartData<SingleColorChartDatasetD> chartData = new ChartData<SingleColorChartDatasetD>();
+            chartData.labels = new List<string>() { "總體專案完成率", "總體預算執行率" };
 
+            chartData.datasets.Add(new SingleColorChartDatasetD
+            {
+                label = "Rate",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = ProjectRepo.GetCollections().GetOverallRates()
+            });
+            return Json(chartData, JsonRequestBehavior.AllowGet);
+        }
 
-
+        public ActionResult CostsByCategories()
+        {
+            ChartData<MultiColorChartDataset> chartData = new ChartData<MultiColorChartDataset>();
+            List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF", "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
+            chartData.labels = ResourceCatRepo.GetCollections().Select(c => c.CategoryName).ToList();
+            chartData.datasets.Add(new MultiColorChartDataset
+            {
+                backgroundColor = Colors,
+                borderColor = Colors,
+                data = ResourceCatRepo.GetCollections().GetSubtotalByCat(),
+            });
 
             return Json(chartData, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult TasksByStatus()
+        {
+            ChartData<SingleColorChartDataset> chartData = new ChartData<SingleColorChartDataset>();
+
+            chartData.labels = StatusRepo.GetCollections().Select(s => s.TaskStatusName).ToList();
+            chartData.datasets.Add(new SingleColorChartDataset
+            {
+                label="Count",
+                backgroundColor= "rgba(91, 155, 213, 0.5)",
+                borderColor= "rgba(91, 155, 213, 1)",
+                data= StatusRepo.GetCollections().CountTasksByStatus(),
+            });
+
+
+            return Json(chartData, JsonRequestBehavior.AllowGet);
+        }
         #endregion
     }
 }
