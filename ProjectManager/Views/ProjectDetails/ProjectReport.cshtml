@@ -6,26 +6,41 @@
 @section nav{
     @Html.Partial("_PartialPageNav", "Shared")
 }
-
-<div class="row mb-3" >
-    <div class="col-6">
+@section style{
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
+    
+}
+<div class="row mb-3">
+    <div class="col-lg-6 col-sm-12">
         <div id="RootTasksCompletedRateContainer" class="chart-container bg-light p-3">
             <canvas id="RootTasksCompletedRateChart"></canvas>
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-lg-6 col-sm-12">
         <div id="RootTasksSumOfWorkTimeContainer" class="chart-container bg-light p-3">
             <canvas id="RootTasksSumOfWorkTimeChart"></canvas>
         </div>
     </div>
 </div>
 <div class="row mb-3">
-    <div class="col-6">
+    <div class="col-lg-6 col-sm-12">
         <div id="MemberWorkTimeContainer" class="chart-container bg-light p-3">
             <canvas id="MemberWorkTimeSumChart"></canvas>
         </div>
     </div>
-    <div class="col-6">
+   <div class="col-lg-6 col-sm-12">
         <div id="RootTasksSumOfResourceContainer" class="chart-container bg-light p-3">
             <canvas id="RootTasksSumOfResourceChart"></canvas>
         </div>
@@ -79,7 +94,7 @@
                                         ticks: {
                                             min: 0,
                                             max: 100,
-                                            stepSize: 10,                                        
+                                            stepSize: 10,
                                         },
                                         scaleLabel: {
                                             display: true,
@@ -125,7 +140,7 @@
                             }
                         });
                 });
-            } 
+            }
             function BuildMembers_SumOfWorkTimeChart() {
                 $.getJSON("@Url.Action("ProjectMembersEstWorkTimeSum", "ProjectDetails")", null, function (datas) {
                     var MembersSumOfWorkTimeChart = new Chart($('#MemberWorkTimeSumChart'),
@@ -166,13 +181,13 @@
                                             labelString: '工時總和'
                                         },
                                         ticks: {
-                                            min: 0,                                            
+                                            min: 0,
                                         },
                                     }]
                                 }
                             }
                         });
-                });               
+                });
             }
             function BuildRootTasks_SumOfResourceChart(){
                 $.getJSON("@Url.Action("RootTasksResourceSum", "ProjectDetails")", null, function (datas) {
@@ -194,7 +209,7 @@
                                 animation: {
                                     animateScale: true,
                                     animateRotate: true
-                                },                            
+                                },
                             }
                         });
                 });

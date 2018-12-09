@@ -33,7 +33,7 @@ namespace ProjectManager.Models
             List<Tasks> leafTasks = new List<Tasks>();
             foreach (var item in tasks.Where(t => t.ParentTaskGUID != null))
             {
-                if (!parentTasks.Where(parent => parent == item.ProjectGUID).Any())
+                if (!parentTasks.Where(parentGUID => parentGUID == item.TaskGUID).Any())
                 {
                     leafTasks.Add(item);
                 }
@@ -45,6 +45,8 @@ namespace ProjectManager.Models
         {
             return tasks.Where(t => t.ParentTaskGUID == null).ToList();
         }
+
+        #region ProjectRepo Chart
         public static IEnumerable<int> GetRootTasksCompletedRate(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
         {
             List<int> rootTasksCompletedRate = new List<int>();
@@ -56,12 +58,12 @@ namespace ProjectManager.Models
                 int completedLeafTaskCount = 0;
                 int totalLeafCount = treeGrid.ChildLeafTasks.Count();
                 foreach (var leaf in treeGrid.ChildLeafTasks)
-                {                    
+                {
                     string status = (leaf.TaskStatusID ?? default(int)).ToString();
                     Task_Status leaf_Status = (Task_Status)Enum.Parse(typeof(Task_Status), status);
                     if (leaf_Status == Task_Status.Completed)
                     {
-                       completedLeafTaskCount++;
+                        completedLeafTaskCount++;
                     }
                 }
                 int rate = 0;
@@ -77,7 +79,7 @@ namespace ProjectManager.Models
                     rate = completedLeafTaskCount * 100 / totalLeafCount;
                 }
 
-                rootTasksCompletedRate.Add(rate);               
+                rootTasksCompletedRate.Add(rate);
             }
 
             return rootTasksCompletedRate;
@@ -106,10 +108,13 @@ namespace ProjectManager.Models
                     // _sum += (int)resourceFromRepo.Where(r => r.TaskGUID == child.TaskGUID).Select(r => r.UnitPrice * r.Quantity).Sum();   
                     _sum += (int)child.TaskResource.Select(r => r.UnitPrice * r.Quantity).Sum();
                 }
-                rootResourceSum.Add(_sum);                
+                rootResourceSum.Add(_sum);
             }
             return rootResourceSum;
         }
+
+        #endregion
+
         public static IEnumerable<Tasks> GetAllChildTasks(this Tasks task)
         {            
             TreeGridModel model = new TreeGridModel();
@@ -196,6 +201,13 @@ namespace ProjectManager.Models
             }
 
             return WorkDays * 8;
+        }
+        public static IEnumerable<TasksGroupByStatus> GetTasksGroupByStatus(this IEnumerable<Tasks> tasks)
+        {
+            var q = tasks.Where(t => t.TaskStatusID != (int)TasksBL.Task_Status.Discussing)
+                .OrderBy(t => t.TaskStatusID)
+                .GroupBy(t => t.TaskStatusID)
+                .Select(g => new Grouped<int?,Tasks> { Key = g.Key, group = g });
         }
 
     }

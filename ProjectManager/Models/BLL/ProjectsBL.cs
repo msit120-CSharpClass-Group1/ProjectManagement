@@ -34,12 +34,12 @@ namespace ProjectManager.Models
         /// </summary>
         /// <param name="projects"></param>
         /// <returns></returns>
-        public static IEnumerable<GroupedProject> GetGroupedProject(this IEnumerable<Project> projects)
+        public static IEnumerable<ProjectsGroupByDept> GetGroupedProject(this IEnumerable<Project> projects)
         {
             return projects.AsEnumerable()
                 .OrderBy(p => p.ProjectID)
                 .GroupBy(p => p.Department.DepartmentName)
-                .Select(g => new GroupedProject() { DepartmentName = g.Key, group = g }).ToList();
+                .Select(g => new ProjectsGroupByDept() { DepartmentName = g.Key, group = g }).ToList();
         }
         public static void LoadProjectsCompletedRate(this IEnumerable<Project> projects, IEnumerable<Tasks> taskFromRepo)
         {

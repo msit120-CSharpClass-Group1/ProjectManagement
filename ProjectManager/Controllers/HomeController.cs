@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectManager.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,7 +11,7 @@ namespace ProjectManager.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        // GET: Home
+        Repository<Tasks> taskRepo = new Repository<Tasks>();
         
         public ActionResult Index()
         {
