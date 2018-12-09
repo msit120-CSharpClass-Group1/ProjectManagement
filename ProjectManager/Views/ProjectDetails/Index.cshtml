@@ -147,6 +147,7 @@
             {
                 var memberGUID = $(this).val();
                 var memberName = $(this).prev().text();
+                var chkboxcheck = $(this);
                 if (this.checked)
                 {
                     $(".panel").html($("<img></img>").attr("src", "/image/loading.gif"))
@@ -157,7 +158,7 @@
                         {
                             ReloadTeamCount();
                         }
-                        , error: function () { alert(memberName + " 已存在於此專案");this.checked =false }
+                        , error: function () { alert(memberName + " 已存在於此專案"); chkboxcheck.prop('checked', false); ReloadTeamCount();}
                     });
                 }
                 else
