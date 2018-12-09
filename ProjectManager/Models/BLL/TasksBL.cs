@@ -202,12 +202,12 @@ namespace ProjectManager.Models
 
             return WorkDays * 8;
         }
-        public static IEnumerable<TasksGroupByStatus> GetTasksGroupByStatus(this IEnumerable<Tasks> tasks)
+        public static IEnumerable<Grouped<int?,Tasks>> GetTasksGroupByStatus(this IEnumerable<Tasks> tasks)
         {
-            var q = tasks.Where(t => t.TaskStatusID != (int)TasksBL.Task_Status.Discussing)
+            return tasks.Where(t => t.TaskStatusID != (int)TasksBL.Task_Status.Discussing)
                 .OrderBy(t => t.TaskStatusID)
                 .GroupBy(t => t.TaskStatusID)
-                .Select(g => new Grouped<int?,Tasks> { Key = g.Key, group = g });
+                .Select(g => new Grouped<int?,Tasks> { Key = g.Key, group = g }).ToList();
         }
 
     }

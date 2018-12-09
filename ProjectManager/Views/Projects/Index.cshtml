@@ -1,5 +1,5 @@
 ﻿@using ProjectManager.Models
-@model IEnumerable<ProjectManager.Models.GroupedProject>
+@model IEnumerable<ProjectManager.Models.Grouped<string,Project>>
 @{
     string strStatus = "";
     switch (ViewBag.StatusID)
@@ -39,7 +39,7 @@
         i++;
         <h4 class="text-dark" style="font-size:20px;" data-Dept=Dept@(i)>
             <span class="float-left"><i class="fas fa-caret-down"></i></span>
-            @g.DepartmentName
+            @g.Key
         </h4>
 
         <div class="collapsible my-4 container" id=Dept@(i)>
