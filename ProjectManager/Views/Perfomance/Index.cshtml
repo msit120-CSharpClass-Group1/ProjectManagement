@@ -8,7 +8,7 @@
 <div class="container" style="height:200px">
     <div class="row">
         <div class="col-6">
-            <h3><span class="badge badge-info">專案第一次評分</span></h3>
+            <h3><span class="badge badge-info" data-toggle="tooltip" title="專案期間對小組成員平均">專案第一階段評分</span></h3>
             @foreach (var item in Model.InProgressProject)
             {
                 <div class="alert alert-info" role="alert">
@@ -35,21 +35,20 @@
                     {
                         if (_pmscore.Key == item.ProjectName)
                         {
-                            <p class="mb-0">團隊成員平均表現 :@_pmscore.Avg</p>
+                            <p class="mb-0">團隊成員平均表現(PM) :@_pmscore.Avg</p>
                         }
                     }
                 </div>
             }
         </div>
         <div class="col-6">
-            <h3><span class="badge badge-info">專案第二次評分</span></h3>
+            <h3><span class="badge badge-info" data-toggle="tooltip" title="專案中所有工作完成之平均">專案第二階段評分</span></h3>
             @foreach (var item in Model.ClosedProject)
             {
                 <div class="alert alert-success" role="alert">
                     @if (item.ProjectMembers.FirstOrDefault() != null)
                     {
-                        <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
-                        <a href="~/Perfomance/Score?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>我要評分</a>
+                        <a href="~/Perfomance/Watch?Q2TaskAVGReview=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>                       
                     }
                     else
                     {
@@ -69,7 +68,7 @@
                     {
                         if (_pmscore.Key == item.ProjectName)
                         {
-                            <p class="mb-0">團隊成員平均表現 :@_pmscore.Avg</p>
+                            <p class="mb-0">團隊成員平均表現(PM) :@_pmscore.Avg</p>
                         }
                     }
                 </div>
@@ -77,3 +76,12 @@
         </div>
     </div>
 </div>
+
+@section script{
+    <script>
+        $(document).ready(function ()
+        {
+            $('[data-toggle="tooltip"]').tooltip(); 
+        })
+    </script>
+}

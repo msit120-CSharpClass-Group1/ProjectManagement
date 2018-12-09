@@ -12,6 +12,7 @@ namespace ProjectManager.Controllers
     {
         Repository<Project> projectRepo = new Repository<Project>();
         Repository<ProjectMembers> ProjectMembersRepo = new Repository<ProjectMembers>();
+        Repository<Tasks> taskRepo = new Repository<Tasks>();
   
         public ActionResult Index()
         {
@@ -40,13 +41,14 @@ namespace ProjectManager.Controllers
                 vm.GetUnderAVGMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetUnderAVGMember(); 
                 vm.GetLowestMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetLowestMember();
                 vm.GetNoneScore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetNoneScore();
+
                 return View(vm);
             }
             return RedirectToAction("Index", "Perfomance");
         }
-        public ActionResult Q2Review()
+        public ActionResult Q2TaskAVGReview()
         {
-            //撈個別員工task的平均分數
+            
             return View();
         }
     }

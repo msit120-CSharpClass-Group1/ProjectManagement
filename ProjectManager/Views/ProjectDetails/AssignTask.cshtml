@@ -49,23 +49,23 @@
     </style>
 }
 
-<form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal" style="margin:auto">
-    <div class="row">
-        <div class="col-3">
-            <div class="" style="margin-top:60px">
-                <div class="flip"><font color="aliceblue">查看分配狀態</font></div>
-                <div class="panel">
-                    <table class="table table-bordered" id="mappingTable">
-                        <thead>
-                            <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
-                        </thead>
-                        <tbody>
-                            <!--RunIN-->
-                        </tbody>
-                    </table>
+    <form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal" style="margin:auto">
+        <div class="row">
+            <div class="col-3">
+                <div class="" style="margin-top:60px">
+                    <div class="flip"><font color="aliceblue">查看分配狀態</font></div>
+                    <div class="panel">
+                        <table class="table table-bordered" id="mappingTable">
+                            <thead>
+                                <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
+                            </thead>
+                            <tbody>
+                                <!--RunIN-->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-          </div>
             <div></div>
             <div class="col-7" id="projectMemberDivL1">
                 @foreach (var _projectMember in Model)
@@ -150,11 +150,12 @@
                     </div>
                     <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
                     <input type="hidden" id="rowcount" name="TotalRow" />
+                    <input type="hidden" id="firstrow" name="FirstRow" />
                     <input type="button" class="btn btn-danger" id="reset" value="重新分配">
                 </div>
             </div>
-        }
-    </form>
+            }
+        </form>
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -181,7 +182,6 @@
             </div>
         </div>
     </div>
-
     @section script{
         <script>
             $(document).ready(function () {
@@ -209,9 +209,21 @@
                         var row = $("<tr></tr>").append([cell1, cell2, cell3, cell1hid, cell2hid]);
                         topTable.append(row);
 
+                        var orow = $("#mappingTable").find('tr').length - 1;
+                        for (var i = 0; i < orow; i++)
+                        {
+                            var value = $("#mappingTable tr:eq('" + i + "')").children("td:eq(1)").text()
+                            var name = $("#mappingTable tr:eq('" + i + "')").children("td:eq(0)").text()
+                            if (taskName == value && empName!= name)
+                            {
+                                $("#mappingTable tr:eq('" + i + "')").remove();                               
+                            }
+                        }
                         submitCount++;
                         var TotalRow = $("#mappingTable").find('tr').length - 1;
+                        var FirstRow = $("#mappingTable tr:eq(1)").children("input:nth-child(4)").attr("name").substring(12, 15);
                         $("#rowcount").val(TotalRow);
+                        $("#firstrow").val(FirstRow);
                         $(this).parent().effect("pulsate", "slow");
                         if (flag) { $(".panel").slideToggle("slow"); flag = false }
                     }
@@ -275,19 +287,6 @@
                         }
                     });
                 })
-
-                $('.progress-value > span').each(function () //Wordload bar
-                {
-                    $(this).prop('Counter', 0).animate({
-                        Counter: $(this).text()
-                    }, {
-                            duration: 1500,
-                            easing: 'swing',
-                            step: function (now) {
-                                $(this).text(Math.ceil(now));
-                            }
-                        });
-                });
             })
         </script>
     }

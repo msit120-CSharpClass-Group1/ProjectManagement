@@ -202,18 +202,19 @@ namespace ProjectManager.Controllers
             if (Request.Form["TotalRow"] != "")
             {
                 var TotalRow = Convert.ToInt32(Request.Form["TotalRow"]);
-                for (int i = 0; i < TotalRow; i++)
+                var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
+                for (int i = FirstRow; i < TotalRow+FirstRow; i++)
                 {
                     var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
                     var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
                     Tasks _tasks = tasks.Find(TaskGUID);
                     _tasks.EmployeeGUID = EmpGUID;
+                    _tasks.TaskStatusID = 2;
                     tasks.Update(_tasks);
                 }
             }
             return RedirectToAction("AssignTask");
         }
-
         public ActionResult ReloadTaskList()
         {
             if (Session["ProjectGUID"] == null)
