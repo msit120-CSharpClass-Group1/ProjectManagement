@@ -112,6 +112,7 @@ namespace ProjectManager.Controllers
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
+
             ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
             _data.datasets.Add(new MultiColorChartDataset()
@@ -345,12 +346,12 @@ namespace ProjectManager.Controllers
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult TaskAcceptance( bool isConfirmed,Guid? taskGuid, string Tag)
+        public ActionResult TaskAcceptance( bool isConfirmed,Guid? taskGuid, int? reviewScore)
         {
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
-            if(Tag!="" )
+            if (reviewScore != null)
             {
-                _task.Tag = Tag;
+                _task.ReviewScore = byte.Parse(reviewScore.ToString());
             }
             _task.TaskStatusID = isConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;            
             taskRepo.Update(_task);
