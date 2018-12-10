@@ -49,7 +49,7 @@
     </style>
 }
 
-    <form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal" style="margin:auto">
+    <form method="post" action="~/ProjectMember/EditTaskM" class="form-horizontal" style="margin:auto">
         <div class="row">
             <div class="col-3">
                 <div class="" style="margin-top:60px">
@@ -167,7 +167,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="post" action="~/ProjectDetails/LeaveMessageTag" class="form-horizontal">
+                <form method="post" action="~/ProjectMember/LeaveMessageTag" class="form-horizontal">
                     <input type="hidden" id="HideTaskGUID" name="TaskGUID" />
                     <div class="modal-body">
                         <div class="container">
@@ -235,7 +235,11 @@
                     if ($(this).attr("title") == "刪除") {
                         submitCount -= 1;
                         $(this).parent().parent().remove();
-                        var backToList = $("<li></li>").attr("class", "list-group-item draggable").attr("data-tag", taskName).text(taskName).draggable();
+                        var backToList = $("<li></li>").attr("class", "list-group-item draggable")
+                            .attr("data-tag", taskName).text(taskName)
+                            .attr("data-tag2", taskGUID)
+                            .attr("title",taskName)
+                            .draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5 });
                         $(".list-group").append(backToList);
                     }
                     else {
@@ -259,7 +263,7 @@
                 {
                     topTable.children().remove();
                     submitCount = 0;
-                    $.getJSON('@Url.Action("ReloadTaskList", "ProjectDetails")', function (datas) {
+                    $.getJSON('@Url.Action("ReloadTaskList", "ProjectMember")', function (datas) {
                         var list = $('#taskitem');
                         var docFrag = $(document.createDocumentFragment());
                         $.each(datas, function (idx, _task) {
@@ -278,7 +282,7 @@
                     var descArea = $("#taskdescription");
                     descArea.empty();
                     $.ajax({
-                        url: '@Url.Action("GetTaskDesc", "ProjectDetails")',
+                        url: '@Url.Action("GetTaskDesc", "ProjectMember")',
                         data: { "TaskGUID": TaskGUID },
                         success: function (data) {
                             var p;
