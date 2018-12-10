@@ -22,7 +22,7 @@ namespace ProjectManager.Controllers
         Repository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
         Repository<Tasks> tasks = new Repository<Tasks>();
 
-        public ActionResult Index(/*Guid ProjectGUID*/)
+        public ActionResult Index()
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
@@ -69,7 +69,7 @@ namespace ProjectManager.Controllers
         public ActionResult TaskExist(Guid? memberGUID)
         {
             Guid projectGUID = new Guid(Session["ProjectGUID"].ToString());
-            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID && t.ProjectGUID == projectGUID).Select(t=>t.EmployeeGUID).FirstOrDefault();
+            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID && t.ProjectGUID == projectGUID && t.TaskStatusID==1).Select(t=>t.EmployeeGUID).FirstOrDefault();
             if (q!=null)
             {
                 return Content("HasTask");
@@ -192,7 +192,7 @@ namespace ProjectManager.Controllers
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 2 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
+            ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 1 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
             ViewBag.Workload = tasks.GetCollections().GetLeafTasks().GetTeamWorkLoad();
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
@@ -202,24 +202,25 @@ namespace ProjectManager.Controllers
             if (Request.Form["TotalRow"] != "")
             {
                 var TotalRow = Convert.ToInt32(Request.Form["TotalRow"]);
-                for (int i = 0; i < TotalRow; i++)
+                var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
+                for (int i = FirstRow; i < TotalRow+FirstRow; i++)
                 {
                     var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
                     var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
                     Tasks _tasks = tasks.Find(TaskGUID);
                     _tasks.EmployeeGUID = EmpGUID;
+                    _tasks.TaskStatusID = 2;
                     tasks.Update(_tasks);
                 }
             }
             return RedirectToAction("AssignTask");
         }
-
         public ActionResult ReloadTaskList()
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 2).GetLeafTasks().ToList();
+            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).GetLeafTasks().ToList();
             return Content(JsonConvert.SerializeObject(taskList), "application/json");
         }
 
