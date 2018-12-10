@@ -151,6 +151,7 @@
                     <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
                     <input type="hidden" id="rowcount" name="TotalRow" />
                     <input type="hidden" id="firstrow" name="FirstRow" />
+                    <input type="hidden" id="lastrow" name="LastRow" />
                     <input type="button" class="btn btn-danger" id="reset" value="重新分配">
                 </div>
             </div>
@@ -220,10 +221,12 @@
                             }
                         }
                         submitCount++;
-                        var TotalRow = $("#mappingTable").find('tr').length - 1;
+                        var TotalRow = $("#mappingTable").find('tr').length;
                         var FirstRow = $("#mappingTable tr:eq(1)").children("input:nth-child(4)").attr("name").substring(12, 15);
+                        var LastRow = $("#mappingTable tr:last").children("input:nth-child(4)").attr("name").substring(12, 15);
                         $("#rowcount").val(TotalRow);
                         $("#firstrow").val(FirstRow);
+                        $("#lastrow").val(LastRow);
                         $(this).parent().effect("pulsate", "slow");
                         if (flag) { $(".panel").slideToggle("slow"); flag = false }
                     }
