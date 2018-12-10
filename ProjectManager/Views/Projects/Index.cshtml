@@ -88,7 +88,7 @@
 
 @section asideRight{
     <div class="container text-light mt-3">
-        <h4>新增專案</h4>
+        <h4 class="d-inline-block">新增專案</h4><button id="demo_addProject" class="btn btn-default ml-4">Demo</button>
         <form class="form-horizontal " action="~/Projects/CreateProject" method="post">
             <input name="ProjectID" type="hidden" class="form-control d-inline" style="width:10em;" value="test" />
             <div class="form-group">
@@ -215,6 +215,11 @@
                 });
             }
 
+            //Demo button
+            $('#demo_addProject').click(function () {
+                $('#ProjectName').val('Demo專案');
+                $('#')
+            });
         });
     </script>
 
