@@ -1,10 +1,9 @@
-﻿@using ProjectManager.Models
-@model IEnumerable<ProjectManager.Models.Tasks>
+﻿@model IEnumerable<ProjectManager.Models.Tasks>
 
 <table id="treeGrid" class="table table-bordered table-hover tree">
     <thead class="panel-heading">
         <tr>
-            <th>@Html.DisplayNameFor(m => m.TaskName)</th>
+            <th width="220px;">@Html.DisplayNameFor(m => m.TaskName)</th>
             <th><a href="#"><i class="fas fa-plus"></i></a></th>
             <th>@Html.DisplayNameFor(m => m.TaskStatusID)</th>
             <th>@Html.DisplayNameFor(m => m.EmployeeGUID)</th>
@@ -27,11 +26,11 @@
                 <td>@task.TaskStatus.TaskStatusName</td>
                 <td>@Html.DisplayFor(m => task.Employee.EmployeeName)</td>
                 <td>@Html.DisplayFor(m => task.EstStartDate) - @Html.DisplayFor(m => task.EstEndDate)</td>
-                <td>@Html.DisplayFor(m=> task.EstWorkTime)</td>
+                <td>@Html.DisplayFor(m => task.EstWorkTime)</td>
                 <td>@Html.DisplayFor(m => task.Description)</td>
                 <td>@Html.DisplayFor(m => task.Tag)</td>
                 <td class="p-0 align-middle">
-                    @{ 
+                    @{
                         TasksBL.Task_Status status = (TasksBL.Task_Status)Enum.Parse(typeof(TasksBL.Task_Status), task.TaskStatusID.ToString());
                         if (status == TasksBL.Task_Status.WaitForConfirmed)
                         {
@@ -40,13 +39,13 @@
                         }
                         else if (status == TasksBL.Task_Status.Ended)
                         {
-                             <button name="reviveBtn" class="btn btn-dark text-light-app p-2" data-taskGUID="@task.TaskGUID">恢復</button>
+                            <button name="reviveBtn" class="btn btn-dark text-light-app p-2" data-taskGUID="@task.TaskGUID">恢復</button>
                         }
                     }
 
                 </td>
             </tr>
         }
-    
+
     </tbody>
 </table>
