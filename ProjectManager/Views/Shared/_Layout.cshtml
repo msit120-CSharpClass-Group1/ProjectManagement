@@ -1,11 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@using ProjectManager.Models.ViewModel
+@using ProjectManager.Views.Shared
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    @*<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">*@
+    <link href="~/Content/fontawesome-all.min.css" rel="stylesheet" />
     <link href="~/Content/Main.css" rel="stylesheet" />
     <link href="~/Content/PagedList.css" rel="stylesheet" />
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
@@ -14,7 +17,7 @@
 <body>
     <nav class="top-navbar">
         <span class="leftOpenbtn" style="cursor:pointer">&#9776;</span>
-        <a class="title" href="/">專案管理系統</a>
+        <a class="title" href="~/@Link.Do">專案管理系統</a>
         <div class="topnav-right">
             <div class="dropdown">
                 <button id="logoutbtn" class="navdropbtn">Logout</button>
@@ -70,7 +73,7 @@
                         <a href="~/Cost/ExpCatMgr">費用類別管理</a>
                     </li>
                     <li>
-                        <a href="#">統計與圖表</a>
+                        <a href="~/Cost/Charts">統計與圖表</a>
                     </li>
                 </ul>
             </li>

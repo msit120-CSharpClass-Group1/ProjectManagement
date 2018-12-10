@@ -28,7 +28,6 @@
         .invalid {
             border-color: #dc3545 !important;
         }
-
     </style>
 }
 <div>
@@ -121,18 +120,19 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-3 pr-0">
-                        <label>數量:</label>
-                    </div>
-                    <div class="col-sm-9 pl-0">
-                        <span id="dd_Quantity"></span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-3 pr-0">
                         <label>單價:</label>
                     </div>
                     <div class="col-sm-9 pl-0">
                         <span id="dd_UnitPrice"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3 pr-0">
+                        <label>數量:</label>
+                    </div>
+                    <div class="col-sm-9 pl-0">
+                        <span id="dd_Quantity"></span>
                     </div>
                 </div>
                 <div class="row">
@@ -209,18 +209,18 @@
                 </div>
 
                 <div class="row col-12">
-                    <div class="form-group mr-5  mt-3 mb-0">
-                        <lable for="UnitPrice">單價：</lable>
-                        <input id="UnitPrice" name="UnitPrice" class="form-control" style="width:7em;" required />
-                        <div class="invalid-tooltip">
-                            請輸入單價
-                        </div>
-                    </div>
-                    <div class="form-group  mt-3 mb-0">
+                    <div class="form-group mr-5 mt-3 mb-0">
                         <lable for="Quantity">數量：</lable>
                         <input id="Quantity" name="Quantity" class="form-control" style="width:7em;" required />
                         <div class="invalid-tooltip">
                             請輸入數量
+                        </div>
+                    </div>
+                    <div class="form-group mt-3 mb-0">
+                        <lable for="UnitPrice">單價：</lable>
+                        <input id="UnitPrice" name="UnitPrice" class="form-control" style="width:7em;" required />
+                        <div class="invalid-tooltip">
+                            請輸入單價
                         </div>
                     </div>
                 </div>
@@ -229,21 +229,21 @@
                     <div class="form-group  mt-3 mb-0">
                         <lable for="Description">備註：</lable>
                         <textarea id="Description" name="Description" class="form-control" style="width:300px;height:150px;resize:none"></textarea>
-                        <div class="invalid-tooltip">                            
+                        <div class="invalid-tooltip">
                         </div>
                     </div>
                 </div>
             </div>
 
-                <div class="row col-12">
-                    <div id="formBtns" class="mt-3 mx-auto text-center">
-                        <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
-                        <button id="btn_ConfirmAdd" type="button" class="btn btn-primary py-1 px-3">確認新增</button>
-                        <button id="btn_ConfirmModify" type="button" class="btn btn-success py-1 px-3">確認修改</button>
-                        @*<button id="btn_Validate" type="button" class="btn btn-info py-1 px-3">驗證</button>*@
-                    </div>
+            <div class="row col-12">
+                <div id="formBtns" class="mt-3 mx-auto text-center">
+                    <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
+                    <button id="btn_ConfirmAdd" type="button" class="btn btn-primary py-1 px-3">確認新增</button>
+                    <button id="btn_ConfirmModify" type="button" class="btn btn-success py-1 px-3">確認修改</button>
+                    @*<button id="btn_Validate" type="button" class="btn btn-info py-1 px-3">驗證</button>*@
                 </div>
-</form>
+            </div>
+        </form>
     </div>
 }
 
@@ -259,17 +259,20 @@
                 $("#Select_ProjectName").html(optionlabel);
                 $("#result").hide();
 
-                $.getJSON("/Cost/GetProjectListByDptID", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
+                if ($("#RequiredDeptGUID").val())
                 {
-                    var docFrag = $(document.createDocumentFragment());
-                    docFrag.append(optionlabel);
-                    $.each(projects, function (index, project)
+                    $.getJSON("@Url.Action("GetProjectListByDptID", "Cost")", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
                     {
-                        var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectID).attr("data-projectguid", project.ProjectGUID);
-                        docFrag.append(opt);
+                        var docFrag = $(document.createDocumentFragment());
+                        docFrag.append(optionlabel);
+                        $.each(projects, function (index, project)
+                        {
+                            var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectID).attr("data-projectguid", project.ProjectGUID);
+                            docFrag.append(opt);
+                        });
+                        $("#Select_ProjectName").html(docFrag);
                     });
-                    $("#Select_ProjectName").html(docFrag);
-                });
+                }
             }
 
             LoadProjects();
@@ -283,7 +286,7 @@
                 var opt = $("#Select_ProjectName>:selected");
                 $("#ProjectID").val(opt.val());
                 $("#sp_ProjectName").text(opt.text());
-                $("#PartialView").load("/Cost/GetTaskResources/" + opt.data('projectguid'), function ()
+                $("#PartialView").load("@Url.Action("GetTaskResources", "Cost")/" + opt.data('projectguid'), function ()
                 {
                     $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
                     LoadTasks();
@@ -295,7 +298,7 @@
             function LoadTasks()
             {
                 var ProjectGuid = $("#Select_ProjectName>:selected").data('projectguid');
-                $.getJSON("/Cost/GetTaskListByProjectGuid", { ProjectGuid: ProjectGuid }, function (tasks)
+                $.getJSON("@Url.Action("GetTaskListByProjectGuid", "Cost")", { ProjectGuid: ProjectGuid }, function (tasks)
                 {
                     var optionlabel = $("<option></option>").text("請選擇工作").val("");
                     var docFrag = $(document.createDocumentFragment());
@@ -322,7 +325,7 @@
             $("#btn_reset").click(function ()
             {
                 $('#f_EditResource').removeClass('was-validated');
-                $('.invalid-tooltip').hide();
+                $('.invalid-tooltip').removeAttr('style');
                 $('.invalid').removeClass('invalid');
             })
 
@@ -330,7 +333,7 @@
             {
                 $('#myRightsidenav').slideUp();
                 $('#f_EditResource').removeClass('was-validated');
-                $('.invalid-tooltip').hide();
+                $('.invalid-tooltip').removeAttr('style');
                 $('.invalid').removeClass('invalid');
             })
 
@@ -342,7 +345,7 @@
 
                 if (form.checkValidity() && Validate())
                 {
-                    $.post("/Cost/AddTaskResource", data, function ()
+                    $.post("@Url.Action("AddTaskResource", "Cost")", data, function ()
                     {
                         LoadResources();
                     });
@@ -361,7 +364,7 @@
 
                 if (form.checkValidity() && Validate())
                 {
-                    $.post("/Cost/UpdateTaskResource", data, function ()
+                    $.post("@Url.Action("UpdateTaskResource", "Cost")", data, function ()
                     {
                         LoadResources();
                     });
@@ -474,7 +477,7 @@
                 var UnitPriceCheck = regexp_Num.test($("#UnitPrice").val());
                 var QuantityCheck = regexp_Num.test($("#Quantity").val());
                 var DescriptionCheck = regexp_Description.test($("#Description").val());
-                                
+
                 //console.log("NameCheck:" + NameCheck);
                 //console.log("UnitPriceCheck:" + UnitPriceCheck);
                 //console.log("QuantityCheck:" + QuantityCheck);
@@ -508,7 +511,7 @@
                     var Description = $(this).parents("tr").children("td:nth-child(8)").text();
 
                     $("#ResourceGUID").val(ResourceGuid);
-                    $("#ResourceName").val(ResourceName);                    
+                    $("#ResourceName").val(ResourceName);
 
                     var year = DateArray[0];
                     var month = DateArray[1].length == 1 ? "0" + DateArray[1] : DateArray[1];
@@ -577,7 +580,7 @@
             {
                 var ResourceGuid = this.dataset.resourceguid;
                 $("#DeleteExpModal").modal("hide");
-                $.post("/Cost/DeleteTaskResource", { id: ResourceGuid }, function ()
+                $.post("@Url.Action("DeleteTaskResource", "Cost")", { id: ResourceGuid }, function ()
                 {
                     LoadResources();
                 });

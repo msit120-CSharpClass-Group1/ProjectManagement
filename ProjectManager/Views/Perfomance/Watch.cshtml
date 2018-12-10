@@ -1,0 +1,161 @@
+﻿@model ProjectManager.Models.ProjectMemberScoreVM
+@{
+    ViewBag.Title = "成員評分細項";
+    int thisPJmembers = Model.GetMemberCount.FirstOrDefault().Count;
+    int HighestPJmembers = Model.GetHighestMember.Count();
+    int LowestPJmembers = Model.GetLowestMember.Count();
+    int NoneScoremembers = Model.GetNoneScore.Count();
+    double? memberPMScoreAVG = Model.GetPMscore.FirstOrDefault().Avg;
+    int AboveAvgMembers = Model.GetAboveAVGMember.Count;
+    int UnderAvgMembers = Model.GetUnderAVGMember.Count;
+    double HightPercent = (double)(HighestPJmembers * 100) / thisPJmembers;
+    double AbovePercent = (double)(AboveAvgMembers * 100) / thisPJmembers;
+    double UnderPercent = (double)(UnderAvgMembers * 100) / thisPJmembers;
+    double LowestPercent = (double)(LowestPJmembers * 100) / thisPJmembers;
+    double NoneScorePercent = (double)(NoneScoremembers * 100) / thisPJmembers;
+}
+
+<p id="groupAvg" hidden="hidden">@memberPMScoreAVG </p>
+<div class="col-md-12">
+<div class="row">
+    <div class="col-sm">
+        <div class="card bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header" style="cursor:pointer" id="good">表現優秀占比(>80)</div>
+            <div class="card-body">
+                <h5 class="card-title">@Math.Round((double)HightPercent, 1)%</h5>
+                <p class="card-text">@HighestPJmembers 位成員</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header" style="cursor:pointer" id="above">表現平均之上占比(>@memberPMScoreAVG)</div>
+            <div class="card-body">
+                <h5 class="card-title">@Math.Round((double)AbovePercent, 1)%</h5>
+                <p class="card-text">@AboveAvgMembers 位成員</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header" style="cursor:pointer" id="under">表現平均之下占比(&lt @memberPMScoreAVG)</div>
+            <div class="card-body">
+                <h5 class="card-title">@Math.Round((double)UnderPercent, 1)%</h5>
+                <p class="card-text">@UnderAvgMembers 位成員</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header" style="cursor:pointer" id="bad">表現差勁占比(&lt20)</div>
+            <div class="card-body">
+                <h5 class="card-title">@Math.Round((double)LowestPercent, 1)%</h5>
+                <p class="card-text">@LowestPJmembers 位成員</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header" style="cursor:pointer" id="none">尚未評分占比</div>
+            <div class="card-body">
+                <h5 class="card-title">@Math.Round((double)NoneScorePercent, 1)%</h5>
+                <p class="card-text">@NoneScoremembers 位成員</p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class="col-md-12">
+    <table class="table table-bordered" style="margin: 0px auto;" id="mytable">
+        <thead>
+            <tr>
+                <th>團隊成員</th>
+                <th>PM評分紀錄</th>
+                <th>自評紀錄</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var _member in Model.GroupMembersScore)
+            {
+                foreach (var item in _member.value)
+                {
+                    <tr>
+                        <td>@item.Employee.EmployeeName</td>
+                        <td>@item.PMscore</td>
+                        <td>@item.Selfscore</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+@section script{
+    <script>
+        $(document).ready(function ()
+        {
+            var tableRow = $("#mytable").find('tr').length;
+            $("#good").mouseenter(function ()
+            {
+                for (var i = 1; i < tableRow; i++)
+                {                                     
+                    var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
+                    if (value >= 80)
+                    {
+                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
+                    }
+                }
+            })
+            $(".card-header").mouseleave(function ()
+            {
+                $("#mytable tr").children("td").attr("style", "background-color:#ecf0f5")
+            })
+
+            $("#above").mouseenter(function ()
+            {
+                for (var i = 1; i < tableRow; i++)
+                {
+                    var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
+                    if (value >= $("#groupAvg").text())
+                    {
+                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
+                    }
+                }
+            })
+
+            $("#under").mouseenter(function ()
+            {
+                for (var i = 1; i < tableRow; i++)
+                {
+                    var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
+                    if (value <= $("#groupAvg").text() && value!="")
+                    {
+                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
+                    }
+                }
+            })
+
+            $("#bad").mouseenter(function ()
+            {
+                for (var i = 1; i < tableRow; i++)
+                {
+                    var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
+                    if (value <= 20 &&value!="")
+                    {
+                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
+                    }
+                }
+            })
+
+            $("#none").mouseenter(function ()
+            {
+                for (var i = 1; i < tableRow; i++) {
+                    var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
+                    if (value=="") {
+                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
+                    }
+                }
+            })
+        })
+    </script>
+}
+

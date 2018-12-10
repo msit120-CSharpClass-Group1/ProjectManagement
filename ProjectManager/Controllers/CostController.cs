@@ -14,25 +14,17 @@ namespace ProjectManager.Controllers
     {
         Repository<ResourceCategory> ResourceCatRepo = new Repository<ResourceCategory>();
         Repository<TaskResource> ResourceRepo = new Repository<TaskResource>();
+        Repository<TaskStatus> StatusRepo = new Repository<TaskStatus>();
         Repository<Department> DptRepo = new Repository<Department>();
         Repository<Project> ProjectRepo = new Repository<Project>();
         Repository<Tasks> TaskRepo = new Repository<Tasks>();
 
-        // GET: Cost
-        public ActionResult Index()
-        {
-            return View();
-        }
-
+        #region Action For ExpList
         public ActionResult ExpList()
         {
-            var Departments = DptRepo.GetCollections();
-
-            var q = (from d in DptRepo.GetCollections()
-                     join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
-                     select d).Distinct();
-
-            ViewBag.Departments = q.ToList();
+            ViewBag.Departments = (from d in DptRepo.GetCollections()
+                                   join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
+                                   select d).Distinct().ToList();
 
             ViewBag.ExpCats = new SelectList(ResourceCatRepo.GetCollections(), "CategoryID", "CategoryName");
 
@@ -48,12 +40,12 @@ namespace ProjectManager.Controllers
 
         public ActionResult GetTaskListByProjectGuid(Guid ProjectGuid)
         {
-            List<Tasks> TaskList = TaskRepo.GetCollections().Where(t => t.ProjectGUID == ProjectGuid).Select(t => new Tasks { TaskGUID = t.TaskGUID, TaskName = t.TaskName }).ToList();
+            List<Tasks> TaskList = TaskRepo.GetCollections().Where(t => t.ProjectGUID == ProjectGuid).GetLeafTasks().Select(t => new Tasks { TaskGUID = t.TaskGUID, TaskName = t.TaskName }).ToList();
 
             return Json(TaskList, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetTaskResources(Guid id,int? page,string sortBy)
+        public ActionResult GetTaskResources(Guid id, int? page, string sortBy)
         {
             var q = from p in ProjectRepo.GetCollections()
                     join t in TaskRepo.GetCollections() on p.ProjectGUID equals t.ProjectGUID
@@ -159,8 +151,9 @@ namespace ProjectManager.Controllers
             ResourceRepo.Delete(ResourceRepo.Find(id));
             return RedirectToAction("ExpList");
         }
+        #endregion
 
-
+        #region Action For ExpCarMgr
         public ActionResult ExpCatMgr()
         {
             return View(ResourceCatRepo.GetCollections());
@@ -183,5 +176,84 @@ namespace ProjectManager.Controllers
             ResourceCatRepo.Delete(ResourceCatRepo.Find(id));
             return RedirectToAction("ExpCatMgr");
         }
+        #endregion
+
+        #region Action For Charts
+        public ActionResult Charts()
+        {
+            ViewBag.Departments = (from d in DptRepo.GetCollections()
+                                   join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
+                                   select d).Distinct().ToList();
+
+            return View();
+        }
+
+        public ActionResult CostsByDepartments()
+        {
+            List<Department> departments = (from d in DptRepo.GetCollections()
+                                            join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
+                                            select d).Distinct().ToList();
+
+            ChartData<SingleColorChartDataset> chartData = new ChartData<SingleColorChartDataset>();
+            chartData.labels = departments.Select(d => d.DepartmentName).ToList();
+
+            chartData.datasets.Add(new SingleColorChartDataset
+            {
+                label = "Cost",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = departments.GetSubtotalByDepartment()
+            });
+
+            return Json(chartData, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult OverallRates()
+        {
+            ChartData<SingleColorChartDatasetD> chartData = new ChartData<SingleColorChartDatasetD>();
+            chartData.labels = new List<string>() { "總體專案完成率", "總體預算執行率" };
+
+            chartData.datasets.Add(new SingleColorChartDatasetD
+            {
+                label = "Rate",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = ProjectRepo.GetCollections().GetOverallRates()
+            });
+            return Json(chartData, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult CostsByCategories()
+        {
+            ChartData<MultiColorChartDataset> chartData = new ChartData<MultiColorChartDataset>();
+            List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF", "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
+            chartData.labels = ResourceCatRepo.GetCollections().Select(c => c.CategoryName).ToList();
+            chartData.datasets.Add(new MultiColorChartDataset
+            {
+                backgroundColor = Colors,
+                borderColor = Colors,
+                data = ResourceCatRepo.GetCollections().GetSubtotalByCat(),
+            });
+
+            return Json(chartData, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult TasksByStatus()
+        {
+            ChartData<SingleColorChartDataset> chartData = new ChartData<SingleColorChartDataset>();
+
+            chartData.labels = StatusRepo.GetCollections().Select(s => s.TaskStatusName).ToList();
+            chartData.datasets.Add(new SingleColorChartDataset
+            {
+                label="Count",
+                backgroundColor= "rgba(91, 155, 213, 0.5)",
+                borderColor= "rgba(91, 155, 213, 1)",
+                data= StatusRepo.GetCollections().CountTasksByStatus(),
+            });
+
+
+            return Json(chartData, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
     }
 }

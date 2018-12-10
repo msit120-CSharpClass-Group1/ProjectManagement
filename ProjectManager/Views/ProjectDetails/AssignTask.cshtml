@@ -16,11 +16,8 @@
         #projectMemberDivL2 {
             width: 180px;
             float: left;
-            margin: 5px;
-        }
-
-        #projectMemberDivL1 {
-            background-color: rgba(128, 128, 128, 0.41);
+            margin: 10px;
+            box-shadow: 5px 5px;
         }
 
         .flip {
@@ -37,121 +34,128 @@
         }
 
             .draggable:hover {
-                background-color: pink;
+                background-color: aliceblue;
             }
 
         .asidetitle {
-            color: rosybrown;
+            color: aliceblue;
             margin-left: 30px;
             margin-top: 20px;
+        }
+        #projectMemberDivL1
+        {
+            margin-top:50px;
         }
     </style>
 }
 
-<form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal">
-    <div class="row no-gutters">
-        <div class="col-4">
-            <div class="flip"><font color="red">查看分配狀態</font></div>
-            <div class="panel">
-                <table class="table table-bordered" id="mappingTable">
-                    <thead>
-                        <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
-                    </thead>
-                    <tbody>
-                        <!--RunIN-->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div></div>
-        <div class="col-6" id="projectMemberDivL1">
-            @foreach (var _projectMember in Model)
-            {
-                <div class="card border-success mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
-                    <div class="card-header bg-transparent border-success" style="width:180px"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
-                    <div class="card-body text-success droppable" style="height:50px;border-style:dashed;">
-                        <!--TaskArea Start-->
-                        <!--TaskArea End-->
+    <form method="post" action="~/ProjectDetails/EditTaskM" class="form-horizontal" style="margin:auto">
+        <div class="row">
+            <div class="col-3">
+                <div class="" style="margin-top:60px">
+                    <div class="flip"><font color="aliceblue">查看分配狀態</font></div>
+                    <div class="panel">
+                        <table class="table table-bordered" id="mappingTable">
+                            <thead>
+                                <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
+                            </thead>
+                            <tbody>
+                                <!--RunIN-->
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="card-footer bg-transparent border-success">
-                        <h6>工作負荷</h6>
-                        @{
-                            double rawercent;
-                            bool flag =true;
-                            foreach (var item in ViewBag.Workload as IEnumerable<Group<string, DisplayWorkloadVM>>)
-                            {
-                                int? valid = item.Sum;
-                                int total = 40;
-
-                                rawercent = (double)(valid * 100) / total;
-                                if (valid > total)
+                </div>
+            </div>
+            <div></div>
+            <div class="col-7" id="projectMemberDivL1">
+                @foreach (var _projectMember in Model)
+                {
+                    <div class="card border-primary mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
+                        <div class="card-header bg-transparent border-success" style="width:180px"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px" />@_projectMember.Employee.EmployeeName </p></div>
+                        <div class="card-body text-primary droppable" style="height:50px;border-style:dashed;">
+                            <!--TaskArea Start-->
+                            <!--TaskArea End-->
+                        </div>
+                        <div class="card-footer bg-transparent border-success">
+                            <h6>工作負荷</h6>
+                            @{
+                                double rawercent;
+                                bool flag = true;
+                                foreach (var item in ViewBag.Workload as IEnumerable<Group<string, DisplayWorkloadVM>>)
                                 {
-                                    valid = (int)valid - total;
+                                    int? valid = item.Sum;
+                                    int total = 40;
+
+                                    rawercent = (double)(valid * 100) / total;
+                                    if (valid > total)
+                                    {
+                                        valid = (int)valid - total;
+                                    }
+
+                                    double percent = (double)(valid * 100) / total;
+
+                                    if (_projectMember.Employee.EmployeeName == item.Key)
+                                    {
+
+                                        if (rawercent >= 100 && rawercent < 200)
+                                        {
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
+                                            </div>
+                                            flag = false;
+                                        }
+                                        else if (rawercent >= 200)
+                                        {
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped bg-danger" style="width:@percent%;">@rawercent %</div>
+                                            </div>
+                                            flag = false;
+                                        }
+                                        else
+                                        {
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
+                                            </div>
+                                            flag = false;
+                                        }
+                                    }
                                 }
-
-                                double percent = (double)(valid * 100) / total;
-
-                                if (_projectMember.Employee.EmployeeName == item.Key)
+                                if (flag)
                                 {
-
-                                    if (rawercent >= 100 && rawercent < 200)
-                                    {
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
-                                        </div>
-                                        flag = false;
-                                    }
-                                    else if (rawercent >= 200)
-                                    {
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-striped bg-danger" style="width:@percent%;">@rawercent %</div>
-                                        </div>
-                                        flag = false;
-                                    }
-                                    else
-                                    {
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
-                                        </div>
-                                        flag = false;
-                                    }                                   
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-striped bg-success" style="width:0%;"><font color="red">目前無承接工作</font></div>
+                                    </div>
                                 }
                             }
-                            if (flag)
-                            {
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped bg-success" style="width:0%;"><font color="red">目前無承接工作</font></div>
-                                </div>
-                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            @section asideRight{
+                <!--TaskList Start-->
+                <h3 class="asidetitle">工作項目</h3>
+                <div style="margin:20px;overflow-y: scroll;height:300px">
+                    <ul class="list-group" id="taskitem">
+                        @foreach (var _task in (List<Tasks>)ViewBag.LoadTask)
+                        {
+                            <li class="list-group-item draggable" data-tag="@_task.TaskName" data-tag2="@_task.TaskGUID" title="@_task.TaskName">@_task.TaskName</li>
                         }
-                    </div>
+                    </ul>
                 </div>
-            }
-        </div>
-        @section asideRight{
-            <!--TaskList Start-->
-            <h3 class="asidetitle">工作項目</h3>
-            <div style="margin:20px;overflow-y: scroll;height:300px">
-                <ul class="list-group" id="taskitem">
-                    @foreach (var _task in (List<Tasks>)ViewBag.LoadTask)
-                    {
-                        <li class="list-group-item draggable" data-tag="@_task.TaskName" data-tag2="@_task.TaskGUID">@_task.TaskName</li>
-                    }
-                </ul>
-            </div>
-            <!--TaskList End-->
-            <h3 class="asidetitle">工作描述</h3>
-            <div class="col-sm">
-                <div id="taskdescription" style="background:lightgray;height:200px;margin:10px; width:230px">
+                <!--TaskList End-->
+                <h3 class="asidetitle">工作描述</h3>
+                <div class="col-sm">
+                    <div id="taskdescription" style="height:200px;margin:10px; width:230px;background-color:lightcyan">
 
+                    </div>
+                    <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
+                    <input type="hidden" id="rowcount" name="TotalRow" />
+                    <input type="hidden" id="firstrow" name="FirstRow" />
+                    <input type="button" class="btn btn-danger" id="reset" value="重新分配">
                 </div>
-                <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
-                <input type="hidden" id="rowcount" name="TotalRow" />
-                <input type="button" class="btn btn-danger" id="reset" value="重新分配">
             </div>
-        </div>
-        }
-    </form>
+            }
+        </form>
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -178,124 +182,112 @@
             </div>
         </div>
     </div>
-
     @section script{
         <script>
-    $(document).ready(function ()
-    {
-        var topTable = $("#mappingTable>tbody");
-        var submitCount = 0;
-        var flag = true;
-        $(".draggable").draggable({ drag: function (e, ui) {}, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
-        $(".droppable").droppable({
-            drop: function (event, ui)
-            {
-                var empID = $(this).prev().children("p").data("tag");
-                var empName = $(this).prev().text();
-                var taskGUID = ui.draggable.data("tag2");
-                var taskName = ui.draggable.data("tag");
-                var flipPanel = $(".flip");
+            $(document).ready(function () {
+                var topTable = $("#mappingTable>tbody");
+                var submitCount = 0;
+                var flag = true;
+                $(".draggable").draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
+                $(".droppable").droppable({
+                    drop: function (event, ui) {
+                        var empID = $(this).prev().children("p").data("tag");
+                        var empName = $(this).prev().text();
+                        var taskGUID = ui.draggable.data("tag2");
+                        var taskName = ui.draggable.data("tag");
+                        var flipPanel = $(".flip");
 
-                ui.draggable.text("").attr("style", "width:1px;float:left;background-color:lightgreen;border-radius: 80%");
-                ui.draggable.appendTo($(this))
+                        ui.draggable.text("").attr("style", "width:2px;float:left;padding:10px;border-radius:80%").tooltip();
+                        ui.draggable.appendTo($(this))
 
-                var cell1hid = $("<input/>").attr("name", "EmployeeGUID" + submitCount).attr("type", "hidden").val(empID);
-                var cell2hid = $("<input/>").attr("name", "TaskGUID" + submitCount).attr("type", "hidden").val(taskGUID);
+                        var cell1hid = $("<input/>").attr("name", "EmployeeGUID" + submitCount).attr("type", "hidden").val(empID);
+                        var cell2hid = $("<input/>").attr("name", "TaskGUID" + submitCount).attr("type", "hidden").val(taskGUID);
 
-                var cell1 = $("<td></td>").text(empName);
-                var cell2 = $("<td></td>").text(taskName);
-                var cell3 = $('<td></td>').html('<a class="btn btn-danger mr-2" title="刪除"><i class="far fa-trash-alt"></i></a><a class="btn btn-success" title="備忘"><i class="far fa-comment"></i></a>');
-                var row = $("<tr></tr>").append([cell1, cell2, cell3, cell1hid, cell2hid]);
-                topTable.append(row);
+                        var cell1 = $("<td></td>").text(empName);
+                        var cell2 = $("<td></td>").text(taskName);
+                        var cell3 = $('<td></td>').html('<a class="btn btn-danger mr-2" title="刪除"><i class="far fa-trash-alt"></i></a><a class="btn btn-success" title="備忘"><i class="far fa-comment"></i></a>');
+                        var row = $("<tr></tr>").append([cell1, cell2, cell3, cell1hid, cell2hid]);
+                        topTable.append(row);
 
-                submitCount++;
-                var TotalRow = $("#mappingTable").find('tr').length - 1;
-                $("#rowcount").val(TotalRow);
-                flipPanel.effect("bounce", "slow");
-                if (flag) { flipPanel.append("<img src='/image/arrow.gif' style='height:15px;'>"); flag = false }
-            }
-        });
-
-        $("#mappingTable").on("click", 'a', function ()
-        {
-            var taskName = $(this).parent().prev().text();
-            var taskGUID = $(this).parent().next().next().val();
-            if ($(this).attr("title") == "刪除")
-            {
-                submitCount -= 1;
-                $(this).parent().parent().remove();
-                var backToList = $("<li></li>").attr("class", "list-group-item draggable").attr("data-tag", taskName).text(taskName).draggable();
-                $(".list-group").append(backToList);
-            }
-            else
-            {
-                var EmpName = $(this).parent().prev().prev().text()
-                $('#exampleModalCenter').modal('show');
-                $('#exampleModalCenter h4').text("對 " + EmpName + "說明工作注意事項");
-                $("#HideTaskGUID").val(taskGUID);
-            }
-        });
-
-        $(".panel").slideToggle("slow");
-
-        $(function () //Task Table
-        {
-            $(".flip").click(function ()
-            {
-                $(".panel").slideToggle("slow");
-            });
-        });
-
-        $("#reset").click(function () //重新分配
-        {
-            topTable.children().remove();
-            submitCount = 0;
-            $.getJSON('@Url.Action("ReloadTaskList", "ProjectDetails")', function (datas)
-                {
-                    var list = $('#taskitem');
-                    var docFrag = $(document.createDocumentFragment());
-                    $.each(datas, function (idx, _task)
-                    {
-                        var li = $("<li></li>").text(_task.TaskName).attr("class", "list-group-item draggable")
-                            .attr("data-tag", _task.TaskName).attr("data-tag2", _task.TaskGUID).draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5});
-                        docFrag.append(li);
-                    })
-                   list.html(docFrag);
-            })
-            $(".droppable").empty();
-        })
-
-        $("#taskitem").on("click", 'li', function () //點擊工作描述show出
-        {
-            var TaskGUID = $(this).data("tag2");
-            var descArea = $("#taskdescription");
-            descArea.empty();
-            $.ajax({
-                        url: '@Url.Action("GetTaskDesc", "ProjectDetails")',
-                        data: { "TaskGUID": TaskGUID},
-                        success: function (data)
+                        var orow = $("#mappingTable").find('tr').length - 1;
+                        for (var i = 0; i < orow; i++)
                         {
+                            var value = $("#mappingTable tr:eq('" + i + "')").children("td:eq(1)").text()
+                            var name = $("#mappingTable tr:eq('" + i + "')").children("td:eq(0)").text()
+                            if (taskName == value && empName!= name)
+                            {
+                                $("#mappingTable tr:eq('" + i + "')").remove();                               
+                            }
+                        }
+                        submitCount++;
+                        var TotalRow = $("#mappingTable").find('tr').length - 1;
+                        var FirstRow = $("#mappingTable tr:eq(1)").children("input:nth-child(4)").attr("name").substring(12, 15);
+                        $("#rowcount").val(TotalRow);
+                        $("#firstrow").val(FirstRow);
+                        $(this).parent().effect("pulsate", "slow");
+                        if (flag) { $(".panel").slideToggle("slow"); flag = false }
+                    }
+                });
+
+                $("#mappingTable").on("click", 'a', function () {
+                    var taskName = $(this).parent().prev().text();
+                    var taskGUID = $(this).parent().next().next().val();
+                    if ($(this).attr("title") == "刪除") {
+                        submitCount -= 1;
+                        $(this).parent().parent().remove();
+                        var backToList = $("<li></li>").attr("class", "list-group-item draggable").attr("data-tag", taskName).text(taskName).draggable();
+                        $(".list-group").append(backToList);
+                    }
+                    else {
+                        var EmpName = $(this).parent().prev().prev().text()
+                        $('#exampleModalCenter').modal('show');
+                        $('#exampleModalCenter h4').text("對 " + EmpName + "說明工作注意事項");
+                        $("#HideTaskGUID").val(taskGUID);
+                    }
+                });
+
+                $(".panel").slideToggle("slow");
+
+                $(function () //Task Table
+                {
+                    $(".flip").click(function () {
+                        $(".panel").slideToggle("slow");
+                    });
+                });
+
+                $("#reset").click(function () //重新分配
+                {
+                    topTable.children().remove();
+                    submitCount = 0;
+                    $.getJSON('@Url.Action("ReloadTaskList", "ProjectDetails")', function (datas) {
+                        var list = $('#taskitem');
+                        var docFrag = $(document.createDocumentFragment());
+                        $.each(datas, function (idx, _task) {
+                            var li = $("<li></li>").text(_task.TaskName).attr("class", "list-group-item draggable")
+                                .attr("data-tag", _task.TaskName).attr("data-tag2", _task.TaskGUID).draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5 });
+                            docFrag.append(li);
+                        })
+                        list.html(docFrag);
+                    })
+                    $(".droppable").empty();
+                })
+
+                $("#taskitem").on("click", 'li', function () //點擊工作描述show出
+                {
+                    var TaskGUID = $(this).data("tag2");
+                    var descArea = $("#taskdescription");
+                    descArea.empty();
+                    $.ajax({
+                        url: '@Url.Action("GetTaskDesc", "ProjectDetails")',
+                        data: { "TaskGUID": TaskGUID },
+                        success: function (data) {
                             var p;
                             p = $("<p style='overflow-wrap: break-word'></p>").text(data)
                             descArea.append(p);
                         }
                     });
-        })
-
-        $('.progress-value > span').each(function () //Wordload bar
-        {
-            $(this).prop('Counter', 0).animate({
-                Counter: $(this).text()
-            }, {
-                    duration: 1500,
-                    easing: 'swing',
-                    step: function (now)
-                    {
-                        $(this).text(Math.ceil(now));
-                    }
-                });
-        });
-    })
+                })
+            })
         </script>
     }
 

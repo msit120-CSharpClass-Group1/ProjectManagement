@@ -22,7 +22,7 @@ namespace ProjectManager.Controllers
         Repository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
         Repository<Tasks> tasks = new Repository<Tasks>();
 
-        public ActionResult Index(/*Guid ProjectGUID*/)
+        public ActionResult Index()
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
@@ -69,7 +69,7 @@ namespace ProjectManager.Controllers
         public ActionResult TaskExist(Guid? memberGUID)
         {
             Guid projectGUID = new Guid(Session["ProjectGUID"].ToString());
-            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID && t.ProjectGUID == projectGUID).Select(t=>t.EmployeeGUID).FirstOrDefault();
+            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID && t.ProjectGUID == projectGUID && t.TaskStatusID==1).Select(t=>t.EmployeeGUID).FirstOrDefault();
             if (q!=null)
             {
                 return Content("HasTask");
@@ -112,9 +112,10 @@ namespace ProjectManager.Controllers
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
-            ChartData<MutiColorChartDataset> _data = new ChartData<MutiColorChartDataset>();
+
+            ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MutiColorChartDataset()
+            _data.datasets.Add(new MultiColorChartDataset()
             {
                 label = "dataset",
                 backgroundColor = colors,
@@ -144,9 +145,9 @@ namespace ProjectManager.Controllers
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
-            ChartData<MutiColorChartDataset> _data = new ChartData<MutiColorChartDataset>();
+            ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MutiColorChartDataset()
+            _data.datasets.Add(new MultiColorChartDataset()
             {
                 label = "dataset",
                 backgroundColor = colors,
@@ -191,8 +192,8 @@ namespace ProjectManager.Controllers
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 2 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
-            ViewBag.Workload = tasks.GetCollections().GetTeamWorkLoad();
+            ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 1 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
+            ViewBag.Workload = tasks.GetCollections().GetLeafTasks().GetTeamWorkLoad();
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
 
@@ -201,24 +202,25 @@ namespace ProjectManager.Controllers
             if (Request.Form["TotalRow"] != "")
             {
                 var TotalRow = Convert.ToInt32(Request.Form["TotalRow"]);
-                for (int i = 0; i < TotalRow; i++)
+                var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
+                for (int i = FirstRow; i < TotalRow+FirstRow; i++)
                 {
                     var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
                     var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
                     Tasks _tasks = tasks.Find(TaskGUID);
                     _tasks.EmployeeGUID = EmpGUID;
+                    _tasks.TaskStatusID = 2;
                     tasks.Update(_tasks);
                 }
             }
             return RedirectToAction("AssignTask");
         }
-
         public ActionResult ReloadTaskList()
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 2).GetLeafTasks().ToList();
+            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).GetLeafTasks().ToList();
             return Content(JsonConvert.SerializeObject(taskList), "application/json");
         }
 
@@ -271,6 +273,9 @@ namespace ProjectManager.Controllers
             task.ProjectGUID = _projectGUID;
             task.TaskGUID = Guid.NewGuid();
             task.EstWorkTime = task.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+            task.StartDate = task.EstStartDate;
+            task.EndDate = task.EstEndDate;
+            task.TaskStatusID = (int)ProjectManager.Models.TasksBL.Task_Status.Discussing;
             taskRepo.Add(task);
             return Json("success", JsonRequestBehavior.AllowGet);
             //return RedirectToAction("ProjectDistribution");
@@ -285,8 +290,7 @@ namespace ProjectManager.Controllers
         public ActionResult EditTask(Tasks taskModified)
         {
             Tasks recentTask = taskRepo.Find(taskModified.TaskGUID);
-            recentTask.TaskName = taskModified.TaskName;
-            recentTask.TaskStatusID = taskModified.TaskStatusID;
+            recentTask.TaskName = taskModified.TaskName;            
             recentTask.Tag = taskModified.Tag;
             recentTask.EstStartDate = taskModified.EstStartDate;
             recentTask.EstEndDate = taskModified.EstEndDate;
@@ -341,6 +345,34 @@ namespace ProjectManager.Controllers
             System.Web.HttpContext.Current.Application.Lock();
             System.Web.HttpContext.Current.Application["Holidays"] = holidays;
             System.Web.HttpContext.Current.Application.UnLock();
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult TaskAcceptance( bool isConfirmed,Guid? taskGuid, int? reviewScore)
+        {
+            Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
+            if (reviewScore != null)
+            {
+                _task.ReviewScore = byte.Parse(reviewScore.ToString());
+            }
+            _task.TaskStatusID = isConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;            
+            taskRepo.Update(_task);
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult TaskRevivedToInProgress(Guid? taskGuid)
+        {
+            Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
+            _task.TaskStatusID = (int)TasksBL.Task_Status.InProgress;
+            taskRepo.Update(_task);
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult EndTask(Guid? taskGuid)
+        {
+            Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
+            _task.TaskStatusID = (int)TasksBL.Task_Status.Ended;
+            taskRepo.Update(_task);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
     }

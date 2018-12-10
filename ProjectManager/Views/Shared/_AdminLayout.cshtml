@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    @*<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">*@
+    <link href="~/Content/fontawesome-all.min.css" rel="stylesheet" />
     <link href="~/Content/Main.css" rel="stylesheet" />
     <link href="~/Content/PagedList.css" rel="stylesheet" />
     <script src="~/Scripts/modernizr-2.8.3.js"></script>
@@ -16,7 +17,7 @@
 <body>
     <nav class="top-navbar">
         <span class="leftOpenbtn" style="cursor:pointer">&#9776;</span>
-        <a class="title" href="/">專案管理系統</a>
+        <a class="title" href="~/@Link.Do">專案管理系統</a>
         <div class="topnav-right">
             <div class="dropdown">
                 <button id="logoutbtn" class="navdropbtn">Logout</button>
@@ -77,9 +78,11 @@
                 <a href="~/@Link.Calendar"><i class="fas fa-calendar-alt"></i><span>行事曆</span></a>
             </li>
             @*<li>
-                <a href="#"><i class="fas fa-users"></i><span>會議記錄</span></a>
-            </li>*@
-
+            <a href="#"><i class="fas fa-users"></i><span>會議記錄</span></a>
+              </li>*@
+            <li>
+                <a href="~/Perfomance/Index"><i class="fas fa-chalkboard"></i><span>專案評分</span></a>
+            </li>
             <li>
                 <button class="dropdown-btn">
                     <i class="fas fa-tasks"></i><span>後臺管理</span><i class="fa fa-caret-down"></i>
