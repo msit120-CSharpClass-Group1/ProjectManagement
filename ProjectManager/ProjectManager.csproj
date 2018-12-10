@@ -249,6 +249,7 @@
     <Compile Include="Controllers\ProjectCategoryController.cs" />
     <Compile Include="Controllers\ProjectDetailsController.cs" />
     <Compile Include="Controllers\MyBoardController.cs" />
+    <Compile Include="Controllers\ProjectMemberController.cs" />
     <Compile Include="Controllers\ProjectStatusController.cs" />
     <Compile Include="Controllers\SelectMBoarController.cs" />
     <Compile Include="Controllers\SelectProjectController.cs" />
@@ -397,7 +398,7 @@
     <Content Include="Views\SelectProject\Index.cshtml" />
     <Content Include="Views\Cost\GetTaskResources.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
-    <Content Include="Views\ProjectDetails\Index.cshtml" />
+    <Content Include="Views\ProjectMember\Index.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectReport.cshtml" />
     <Content Include="Views\Cost\AddTaskResource.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectEdit.cshtml" />
@@ -425,7 +426,7 @@
     <Content Include="Views\TaskStatus\Insert.cshtml" />
     <Content Include="Views\ProjectDetails\ProjectDistribution.cshtml" />
     <Content Include="Views\ProjectDetails\TreeGridPartialView.cshtml" />
-    <Content Include="Views\ProjectDetails\AssignTask.cshtml" />
+    <Content Include="Views\ProjectMember\AssignTask.cshtml" />
     <Content Include="Views\Shared\_PartialPageNav.cshtml" />
     <Content Include="Views\Shared\_GuestLayout.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
