@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using ProjectManager.Models;
 using PagedList;
 using PagedList.Mvc;
+using Newtonsoft.Json;
 
 namespace ProjectManager.Controllers
 {
