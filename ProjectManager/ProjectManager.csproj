@@ -446,6 +446,7 @@
     <Content Include="Views\Cost\Charts.cshtml" />
     <Content Include="Views\Perfomance\Score.cshtml" />
     <Content Include="Views\Perfomance\Watch.cshtml" />
+    <Content Include="Views\Perfomance\TaskScoreAVGReview.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -24,5 +24,6 @@ namespace ProjectManager.Models
         public List<ProjectMembers> GetAboveAVGMember { get; set; }
         public List<ProjectMembers> GetUnderAVGMember { get; set; }
         public IEnumerable<Group<string, ProjectMembers>> GetNoneScore { get; set; }
+        public IEnumerable<Group<string, Tasks>> GroupMemberTaskScore { get; set; }
     }
 }

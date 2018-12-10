@@ -46,10 +46,13 @@ namespace ProjectManager.Controllers
             }
             return RedirectToAction("Index", "Perfomance");
         }
-        public ActionResult Q2TaskAVGReview()
+        public ActionResult TaskScoreAVGReview(Guid? ProjectGUID)
         {
-            
-            return View();
+            ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
+            vm.GroupMemberTaskScore = taskRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID && p.EmployeeGUID!=null)
+                .GroupBy(g => g.Employee.EmployeeName)
+                .Select(g => new Group<string, Tasks> { Key = g.Key,value=g,Avg = g.Average(p => p.ReviewScore) });            
+            return View(vm);
         }
     }
 }

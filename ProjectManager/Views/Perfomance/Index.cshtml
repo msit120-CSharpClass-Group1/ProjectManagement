@@ -50,7 +50,7 @@
             <div class="alert alert-success" role="alert">
                 @if (item.ProjectMembers.FirstOrDefault() != null)
                 {
-                    <a href="~/Perfomance/Watch?Q2TaskAVGReview=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
+                    <a href="~/Perfomance/TaskScoreAVGReview?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
                 }
                 else
                 {

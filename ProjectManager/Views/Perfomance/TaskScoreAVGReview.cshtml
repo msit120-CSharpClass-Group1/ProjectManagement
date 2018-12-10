@@ -1,0 +1,13 @@
+﻿@model ProjectManager.Models.ProjectMemberScoreVM
+@{
+    ViewBag.Title = "TaskScoreAVGReview";
+}
+
+<h2>TaskScoreAVGReview</h2>
+
+@foreach(var item in Model.GroupMemberTaskScore)
+{
+   <p>@item.Key</p>
+   <p>@item.Avg</p>
+}
+
