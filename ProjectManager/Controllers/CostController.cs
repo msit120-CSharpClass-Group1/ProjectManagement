@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using ProjectManager.Models;
 using PagedList;
 using PagedList.Mvc;
+using Newtonsoft.Json;
 
 namespace ProjectManager.Controllers
 {
@@ -33,16 +34,32 @@ namespace ProjectManager.Controllers
 
         public ActionResult GetProjectListByDptID(Guid DepartmentID)
         {
-            List<Project> ProjectList = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID).Select(p => new Project { ProjectGUID = p.ProjectGUID, ProjectID = p.ProjectID, ProjectName = p.ProjectName }).ToList();
+            List<Project> ProjectList = ProjectRepo.GetCollections()
+                                                   .Where(p => p.RequiredDeptGUID == DepartmentID)
+                                                   .Select(p => new Project
+                                                   {
+                                                       ProjectGUID = p.ProjectGUID,
+                                                       ProjectID = p.ProjectID,
+                                                       ProjectName = p.ProjectName
+                                                   })
+                                                   .ToList();
 
-            return Json(ProjectList, JsonRequestBehavior.AllowGet);
+            return Content(JsonConvert.SerializeObject(ProjectList), "application/json");
         }
 
         public ActionResult GetTaskListByProjectGuid(Guid ProjectGuid)
         {
-            List<Tasks> TaskList = TaskRepo.GetCollections().Where(t => t.ProjectGUID == ProjectGuid).GetLeafTasks().Select(t => new Tasks { TaskGUID = t.TaskGUID, TaskName = t.TaskName }).ToList();
+            List<Tasks> TaskList = TaskRepo.GetCollections()
+                                           .Where(t => t.ProjectGUID == ProjectGuid)
+                                           .GetLeafTasks()
+                                           .Select(t => new Tasks
+                                           {
+                                               TaskGUID = t.TaskGUID,
+                                               TaskName = t.TaskName
+                                           })
+                                           .ToList();
 
-            return Json(TaskList, JsonRequestBehavior.AllowGet);
+            return Content(JsonConvert.SerializeObject(TaskList), "application/json");
         }
 
         public ActionResult GetTaskResources(Guid id, int? page, string sortBy)
@@ -71,7 +88,7 @@ namespace ProjectManager.Controllers
                         Description = tr.Description
                     };
 
-            var ProjectResourceList = q.ToList().AsQueryable();
+            var ProjectResourceList = q.ToList().AsQueryable().Sort(sortBy);
 
             ViewBag.Count = ProjectResourceList.Count();
             ViewBag.sortByDate = string.IsNullOrEmpty(sortBy) ? "DateDesc" : "";
@@ -82,73 +99,37 @@ namespace ProjectManager.Controllers
             ViewBag.sortByUnitPrice = sortBy == "UnitPrice" ? "UnitPriceDesc" : "UnitPrice";
             ViewBag.sortBySubtotal = sortBy == "SubTotal" ? "SubTotalDesc" : "SubTotal";
 
-            switch (sortBy)
-            {
-                case "DateDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.Date);
-                    break;
-                case "TaskName":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.TaskName);
-                    break;
-                case "TaskNameDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.TaskName);
-                    break;
-                case "ResourceName":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.ResourceName);
-                    break;
-                case "ResourceNameDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.ResourceName);
-                    break;
-                case "ResourceCat":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.CategoryID);
-                    break;
-                case "ResourceCatDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.CategoryID);
-                    break;
-                case "Quantity":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.Quantity);
-                    break;
-                case "QuantityDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.Quantity);
-                    break;
-                case "UnitPrice":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.UnitPrice);
-                    break;
-                case "UnitPriceDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.UnitPrice);
-                    break;
-                case "SubTotal":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.SubTotal);
-                    break;
-                case "SubTotalDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.SubTotal);
-                    break;
-                default:
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.Date);
-                    break;
-            }
-
             return PartialView(ProjectResourceList.ToPagedList(page ?? 1, 10));
         }
 
         public ActionResult AddTaskResource(TaskResource resource)
         {
-            resource.ResourceGUID = Guid.NewGuid();
-            ResourceRepo.Add(resource);
+            if(resource.ResourceName != null)
+            {
+                resource.ResourceGUID = Guid.NewGuid();
+                ResourceRepo.Add(resource);
+            }
 
             return RedirectToAction("ExpList");
         }
 
         public ActionResult UpdateTaskResource(TaskResource resource)
         {
-            ResourceRepo.Update(resource);
+            if (resource.ResourceName != null)
+            {
+                ResourceRepo.Update(resource);
+            }
 
             return RedirectToAction("ExpList");
         }
 
-        public ActionResult DeleteTaskResource(Guid id)
+        public ActionResult DeleteTaskResource(Guid? id)
         {
-            ResourceRepo.Delete(ResourceRepo.Find(id));
+            if (id != null)
+            {
+                ResourceRepo.Delete(ResourceRepo.Find(id));
+            }
+
             return RedirectToAction("ExpList");
         }
         #endregion
@@ -205,7 +186,7 @@ namespace ProjectManager.Controllers
                 data = departments.GetSubtotalByDepartment()
             });
 
-            return Json(chartData, JsonRequestBehavior.AllowGet);
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
         public ActionResult OverallRates()
@@ -220,7 +201,8 @@ namespace ProjectManager.Controllers
                 borderColor = "rgba(91, 155, 213, 1)",
                 data = ProjectRepo.GetCollections().GetOverallRates()
             });
-            return Json(chartData, JsonRequestBehavior.AllowGet);
+
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
         public ActionResult CostsByCategories()
@@ -235,7 +217,7 @@ namespace ProjectManager.Controllers
                 data = ResourceCatRepo.GetCollections().GetSubtotalByCat(),
             });
 
-            return Json(chartData, JsonRequestBehavior.AllowGet);
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
         public ActionResult TasksByStatus()
@@ -251,8 +233,7 @@ namespace ProjectManager.Controllers
                 data= StatusRepo.GetCollections().CountTasksByStatus(),
             });
 
-
-            return Json(chartData, JsonRequestBehavior.AllowGet);
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
         #endregion
     }
