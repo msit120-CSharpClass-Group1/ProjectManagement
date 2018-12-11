@@ -15,7 +15,7 @@
                     @if (item.ProjectMembers.FirstOrDefault() != null)
                     {
                         <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
-                        <a href="~/Perfomance/Score?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>我要評分</a>
+                        <a href="~/Perfomance/ScoreByPM?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>我要評分</a>
                     }
                     else
                     {
@@ -43,7 +43,7 @@
         </div>
           
         <div class="col-6">
-            <h3><span class="badge badge-info" data-toggle="tooltip" title="專案中所有工作完成之平均">專案第二階段評分</span></h3>
+            <h3><span class="badge badge-info" data-toggle="tooltip" title="當專案工作全部完成時，平均評分會出現">專案第二階段評分</span></h3>
             @foreach (var item in Model.ClosedProject)
             {
                 bool flag = true;
@@ -66,15 +66,15 @@
                         <p class="mb-0" style="float:right">團隊成員數量: @_member.Count</p>
                     }
                 }
-                @foreach (var _pmscore in Model.GetPMscore)
+                @foreach (var _taskscore in Model.GetTaskAVGScore)
                 {
-                    if (_pmscore.Key == item.ProjectName)
+                    if (_taskscore.Key == item.ProjectName)
                     {
-                        <p class="mb-0">團隊成員平均表現 :@_pmscore.Avg</p>
+                        <p class="mb-0">團隊成員平均表現 :@_taskscore.Avg</p>
                     }
                     else if(flag)
                     {
-                        <p class="mb-0">團隊平均表現 :尚無評分</p>
+                        <p class="mb-0">目前無法觀看評分</p>
                         flag = false;
                     }
                 }

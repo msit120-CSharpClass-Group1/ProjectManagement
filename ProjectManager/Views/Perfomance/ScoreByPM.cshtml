@@ -1,0 +1,291 @@
+﻿@model ProjectManager.Models.ProjectMemberScoreVM
+@{
+    ViewBag.Title = "ScoreByPM";
+}
+
+@section style{
+    <style>
+        #team {
+            background: #eee !important;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: #108d6f;
+            border-color: #108d6f;
+            box-shadow: none;
+            outline: none;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #007b5e;
+            border-color: #007b5e;
+        }
+
+        section {
+            padding: 60px 0;
+        }
+
+            section .section-title {
+                text-align: center;
+                color: #007b5e;
+                margin-bottom: 50px;
+                text-transform: uppercase;
+            }
+
+        #team .card {
+            border: none;
+            background: #ffffff;
+        }
+
+        .image-flip:hover .backside,
+        .image-flip.hover .backside {
+            -webkit-transform: rotateY(0deg);
+            -moz-transform: rotateY(0deg);
+            -o-transform: rotateY(0deg);
+            -ms-transform: rotateY(0deg);
+            transform: rotateY(0deg);
+            border-radius: .25rem;
+        }
+
+        .image-flip:hover .frontside,
+        .image-flip.hover .frontside {
+            -webkit-transform: rotateY(180deg);
+            -moz-transform: rotateY(180deg);
+            -o-transform: rotateY(180deg);
+            transform: rotateY(180deg);
+        }
+
+        .mainflip {
+            -webkit-transition: 1s;
+            -webkit-transform-style: preserve-3d;
+            -moz-transition: 1s;
+            -moz-transform: perspective(1000px);
+            transition: 1s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .frontside {
+            position: relative;
+            -webkit-transform: rotateY(0deg);
+            -ms-transform: rotateY(0deg);
+            z-index: 2;
+            margin-bottom: 30px;
+        }
+
+        .backside {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            -webkit-transform: rotateY(-180deg);
+            -moz-transform: rotateY(-180deg);
+            -o-transform: rotateY(-180deg);
+            -ms-transform: rotateY(-180deg);
+            transform: rotateY(-180deg);
+            -webkit-box-shadow: 5px 7px 9px -4px rgb(158, 158, 158);
+            -moz-box-shadow: 5px 7px 9px -4px rgb(158, 158, 158);
+            box-shadow: 5px 7px 9px -4px rgb(158, 158, 158);
+        }
+
+        .frontside,
+        .backside {
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-transition: 1s;
+            -webkit-transform-style: preserve-3d;
+            -moz-transition: 1s;
+            -o-transition: 1s;
+            transition: 1s;
+            transform-style: preserve-3d;
+        }
+
+            .frontside .card,
+            .backside .card {
+                min-height: 312px;
+            }
+
+                .backside .card a {
+                    font-size: 18px;
+                    color: #007b5e !important;
+                }
+
+                .frontside .card .card-title,
+                .backside .card .card-title {
+                    color: #007b5e !important;
+                }
+
+                .frontside .card .card-body img {
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 50%;
+                }
+        .boxes {
+            margin: auto;
+            padding: 50px;
+            background: #484848;
+        }
+
+        /*Checkboxes styles*/
+        input[type="checkbox"] {
+            display: none;
+        }
+
+            input[type="checkbox"] + label {
+                display: block;
+                position: relative;
+                padding-left: 35px;
+                margin-bottom: 20px;
+                font: 14px/20px 'Open Sans', Arial, sans-serif;
+                color: #ddd;
+                cursor: pointer;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+            }
+
+                input[type="checkbox"] + label:last-child {
+                    margin-bottom: 0;
+                }
+
+                input[type="checkbox"] + label:before {
+                    content: '';
+                    display: block;
+                    width: 20px;
+                    height: 20px;
+                    border: 1px solid #6cc0e5;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    opacity: .6;
+                    -webkit-transition: all .12s, border-color .08s;
+                    transition: all .12s, border-color .08s;
+                }
+
+            input[type="checkbox"]:checked + label:before {
+                width: 10px;
+                top: -5px;
+                left: 5px;
+                border-radius: 0;
+                opacity: 1;
+                border-top-color: transparent;
+                border-left-color: transparent;
+                -webkit-transform: rotate(45deg);
+                transform: rotate(45deg);
+            }
+    </style>
+
+}
+
+<!-- Team -->
+<section id="team" class="pb-5">
+    <div class="container">
+        <h5 class="section-title h1">專案團隊成員</h5>
+        <div class="row">
+            <!-- Team member -->
+            @foreach (var member in Model.ProjectMembers)
+            {
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="image-flip">
+                        <div class="mainflip">
+                            <div class="frontside">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <p><img class=" img-fluid" src="~/image/avatar.png"></p>
+                                        <h4 class="card-title">@member.Employee.EmployeeName</h4>
+                                        <p class="card-text">@member.Employee.JobTitle.TitleName</p>
+                                        <p>目前自評:20</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="backside">
+                                <div class="card">
+                                    <div class="card-body text-center mt-4">
+                                        <h4 class="card-title">@member.Employee.EmployeeName</h4>
+                                        <p class="card-text">此專案承接工作數:100件</p>
+                                        <p class="card-text">準時完成的工作數:100件</p>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-memberguid="@member.EmployeeGUID" id="scoreBtn">
+                                            對他評分
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <p class="heading lead" id="modalEmpName">
+                   這裡放對某某評分
+                </p>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">×</span>
+                </button>
+            </div>
+
+            <!--Body-->
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fa fa-file-text-o fa-4x mb-3 animated rotateIn"></i>
+                    <strong>對其近期表現進行評分</strong>
+                </div>
+                <hr>
+                <div class="boxes">
+                    <input type="checkbox" id="box-1" >
+                    <label for="box-1" title="按專案進度完成所有功能開發">能夠於專案開始後依規定時間內完成基本功能開發</label>
+                    <input type="checkbox" id="box-2">
+                    <label for="box-2" title="維護專案">能夠依照客戶需求, 依規定時間內完成修改項目</label>
+                    <input type="checkbox" id="box-3">
+                    <label for="box-3" title="確保軟體品質與穩定度">軟體嚴重程度的Bug依規定時限內修改完</label>
+                    <input type="checkbox" id="box-4">
+                    <label for="box-4" title="團隊合作">能夠與團隊有效溝通</label>
+                    <input type="checkbox" id="box-5">
+                    <label for="box-5" title="知識學習與分享">至少一次的團隊內技術發表</label>
+                </div>
+            <!--Footer-->
+            <div class="modal-footer justify-content-center">
+                <a class="btn btn-outline-primary waves-effect">
+                    送出評分
+                    <i class="fa fa-paper-plane ml-1"></i>
+                </a>
+                <a class="btn btn-outline-primary waves-effect" data-dismiss="modal">取消</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section script{
+    <script>
+        $(document).ready(function ()
+        {
+            $(".backside").on("click", 'button', function ()
+            {
+                var EmployeeGUID = $(this).data("memberguid")
+                $.ajax({
+                   url: '@Url.Action("GetEmpName", "Perfomance")',
+                   data: { "EmployeeGUID": EmployeeGUID },
+                    success: function (data) 
+                    {
+                        $("#modalEmpName").text(data)
+                    }
+                });
+            })
+            $("label").tooltip();
+        })
+
+    </script>
+
+}

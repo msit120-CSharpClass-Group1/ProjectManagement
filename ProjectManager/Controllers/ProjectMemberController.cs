@@ -96,6 +96,7 @@ namespace ProjectManager.Controllers
                         var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
                         Tasks _tasks = tasks.Find(TaskGUID);
                         _tasks.EmployeeGUID = EmpGUID;
+                        _tasks.AssignedDate = DateTime.Now;
                         _tasks.TaskStatusID = 2;
                         tasks.Update(_tasks);
                     }

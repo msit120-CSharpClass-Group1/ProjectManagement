@@ -109,5 +109,19 @@ namespace ProjectManager.Models
             }
             return AvgMemberScore;
         }
+
+        public static IEnumerable<Group<string, Tasks>> GetTaskAVGScore (this IEnumerable<Tasks> tasks)
+        {
+            var avgTaskScore = tasks.Where(p => p.EmployeeGUID != null && p.ReviewScore != null).GroupBy(g => g.Project.ProjectName)
+                                           .Select(g => new Group<string, Tasks> { Key = g.Key, Avg = g.Average(p => p.ReviewScore) });
+
+            List<Group<string, Tasks>> avgTasksScore = new List<Group<string, Tasks>>();
+            foreach (var item in avgTaskScore)
+            {
+                item.Avg = Math.Round((double)item.Avg, 2);
+                avgTasksScore.Add(item);
+            }
+            return avgTasksScore;
+        }
     }
 }
