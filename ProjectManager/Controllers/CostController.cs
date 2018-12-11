@@ -99,7 +99,7 @@ namespace ProjectManager.Controllers
             ViewBag.sortByUnitPrice = sortBy == "UnitPrice" ? "UnitPriceDesc" : "UnitPrice";
             ViewBag.sortBySubtotal = sortBy == "SubTotal" ? "SubTotalDesc" : "SubTotal";
 
-            return PartialView(ProjectResourceList.ToPagedList(page ?? 1, 10));
+            return PartialView(ProjectResourceList.ToPagedList(page ?? 1, 8));
         }
 
         public ActionResult AddTaskResource(TaskResource resource)
