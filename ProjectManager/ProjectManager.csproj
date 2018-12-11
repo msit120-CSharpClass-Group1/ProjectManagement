@@ -119,6 +119,7 @@
     <Content Include="Content\Login.css" />
     <Content Include="Content\Main.css" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\PMScore.css" />
     <Content Include="Content\skin-black.css" />
     <Content Include="webfonts\fa-brands-400.svg" />
     <Content Include="webfonts\fa-regular-400.svg" />
