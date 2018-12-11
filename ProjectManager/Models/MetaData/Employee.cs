@@ -15,7 +15,7 @@ namespace ProjectManager.Models
     {
         public class EmployeeMetadata
         {
-            [JsonIgnore]
+            [JsonIgnore()]
             public virtual Department Department { get; set; }
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
             [JsonIgnore]
