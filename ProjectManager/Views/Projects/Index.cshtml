@@ -69,11 +69,11 @@
                                     @{
                                         if ((bool)item.IsGeneralManagerConcerned)
                                         {
-                                            <i class='fas fa-star' style='color:black' title='總經理關注'></i>
+                                            <i class='far fa-check-square' style='color:black' data-toggle="tooltip" title='總經理關注'></i>
                                         }
                                         else
                                         {
-                                            <i class='far fa-star' style='color:black' title='總經理未關注'></i>
+                                            <i class='far fa-square' style='color:black' data-toggle="tooltip" title='總經理未關注'></i>
                                         }
                                     }
                                 </div>
@@ -203,6 +203,8 @@
                     $('#ProjectSupervisorGUID').html(docFrag);
                 });
             }
+
+            $('[data-toggle="tooltip"]').tooltip(); 
 
             //Demo button
             $('#demoBtn').click(function () {
