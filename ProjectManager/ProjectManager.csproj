@@ -120,6 +120,16 @@
     <Content Include="Content\Main.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\skin-black.css" />
+    <Content Include="Models\ProjectManagerModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
+      <LastGenOutput>ProjectManagerModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\ProjectManagerModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
+      <LastGenOutput>ProjectManagerModel.cs</LastGenOutput>
+    </Content>
     <Content Include="webfonts\fa-brands-400.svg" />
     <Content Include="webfonts\fa-regular-400.svg" />
     <Content Include="webfonts\fa-solid-900.svg" />
@@ -135,16 +145,6 @@
     <Content Include="image\expand.png" />
     <Content Include="image\loading.gif" />
     <Content Include="image\user2-160x160.jpg" />
-    <Content Include="Models\ProjectManagerModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
-      <LastGenOutput>ProjectManagerModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\ProjectManagerModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
-      <LastGenOutput>ProjectManagerModel.cs</LastGenOutput>
-    </Content>
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -170,13 +170,6 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="Fonts\NotoSansCJKtc-Regular.otf" />
-    <EntityDeploy Include="Models\ProjectManagerModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ProjectManagerModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\ProjectManagerModel.edmx.diagram">
-      <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
-    </Content>
     <Content Include="webfonts\fa-brands-400.eot" />
     <Content Include="webfonts\fa-brands-400.ttf" />
     <Content Include="webfonts\fa-brands-400.woff" />
@@ -189,6 +182,13 @@
     <Content Include="webfonts\fa-solid-900.ttf" />
     <Content Include="webfonts\fa-solid-900.woff" />
     <Content Include="webfonts\fa-solid-900.woff2" />
+    <EntityDeploy Include="Models\ProjectManagerModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ProjectManagerModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\ProjectManagerModel.edmx.diagram">
+      <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
+    </Content>
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />

@@ -35,6 +35,20 @@ namespace ProjectManager.Controllers
             q.ToList();
             return View(VM);
         }
+        public ActionResult GetEmployee(Guid id)
+        {
+            var EmployeeGuid = m.Find(new Guid(Request.Cookies["MemberGUID"].Value)).EmployeeGUID;
+
+            if (id == EmployeeGuid)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json(false);
+            }
+
+        }
         public ActionResult GetDetailTask(Guid id)
         {
             BoardVM VM = new BoardVM();

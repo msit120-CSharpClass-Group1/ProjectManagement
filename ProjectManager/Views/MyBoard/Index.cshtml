@@ -518,13 +518,12 @@
         var moveItem = document.getElementsByClassName('listCards');
 
         //拖拉放
-        //$("#listContent-4").removeAttr("ondrop").css("cursor", "no-drop");
-        //$("#listContent-5").removeAttr("ondrop").css("cursor", "no-drop");
-        //console.log($("#listContent-4").children);
-        //$("#listContent-4").children().attr("draggable", false).css("cursor", "no-drop");
-        //$("#listContent-5").children().attr("draggable", false).css("cursor", "no-drop");
-        
-        
+        $("#listContent-4").removeAttr("ondrop");
+        $("#listContent-5").removeAttr("ondrop");
+        $("#listContent-4").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default"});
+        $("#listContent-5").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default" });
+       
+
         function dragstart(e)
         {
             for (let i = 0; i < moveItem.length; i++)
@@ -542,8 +541,10 @@
 
         function dragoverHandler(e) {
             e.preventDefault();
-            $(e.currentTarget).addClass('hover');
-
+            if ($(e.currentTarget).data('taskstatusid') < 4)
+            {
+                $(e.currentTarget).addClass('hover');
+            }
         }
 
         function dragLeave(e) {
@@ -570,6 +571,28 @@
             for (i = 2; i <= 5; i++) {
                 $("#listHeader-" + i).css("background-color", colorarr[i - 2]);
             }
+
+            //判斷看版權限
+            var hrefarr = $('@Html.ActionLink("MyBoard","Index")').attr("href").split("/");
+            var employeeGuid = hrefarr[3];
+             $.ajax({
+                type: 'Post',
+                 url: '@Url.Action("GetEmployee", "Myboard")',
+                 data: { id : employeeGuid},
+                dataType: 'json'
+             }).done(function (datas) {
+                 if (datas === false)
+                 {
+                     $(":button").attr('disabled', 'disabled');
+                     $(":input").attr('disabled', 'disabled');
+                     $(".checkLists").off("click",".checkListCkeck");
+                     $(".checkLists").off('mousedown', '.cardDetailDelete');
+                     $('.checkLists').off("click", ".checkListContent");
+                     $(".listContent").removeAttr("ondrop");
+                     $(".listContent").unbind("ondragover");
+                     $(".listCards").attr("draggable", false).css({ "-webkit-user-select": "none","cursor":"default"});
+                 }
+            });
             //load cardDetail
             $(".detail-close").mousedown(function () {
                 $('.detailsection').hide();

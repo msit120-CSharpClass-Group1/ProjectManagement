@@ -25,6 +25,7 @@ namespace ProjectManager.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Calendar> Calendar { get; set; }
         public virtual DbSet<Dashboard> Dashboard { get; set; }
         public virtual DbSet<Department> Department { get; set; }
         public virtual DbSet<Employee> Employee { get; set; }
@@ -47,6 +48,5 @@ namespace ProjectManager.Models
         public virtual DbSet<Tasks> Tasks { get; set; }
         public virtual DbSet<TaskStatus> TaskStatus { get; set; }
         public virtual DbSet<WidgetDetail> WidgetDetail { get; set; }
-        public virtual DbSet<Calendar> Calendar { get; set; }
     }
 }

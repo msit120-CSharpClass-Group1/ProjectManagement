@@ -4,7 +4,8 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="82a6840c50474bea877959ff8567ec91" Name="Diagram1" ZoomLevel="81">
+      <Diagram DiagramId="299dbbbae147404491c9936eb6f1d109" Name="Diagram1">
+        <EntityTypeShape EntityType="ProjectManagementModel.Calendar" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.Dashboard" Width="1.5" PointX="5.25" PointY="13.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.Department" Width="1.5" PointX="0.75" PointY="10.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.Employee" Width="1.5" PointX="3" PointY="13.875" IsExpanded="true" />
@@ -13,18 +14,18 @@
         <EntityTypeShape EntityType="ProjectManagementModel.MeetingDetail" Width="1.5" PointX="12.75" PointY="19" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.Members" Width="1.5" PointX="5.25" PointY="17.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.Permissions" Width="1.5" PointX="3" PointY="20.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProjectManagementModel.PreTasks" Width="1.5" PointX="15.75" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.PreTasks" Width="1.5" PointX="15.75" PointY="12.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.Project" Width="1.5" PointX="8.25" PointY="17.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.ProjectCategory" Width="1.5" PointX="6" PointY="22.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.ProjectDiscuss" Width="1.5" PointX="5.25" PointY="27.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.ProjectMembers" Width="1.5" PointX="10.5" PointY="15.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.ProjectStatus" Width="1.5" PointX="6" PointY="24.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProjectManagementModel.ResourceCategory" Width="1.5" PointX="16.5" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProjectManagementModel.TaskDetail" Width="1.5" PointX="18.75" PointY="14.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProjectManagementModel.TaskDetailStatus" Width="1.5" PointX="16.5" PointY="16.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProjectManagementModel.TaskModified" Width="1.5" PointX="15.75" PointY="19.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProjectManagementModel.TaskResource" Width="1.5" PointX="18.75" PointY="10" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProjectManagementModel.Tasks" Width="1.5" PointX="13.5" PointY="13" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.ResourceCategory" Width="1.5" PointX="16.5" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.TaskDetail" Width="1.5" PointX="18.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.TaskDetailStatus" Width="1.5" PointX="16.5" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.TaskModified" Width="1.5" PointX="15.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.TaskResource" Width="1.5" PointX="18.75" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Tasks" Width="1.5" PointX="13.5" PointY="11.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.TaskStatus" Width="1.5" PointX="11.25" PointY="12.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.WidgetDetail" Width="1.5" PointX="7.5" PointY="13.875" IsExpanded="true" />
         <AssociationConnector Association="ProjectManagementModel.FK_Dashboard_Employee" ManuallyRouted="false" />
@@ -59,7 +60,6 @@
         <AssociationConnector Association="ProjectManagementModel.FK_TaskResource_Tasks" ManuallyRouted="false" />
         <AssociationConnector Association="ProjectManagementModel.FK_Tasks_TaskStatus" ManuallyRouted="false" />
         <AssociationConnector Association="ProjectManagementModel.ProjectRelationDept" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="ProjectManagementModel.Calendar" Width="1.5" PointX="0.75" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
