@@ -36,6 +36,7 @@ namespace ProjectManager.Views.Shared
         public static string ChangePassword = "Members/Edit";
         //登出
         public static string Logout = "Members/Edit";
-
+        //儀錶板
+        public static string Dashboard = "Home/Index";
     }
 }
