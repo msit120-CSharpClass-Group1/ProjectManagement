@@ -25,21 +25,19 @@
             <div class="dropdown">
                 <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">@EmployeeInfo.EmployeeName</button>
             </div>
-            @*<div class="dropdown">
-                <button class="navdropbtn"><i class="far fa-envelope"></i><span class="label">9</span></button>
+            <div class="dropdown">
+                <button id="notificationbtn" class="navdropbtn"><i class="far fa-envelope"></i><span class="label">9</span></button>
                 <div class="dropdown-content">
-                    <a href="#">message1</a>
-                    <a href="#">message2</a>
-                    <a href="#">message3</a>
+                  
                 </div>
-            </div>*@
+            </div>
         </div>
     </nav>
 
     <aside id="myLeftsidenav" class="left-sidenav left-sidenav-open">
         <ul>
             <li>
-                <a href="#"><i class="fas fa-tachometer-alt"></i><span>儀錶板</span></a>
+                <a href="~/@Link.Dashboard"><i class="fas fa-tachometer-alt"></i><span>儀錶板</span></a>
             </li>
             <li>
                 <button class="dropdown-btn">

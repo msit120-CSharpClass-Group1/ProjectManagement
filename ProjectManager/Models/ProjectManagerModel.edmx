@@ -1519,7 +1519,6 @@
           <End Role="Project" Type="Self.Project" Multiplicity="*" />
         </Association>
         <EntityContainer Name="ProjectManagementEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Calendar" EntityType="Self.Calendar" />
           <EntitySet Name="Dashboard" EntityType="Self.Dashboard" />
           <EntitySet Name="Department" EntityType="Self.Department" />
           <EntitySet Name="Employee" EntityType="Self.Employee" />
@@ -1677,21 +1676,6 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ProjectManagementModelStoreContainer" CdmEntityContainer="ProjectManagementEntities">
-          <EntitySetMapping Name="Calendar">
-            <EntityTypeMapping TypeName="ProjectManagementModel.Calendar">
-              <MappingFragment StoreEntitySet="Calendar">
-                <ScalarProperty Name="CalendarGUID" ColumnName="CalendarGUID" />
-                <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Start" ColumnName="Start" />
-                <ScalarProperty Name="EndDay" ColumnName="EndDay" />
-                <ScalarProperty Name="ThemeColor" ColumnName="ThemeColor" />
-                <ScalarProperty Name="IsFullDay" ColumnName="IsFullDay" />
-                <ScalarProperty Name="EventID" ColumnName="EventID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Dashboard">
             <EntityTypeMapping TypeName="ProjectManagementModel.Dashboard">
               <MappingFragment StoreEntitySet="Dashboard">

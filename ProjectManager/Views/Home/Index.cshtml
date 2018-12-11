@@ -1,5 +1,97 @@
-﻿
+﻿@using ProjectManager.Models;
+@model IEnumerable<Grouped<string, Tasks>>
 @{
-    ViewBag.Title = "";
+    ViewBag.Title = "儀錶板";
     ViewBag.Activity = "儀錶板";
+}
+@section style{
+
+
+
+}
+<!--工作項目統計card-->
+<h5 class="ml-4">進行中專案工作項目:</h5>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">進行中</h5>
+                    <h2>@ViewBag.InProgressCount</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">待驗收</h5>
+                    <h2>@ViewBag.WaitForConfirmedCount</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">已驗收</h5>
+                    <h2>@ViewBag.CompletedCount</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">已中止</h5>
+                    <h2>@ViewBag.EndedCount</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-4 col-sm-12 bg-white p-4">
+            <h5>分配給@(ViewBag.UserName)的工作(@(ViewBag.TasksSum))</h5>
+            <table id="TasksTable" class="table bg-white table-sm">
+                <thead class="thead-light">
+                    <tr>
+                        <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().TaskName)</th>
+                        <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().TaskStatusID)</th>
+                        <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().Project.ProjectName)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var g in Model)
+                    {
+                        foreach (var task in g.group)
+                        {
+                            <tr data-TaskGUID="@task.TaskGUID">
+                                <td><a href="#">@task.TaskName</a></td>
+                                <td>@task.TaskStatus.TaskStatusName</td>
+                                <td><a href="#">@task.Project.ProjectID-@task.Project.ProjectName </a></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section script{
+    <script>
+        $(document).ready(function () {
+            $('#TasksTable').find('tbody td>a').on('click', ShowTasksDetailModal);
+
+
+            function ShowTasksDetailModal() {
+
+            }
+        });
+    </script>
+
 }

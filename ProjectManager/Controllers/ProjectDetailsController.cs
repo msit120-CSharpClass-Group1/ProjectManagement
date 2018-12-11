@@ -22,61 +22,6 @@ namespace ProjectManager.Controllers
         Repository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
         Repository<Tasks> tasks = new Repository<Tasks>();
 
-        public ActionResult Index(/*Guid ProjectGUID*/)
-        {
-            if (Session["ProjectGUID"] == null)
-                return RedirectToAction("Index", "Projects");
-            Guid indexPJID = new Guid(Session["ProjectGUID"].ToString());
-            ViewBag.FirstEmpList = employee.GetCollections().ToList();
-            ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();
-            return View(dep.GetCollections());
-        }
-
-        public ActionResult SelectDep()
-        {
-            if (Session["ProjectGUID"] == null)
-                return RedirectToAction("Index", "Projects");
-            var depGUID = new Guid(Request.QueryString["depid"]);
-            var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);
-            return Content(JsonConvert.SerializeObject(emp), "application/json");
-        }
-
-        public ActionResult AddProjectMember(Guid memberID)
-        {
-
-            ProjectMembers pm = new ProjectMembers();
-            pm.ProjectGUID = new Guid(Session["ProjectGUID"].ToString());
-            pm.EmployeeGUID = memberID;
-            projectMembers.Add(pm);
-            return RedirectToAction("Index", "ProjectDetails");
-        }
-
-        public ActionResult DeleteProjectMember()
-        {
-            Guid memberID = new Guid(Request.QueryString["memberID"]);
-            Guid InvitePJGUID = new Guid(Session["ProjectGUID"].ToString());
-            projectMembers.Delete(projectMembers.Find(memberID, InvitePJGUID));
-            return RedirectToAction("Index", "ProjectDetails");
-        }
-
-        public ActionResult ReloadTeamCount()
-        {
-            Guid InvitePJGUID = new Guid(Session["ProjectGUID"].ToString());
-            var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID);
-            return Content(JsonConvert.SerializeObject(pjmb), "application/json");
-        }
-
-        public ActionResult TaskExist(Guid? memberGUID)
-        {
-            Guid projectGUID = new Guid(Session["ProjectGUID"].ToString());
-            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID && t.ProjectGUID == projectGUID).Select(t=>t.EmployeeGUID).FirstOrDefault();
-            if (q!=null)
-            {
-                return Content("HasTask");
-            }
-            return Content("NoTask");
-        }
-
         public ActionResult ProjectReport(Guid? ProjectGUID)
         {
             if (ProjectGUID != null)
@@ -112,6 +57,7 @@ namespace ProjectManager.Controllers
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
+
             ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
             _data.datasets.Add(new MultiColorChartDataset()
@@ -184,60 +130,6 @@ namespace ProjectManager.Controllers
 
             projectRepo.Update(recentProject);
             return ProjectEdit();
-        }
-
-        public ActionResult AssignTask()
-        {
-            if (Session["ProjectGUID"] == null)
-                return RedirectToAction("Index", "Projects");
-            Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 2 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
-            ViewBag.Workload = tasks.GetCollections().GetLeafTasks().GetTeamWorkLoad();
-            return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
-        }
-
-        public ActionResult EditTaskM()
-        {
-            if (Request.Form["TotalRow"] != "")
-            {
-                var TotalRow = Convert.ToInt32(Request.Form["TotalRow"]);
-                for (int i = 0; i < TotalRow; i++)
-                {
-                    var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
-                    var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
-                    Tasks _tasks = tasks.Find(TaskGUID);
-                    _tasks.EmployeeGUID = EmpGUID;
-                    tasks.Update(_tasks);
-                }
-            }
-            return RedirectToAction("AssignTask");
-        }
-
-        public ActionResult ReloadTaskList()
-        {
-            if (Session["ProjectGUID"] == null)
-                return RedirectToAction("Index", "Projects");
-            Guid SendprojectGUID = new Guid(Session["ProjectGUID"].ToString());
-            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 2).GetLeafTasks().ToList();
-            return Content(JsonConvert.SerializeObject(taskList), "application/json");
-        }
-
-        public ActionResult LeaveMessageTag()
-        {
-            var message = Request.Form["text"];
-            Guid TaskGUID = new Guid(Request.Form["TaskGUID"].ToString());
-            Tasks _tasks = tasks.Find(TaskGUID);
-            _tasks.Tag = message;
-            tasks.Update(_tasks);
-            return RedirectToAction("AssignTask");
-        }
-
-        public ActionResult GetTaskDesc(Guid TaskGUID)
-        {
-            if (Session["ProjectGUID"] == null)
-                return RedirectToAction("Index", "Projects");
-            var TaskName = tasks.GetCollections().Where(t => t.TaskGUID == TaskGUID).FirstOrDefault().Description;
-            return Content(TaskName);
         }
 
         public ActionResult ProjectDistribution()
@@ -345,12 +237,12 @@ namespace ProjectManager.Controllers
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult TaskAcceptance( bool isConfirmed,Guid? taskGuid, string Tag)
+        public ActionResult TaskAcceptance( bool isConfirmed,Guid? taskGuid, int? reviewScore)
         {
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
-            if(Tag!="" )
+            if (reviewScore != null)
             {
-                _task.Tag = Tag;
+                _task.ReviewScore = byte.Parse(reviewScore.ToString());
             }
             _task.TaskStatusID = isConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;            
             taskRepo.Update(_task);

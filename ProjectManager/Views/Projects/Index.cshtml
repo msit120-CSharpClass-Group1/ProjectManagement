@@ -1,5 +1,5 @@
 ﻿@using ProjectManager.Models
-@model IEnumerable<ProjectManager.Models.GroupedProject>
+@model IEnumerable<ProjectManager.Models.Grouped<string,Project>>
 @{
     string strStatus = "";
     switch (ViewBag.StatusID)
@@ -39,7 +39,7 @@
         i++;
         <h4 class="text-dark" style="font-size:20px;" data-Dept=Dept@(i)>
             <span class="float-left"><i class="fas fa-caret-down"></i></span>
-            @g.DepartmentName
+            @g.Key
         </h4>
 
         <div class="collapsible my-4 container" id=Dept@(i)>
@@ -69,11 +69,11 @@
                                     @{
                                         if ((bool)item.IsGeneralManagerConcerned)
                                         {
-                                            @Html.Raw("<i class='fas fa-star' style='color:black' title='總經理關注'></i>")
+                                            <i class='fas fa-star' style='color:black' title='總經理關注'></i>
                                         }
                                         else
                                         {
-                                            @Html.Raw("<i class='far fa-star' style='color:black' title='總經理未關注'></i>")
+                                            <i class='far fa-star' style='color:black' title='總經理未關注'></i>
                                         }
                                     }
                                 </div>
@@ -88,7 +88,7 @@
 
 @section asideRight{
     <div class="container text-light mt-3">
-        <h4>新增專案</h4>
+        <h4 class="d-inline-block">新增專案</h4><button id="demoBtn" class="btn btn-default ml-4">Demo</button>
         <form class="form-horizontal " action="~/Projects/CreateProject" method="post">
             <input name="ProjectID" type="hidden" class="form-control d-inline" style="width:10em;" value="test" />
             <div class="form-group">
@@ -116,17 +116,6 @@
                     <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" style="width:12em;" />
                 </div>
             </div>
-            @*<div class="row hide" id="ActualDurationGroup">
-                <div class="col-6 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().StartDate)
-                    <input name="StartDate" id="StartDate" type="date" class="form-control d-inline" style="width:12em;" />
-                </div>
-                <div class="col-6 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().EndDate)
-                    <input name="EndDate" id="EndDate" type="date" class="form-control d-inline" style="width:12em;" />
-                </div>
-            </div>*@
-
             <div class="row">
                 <div class="col-6 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().group.FirstOrDefault().ProjectStatusID)
@@ -215,6 +204,25 @@
                 });
             }
 
+            //Demo button
+            $('#demoBtn').click(function () {
+                $('#ProjectName').val('Demo專案');
+                $('#RequiredDeptGUID').find('option[value="c703f18e-df3d-4cc2-b1fe-4f6a8d690bdc"]').prop('selected', true);
+                $.getJSON("@Url.Action("GetEmployeesByDept","Projects")", { DeptGUID:'c703f18e-df3d-4cc2-b1fe-4f6a8d690bdc'}, function (data) {
+                    var docFrag = $(document.createDocumentFragment());
+                    $.each(data, function (index,emp) {
+                        var opt = $('<option></option>').text(emp.EmployeeName).val(emp.EmployeeGUID);
+                        docFrag.append(opt);                       
+                    });
+                    $('#RequiredDeptPMGUID').html(docFrag);
+                });
+                $('#ProjectStatusID').val(1);
+                $('#ProjectCategoryID').val(3);
+                $('#ProjectSupervisorDeptGUID').find('option:nth-child(7)').prop('selected', true);
+                $('#ProjectSupervisorGUID').find('option:nth-child(4)').prop('selected', true);
+                $('#ProjectBudget').val(100000);
+                $('#EstEndDate').val('2019-01-07');
+            });
         });
     </script>
 
