@@ -50,6 +50,7 @@
             color: white;
             /*text-align: center;*/
         }
+
         .form-control-inline {
             display: inline-block;
             width: 100%;
@@ -85,7 +86,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius:3px 4px;">
             <div class="modal-header">
-                <h5 class="modal-title" id="DeleteAlarmModalTitle"><span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>刪除確認</h5>
+                <h5 class="modal-title" id="DeleteAlarmModalTitle">
+                    <span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>刪除確認
+                </h5>
             </div>
             <div class="modal-body pl-3">
                 <div class="row">
@@ -106,7 +109,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius:3px 4px;">
             <div class="modal-header">
-                <h5 class="modal-title"><span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>不可刪除</h5>
+                <h5 class="modal-title">
+                    <span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>不可刪除
+                </h5>
             </div>
             <div class="modal-body pl-3">
                 <div class="row">
@@ -125,7 +130,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius:3px 4px;">
             <div class="modal-header">
-                <h5 class="modal-title" id="AcceptanceComfirmTitle"><span class="EditIcon"><i class="fas fa-clipboard-check"></i></span>驗收及評分確認</h5>
+                <h5 class="modal-title" id="AcceptanceComfirmTitle">
+                    <span class="EditIcon"><i class="fas fa-clipboard-check"></i></span>驗收及評價確認
+                </h5>
             </div>
             <div class="modal-body ">
                 <div class="container">
@@ -156,13 +163,41 @@
                     </div>
                     <div class="row">
                         <div class="col-12 form-group">
-                            <label class="boldLabel">工作項目評分:</label>
-                            <select id="AC_ReviewScoreSelect" class="form-control-inline" style="width:10em;">
-                                <option value="90">極優 90</option>
-                                <option value="80" selected>良好 80</option>
-                                <option value="60">普通 60</option>
-                                <option value="40">極差 40</option>
-                            </select>
+                            <label class="boldLabel">工作項目評價:</label>
+                            <div class="ml-3" id="ScoreCheckboxes">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="CheckOnTime" disabled>
+                                    <label class="form-check-label" for="exampleCheck1">按時完成</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="CheckAhead" disabled>
+                                    <label class="form-check-label" for="exampleCheck1">提早完成</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="Check3">
+                                    <label class="form-check-label" for="exampleCheck1">Clean Code</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="Check4">
+                                    <label class="form-check-label" for="exampleCheck1">符合90%以上需求功能</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="Check5">
+                                    <label class="form-check-label" for="exampleCheck1">文件或註解完整</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="Check5">
+                                    <label class="form-check-label" for="exampleCheck1">架構或分類整理清楚</label>
+                                </div>
+                            </div>
+
+
+                            @*<select id="AC_ReviewScoreSelect" class="form-control-inline" style="width:10em;">
+                                    <option value="90">極優 90</option>
+                                    <option value="80" selected>良好 80</option>
+                                    <option value="60">普通 60</option>
+                                    <option value="40">極差 40</option>
+                                </select>*@
                         </div>
                     </div>
                 </div>
@@ -180,7 +215,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-radius:3px 4px;">
             <div class="modal-header">
-                <h5 class="modal-title" id="RejectAcceptanceModalTitle"><span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>請選擇駁回或終止此工作項目</h5>
+                <h5 class="modal-title" id="RejectAcceptanceModalTitle">
+                    <span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>請選擇駁回或終止此工作項目
+                </h5>
             </div>
             <div class="modal-body pl-3">
                 <input id="RA_taskGUID" type="text" hidden />
@@ -210,13 +247,13 @@
                 @Html.LabelFor(m => m.FirstOrDefault().TaskName)
                 @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:18em;" })
             </div>
-
             <div class="row ">
                 <div class="col-12 form-group">
                     @Html.LabelFor(m => m.FirstOrDefault().EstStartDate)
                     @{
                         string strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-                    }<br />
+                    }
+                    <br />
                     <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
                 </div>
             </div>
@@ -225,21 +262,40 @@
                     @Html.LabelFor(m => m.FirstOrDefault().EstEndDate)
                     @{
                         strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-                    }<br />
+                    }
+                    <br />
                     <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
                 </div>
-            </div>            
-            <div class="row ">
-                <div class="col-12 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().Tag)
-                    @Html.TextBox("Tag", null, new { @class = "form-control", style = "width:18em; " })
+            </div>
+            <div id="ReviewDiv">
+                <div class="row">
+                    <div class="col-12 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().ReviewScore)
+                        <br />
+                        @Html.TextBox("ReviewScore", null, new { @class = "form-control", style = "width:18em;" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().ReviewDescription)
+                        <br />
+                        <textarea name="ReviewDescription" id="ReviewDescription" class="form-control d-inline" style="width:18em;height:8em;"></textarea>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().Description)
-                    <br />
-                    <textarea name="Description" id="Description" class="form-control d-inline" style="width:18em;height:8em;"></textarea>
+            <div id="DescriptionDiv">
+                <div class="row ">
+                    <div class="col-12 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().Tag)
+                        @Html.TextBox("Tag", null, new { @class = "form-control", style = "width:18em;" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().Description)
+                        <br />
+                        <textarea name="Description" id="Description" class="form-control d-inline" style="width:18em;height:8em;"></textarea>
+                    </div>
                 </div>
             </div>
 
@@ -247,7 +303,8 @@
                 <button id="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
                 <button id="ConfirmedAddBtn" type="button" class="btn btn-primary py-1 px-5">確認新增</button>
                 <button id="ConfirmedModifyBtn" type="button" class="btn btn-primary py-1 px-5">確認修改</button>
-                <br /><button id="DeleteBtn" type="button" class="btn btn-danger py-1 px-3 mt-3">刪除工作項目</button>
+                <br />
+                <button id="DeleteBtn" type="button" class="btn btn-danger py-1 px-3 mt-3">刪除工作項目</button>
             </div>
         </form>
     </div>
@@ -280,9 +337,9 @@
                 $(this).on("dblclick", function () {
                     if ($('#myRightsidenav').css('display') == "none") {
                             $('button.rightOpenbtn').click();
-                    } 
-                    
-                        
+                    }
+
+
                     $.getJSON('@Url.Action("EditTask", "ProjectDetails")', { TaskGUID: $(this).attr('data-taskGUID') }, function (task) {
                             $('#TaskName').val(task.TaskName);
                             $('#TaskStatusID').val(task.TaskStatusID);
@@ -292,15 +349,17 @@
                             $('#Description').val(task.Description);
                             $('#ParentTaskGUID').val(task.ParentTaskGUID);
                             $('#TaskGUID').val(task.TaskGUID);
+                            $('#ReviewScore').val(task.ReviewScore);
+                            $('#ReviewDescription').val(task.ReviewDescription);
 
                         if (task.TaskStatusID == @((int)TasksBL.Task_Status.Completed)) {
                             SetRightAsideToReadOnly();
                         } else {
                             SetRightAsideToModify();
                         }
-                            
+
                     });
-                                           
+
                 });
             }
             function ConvertDatetime(_date) {
@@ -322,6 +381,8 @@
                 $('#ConfirmedAddBtn').hide();
                 $('#ConfirmedModifyBtn').show();
                 $('#DeleteBtn').show();
+                $('#ReviewDiv').hide();
+                $('#DescriptionDiv').show();
 
                 taskForm.find('input[type="text"]').prop("disabled", false);
                 taskForm.find('textarea').prop("disabled", false);
@@ -333,6 +394,8 @@
                 $('#ConfirmedAddBtn').hide();
                 $('#ConfirmedModifyBtn').hide();
                 $('#DeleteBtn').hide();
+                $('#ReviewDiv').show();
+                $('#DescriptionDiv').hide();
 
                 taskForm.find('input[type="text"]').prop('disabled', true);
                 taskForm.find('textarea').prop('disabled', true);
@@ -344,11 +407,15 @@
                 $('#ConfirmedAddBtn').show();
                 $('#ConfirmedModifyBtn').hide();
                 $('#DeleteBtn').hide();
+                $('#ReviewDiv').hide();
+                $('#DescriptionDiv').show();
 
                 taskForm.find('input[type="text"]').val("").prop("disabled", false);
                 taskForm.find('textarea').val("").prop("disabled", false);
                 taskForm.find('input[type="date"]').val("@string.Format("{0:yyyy-MM-dd}", DateTime.Now)").prop("disabled", false);
             }
+
+
 
             $('#ConfirmedAddBtn').click(function () {
                 var data = taskForm.serialize();
@@ -406,12 +473,31 @@
 
 
             $('#btn_ConfirmAccept').click(function () {
-                Acceptance(true, $('#AC_TaskGUID').val(), $('#AC_ReviewScoreSelect').val());
+                var Score = 60;
+                var reviewDescription = "";
+                var CheckOnTime = $('#CheckOnTime');
+                var CheckAhead = $('#CheckAhead');
+                if (CheckOnTime.prop('checked')) {
+                    Score = 70;
+                    reviewDescription += CheckOnTime.parent('div.form-check').children('label').text();
+                } else if (CheckAhead.prop('checked')) {
+                    Score = 75;
+                    reviewDescription += CheckAhead.parent('div.form-check').children('label').text();
+                }
+
+                acceptanceModal.find('input:checked').each(function () {
+                    if (!$(this).prop('disabled')) {
+                        reviewDescription += " " + $(this).parent('div.form-check').children('label').text();
+                        Score += 10;
+                    }
+                });
+
+                Acceptance(true, $('#AC_TaskGUID').val(), Score, reviewDescription);
                 acceptanceModal.modal('hide');
             });
 
             $('#btn_ConfirmRejectAccept').click(function () {
-                Acceptance(false, $('#RA_taskGUID').val(), null);
+                Acceptance(false, $('#RA_taskGUID').val(), null,"");
                 rejectAcceptModal.modal('hide');
             });
 
@@ -422,20 +508,34 @@
                 rejectAcceptModal.modal('hide');
             });
 
-            function Acceptance(_confirm, _taskGUID, _reviewScore) {
-                $.post("@Url.Action("TaskAcceptance", "ProjectDetails")", { isConfirmed: _confirm, taskGuid: _taskGUID, reviewScore: _reviewScore }, function (data) {
+            function Acceptance(_confirm, _taskGUID, _reviewScore, _reviewDescription) {
+                $.post("@Url.Action("TaskAcceptance", "ProjectDetails")", { isConfirmed: _confirm, taskGuid: _taskGUID, reviewScore: _reviewScore, reviewDescription: _reviewDescription },
+                    function (data) {
                         treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
-                });
+                    });
             }
 
             function TaskStatusConfirm() {
                 $(this).on("click", function () {
                     if ($(this).attr('name') == "confirmAcceptBtn") {
+
                         $('#AC_TaskGUID').val($(this).attr('data-taskGUID'));
                         $('#AC_TaskName').text($(this).parents('tr').children('td:first-child').text());
                         $('#AC_EmployeeName').text($(this).parents('tr').children('td:nth-child(4)').text());
                         $('#AC_Description').text($(this).parents('tr').children('td:nth-child(7)').text())
                         $('#AC_Tag').text($(this).parents('tr').children('td:nth-child(8)').text());
+
+                        $.getJSON('@Url.Action("EditTask", "ProjectDetails")', { TaskGUID: $(this).attr('data-taskGUID') }, function (task) {
+
+                            acceptanceModal.find('input:checked').prop('checked', false);
+
+                            if (task.EstWorkTime == task.WorkTime) {
+                                $('#CheckOnTime').prop("checked", true);
+                            } else if (task.EstWorkTime > task.WorkTime) {
+                                $('#CheckAhead').prop("checked", true);
+                            }
+                        });
+
                         acceptanceModal.modal('show');
                     }
                     else if ($(this).attr('name') == "rejectAcceptBtn") {
@@ -449,7 +549,7 @@
                     }
                 });
             }
-            
+
             var isHolidayLoaded = "@Session["Holidays"]";
             if (!(isHolidayLoaded == "loaded")) {
                 GetHolidays();
@@ -477,6 +577,7 @@
             background-color: white;
             cursor: pointer;
         }
+
         .table-hover tbody tr:hover {
             background-color: rgba(0, 0, 0, 0.030);
         }

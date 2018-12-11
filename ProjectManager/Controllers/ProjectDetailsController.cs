@@ -13,15 +13,12 @@ namespace ProjectManager.Controllers
     [Authorize]
     public class ProjectDetailsController : Controller
     {
-        Repository<Tasks> taskRepo = new Repository<Tasks>();
-        Repository<Project> projectRepo = new Repository<Project>();
         // GET: ProjectDetails
+        Repository<Tasks> taskRepo = new Repository<Tasks>();
+        Repository<Project> projectRepo = new Repository<Project>();   
+        Repository<ProjectMembers> projectMembersRepo = new Repository<ProjectMembers>();
 
-        Repository<Employee> employee = new Repository<Employee>();
-        Repository<Department> dep = new Repository<Department>();
-        Repository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
-        Repository<Tasks> tasks = new Repository<Tasks>();
-
+        #region Project Report Chart
         public ActionResult ProjectReport(Guid? ProjectGUID)
         {
             if (ProjectGUID != null)
@@ -43,13 +40,14 @@ namespace ProjectManager.Controllers
 
             ChartData<SingleColorChartDataset> _data = new ChartData<SingleColorChartDataset>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new SingleColorChartDataset() {
-                label="項目完成度",
-                backgroundColor= "#007BFF",
-                borderColor= "#007BFF",
+            _data.datasets.Add(new SingleColorChartDataset()
+            {
+                label = "項目完成度",
+                backgroundColor = "#007BFF",
+                borderColor = "#007BFF",
                 data = rootTasks.GetRootTasksCompletedRate(_tasks).ToList()
             });
-            return Json(_data,JsonRequestBehavior.AllowGet);
+            return Json(_data, JsonRequestBehavior.AllowGet);
         }
         public ActionResult RootTasksEstWorkTimeSum()
         {
@@ -72,10 +70,11 @@ namespace ProjectManager.Controllers
         public ActionResult ProjectMembersEstWorkTimeSum()
         {
             Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
-            var members = projectMembers.GetCollections().Where(m => m.ProjectGUID == _projectGUID).Distinct();
+            var members = projectMembersRepo.GetCollections().Where(m => m.ProjectGUID == _projectGUID).Distinct();
             ChartData<SingleColorChartDataset> _data = new ChartData<SingleColorChartDataset>();
             _data.labels.AddRange(members.Select(m => m.Employee.EmployeeName));
-            _data.datasets.Add(new SingleColorChartDataset() {
+            _data.datasets.Add(new SingleColorChartDataset()
+            {
                 label = "工時總和",
                 backgroundColor = "#007BFF",
                 borderColor = "#007BFF",
@@ -101,6 +100,10 @@ namespace ProjectManager.Controllers
             });
             return Json(_data, JsonRequestBehavior.AllowGet);
         }
+
+        #endregion
+
+        #region Project Edit
         [HttpGet]
         public ActionResult ProjectEdit()
         {
@@ -131,7 +134,9 @@ namespace ProjectManager.Controllers
             projectRepo.Update(recentProject);
             return ProjectEdit();
         }
+        #endregion
 
+        #region Project Distribution
         public ActionResult ProjectDistribution()
         {
             if (Session["ProjectGUID"] == null)
@@ -153,7 +158,6 @@ namespace ProjectManager.Controllers
                 .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
             return PartialView(tasks);
         }
-
         [HttpPost]
         public ActionResult InsertTask(Tasks task)
         {
@@ -166,29 +170,33 @@ namespace ProjectManager.Controllers
             task.StartDate = task.EstStartDate;
             task.EndDate = task.EstEndDate;
             task.TaskStatusID = (int)ProjectManager.Models.TasksBL.Task_Status.Discussing;
+            task.AssignedDate = DateTime.Now; 
             taskRepo.Add(task);
-            return Json("success", JsonRequestBehavior.AllowGet);
-            //return RedirectToAction("ProjectDistribution");
+            return Json("success", JsonRequestBehavior.AllowGet);            
         }
         [HttpGet]
         public ActionResult EditTask(Guid? TaskGUID)
         {
             var task = taskRepo.Find(TaskGUID);
+            task.EstWorkTime = task.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+            task.WorkTime = task.GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+            taskRepo.Update(task);
             return Content(JsonConvert.SerializeObject(task), "application/json");
         }
         [HttpPost]
         public ActionResult EditTask(Tasks taskModified)
         {
             Tasks recentTask = taskRepo.Find(taskModified.TaskGUID);
-            recentTask.TaskName = taskModified.TaskName;            
+            recentTask.TaskName = taskModified.TaskName;
             recentTask.Tag = taskModified.Tag;
             recentTask.EstStartDate = taskModified.EstStartDate;
             recentTask.EstEndDate = taskModified.EstEndDate;
             recentTask.StartDate = taskModified.EstStartDate;
             recentTask.Description = taskModified.Description;
-            recentTask.EstWorkTime = taskModified.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
-           
-            taskRepo.Update(recentTask);            
+            recentTask.EstWorkTime = recentTask.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+            recentTask.WorkTime = recentTask.GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+
+            taskRepo.Update(recentTask);
             return Json("success", JsonRequestBehavior.AllowGet);
             //return RedirectToAction("ProjectDistribution");
         }
@@ -199,7 +207,7 @@ namespace ProjectManager.Controllers
             string errorMsg = "";
             var allTasks = recentTask.GetAllChildTasks().ToList();
             allTasks.Insert(0, recentTask);
-            
+
             if (allTasks.IsAnyResource())
             {
                 errorMsg = "欲刪除的工作項目，有費用產生，不可刪除。";
@@ -225,7 +233,7 @@ namespace ProjectManager.Controllers
         {
             Tasks recentTask = taskRepo.Find(_task.TaskGUID);
             var childTasks = recentTask.GetAllChildTasks();
-            return Json(childTasks.Count(),JsonRequestBehavior.AllowGet);
+            return Json(childTasks.Count(), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult LoadHolidays(HolidaysVM holidays)
@@ -237,14 +245,18 @@ namespace ProjectManager.Controllers
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult TaskAcceptance( bool isConfirmed,Guid? taskGuid, int? reviewScore)
+        public ActionResult TaskAcceptance(bool isConfirmed, Guid? taskGuid, int? reviewScore, string reviewDescription)
         {
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
-            if (reviewScore != null)
+            if (reviewScore != null && isConfirmed)
             {
+                if (reviewScore > 100)
+                    reviewScore = 100;
                 _task.ReviewScore = byte.Parse(reviewScore.ToString());
+                _task.ReviewDescription = reviewDescription;
             }
-            _task.TaskStatusID = isConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;            
+           
+            _task.TaskStatusID = isConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;
             taskRepo.Update(_task);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
@@ -260,9 +272,11 @@ namespace ProjectManager.Controllers
         public ActionResult EndTask(Guid? taskGuid)
         {
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
-            _task.TaskStatusID = (int)TasksBL.Task_Status.Ended;
+            _task.TaskStatusID = (int)TasksBL.Task_Status.Closed;
             taskRepo.Update(_task);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
+
+        #endregion 
     }
 }
