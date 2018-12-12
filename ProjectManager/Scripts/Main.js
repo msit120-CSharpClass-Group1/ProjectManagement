@@ -39,11 +39,11 @@
     });
 
     //強調左邊欄選單
-    var leftnavli = $("#myLeftsidenav > ul > li");
-    leftnavli.click(function () {
-        leftnavli.removeClass('active');
-        $(this).addClass('active');
-    });
+    //var leftnavli = $("#myLeftsidenav > ul > li");
+    //leftnavli.click(function () {
+    //    leftnavli.removeClass('active');
+    //    $(this).addClass('active');
+    //});
     //登出按鈕
     $('#logoutbtn').click(function () {
         window.location.href = '/Login/Logout';
