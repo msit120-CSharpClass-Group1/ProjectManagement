@@ -40,27 +40,29 @@
     </form>
 </div>
 
-<div class="row mt-3 mb-3">
-    <div class="col-6">
-        <div id="CostsByDepartmentsContainer" class="chart-container bg-light p-3">
-            <canvas id="CostsByDepartmentsChart"></canvas>
+<div id="ChartContainer" class="hide">
+    <div class="row mt-3 mb-3">
+        <div class="col-6">
+            <div id="CostsByDepartmentsContainer" class="chart-container bg-light p-3">
+                <canvas id="CostsByDepartmentsChart"></canvas>
+            </div>
+        </div>
+        <div class="col-6">
+            <div id="OverallRatesContainer" class="chart-container bg-light p-3">
+                <canvas id="OverallRatesChart"></canvas>
+            </div>
         </div>
     </div>
-    <div class="col-6">
-        <div id="OverallRatesContainer" class="chart-container bg-light p-3">
-            <canvas id="OverallRatesChart"></canvas>
+    <div class="row mb-3">
+        <div class="col-6">
+            <div id="CostsByCatsContainer" class="chart-container bg-light p-3">
+                <canvas id="CostsByCatsChart"></canvas>
+            </div>
         </div>
-    </div>
-</div>
-<div class="row mb-3">
-    <div class="col-6">
-        <div id="CostsByCatsContainer" class="chart-container bg-light p-3">
-            <canvas id="CostsByCatsChart"></canvas>
-        </div>
-    </div>
-    <div class="col-6">
-        <div id="TasksByStatusContainer" class="chart-container bg-light p-3">
-            <canvas id="TasksByStatusChart"></canvas>
+        <div class="col-6">
+            <div id="TasksByStatusContainer" class="chart-container bg-light p-3">
+                <canvas id="TasksByStatusChart"></canvas>
+            </div>
         </div>
     </div>
 </div>
@@ -100,12 +102,12 @@
             Chart.defaults.global.defaultFontSize = 16;
             Chart.defaults.global.tooltips.titleFontStyle = 'normal';
 
-            CostsByDepartmentsChart();
-            OverallRatesChart();
-            CostsByCatsChart();
-            TasksByStatus();
+            CostsByDepartmentsChart(OverallRatesChart(CostsByCatsChart(TasksByStatus(function ()
+            {
+                $("#ChartContainer").fadeIn();
+            }))));
 
-            function CostsByDepartmentsChart()
+            function CostsByDepartmentsChart(callback)
             {
                 $.getJSON("@Url.Action("CostsByDepartments", "Cost")", null, function (datas)
                 {
@@ -134,10 +136,17 @@
                                 },
                             }
                         });
+
+                    if (typeof callback === 'function')
+                    {
+                        callback();
+                    }
+
                 });
+
             }
 
-            function OverallRatesChart()
+            function OverallRatesChart(callback)
             {
                 $.getJSON("@Url.Action("OverallRates", "Cost")", null, function (datas)
                 {
@@ -176,10 +185,17 @@
                                 },
                             }
                         });
+
+                    if (typeof callback === 'function')
+                    {
+                        callback();
+                    }
+
                 });
+
             }
 
-            function CostsByCatsChart()
+            function CostsByCatsChart(callback)
             {
                 $.getJSON("@Url.Action("CostsByCategories", "Cost")", null, function (datas)
                 {
@@ -208,10 +224,17 @@
                                 },
                             }
                         });
+
+                    if (typeof callback === 'function')
+                    {
+                        callback();
+                    }
+
                 });
+
             }
 
-            function TasksByStatus()
+            function TasksByStatus(callback)
             {
                 $.getJSON("@Url.Action("TasksByStatus", "Cost")", null, function (datas)
                 {
@@ -240,9 +263,16 @@
                                 },
                             }
                         });
+
+                    if (typeof callback === 'function')
+                    {
+                        callback();
+                    }
+
                 });
 
             }
+
         });
     </script>
 }

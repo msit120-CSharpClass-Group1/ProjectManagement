@@ -108,7 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\AdminLTE.css" />
-    <Content Include="Content\all.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -119,6 +118,7 @@
     <Content Include="Content\Login.css" />
     <Content Include="Content\Main.css" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\PMScore.css" />
     <Content Include="Content\skin-black.css" />
     <Content Include="webfonts\fa-brands-400.svg" />
     <Content Include="webfonts\fa-regular-400.svg" />
@@ -191,6 +191,7 @@
     <Content Include="webfonts\fa-solid-900.woff2" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -272,7 +273,7 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DataObject\AllowCrossSiteJsonAttribute.cs" />
-    <Compile Include="Models\DataObject\GroupedProject.cs" />
+    <Compile Include="Models\DataObject\Grouped.cs" />
     <Compile Include="Models\Department.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
@@ -358,6 +359,7 @@
     </Compile>
     <Compile Include="Models\ViewModel\BoardVM.cs" />
     <Compile Include="Models\ViewModel\ChartDataVM.cs" />
+    <Compile Include="Models\ViewModel\DisplayTaskStatusCountVM.cs" />
     <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
     <Compile Include="Models\ViewModel\EmployeeInfo.cs" />
     <Compile Include="Models\ViewModel\ProjectMemberScoreVM.cs" />
@@ -445,8 +447,10 @@
     <Content Include="Views\Members\Edit.cshtml" />
     <Content Include="Views\Perfomance\Index.cshtml" />
     <Content Include="Views\Cost\Charts.cshtml" />
-    <Content Include="Views\Perfomance\Score.cshtml" />
     <Content Include="Views\Perfomance\Watch.cshtml" />
+    <Content Include="Views\Perfomance\TaskScoreAVGReview.cshtml" />
+    <Content Include="Views\Perfomance\ScoreByPM.cshtml" />
+    <Content Include="Views\Perfomance\ScoreByMySelf.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
