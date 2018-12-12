@@ -21,15 +21,15 @@ namespace ProjectManager.Controllers
                 return RedirectToAction("Index", "Projects");
             Guid indexPJID = new Guid(Session["ProjectGUID"].ToString());
             ViewBag.FirstEmpList = employee.GetCollections().ToList();
-            ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();
+            ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();           
             return View(dep.GetCollections());
         }
         public ActionResult SelectDep(Guid depid)
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            var depGUID = depid;
-            var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);   
+            var depGUID = depid;      
+            var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);            
             return Content(JsonConvert.SerializeObject(emp), "application/json");
             //return Json(JsonConvert.SerializeObject(emp), "application/json");
             //return Json(JsonConvert.SerializeObject(emp), "application/json");

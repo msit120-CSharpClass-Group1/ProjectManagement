@@ -81,7 +81,7 @@
                     <div class="alert alert-primary" role="alert" id="empDiv">
                         <img src="~/image/avatar.png" class="rounded-circle" />
                         <p>@_emp.EmployeeName</p>
-                        <input type="checkbox" class="ckbox1" style="float:right" value="@_emp.EmployeeGUID" />
+                        <input type="checkbox" class="ckbox1" style="float:right;" value="@_emp.EmployeeGUID"/>
                     </div>
                 }
             </div>
@@ -137,7 +137,7 @@
                     if (!flag) { selecter.children().first().remove()};
                     flag = true;
                     SendIDToTeamTable();
-            })
+                }).done(function () { InTeamChecked()})
         })
 
         SendIDToTeamTable();
@@ -248,6 +248,24 @@
             }
         })
         $(".rounded-circle").tooltip();
+
+        function InTeamChecked() //已經在專案內的成員會被打勾
+        {
+            var ScrollDiv = $("#scrollDiv");
+            for (var j = 1; j <= ScrollDiv.children().length; j++)
+            {
+                var EmployeeName = $('#scrollDiv div:nth-child(' + j + ')').children('p:nth-child(2)').text();
+                var teamArea = $("#teamPanel");
+                for (var i = 1; i <= teamArea.children().length; i++)
+                {
+                    var PMemberName = $('#teamPanel img:nth-child(' + i + ')').data("original-title");
+                    if (EmployeeName == PMemberName)
+                    {
+                        $('#scrollDiv div:nth-child(' + j + ')').children('input:nth-child(3)').prop('checked', true);
+                    }
+                }
+            }
+        }
     })
 </script>
 }

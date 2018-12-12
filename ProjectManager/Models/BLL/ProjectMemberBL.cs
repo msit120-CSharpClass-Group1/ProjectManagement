@@ -122,6 +122,6 @@ namespace ProjectManager.Models
                 avgTasksScore.Add(item);
             }
             return avgTasksScore;
-        }
+        }       
     }
 }
