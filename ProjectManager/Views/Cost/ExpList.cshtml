@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjectManager.Models.ProjectResourceVM>
+﻿
 @{
     ViewBag.Activity = "成本管理";
     ViewBag.Title = "費用管理";
@@ -32,53 +32,85 @@
         .invalid {
             border-color: #dc3545 !important;
         }
-
     </style>
 }
-<div>
-    <form class="form-inline">
-        <div class="form-group">
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="ProjectID">專案編號：</label>
-            </div>
-            <div>
-                <input class="form-control" id="ProjectID" name="ProjectID" placeholder="請輸入專案編號" style="width:9em" type="text" value="">
-                <div style="display:none">
-                    <ul>
-                        <li>
-                            <div id="showProjectID"></div>
-                            <div id="showProjectName"></div>
-                        </li>
-                    </ul>
+<div class="row">
+    <div class="col-8">
+        <form class="form-inline">
+            <div class="form-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="ProjectID">專案編號：</label>
+                </div>
+                <div>
+                    <input class="form-control" id="ProjectID" name="ProjectID" placeholder="請輸入專案編號" style="width:9em" type="text" value="">
+                    <div style="display:none">
+                        <ul>
+                            <li>
+                                <div id="showProjectID"></div>
+                                <div id="showProjectName"></div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group ml-3">
-            <div class="input-group-prepend">
-                <lable class="input-group-text" for="RequiredDeptGUID">需求部門：</lable>
+            <div class="form-group ml-3">
+                <div class="input-group-prepend">
+                    <lable class="input-group-text" for="RequiredDeptGUID">需求部門：</lable>
+                </div>
+                @{
+                    SelectList Departments = new SelectList(ViewBag.Departments, "DepartmentGUID", "DepartmentName");
+                }
+                @Html.DropDownList("RequiredDeptGUID", Departments, "請選擇部門", new { @class = "custom-select" })
             </div>
-            @{
-                SelectList Departments = new SelectList(ViewBag.Departments, "DepartmentGUID", "DepartmentName");
-            }
-            @Html.DropDownList("RequiredDeptGUID", Departments, "請選擇部門", new { @class = "custom-select" })
-        </div>
-        <div class="form-group ml-3">
-            <div class="input-group-prepend">
-                <lable class="input-group-text" for="Select_ProjectName">專案名稱：</lable>
+            <div class="form-group ml-3">
+                <div class="input-group-prepend">
+                    <lable class="input-group-text" for="Select_ProjectName">專案名稱：</lable>
+                </div>
+                <select id="Select_ProjectName" class="custom-select"></select>
             </div>
-            <select id="Select_ProjectName" class="custom-select"></select>
+        </form>
+
+        <div id="result" class="mt-3" style="display:none">
+            <span id="sp_ProjectName"></span>
+            <span>中的費用，共有</span>
+            <span id="Count_of_Resources"></span>
+            <span>筆。</span>
         </div>
-    </form>
+
+        <div id="PageListPager"></div>
+
+    </div>
+    <div class="col-4">
+        <form>
+            <div class="form-group row">
+                <lable class="input-group-text" for="filter_StartDate">依日期篩選：</lable>
+                <div>
+                    <input type="date" class="form-control" id="filter_StartDate" />
+                </div>
+                <div style="padding:6px 0">
+                    &nbsp;～&nbsp;
+                </div>
+                <div>
+                    <input type="date" class="form-control" id="filter_EndDate" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <lable class="input-group-text" for="filter_Task">依工作篩選：</lable>
+                <div>
+                    <select id="filter_Task" class="custom-select"></select>
+                </div>
+            </div>
+            <div class="row">
+                <lable class="input-group-text" for="filter_ResourceCat">依費用類別篩選：</lable>
+                <div>
+                    @Html.DropDownList("filter_ResourceCat", (SelectList)ViewBag.ExpCats, "請選擇類別", new { @class = "form-control custom-select", required = true })
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
-<div id="result" class="mt-3" style="display:none">
-    <span id="sp_ProjectName"></span>
-    <span>中的費用，共有</span>
-    <span id="Count_of_Resources"></span>
-    <span>筆。</span>
-</div>
-
-<div id="PartialView" class="mt-3 hide">
+<div id="PartialView" class="hide">
 </div>
 
 <div class="modal fade" style="top:50px;" id="DeleteExpModal" tabindex="-1" role="dialog" aria-labelledby="DeleteExpModalLabel" aria-hidden="true">
@@ -257,6 +289,8 @@
         $(document).ready(function ()
         {
             $(".rightOpenbtn").html('<i class="fas fa-plus"></i>');
+            $("#ul_costManagement").slideDown();
+            $("#li_ExpList").addClass("active");
 
             function LoadProjects()
             {
@@ -292,6 +326,7 @@
                 var projectGUID = opt.data('projectguid');
                 var PartialView = $("#PartialView");
                 var result = $("#result");
+                var pager = $("#PageListPager");
 
                 if (projectGUID)
                 {
@@ -304,11 +339,13 @@
                         Binding();
                     }).fadeIn();
                     result.fadeIn();
+                    pager.fadeIn();
                 }
                 else
                 {
                     PartialView.fadeOut();
                     result.fadeOut();
+                    pager.fadeOut();
                 }
             }
 
@@ -325,6 +362,7 @@
                         var opt = $("<option></option>").val(task.TaskGUID).text(task.TaskName);
                         docFrag.append(opt);
                     })
+                    $("#filter_Task").html(docFrag);
                     $("#TaskGUID").html(docFrag);
                 });
             };
@@ -509,6 +547,11 @@
 
             function Binding()
             {
+                var pgcontainer = $(".pagination-container");
+                var pager = pgcontainer.html();
+                $("#PageListPager").html(pager);
+                pgcontainer.hide();
+                
                 $("#tb_TaskResources>tbody").on("click", ":button[name='btn_edit']", SetRightAsideToModify);
 
                 function SetRightAsideToModify()
