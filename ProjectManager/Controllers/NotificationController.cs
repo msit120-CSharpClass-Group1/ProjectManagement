@@ -21,7 +21,7 @@ namespace ProjectManager.Controllers
         public ActionResult Load()
         {
             var _members =members.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            var _tasks =tasks.GetCollections().Where(n => n.EmployeeGUID == _members.EmployeeGUID&&n.IsRead==false).Select(n=>new { n.TaskName,n.AssignedDate});
+            var _tasks =tasks.GetCollections().Where(n => n.EmployeeGUID == _members.EmployeeGUID).Select(n=>new { n.TaskName,n.AssignedDate,n.IsRead}).OrderByDescending(n=>n.AssignedDate).Take(5);
             return Json(_tasks);
         }
     }

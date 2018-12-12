@@ -7,8 +7,7 @@
     });
 
     //開啟右側選單
-    $('.rightOpenbtn').click(function ()
-    {
+    $('.rightOpenbtn').click(function () {
         //$('.main').toggleClass("right-sidenav-toggle");
         $('#myRightsidenav').slideToggle();
     });
@@ -48,13 +47,53 @@
     $('#logoutbtn').click(function () {
         window.location.href = '/Login/Logout';
     });
-    $('#notificationbtn').click(function () {
-        console.log("1234");
+    //通知訊息下拉選單
+    window.setInterval(msgcount, 5000);
+    function msgcount()
+    {
         $.post('/Notification/Load/', {}, function (datas) {
-            $(datas).each(function (id,data) {
-                console.log(data.TaskName + ","+ data.AssignedDate );
-            });
+            var btn = $('#notificationbtn');
+            btn.html('');
+            var Fragdoc = $(document.createDocumentFragment());
+            var _count = $(datas).length;
+            var count = $('<span id="msgcount" class="label"></span>');
+            if (_count >= 5) {
+                count.html(_count+"+");
+            }
+            else
+            {
+                count.html(_count);
+            }
+            
+            var i = $('<i class="far fa-envelope"></i>');
+            Fragdoc.append(i); 
+            if (_count !== 0) {
+                Fragdoc.append(count);
+            }
+            btn.html(Fragdoc);
         });
+    }
+    msgcount();
+    $('#notificationbtn').click(function () {
+        var msg = $('#notificationmsg');
+        if (msg.css('display') === 'block') {
+            $.post('/Notification/Load/', {}, function (datas) {
+                var Fragdoc = $(document.createDocumentFragment());
+                $(datas).each(function (id, data) {
+                    console.log(data.TaskName+','+data.IsRead);
+                    var time = new Date(data.AssignedDate.match(/\d+/)[0] * 1);
+                    var taskName = $('<h5></h5>').html('新增工作「' + data.TaskName + '」');
+                    var taskTime = $('<h6></h6>').html(time.toLocaleDateString());
+                    var task = $('<a></a>');
+                    task.append(taskName);
+                    task.append(taskTime);
+                    Fragdoc.append(task);
+                });
+                var moreTask = $('<a></a>').append('更多訊息');
+                Fragdoc.append(moreTask);
+                msg.html(Fragdoc);
+            });
+        }
     });
-    
+
 });

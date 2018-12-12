@@ -24,11 +24,13 @@
             </div>
             <div class="dropdown">
                 <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">@EmployeeInfo.EmployeeName</button>
+                <div class="dropdown-content">
+                    <a href="#">message1</a>
+                </div>
             </div>
             <div class="dropdown">
-                <button id="notificationbtn" class="navdropbtn"><i class="far fa-envelope"></i><span class="label">9</span></button>
-                <div class="dropdown-content">
-                  
+                <button id="notificationbtn" class="navdropbtn"><i class="far fa-envelope"></i><span id="msgcount" class="label"></span></button>
+                <div id="notificationmsg" class="dropdown-content">
                 </div>
             </div>
         </div>
