@@ -24,13 +24,15 @@ namespace ProjectManager.Controllers
             ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();
             return View(dep.GetCollections());
         }
-        public ActionResult SelectDep()
+        public ActionResult SelectDep(Guid depid)
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            var depGUID = new Guid(Request.QueryString["depid"]);
-            var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);
+            var depGUID = depid;
+            var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);   
             return Content(JsonConvert.SerializeObject(emp), "application/json");
+            //return Json(JsonConvert.SerializeObject(emp), "application/json");
+            //return Json(JsonConvert.SerializeObject(emp), "application/json");
             //return Json(emp, JsonRequestBehavior.AllowGet);
         }
 
@@ -83,16 +85,21 @@ namespace ProjectManager.Controllers
         {
             if (Request.Form["TotalRow"] != "")
             {
-                var TotalRow = Convert.ToInt32(Request.Form["TotalRow"]);
                 var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
-                for (int i = FirstRow; i < TotalRow + FirstRow; i++)
+                var LastRow = Convert.ToInt32(Request.Form["LastRow"]);
+
+                for (int i = FirstRow; i <= LastRow; i++)
                 {
-                    var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
-                    var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
-                    Tasks _tasks = tasks.Find(TaskGUID);
-                    _tasks.EmployeeGUID = EmpGUID;
-                    _tasks.TaskStatusID = 2;
-                    tasks.Update(_tasks);
+                    if (Request.Form["EmployeeGUID" + i] != null && Request.Form["TaskGUID" + i] != null)
+                    {
+                        var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
+                        var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
+                        Tasks _tasks = tasks.Find(TaskGUID);
+                        _tasks.EmployeeGUID = EmpGUID;
+                        _tasks.AssignedDate = DateTime.Now;
+                        _tasks.TaskStatusID = 2;
+                        tasks.Update(_tasks);
+                    }
                 }
             }
             return RedirectToAction("AssignTask");

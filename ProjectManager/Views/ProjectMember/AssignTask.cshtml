@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <div></div>
+
             <div class="col-7" id="projectMemberDivL1">
                 @foreach (var _projectMember in Model)
                 {
@@ -151,6 +151,7 @@
                     <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
                     <input type="hidden" id="rowcount" name="TotalRow" />
                     <input type="hidden" id="firstrow" name="FirstRow" />
+                    <input type="hidden" id="lastrow" name="LastRow" />
                     <input type="button" class="btn btn-danger" id="reset" value="重新分配">
                 </div>
             </div>
@@ -197,7 +198,7 @@
                         var taskName = ui.draggable.data("tag");
                         var flipPanel = $(".flip");
 
-                        ui.draggable.text("").attr("style", "width:2px;float:left;padding:10px;border-radius:80%").tooltip();
+                        ui.draggable.text("").attr("style", "width:2px;float:left;padding:10px;border-radius:80%;background-color:darkcyan").tooltip();
                         ui.draggable.appendTo($(this))
 
                         var cell1hid = $("<input/>").attr("name", "EmployeeGUID" + submitCount).attr("type", "hidden").val(empID);
@@ -220,11 +221,13 @@
                             }
                         }
                         submitCount++;
-                        var TotalRow = $("#mappingTable").find('tr').length - 1;
+                        var TotalRow = $("#mappingTable").find('tr').length;
                         var FirstRow = $("#mappingTable tr:eq(1)").children("input:nth-child(4)").attr("name").substring(12, 15);
+                        var LastRow = $("#mappingTable tr:last").children("input:nth-child(4)").attr("name").substring(12, 15);
                         $("#rowcount").val(TotalRow);
                         $("#firstrow").val(FirstRow);
-                        $(this).parent().effect("pulsate", "slow");
+                        $("#lastrow").val(LastRow);
+                        $(this).parent().effect("highlight", "slow");
                         if (flag) { $(".panel").slideToggle("slow"); flag = false }
                     }
                 });
@@ -241,6 +244,22 @@
                             .attr("title",taskName)
                             .draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5 });
                         $(".list-group").append(backToList);
+                        var memberCardDiv = document.getElementById("projectMemberDivL1");
+
+                        for (var i = 1; i <= memberCardDiv.childElementCount; i++)
+                        {                         
+                            var cardTwoDiv = $('#projectMemberDivL1 div:nth-child(' + i + ')').children("div:nth-child(2)");
+
+                            for (var j = 1; j <= cardTwoDiv.children().length; j++)
+                            {
+                                var memberCardLi = cardTwoDiv.children('#projectMemberDivL1 li:nth-child(' + j + ')').data("tag")
+                                if (memberCardLi == taskName)
+                                {
+                                    cardTwoDiv.children('#projectMemberDivL1 li:nth-child(' + j + ')').remove();
+                                }
+                            }
+                        }
+
                     }
                     else {
                         var EmpName = $(this).parent().prev().prev().text()
