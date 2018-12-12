@@ -249,12 +249,13 @@
                         for (var i = 1; i <= memberCardDiv.childElementCount; i++)
                         {                         
                             var cardTwoDiv = $('#projectMemberDivL1 div:nth-child(' + i + ')').children("div:nth-child(2)");
-                            for (var j = 1; j <= cardTwoDiv.length; j++)
+
+                            for (var j = 1; j <= cardTwoDiv.children().length; j++)
                             {
                                 var memberCardLi = cardTwoDiv.children('#projectMemberDivL1 li:nth-child(' + j + ')').data("tag")
                                 if (memberCardLi == taskName)
                                 {
-                                    $('#projectMemberDivL1 div:nth-child(' + i + ')').children("div:nth-child(2)").children('#projectMemberDivL1 li:nth-child(' + j + ')').remove();
+                                    cardTwoDiv.children('#projectMemberDivL1 li:nth-child(' + j + ')').remove();
                                 }
                             }
                         }
