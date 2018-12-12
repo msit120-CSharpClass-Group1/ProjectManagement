@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "聊天室";
+}
+
+<div class="container mt-3">
+    <div class="card">
+        <div class="card-header text-white bg-dark">
+            <h3>專案聊天室</h3>
+        </div>
+        <div class="card-body">
+            <form class="form-horizontal " action="~/ProjectDetails/ProjectEdit" method="post">
+                <div class="form-group">
+                    <label>使用者姓名 :</label>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" id="nickname" />
+                    </div>
+                </div>
+
+                @*<div class="row ">
+                    <div class="col-12 form-group">
+                        @Html.LabelFor(m => m.Description)
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+                    </div>
+                </div>*@
+
+
+                <div class="form-group">
+                    <label>輸入訊息 :</label>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" id="message" />
+                    </div>
+                </div>
+                <button id="sendmessage" class="btn btn-dark" style="margin-left:35px;">傳送訊息</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div id="chatroom" class="container">
+
+    <div id="ctr1" class="row">
+        <label>暱稱</label>
+        <input type="text" id="nickname" />
+        <br />
+        <label>訊息</label>
+        <input type="text" id="message" />
+        <br />
+        <button id="sendmessage" class="btn btn-primary" style="margin-left:35px;">傳送訊息</button>
+    </div>
+
+    <div class="row">
+        <ul id="chats"></ul>
+    </div>
+</div>
+@section script
+{
+    <script src="~/Scripts/jquery.signalR-2.4.0.min.js"></script>
+    <script type="text/javascript" src="~/signalr/hubs"></script>
+    <script>
+        $(function () {
+            var $chats = $('#chats'),
+                chatHub = $.connection.chatHub;
+
+            chatHub.client.gotMessage = function (nickname, message) {
+                $chats.append('<li><span class="label label-primary">' + htmlEncode(nickname) + '</span>' + htmlEncode(message) + '</li>');
+                $chats.scrollTop($chats.innerHeight()); //自己往上卷的動作
+            };
+
+            var htmlEncode = function (content) {        //怕XS攻擊?//做一個小保護
+                return $('<div />').text(content).html();
+            }
+
+            $.connection.hub.start().done(function () {
+                $("#sendmessage").click(function (evt) {
+                    var $name = $("#nickname"),
+                        name = $name.val();
+                    $message = $("#message"),
+                        message = $message.val();
+
+                    chatHub.server.sendMessage(name, message);
+
+                    $message.val("").focus();
+                });
+            });
+        });
+    </script>
+}
