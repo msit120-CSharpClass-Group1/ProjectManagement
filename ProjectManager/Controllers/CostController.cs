@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using ProjectManager.Models;
 using PagedList;
 using PagedList.Mvc;
+using Newtonsoft.Json;
 
 namespace ProjectManager.Controllers
 {
@@ -14,6 +15,7 @@ namespace ProjectManager.Controllers
     {
         Repository<ResourceCategory> ResourceCatRepo = new Repository<ResourceCategory>();
         Repository<TaskResource> ResourceRepo = new Repository<TaskResource>();
+        Repository<TaskStatus> StatusRepo = new Repository<TaskStatus>();
         Repository<Department> DptRepo = new Repository<Department>();
         Repository<Project> ProjectRepo = new Repository<Project>();
         Repository<Tasks> TaskRepo = new Repository<Tasks>();
@@ -32,19 +34,35 @@ namespace ProjectManager.Controllers
 
         public ActionResult GetProjectListByDptID(Guid DepartmentID)
         {
-            List<Project> ProjectList = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID).Select(p => new Project { ProjectGUID = p.ProjectGUID, ProjectID = p.ProjectID, ProjectName = p.ProjectName }).ToList();
+            List<Project> ProjectList = ProjectRepo.GetCollections()
+                                                   .Where(p => p.RequiredDeptGUID == DepartmentID)
+                                                   .Select(p => new Project
+                                                   {
+                                                       ProjectGUID = p.ProjectGUID,
+                                                       ProjectID = p.ProjectID,
+                                                       ProjectName = p.ProjectName
+                                                   })
+                                                   .ToList();
 
-            return Json(ProjectList, JsonRequestBehavior.AllowGet);
+            return Content(JsonConvert.SerializeObject(ProjectList), "application/json");
         }
 
         public ActionResult GetTaskListByProjectGuid(Guid ProjectGuid)
         {
-            List<Tasks> TaskList = TaskRepo.GetCollections().Where(t => t.ProjectGUID == ProjectGuid).GetLeafTasks().Select(t => new Tasks { TaskGUID = t.TaskGUID, TaskName = t.TaskName }).ToList();
+            List<Tasks> TaskList = TaskRepo.GetCollections()
+                                           .Where(t => t.ProjectGUID == ProjectGuid)
+                                           .GetLeafTasks()
+                                           .Select(t => new Tasks
+                                           {
+                                               TaskGUID = t.TaskGUID,
+                                               TaskName = t.TaskName
+                                           })
+                                           .ToList();
 
-            return Json(TaskList, JsonRequestBehavior.AllowGet);
+            return Content(JsonConvert.SerializeObject(TaskList), "application/json");
         }
 
-        public ActionResult GetTaskResources(Guid id,int? page,string sortBy)
+        public ActionResult GetTaskResources(Guid id, int? page, string sortBy)
         {
             var q = from p in ProjectRepo.GetCollections()
                     join t in TaskRepo.GetCollections() on p.ProjectGUID equals t.ProjectGUID
@@ -70,7 +88,7 @@ namespace ProjectManager.Controllers
                         Description = tr.Description
                     };
 
-            var ProjectResourceList = q.ToList().AsQueryable();
+            var ProjectResourceList = q.ToList().AsQueryable().Sort(sortBy);
 
             ViewBag.Count = ProjectResourceList.Count();
             ViewBag.sortByDate = string.IsNullOrEmpty(sortBy) ? "DateDesc" : "";
@@ -81,73 +99,37 @@ namespace ProjectManager.Controllers
             ViewBag.sortByUnitPrice = sortBy == "UnitPrice" ? "UnitPriceDesc" : "UnitPrice";
             ViewBag.sortBySubtotal = sortBy == "SubTotal" ? "SubTotalDesc" : "SubTotal";
 
-            switch (sortBy)
-            {
-                case "DateDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.Date);
-                    break;
-                case "TaskName":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.TaskName);
-                    break;
-                case "TaskNameDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.TaskName);
-                    break;
-                case "ResourceName":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.ResourceName);
-                    break;
-                case "ResourceNameDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.ResourceName);
-                    break;
-                case "ResourceCat":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.CategoryID);
-                    break;
-                case "ResourceCatDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.CategoryID);
-                    break;
-                case "Quantity":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.Quantity);
-                    break;
-                case "QuantityDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.Quantity);
-                    break;
-                case "UnitPrice":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.UnitPrice);
-                    break;
-                case "UnitPriceDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.UnitPrice);
-                    break;
-                case "SubTotal":
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.SubTotal);
-                    break;
-                case "SubTotalDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.SubTotal);
-                    break;
-                default:
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.Date);
-                    break;
-            }
-
-            return PartialView(ProjectResourceList.ToPagedList(page ?? 1, 10));
+            return PartialView(ProjectResourceList.ToPagedList(page ?? 1, 8));
         }
 
         public ActionResult AddTaskResource(TaskResource resource)
         {
-            resource.ResourceGUID = Guid.NewGuid();
-            ResourceRepo.Add(resource);
+            if(resource.ResourceName != null)
+            {
+                resource.ResourceGUID = Guid.NewGuid();
+                ResourceRepo.Add(resource);
+            }
 
             return RedirectToAction("ExpList");
         }
 
         public ActionResult UpdateTaskResource(TaskResource resource)
         {
-            ResourceRepo.Update(resource);
+            if (resource.ResourceName != null)
+            {
+                ResourceRepo.Update(resource);
+            }
 
             return RedirectToAction("ExpList");
         }
 
-        public ActionResult DeleteTaskResource(Guid id)
+        public ActionResult DeleteTaskResource(Guid? id)
         {
-            ResourceRepo.Delete(ResourceRepo.Find(id));
+            if (id != null)
+            {
+                ResourceRepo.Delete(ResourceRepo.Find(id));
+            }
+
             return RedirectToAction("ExpList");
         }
         #endregion
@@ -198,25 +180,61 @@ namespace ProjectManager.Controllers
 
             chartData.datasets.Add(new SingleColorChartDataset
             {
-                label = "Total Cost",
-                backgroundColor = "Darkcyan",
-                borderColor = "Darkcyan",
+                label = "Cost",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
                 data = departments.GetSubtotalByDepartment()
             });
 
-            return Json(chartData, JsonRequestBehavior.AllowGet);
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
         public ActionResult OverallRates()
         {
-            ChartData<MutiColorChartDataset> chartData = new ChartData<MutiColorChartDataset>();
+            ChartData<SingleColorChartDatasetD> chartData = new ChartData<SingleColorChartDatasetD>();
+            chartData.labels = new List<string>() { "總體專案完成率", "總體預算執行率" };
 
+            chartData.datasets.Add(new SingleColorChartDatasetD
+            {
+                label = "Rate",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = ProjectRepo.GetCollections().GetOverallRates()
+            });
 
-
-
-            return Json(chartData, JsonRequestBehavior.AllowGet);
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
+        public ActionResult CostsByCategories()
+        {
+            ChartData<MultiColorChartDataset> chartData = new ChartData<MultiColorChartDataset>();
+            List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF", "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
+            chartData.labels = ResourceCatRepo.GetCollections().Select(c => c.CategoryName).ToList();
+            chartData.datasets.Add(new MultiColorChartDataset
+            {
+                backgroundColor = Colors,
+                borderColor = Colors,
+                data = ResourceCatRepo.GetCollections().GetSubtotalByCat(),
+            });
+
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
+        }
+
+        public ActionResult TasksByStatus()
+        {
+            ChartData<SingleColorChartDataset> chartData = new ChartData<SingleColorChartDataset>();
+
+            chartData.labels = StatusRepo.GetCollections().Select(s => s.TaskStatusName).ToList();
+            chartData.datasets.Add(new SingleColorChartDataset
+            {
+                label="Count",
+                backgroundColor= "rgba(91, 155, 213, 0.5)",
+                borderColor= "rgba(91, 155, 213, 1)",
+                data= StatusRepo.GetCollections().CountTasksByStatus(),
+            });
+
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
+        }
         #endregion
     }
 }

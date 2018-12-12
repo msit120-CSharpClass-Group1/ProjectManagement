@@ -38,6 +38,10 @@ namespace ProjectManager.Models
         public string Tag { get; set; }
         public string Description { get; set; }
         public Nullable<int> TaskStatusIDChanged { get; set; }
+        public Nullable<System.DateTime> AssignedDate { get; set; }
+        public Nullable<bool> IsRead { get; set; }
+        public Nullable<byte> ReviewScore { get; set; }
+        public string ReviewDescription { get; set; }
     
         public virtual Employee Employee { get; set; }
         public virtual PreTasks PreTasks { get; set; }

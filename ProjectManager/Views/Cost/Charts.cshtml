@@ -40,27 +40,29 @@
     </form>
 </div>
 
-<div class="row mt-3 mb-3">
-    <div class="col-6">
-        <div id="CostsByDepartmentsContainer" class="chart-container bg-light p-3">
-            <canvas id="CostsByDepartmentsChart"></canvas>
+<div id="ChartContainer" class="hide">
+    <div class="row mt-3 mb-3">
+        <div class="col-6">
+            <div id="CostsByDepartmentsContainer" class="chart-container bg-light p-3">
+                <canvas id="CostsByDepartmentsChart"></canvas>
+            </div>
+        </div>
+        <div class="col-6">
+            <div id="OverallRatesContainer" class="chart-container bg-light p-3">
+                <canvas id="OverallRatesChart"></canvas>
+            </div>
         </div>
     </div>
-    <div class="col-6">
-        <div id="" class="chart-container bg-light p-3">
-            <canvas id=""></canvas>
+    <div class="row mb-3">
+        <div class="col-6">
+            <div id="CostsByCatsContainer" class="chart-container bg-light p-3">
+                <canvas id="CostsByCatsChart"></canvas>
+            </div>
         </div>
-    </div>
-</div>
-<div class="row mb-3">
-    <div class="col-6">
-        <div id="" class="chart-container bg-light p-3">
-            <canvas id=""></canvas>
-        </div>
-    </div>
-    <div class="col-6">
-        <div id="" class="chart-container bg-light p-3">
-            <canvas id=""></canvas>
+        <div class="col-6">
+            <div id="TasksByStatusContainer" class="chart-container bg-light p-3">
+                <canvas id="TasksByStatusChart"></canvas>
+            </div>
         </div>
     </div>
 </div>
@@ -76,17 +78,20 @@
                 var optionlabel = $("<option></option>").text("請選擇專案").val("");
                 $("#Select_ProjectName").html(optionlabel);
 
-                $.getJSON("@Url.Action("GetProjectListByDptID", "Cost")", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
+                if ($("#RequiredDeptGUID").val())
                 {
-                    var docFrag = $(document.createDocumentFragment());
-                    docFrag.append(optionlabel);
-                    $.each(projects, function (index, project)
+                    $.getJSON("@Url.Action("GetProjectListByDptID", "Cost")", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
                     {
-                        var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectID).attr("data-projectguid", project.ProjectGUID);
-                        docFrag.append(opt);
+                        var docFrag = $(document.createDocumentFragment());
+                        docFrag.append(optionlabel);
+                        $.each(projects, function (index, project)
+                        {
+                            var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectID).attr("data-projectguid", project.ProjectGUID);
+                            docFrag.append(opt);
+                        });
+                        $("#Select_ProjectName").html(docFrag);
                     });
-                    $("#Select_ProjectName").html(docFrag);
-                });
+                }
             }
 
             LoadProjects();
@@ -97,38 +102,175 @@
             Chart.defaults.global.defaultFontSize = 16;
             Chart.defaults.global.tooltips.titleFontStyle = 'normal';
 
-            BuildRootTasks_SumOfResourceChart();
+            CostsByDepartmentsChart(OverallRatesChart(CostsByCatsChart(TasksByStatus(function ()
+            {
+                $("#ChartContainer").fadeIn();
+            }))));
 
-            function BuildRootTasks_SumOfResourceChart()
+            function CostsByDepartmentsChart(callback)
             {
                 $.getJSON("@Url.Action("CostsByDepartments", "Cost")", null, function (datas)
                 {
-                    var CostsByDepartmentsChart = new Chart($('#CostsByDepartmentsChart'),
+                    var myChart = new Chart($('#CostsByDepartmentsChart'),
                         {
-                            type: 'bar',
+                            type: 'line',
                             data: datas,
                             options:
-                                {
-                                    responsive: true,
-                                    legend:
+                            {
+                                responsive: true,
+                                legend:
                                 {
                                     position: 'top',
                                 },
-                                    title:
+                                title:
                                 {
                                     display: true,
                                     text: 'Project Consumption By Department',
                                     fontSize: 20,
                                     padding: 10,
                                 },
-                                    animation:
+                                animation:
                                 {
                                     animateScale: true,
                                     animateRotate: true
                                 },
                             }
                         });
+
+                    if (typeof callback === 'function')
+                    {
+                        callback();
+                    }
+
                 });
+
+            }
+
+            function OverallRatesChart(callback)
+            {
+                $.getJSON("@Url.Action("OverallRates", "Cost")", null, function (datas)
+                {
+                    var myChart = new Chart($('#OverallRatesChart'),
+                        {
+                            type: 'horizontalBar',
+                            data: datas,
+                            options:
+                            {
+                                responsive: true,
+                                scales:
+                                {
+                                    xAxes: [
+                                    {
+                                        ticks:
+                                        {
+                                            beginAtZero: true
+                                        }
+                                    }]
+                                },
+                                legend:
+                                {
+                                    position: 'top',
+                                },
+                                title:
+                                {
+                                    display: true,
+                                    text: 'Overall Rates',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                animation:
+                                {
+                                    animateScale: true,
+                                    animateRotate: true
+                                },
+                            }
+                        });
+
+                    if (typeof callback === 'function')
+                    {
+                        callback();
+                    }
+
+                });
+
+            }
+
+            function CostsByCatsChart(callback)
+            {
+                $.getJSON("@Url.Action("CostsByCategories", "Cost")", null, function (datas)
+                {
+                    var myChart = new Chart($('#CostsByCatsChart'),
+                        {
+                            type: 'pie',
+                            data: datas,
+                            options:
+                            {
+                                responsive: true,
+                                legend:
+                                {
+                                    position: 'right',
+                                },
+                                title:
+                                {
+                                    display: true,
+                                    text: 'Project Consumption By Category',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                animation:
+                                {
+                                    animateScale: true,
+                                    animateRotate: true
+                                },
+                            }
+                        });
+
+                    if (typeof callback === 'function')
+                    {
+                        callback();
+                    }
+
+                });
+
+            }
+
+            function TasksByStatus(callback)
+            {
+                $.getJSON("@Url.Action("TasksByStatus", "Cost")", null, function (datas)
+                {
+                    var myChart = new Chart($('#TasksByStatusChart'),
+                        {
+                            type: 'bar',
+                            data: datas,
+                            options:
+                            {
+                                responsive: true,
+                                legend:
+                                {
+                                    position: 'top',
+                                },
+                                title:
+                                {
+                                    display: true,
+                                    text: 'Tasks By Status',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                animation:
+                                {
+                                    animateScale: true,
+                                    animateRotate: true
+                                },
+                            }
+                        });
+
+                    if (typeof callback === 'function')
+                    {
+                        callback();
+                    }
+
+                });
+
             }
 
         });

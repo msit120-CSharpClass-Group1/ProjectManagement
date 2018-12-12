@@ -14,6 +14,10 @@
             text-align: center;
         }
 
+            thead td {
+                cursor: pointer;
+            }
+
             thead a, thead a:hover {
                 color: white;
                 text-decoration: none;
@@ -74,7 +78,7 @@
     <span>筆。</span>
 </div>
 
-<div id="PartialView" class="mt-3">
+<div id="PartialView" class="mt-3 hide">
 </div>
 
 <div class="modal fade" style="top:50px;" id="DeleteExpModal" tabindex="-1" role="dialog" aria-labelledby="DeleteExpModalLabel" aria-hidden="true">
@@ -230,21 +234,21 @@
                     <div class="form-group  mt-3 mb-0">
                         <lable for="Description">備註：</lable>
                         <textarea id="Description" name="Description" class="form-control" style="width:300px;height:150px;resize:none"></textarea>
-                        <div class="invalid-tooltip">                            
+                        <div class="invalid-tooltip">
                         </div>
                     </div>
                 </div>
             </div>
 
-                <div class="row col-12">
-                    <div id="formBtns" class="mt-3 mx-auto text-center">
-                        <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
-                        <button id="btn_ConfirmAdd" type="button" class="btn btn-primary py-1 px-3">確認新增</button>
-                        <button id="btn_ConfirmModify" type="button" class="btn btn-success py-1 px-3">確認修改</button>
-                        @*<button id="btn_Validate" type="button" class="btn btn-info py-1 px-3">驗證</button>*@
-                    </div>
+            <div class="row col-12">
+                <div id="formBtns" class="mt-3 mx-auto text-center">
+                    <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
+                    <button id="btn_ConfirmAdd" type="button" class="btn btn-primary py-1 px-3">確認新增</button>
+                    <button id="btn_ConfirmModify" type="button" class="btn btn-success py-1 px-3">確認修改</button>
+                    @*<button id="btn_Validate" type="button" class="btn btn-info py-1 px-3">驗證</button>*@
                 </div>
-</form>
+            </div>
+        </form>
     </div>
 }
 
@@ -260,17 +264,20 @@
                 $("#Select_ProjectName").html(optionlabel);
                 $("#result").hide();
 
-                $.getJSON("@Url.Action("GetProjectListByDptID", "Cost")", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
+                if ($("#RequiredDeptGUID").val())
                 {
-                    var docFrag = $(document.createDocumentFragment());
-                    docFrag.append(optionlabel);
-                    $.each(projects, function (index, project)
+                    $.getJSON("@Url.Action("GetProjectListByDptID", "Cost")", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
                     {
-                        var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectID).attr("data-projectguid", project.ProjectGUID);
-                        docFrag.append(opt);
+                        var docFrag = $(document.createDocumentFragment());
+                        docFrag.append(optionlabel);
+                        $.each(projects, function (index, project)
+                        {
+                            var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectID).attr("data-projectguid", project.ProjectGUID);
+                            docFrag.append(opt);
+                        });
+                        $("#Select_ProjectName").html(docFrag);
                     });
-                    $("#Select_ProjectName").html(docFrag);
-                });
+                }
             }
 
             LoadProjects();
@@ -282,15 +289,27 @@
             function LoadResources()
             {
                 var opt = $("#Select_ProjectName>:selected");
-                $("#ProjectID").val(opt.val());
-                $("#sp_ProjectName").text(opt.text());
-                $("#PartialView").load("@Url.Action("GetTaskResources", "Cost")/" + opt.data('projectguid'), function ()
+                var projectGUID = opt.data('projectguid');
+                var PartialView = $("#PartialView");
+                var result = $("#result");
+
+                if (projectGUID)
                 {
-                    $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
-                    LoadTasks();
-                    Binding();
-                });
-                $("#result").show();
+                    $("#ProjectID").val(opt.val());
+                    $("#sp_ProjectName").text(opt.text());
+                    PartialView.load("@Url.Action("GetTaskResources", "Cost")/" + projectGUID, function ()
+                    {
+                        $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+                        LoadTasks();
+                        Binding();
+                    }).fadeIn();
+                    result.fadeIn();
+                }
+                else
+                {
+                    PartialView.fadeOut();
+                    result.fadeOut();
+                }
             }
 
             function LoadTasks()
@@ -475,7 +494,7 @@
                 var UnitPriceCheck = regexp_Num.test($("#UnitPrice").val());
                 var QuantityCheck = regexp_Num.test($("#Quantity").val());
                 var DescriptionCheck = regexp_Description.test($("#Description").val());
-                                
+
                 //console.log("NameCheck:" + NameCheck);
                 //console.log("UnitPriceCheck:" + UnitPriceCheck);
                 //console.log("QuantityCheck:" + QuantityCheck);
@@ -509,7 +528,7 @@
                     var Description = $(this).parents("tr").children("td:nth-child(8)").text();
 
                     $("#ResourceGUID").val(ResourceGuid);
-                    $("#ResourceName").val(ResourceName);                    
+                    $("#ResourceName").val(ResourceName);
 
                     var year = DateArray[0];
                     var month = DateArray[1].length == 1 ? "0" + DateArray[1] : DateArray[1];
@@ -561,8 +580,14 @@
                     });
                 })
 
+                $('#tb_TaskResources > thead td').click(function ()
+                {
+                    $(this).children('a').click();
+                })
+
                 $('#tb_TaskResources > thead a').click(function (e)
                 {
+                    e.stopPropagation();
                     e.preventDefault();
                     var Action = $(this).attr("href");
                     $("#PartialView").load(Action, function ()

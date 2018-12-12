@@ -62,6 +62,12 @@ namespace ProjectManager.Models
             [DisplayName("說明")]
             public string Description { get; set; }
 
+            [DisplayName("驗收評分")]
+            public Nullable<byte> ReviewScore { get; set; }
+
+            [DisplayName("驗收評價")]
+            public string ReviewDescription { get; set; }
+
             [JsonIgnore()]
             public virtual Employee Employee { get; set; }
             [JsonIgnore()]

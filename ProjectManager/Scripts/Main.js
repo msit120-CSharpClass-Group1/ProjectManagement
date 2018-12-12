@@ -48,5 +48,13 @@
     $('#logoutbtn').click(function () {
         window.location.href = '/Login/Logout';
     });
-
+    $('#notificationbtn').click(function () {
+        console.log("1234");
+        $.post('/Notification/Load/', {}, function (datas) {
+            $(datas).each(function (id,data) {
+                console.log(data.TaskName + ","+ data.AssignedDate );
+            });
+        });
+    });
+    
 });
