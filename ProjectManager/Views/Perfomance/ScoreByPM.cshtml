@@ -23,7 +23,14 @@
                                         <p><img class=" img-fluid" src="~/image/avatar.png"></p>
                                         <h4 class="card-title">@member.Employee.EmployeeName</h4>
                                         <p class="card-text">@member.Employee.JobTitle.TitleName</p>
-                                        <p>目前自評:20</p>
+                                        @if (member.Selfscore != null)
+                                        {
+                                            <p>目前自評:@member.Selfscore</p>
+                                        }
+                                        else
+                                        {
+                                            <p>目前自評:尚未評分</p>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -31,7 +38,7 @@
                                 <div class="card">
                                     <div class="card-body text-center mt-4">
                                         <h4 class="card-title">@member.Employee.EmployeeName</h4>
-                                        <p class="card-text">此專案承接工作數:100件</p>
+                                        <p class="card-text" style="width:350px">此專案承接工作數:100件</p>
                                         <p class="card-text">準時完成的工作數:100件</p>
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-memberguid="@member.EmployeeGUID" id="scoreBtn">
                                             對他評分
@@ -82,7 +89,7 @@
                 </div>
                 <!--Footer-->
                 <div class="modal-footer justify-content-center">
-                    <a class="btn btn-outline-primary waves-effect">
+                    <a class="btn btn-outline-primary waves-effect" id="sendScoreBtn">
                         送出評分
                         <i class="fa fa-paper-plane ml-1"></i>
                     </a>
@@ -100,17 +107,12 @@
         {
             $(".backside").on("click", 'button', function ()
             {
-                var EmployeeGUID = $(this).data("memberguid")
-                $.ajax({
-                   url: '@Url.Action("GetEmpName", "Perfomance")',
-                   data: { "EmployeeGUID": EmployeeGUID },
-                    success: function (data)
-                    {
-                        $("#modalEmpName").text(data)
-                    }
-                });
+                var EmployeeName = $(this).siblings(".card-title").text()
+                $("#modalEmpName").text(EmployeeName)
             })
             $("label").tooltip();
+
+            //$("#sendScoreBtn").
         })
 
         </script>

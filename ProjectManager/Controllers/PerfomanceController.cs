@@ -70,10 +70,5 @@ namespace ProjectManager.Controllers
             }
             return RedirectToAction("Index", "Perfomance");
         }
-
-        public ActionResult GetEmpName(Guid? EmployeeGUID)
-        {
-            return Content(empRepo.GetCollections().Where(e => e.EmployeeGUID == EmployeeGUID).Select(p => p.EmployeeName).FirstOrDefault());
-        }
     }
 }
