@@ -24,12 +24,12 @@ namespace ProjectManager.Controllers
             ViewBag.ThisProjectMember = projectMembers.GetCollections().Where(p => p.ProjectGUID == indexPJID).ToList();
             return View(dep.GetCollections());
         }
-        public ActionResult SelectDep()
+        public ActionResult SelectDep(Guid depid)
         {
             if (Session["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            var depGUID = new Guid(Request.QueryString["depid"]);
-            var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);
+            var depGUID = depid;
+            var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);   
             return Content(JsonConvert.SerializeObject(emp), "application/json");
             //return Json(JsonConvert.SerializeObject(emp), "application/json");
             //return Json(JsonConvert.SerializeObject(emp), "application/json");
