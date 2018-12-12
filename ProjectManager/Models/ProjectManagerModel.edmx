@@ -248,6 +248,7 @@
           <Property Name="AssignedDate" Type="datetime" />
           <Property Name="IsRead" Type="bit" />
           <Property Name="ReviewScore" Type="tinyint" />
+          <Property Name="ReviewDescription" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="TaskStatus">
           <Key>
@@ -1107,6 +1108,7 @@
           <Property Name="AssignedDate" Type="DateTime" Precision="3" />
           <Property Name="IsRead" Type="Boolean" />
           <Property Name="ReviewScore" Type="Byte" />
+          <Property Name="ReviewDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TaskStatus">
           <Key>
@@ -1503,7 +1505,7 @@
           <End Role="Department" Type="Self.Department" Multiplicity="*" />
           <End Role="Project" Type="Self.Project" Multiplicity="*" />
         </Association>
-        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="ProjectManagementEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Dashboard" EntityType="Self.Dashboard" />
           <EntitySet Name="Department" EntityType="Self.Department" />
           <EntitySet Name="Employee" EntityType="Self.Employee" />
@@ -1675,7 +1677,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ProjectManagementModelStoreContainer" CdmEntityContainer="Entities">
+        <EntityContainerMapping StorageEntityContainer="ProjectManagementModelStoreContainer" CdmEntityContainer="ProjectManagementEntities">
           <EntitySetMapping Name="Dashboard">
             <EntityTypeMapping TypeName="ProjectManagementModel.Dashboard">
               <MappingFragment StoreEntitySet="Dashboard">
@@ -1895,6 +1897,7 @@
           <EntitySetMapping Name="Tasks">
             <EntityTypeMapping TypeName="ProjectManagementModel.Tasks">
               <MappingFragment StoreEntitySet="Tasks">
+                <ScalarProperty Name="ReviewDescription" ColumnName="ReviewDescription" />
                 <ScalarProperty Name="ReviewScore" ColumnName="ReviewScore" />
                 <ScalarProperty Name="IsRead" ColumnName="IsRead" />
                 <ScalarProperty Name="AssignedDate" ColumnName="AssignedDate" />
