@@ -14,6 +14,10 @@
             text-align: center;
         }
 
+            thead td {
+                cursor: pointer;
+            }
+
             thead a, thead a:hover {
                 color: white;
                 text-decoration: none;
@@ -28,6 +32,7 @@
         .invalid {
             border-color: #dc3545 !important;
         }
+
     </style>
 }
 <div>
@@ -73,7 +78,7 @@
     <span>筆。</span>
 </div>
 
-<div id="PartialView" class="mt-3">
+<div id="PartialView" class="mt-3 hide">
 </div>
 
 <div class="modal fade" style="top:50px;" id="DeleteExpModal" tabindex="-1" role="dialog" aria-labelledby="DeleteExpModalLabel" aria-hidden="true">
@@ -284,15 +289,27 @@
             function LoadResources()
             {
                 var opt = $("#Select_ProjectName>:selected");
-                $("#ProjectID").val(opt.val());
-                $("#sp_ProjectName").text(opt.text());
-                $("#PartialView").load("@Url.Action("GetTaskResources", "Cost")/" + opt.data('projectguid'), function ()
+                var projectGUID = opt.data('projectguid');
+                var PartialView = $("#PartialView");
+                var result = $("#result");
+
+                if (projectGUID)
                 {
-                    $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
-                    LoadTasks();
-                    Binding();
-                });
-                $("#result").show();
+                    $("#ProjectID").val(opt.val());
+                    $("#sp_ProjectName").text(opt.text());
+                    PartialView.load("@Url.Action("GetTaskResources", "Cost")/" + projectGUID, function ()
+                    {
+                        $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+                        LoadTasks();
+                        Binding();
+                    }).fadeIn();
+                    result.fadeIn();
+                }
+                else
+                {
+                    PartialView.fadeOut();
+                    result.fadeOut();
+                }
             }
 
             function LoadTasks()
@@ -563,8 +580,14 @@
                     });
                 })
 
+                $('#tb_TaskResources > thead td').click(function ()
+                {
+                    $(this).children('a').click();
+                })
+
                 $('#tb_TaskResources > thead a').click(function (e)
                 {
+                    e.stopPropagation();
                     e.preventDefault();
                     var Action = $(this).attr("href");
                     $("#PartialView").load(Action, function ()

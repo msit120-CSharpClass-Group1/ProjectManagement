@@ -41,6 +41,7 @@ namespace ProjectManager.Models
         public Nullable<System.DateTime> AssignedDate { get; set; }
         public Nullable<bool> IsRead { get; set; }
         public Nullable<byte> ReviewScore { get; set; }
+        public string ReviewDescription { get; set; }
     
         public virtual Employee Employee { get; set; }
         public virtual PreTasks PreTasks { get; set; }

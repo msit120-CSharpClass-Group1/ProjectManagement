@@ -13,7 +13,7 @@ namespace ProjectManager.Models
             InProgress,
             WaitForConfirmed,
             Completed,
-            Ended
+            Closed
         }
         /// <summary>
         /// 回傳帶有orderID、parentOrderID排序完成的List&lt;Task>
