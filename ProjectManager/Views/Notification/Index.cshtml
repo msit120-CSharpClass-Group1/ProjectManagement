@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ProjectManager.Models.Tasks>
+
+@{
+    ViewBag.Title = "你的通知";
+}
+@section style
+{
+    <style>
+        .projectLink {
+            padding: 20px;
+            background-color:white;
+        }
+            .projectLink:hover {
+                background-color: #e6e8eb;
+                text-decoration: underline;
+            }
+        .tasktime {
+           float:right;
+        }
+    </style>
+}
+<div class="container mt-5">
+    <hr />
+    @foreach (var task in Model)
+    {
+        <div class="projectLink" data-projectGUID="@task.ProjectGUID">
+            <span>「@task.Project.Employee1.EmployeeName 」在「 @task.Project.ProjectName 」分配了「@task.TaskName」給你</span>
+            <span class="tasktime">@task.AssignedDate</span>
+        </div>
+    }
+
+</div>
+@section script
+{
+    <script>
+        $(document).ready(function () {
+            $('.projectLink').click(RedirectToMyBoard);
+
+            function RedirectToMyBoard() {
+                console.log('231234')
+                $.post("@Url.Action("SetCookiesForMyBoard", "Home")", { projectGUID: $(this).attr("data-projectGUID") },
+                    function (userGUID) {
+                        location.href = "/MyBoard/Index/" + userGUID;
+                    });
+            }
+        });
+    </script>
+}

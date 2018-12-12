@@ -15,17 +15,6 @@ namespace ProjectManager.Controllers
         private IRepository<Employee> employeeRes = new Repository<Employee>();
         public ActionResult Index()
         {
-            if (Request.Cookies["MemberGUID"] != null)
-            {
-                if (Request.Cookies["TitleGUID"].Value == "9fb6f389-1a8b-4dd6-9682-2674dc31584b")
-                {
-                    return RedirectToAction("Index", "SelectProject");
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Projects");                    
-                }
-            }
             return View();
         }
         [HttpPost]
@@ -46,19 +35,8 @@ namespace ProjectManager.Controllers
                 memberRes.Update(hasMembers);
                 Msg = 1;
                 LoginProcess(hasMembers, keepLogin);
-                if (hasMembers.Employee.TitleGUID.ToString() == "9fb6f389-1a8b-4dd6-9682-2674dc31584b")
-                {
-                    return Json("SelectProject/Index/");
-                }
-                else
-                {
-                    return Json("Projects/Index/");
-                }
             }
-            else
-            {
                 return Json(Msg);
-            }
         }
         [HttpPost]
         public ActionResult CreateAccount(Members members,int EmployeeID)

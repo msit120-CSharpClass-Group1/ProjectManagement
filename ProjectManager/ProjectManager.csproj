@@ -451,6 +451,7 @@
     <Content Include="Views\Perfomance\TaskScoreAVGReview.cshtml" />
     <Content Include="Views\Perfomance\ScoreByPM.cshtml" />
     <Content Include="Views\Perfomance\ScoreByMySelf.cshtml" />
+    <Content Include="Views\Notification\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

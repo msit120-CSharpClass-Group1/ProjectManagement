@@ -48,52 +48,58 @@
         window.location.href = '/Login/Logout';
     });
     //通知訊息下拉選單
-    window.setInterval(msgcount, 5000);
+    window.setInterval(msgcount, 30000);
+    msgcount();
     function msgcount()
     {
         $.post('/Notification/Load/', {}, function (datas) {
             var btn = $('#notificationbtn');
             btn.html('');
-            var Fragdoc = $(document.createDocumentFragment());
-            var _count = $(datas).length;
+            var Fragcount = $(document.createDocumentFragment());
+            var _count = 0;
             var count = $('<span id="msgcount" class="label"></span>');
+            var i = $('<i class="far fa-envelope"></i>');
+            Fragcount.append(i);
+            var Fragdoc = $(document.createDocumentFragment());
+            var msg = $('#notificationmsg');
+            $(datas).each(function (id, data) {
+                console.log(data.TaskName + ',' + data.IsRead);
+                var time = new Date(data.AssignedDate.match(/\d+/)[0] * 1);
+                var taskName = $('<P></p>').html('「'+data.EmployeeName+'」在「' + data.ProjectName+'」分配了「' + data.TaskName + '」給你');
+                var taskTime = $('<span></span>').html(time.toLocaleDateString());
+                var task = $('<a></a>');
+                task.click(function () {
+                    $.post("/Home/SetCookiesForMyBoard/", { projectGUID: data.ProjectGUID },
+                        function () {
+                            location.href = "/MyBoard/Index/" + data.EmployeeGUID;
+                        });
+                });
+                if (data.IsRead !== true) {
+                    task.addClass('IsRead');
+                    _count++;
+                }
+                task.append(taskName);
+                task.append(taskTime);
+                Fragdoc.append(task);
+            });
+            var moreTask = $('<a></a>').append('更多訊息');
+            moreTask.attr("href", "/Notification/Index/");
+            Fragdoc.append(moreTask);
+            msg.html(Fragdoc);
             if (_count >= 5) {
-                count.html(_count+"+");
+                count.html(_count + "+");
             }
-            else
-            {
+            else {
                 count.html(_count);
             }
-            
-            var i = $('<i class="far fa-envelope"></i>');
-            Fragdoc.append(i); 
             if (_count !== 0) {
-                Fragdoc.append(count);
+                Fragcount.append(count);
             }
-            btn.html(Fragdoc);
+            btn.html(Fragcount);
         });
+       
     }
-    msgcount();
-    $('#notificationbtn').click(function () {
-        var msg = $('#notificationmsg');
-        if (msg.css('display') === 'block') {
-            $.post('/Notification/Load/', {}, function (datas) {
-                var Fragdoc = $(document.createDocumentFragment());
-                $(datas).each(function (id, data) {
-                    console.log(data.TaskName+','+data.IsRead);
-                    var time = new Date(data.AssignedDate.match(/\d+/)[0] * 1);
-                    var taskName = $('<h5></h5>').html('新增工作「' + data.TaskName + '」');
-                    var taskTime = $('<h6></h6>').html(time.toLocaleDateString());
-                    var task = $('<a></a>');
-                    task.append(taskName);
-                    task.append(taskTime);
-                    Fragdoc.append(task);
-                });
-                var moreTask = $('<a></a>').append('更多訊息');
-                Fragdoc.append(moreTask);
-                msg.html(Fragdoc);
-            });
-        }
-    });
+   
+    
 
 });
