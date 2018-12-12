@@ -134,5 +134,27 @@ namespace ProjectManager.Models
 
             return result;
         }
+
+        public static IQueryable<ProjectResourceVM> Filter(this IQueryable<ProjectResourceVM> ProjectResourceList, ResourceFilterVM filter)
+        {
+            if(filter.filter_EndDate == DateTime.MinValue)
+            {
+                filter.filter_EndDate = DateTime.MaxValue;
+            }
+
+            ProjectResourceList = ProjectResourceList.Where(r => r.Date > filter.filter_StartDate && r.Date < filter.filter_EndDate);
+
+            if(filter.filter_TaskGUID != null)
+            {
+                ProjectResourceList = ProjectResourceList.Where(r => r.TaskGUID == filter.filter_TaskGUID);
+            }
+
+            if(filter.filter_CategoryID != null)
+            {
+                ProjectResourceList = ProjectResourceList.Where(r => r.CategoryID == filter.filter_CategoryID);
+            }
+
+            return ProjectResourceList;
+        }
     }
 }

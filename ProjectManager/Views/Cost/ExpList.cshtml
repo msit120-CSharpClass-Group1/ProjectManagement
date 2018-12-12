@@ -81,29 +81,29 @@
 
     </div>
     <div class="col-4">
-        <form>
+        <form id="ResourceFilter" class="hide">
             <div class="form-group row">
                 <lable class="input-group-text" for="filter_StartDate">依日期篩選：</lable>
                 <div>
-                    <input type="date" class="form-control" id="filter_StartDate" />
+                    <input type="date" class="form-control" id="filter_StartDate" name="filter_StartDate"/>
                 </div>
                 <div style="padding:6px 0">
                     &nbsp;～&nbsp;
                 </div>
                 <div>
-                    <input type="date" class="form-control" id="filter_EndDate" />
+                    <input type="date" class="form-control" id="filter_EndDate" name="filter_EndDate"/>
                 </div>
             </div>
             <div class="form-group row">
-                <lable class="input-group-text" for="filter_Task">依工作篩選：</lable>
+                <lable class="input-group-text" for="filter_TaskGUID">依工作篩選：</lable>
                 <div>
-                    <select id="filter_Task" class="custom-select"></select>
+                    <select id="filter_TaskGUID" name="filter_TaskGUID" class="custom-select"></select>
                 </div>
             </div>
             <div class="row">
-                <lable class="input-group-text" for="filter_ResourceCat">依費用類別篩選：</lable>
+                <lable class="input-group-text" for="filter_CategoryID">依費用類別篩選：</lable>
                 <div>
-                    @Html.DropDownList("filter_ResourceCat", (SelectList)ViewBag.ExpCats, "請選擇類別", new { @class = "form-control custom-select", required = true })
+                    @Html.DropDownList("filter_CategoryID", (SelectList)ViewBag.ExpCats, "請選擇類別", new { @class = "form-control custom-select" })
                 </div>
             </div>
         </form>
@@ -318,7 +318,26 @@
 
             $("#RequiredDeptGUID").change(LoadProjects);
 
-            $("#Select_ProjectName").change(LoadResources);
+            $("#Select_ProjectName").change(function ()
+            {
+                LoadResources();
+                LoadTasks();
+                document.getElementById("ResourceFilter").reset();
+            });
+
+            $("#ResourceFilter :input").change(LoadResources);
+
+            function getCookie(cname)
+            {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) 
+                {
+                    var c = ca[i].trim();
+                    if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+                }
+                return "";
+            }
 
             function LoadResources()
             {
@@ -327,25 +346,29 @@
                 var PartialView = $("#PartialView");
                 var result = $("#result");
                 var pager = $("#PageListPager");
+                var sortBy = getCookie("sortBy");
+                var filter = $("#ResourceFilter");
+                var filterBy = filter.serialize();
 
                 if (projectGUID)
                 {
                     $("#ProjectID").val(opt.val());
                     $("#sp_ProjectName").text(opt.text());
-                    PartialView.load("@Url.Action("GetTaskResources", "Cost")/" + projectGUID, function ()
+                    PartialView.load("@Url.Action("GetTaskResources", "Cost")/" + projectGUID + "?sortBy=" + sortBy, filterBy, function ()
                     {
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
-                        LoadTasks();
                         Binding();
                     }).fadeIn();
                     result.fadeIn();
                     pager.fadeIn();
+                    filter.fadeIn();
                 }
                 else
                 {
                     PartialView.fadeOut();
                     result.fadeOut();
                     pager.fadeOut();
+                    filter.fadeOut();
                 }
             }
 
@@ -356,14 +379,16 @@
                 {
                     var optionlabel = $("<option></option>").text("請選擇工作").val("");
                     var docFrag = $(document.createDocumentFragment());
+                    var TaskGUID = $("#TaskGUID");
+
                     docFrag.append(optionlabel);
                     $.each(tasks, function (index, task)
                     {
                         var opt = $("<option></option>").val(task.TaskGUID).text(task.TaskName);
                         docFrag.append(opt);
                     })
-                    $("#filter_Task").html(docFrag);
-                    $("#TaskGUID").html(docFrag);
+                    TaskGUID.html(docFrag);
+                    $("#filter_TaskGUID").html(TaskGUID.html());
                 });
             };
 
@@ -551,7 +576,7 @@
                 var pager = pgcontainer.html();
                 $("#PageListPager").html(pager);
                 pgcontainer.hide();
-                
+
                 $("#tb_TaskResources>tbody").on("click", ":button[name='btn_edit']", SetRightAsideToModify);
 
                 function SetRightAsideToModify()
@@ -615,8 +640,10 @@
                 $('.pagination a').click(function (e)
                 {
                     e.preventDefault();
-                    var Action = $(this).attr("href");
-                    $("#PartialView").load(Action, function ()
+                    var sortBy = getCookie("sortBy");
+                    var filterBy = $("#ResourceFilter").serialize();
+                    var Action = $(this).attr("href") + "&sortBy=" + sortBy;
+                    $("#PartialView").load(Action, filterBy, function ()
                     {
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
                         Binding();
@@ -632,8 +659,10 @@
                 {
                     e.stopPropagation();
                     e.preventDefault();
+
+                    var filterBy = $("#ResourceFilter").serialize();
                     var Action = $(this).attr("href");
-                    $("#PartialView").load(Action, function ()
+                    $("#PartialView").load(Action, filterBy, function ()
                     {
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
                         Binding();
@@ -651,7 +680,6 @@
                     LoadResources();
                 });
             }
-
         });
     </script>
 }
