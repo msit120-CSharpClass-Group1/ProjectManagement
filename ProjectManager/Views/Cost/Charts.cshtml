@@ -105,7 +105,7 @@
             Chart.defaults.global.defaultFontSize = 16;
             Chart.defaults.global.tooltips.titleFontStyle = 'normal';
 
-            CostsByDepartmentsChart(OverallRatesChart(CostsByCatsChart(TasksByStatus(function ()
+            TasksByStatus(CostsByCatsChart(OverallRatesChart(CostsByDepartmentsChart(function ()
             {
                 $("#ChartContainer").fadeIn();
             }))));
