@@ -17,18 +17,20 @@
 <body>
     <nav class="top-navbar">
         <span class="leftOpenbtn" style="cursor:pointer">&#9776;</span>
-        <a class="title" href="~/@Link.Do">專案管理系統</a>
+        <a class="title" href="~/@Link.Dashboard">專案管理系統</a>
         <div class="topnav-right">
             <div class="dropdown">
                 <button id="logoutbtn" class="navdropbtn">Logout</button>
             </div>
             <div class="dropdown">
                 <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">@EmployeeInfo.EmployeeName</button>
+                <div class="dropdown-content">
+                    <a href="#">message1</a>
+                </div>
             </div>
             <div class="dropdown">
-                <button id="notificationbtn" class="navdropbtn"><i class="far fa-envelope"></i><span class="label">9</span></button>
-                <div class="dropdown-content">
-                  
+                <button id="notificationbtn" class="navdropbtn"><i class="far fa-envelope"></i><span id="msgcount" class="label"></span></button>
+                <div id="notificationmsg" class="dropdown-content">
                 </div>
             </div>
         </div>

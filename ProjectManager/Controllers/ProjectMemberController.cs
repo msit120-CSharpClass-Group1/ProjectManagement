@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
+    [Authorize(Roles = "管理員,專案經理,處長")]
     public class ProjectMemberController : Controller
     {
         Repository<Employee> employee = new Repository<Employee>();
