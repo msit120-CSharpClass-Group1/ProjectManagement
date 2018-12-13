@@ -48,5 +48,8 @@ namespace ProjectManager.Models
         public virtual DbSet<TaskStatus> TaskStatus { get; set; }
         public virtual DbSet<WidgetDetail> WidgetDetail { get; set; }
         public virtual DbSet<Calendar> Calendar { get; set; }
+        public virtual DbSet<Document> Document { get; set; }
+        public virtual DbSet<DocumentCategory> DocumentCategory { get; set; }
+        public virtual DbSet<DocumentModified> DocumentModified { get; set; }
     }
 }

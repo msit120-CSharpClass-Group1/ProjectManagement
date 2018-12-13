@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<ProjectManager.Models.ProjectMembers>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "選擇成員";
 }
 
 @section style{
@@ -8,6 +8,7 @@
         .MemberFlex_a {
             display: flex;
             flex-wrap: wrap;
+            padding: 8% 15%;
         }
 
         .MemberLink {
@@ -27,14 +28,15 @@
             background-color: #fff;
             border: 1px solid #808080;
         }
+
     </style>
 }
-<h2>選擇成員看板</h2>
+@*<h2>選擇成員</h2>*@
 <div class="MemberFlex_a">
     @foreach (var p in Model)
     {
         <div class="Member">
-            <a class="MemberLink" href="@Url.Action("Index", "MyBoard",new { id= p.EmployeeGUID})"></a>
+            <a class="MemberLink" href="@Url.Action("Index", "MyBoard",new { id= p.EmployeeGUID, EmployeeName= p.Employee.EmployeeName})"></a>
             <p>@p.Employee.EmployeeName</p>
         </div>
     }

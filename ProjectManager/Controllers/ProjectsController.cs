@@ -42,7 +42,6 @@ namespace ProjectManager.Controllers
             project.StartDate = project.EstStartDate;
             project.EndDate = project.EstEndDate;
 
-            //Session["MemberGUID"] todo
             project.InChargeDeptGUID = new Guid("87be8dc8-3f70-43ce-847e-46e2d0c1d7a4");
             project.InChargeDeptPMGUID = new Guid("de4fbb32-f667-462f-9e83-fc92a6476c02"); 
 
