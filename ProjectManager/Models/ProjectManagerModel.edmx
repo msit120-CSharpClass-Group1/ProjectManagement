@@ -40,6 +40,39 @@
           <Property Name="DepartmentName" Type="nvarchar" MaxLength="50" />
           <Property Name="ParentDepartmentGUID" Type="uniqueidentifier" />
         </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="DocumentGUID" />
+          </Key>
+          <Property Name="DocumentID" Type="int" Nullable="false" />
+          <Property Name="DocumentGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DocumentCategory" Type="int" />
+          <Property Name="ProjectGUID" Type="uniqueidentifier" />
+          <Property Name="TaskGUID" Type="uniqueidentifier" />
+          <Property Name="DocumentName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="CreateEmpGUID" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="DocumentCategory">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="DocumentModified">
+          <Key>
+            <PropertyRef Name="ModifiedGUID" />
+          </Key>
+          <Property Name="DocumentGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ModifiedGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Version" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="ModifiedEmpGUID" Type="uniqueidentifier" />
+          <Property Name="IsChecked" Type="bit" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="Employee">
           <Key>
             <PropertyRef Name="EmployeeGUID" />
@@ -288,6 +321,78 @@
             </Principal>
             <Dependent Role="Department1">
               <PropertyRef Name="ParentDepartmentGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_DocumentCategory">
+          <End Role="DocumentCategory" Type="Self.DocumentCategory" Multiplicity="0..1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentCategory">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="DocumentCategory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Employee">
+          <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="EmployeeGUID" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="CreateEmpGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Project">
+          <End Role="Project" Type="Self.Project" Multiplicity="0..1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="ProjectGUID" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="ProjectGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Tasks">
+          <End Role="Tasks" Type="Self.Tasks" Multiplicity="0..1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tasks">
+              <PropertyRef Name="TaskGUID" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="TaskGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentModified_Document">
+          <End Role="Document" Type="Self.Document" Multiplicity="1" />
+          <End Role="DocumentModified" Type="Self.DocumentModified" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="DocumentGUID" />
+            </Principal>
+            <Dependent Role="DocumentModified">
+              <PropertyRef Name="DocumentGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentModified_Employee">
+          <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+          <End Role="DocumentModified" Type="Self.DocumentModified" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="EmployeeGUID" />
+            </Principal>
+            <Dependent Role="DocumentModified">
+              <PropertyRef Name="ModifiedEmpGUID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -667,6 +772,9 @@
           <EntitySet Name="Calendar" EntityType="Self.Calendar" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Dashboard" EntityType="Self.Dashboard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Document" EntityType="Self.Document" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentCategory" EntityType="Self.DocumentCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DocumentModified" EntityType="Self.DocumentModified" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="JobTitle" EntityType="Self.JobTitle" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Meeting" EntityType="Self.Meeting" Schema="dbo" store:Type="Tables" />
@@ -695,6 +803,30 @@
           <AssociationSet Name="FK_Department_Department" Association="Self.FK_Department_Department">
             <End Role="Department" EntitySet="Department" />
             <End Role="Department1" EntitySet="Department" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_DocumentCategory" Association="Self.FK_Document_DocumentCategory">
+            <End Role="DocumentCategory" EntitySet="DocumentCategory" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Employee" Association="Self.FK_Document_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Project" Association="Self.FK_Document_Project">
+            <End Role="Project" EntitySet="Project" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Tasks" Association="Self.FK_Document_Tasks">
+            <End Role="Tasks" EntitySet="Tasks" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentModified_Document" Association="Self.FK_DocumentModified_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="DocumentModified" EntitySet="DocumentModified" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentModified_Employee" Association="Self.FK_DocumentModified_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="DocumentModified" EntitySet="DocumentModified" />
           </AssociationSet>
           <AssociationSet Name="FK_Employee_Department" Association="Self.FK_Employee_Department">
             <End Role="Department" EntitySet="Department" />
@@ -879,6 +1011,8 @@
           <NavigationProperty Name="ProjectMembers" Relationship="Self.FK_ProjectMembers_Employee" FromRole="Employee" ToRole="ProjectMembers" />
           <NavigationProperty Name="TaskDetail" Relationship="Self.FK_TaskDetail_Employee" FromRole="Employee" ToRole="TaskDetail" />
           <NavigationProperty Name="Tasks" Relationship="Self.FK_Tasks_Employee" FromRole="Employee" ToRole="Tasks" />
+          <NavigationProperty Name="Document" Relationship="ProjectManagementModel.FK_Document_Employee" FromRole="Employee" ToRole="Document" />
+          <NavigationProperty Name="DocumentModified" Relationship="ProjectManagementModel.FK_DocumentModified_Employee" FromRole="Employee" ToRole="DocumentModified" />
         </EntityType>
         <EntityType Name="JobTitle">
           <Key>
@@ -979,6 +1113,7 @@
           <NavigationProperty Name="ProjectMembers" Relationship="Self.FK_ProjectMembers_Project" FromRole="Project" ToRole="ProjectMembers" />
           <NavigationProperty Name="Tasks" Relationship="Self.FK_Tasks_Project" FromRole="Project" ToRole="Tasks" />
           <NavigationProperty Name="Department2" Relationship="Self.ProjectRelationDept" FromRole="Project" ToRole="Department" />
+          <NavigationProperty Name="Document" Relationship="ProjectManagementModel.FK_Document_Project" FromRole="Project" ToRole="Document" />
         </EntityType>
         <EntityType Name="ProjectCategory">
           <Key>
@@ -1109,6 +1244,7 @@
           <Property Name="IsRead" Type="Boolean" />
           <Property Name="ReviewScore" Type="Byte" />
           <Property Name="ReviewDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Document" Relationship="ProjectManagementModel.FK_Document_Tasks" FromRole="Tasks" ToRole="Document" />
         </EntityType>
         <EntityType Name="TaskStatus">
           <Key>
@@ -1657,6 +1793,33 @@
             <End Role="Project" EntitySet="Project" />
           </AssociationSet>
           <EntitySet Name="Calendar" EntityType="ProjectManagementModel.Calendar" />
+          <EntitySet Name="Document" EntityType="ProjectManagementModel.Document" />
+          <EntitySet Name="DocumentCategory" EntityType="ProjectManagementModel.DocumentCategory" />
+          <EntitySet Name="DocumentModified" EntityType="ProjectManagementModel.DocumentModified" />
+          <AssociationSet Name="FK_Document_DocumentCategory" Association="ProjectManagementModel.FK_Document_DocumentCategory">
+            <End Role="DocumentCategory" EntitySet="DocumentCategory" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Employee" Association="ProjectManagementModel.FK_Document_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Project" Association="ProjectManagementModel.FK_Document_Project">
+            <End Role="Project" EntitySet="Project" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Document_Tasks" Association="ProjectManagementModel.FK_Document_Tasks">
+            <End Role="Tasks" EntitySet="Tasks" />
+            <End Role="Document" EntitySet="Document" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentModified_Document" Association="ProjectManagementModel.FK_DocumentModified_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="DocumentModified" EntitySet="DocumentModified" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DocumentModified_Employee" Association="ProjectManagementModel.FK_DocumentModified_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="DocumentModified" EntitySet="DocumentModified" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Calendar">
           <Key>
@@ -1672,6 +1835,119 @@
           <Property Name="IsFullDay" Type="Boolean" Nullable="false" />
           <Property Name="EventID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="DocumentGUID" />
+          </Key>
+          <Property Name="DocumentID" Type="Int32" Nullable="false" />
+          <Property Name="DocumentGUID" Type="Guid" Nullable="false" />
+          <Property Name="DocumentCategory" Type="Int32" />
+          <Property Name="ProjectGUID" Type="Guid" />
+          <Property Name="TaskGUID" Type="Guid" />
+          <Property Name="DocumentName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateEmpGUID" Type="Guid" />
+          <NavigationProperty Name="DocumentCategory1" Relationship="ProjectManagementModel.FK_Document_DocumentCategory" FromRole="Document" ToRole="DocumentCategory" />
+          <NavigationProperty Name="Employee" Relationship="ProjectManagementModel.FK_Document_Employee" FromRole="Document" ToRole="Employee" />
+          <NavigationProperty Name="Project" Relationship="ProjectManagementModel.FK_Document_Project" FromRole="Document" ToRole="Project" />
+          <NavigationProperty Name="Tasks" Relationship="ProjectManagementModel.FK_Document_Tasks" FromRole="Document" ToRole="Tasks" />
+          <NavigationProperty Name="DocumentModified" Relationship="ProjectManagementModel.FK_DocumentModified_Document" FromRole="Document" ToRole="DocumentModified" />
+        </EntityType>
+        <EntityType Name="DocumentCategory">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Document" Relationship="ProjectManagementModel.FK_Document_DocumentCategory" FromRole="DocumentCategory" ToRole="Document" />
+        </EntityType>
+        <EntityType Name="DocumentModified">
+          <Key>
+            <PropertyRef Name="ModifiedGUID" />
+          </Key>
+          <Property Name="DocumentGUID" Type="Guid" Nullable="false" />
+          <Property Name="ModifiedGUID" Type="Guid" Nullable="false" />
+          <Property Name="Version" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedEmpGUID" Type="Guid" />
+          <Property Name="IsChecked" Type="Boolean" />
+          <Property Name="FileName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Document" Relationship="ProjectManagementModel.FK_DocumentModified_Document" FromRole="DocumentModified" ToRole="Document" />
+          <NavigationProperty Name="Employee" Relationship="ProjectManagementModel.FK_DocumentModified_Employee" FromRole="DocumentModified" ToRole="Employee" />
+        </EntityType>
+        <Association Name="FK_Document_DocumentCategory">
+          <End Type="ProjectManagementModel.DocumentCategory" Role="DocumentCategory" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Document" Role="Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DocumentCategory">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="DocumentCategory" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Employee">
+          <End Type="ProjectManagementModel.Employee" Role="Employee" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Document" Role="Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="EmployeeGUID" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="CreateEmpGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Project">
+          <End Type="ProjectManagementModel.Project" Role="Project" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Document" Role="Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="ProjectGUID" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="ProjectGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Document_Tasks">
+          <End Type="ProjectManagementModel.Tasks" Role="Tasks" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Document" Role="Document" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tasks">
+              <PropertyRef Name="TaskGUID" />
+            </Principal>
+            <Dependent Role="Document">
+              <PropertyRef Name="TaskGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentModified_Document">
+          <End Type="ProjectManagementModel.Document" Role="Document" Multiplicity="1" />
+          <End Type="ProjectManagementModel.DocumentModified" Role="DocumentModified" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="DocumentGUID" />
+            </Principal>
+            <Dependent Role="DocumentModified">
+              <PropertyRef Name="DocumentGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DocumentModified_Employee">
+          <End Type="ProjectManagementModel.Employee" Role="Employee" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.DocumentModified" Role="DocumentModified" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="EmployeeGUID" />
+            </Principal>
+            <Dependent Role="DocumentModified">
+              <PropertyRef Name="ModifiedEmpGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1959,6 +2235,42 @@
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
                 <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />
                 <ScalarProperty Name="CalendarGUID" ColumnName="CalendarGUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Document">
+            <EntityTypeMapping TypeName="ProjectManagementModel.Document">
+              <MappingFragment StoreEntitySet="Document">
+                <ScalarProperty Name="CreateEmpGUID" ColumnName="CreateEmpGUID" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
+                <ScalarProperty Name="TaskGUID" ColumnName="TaskGUID" />
+                <ScalarProperty Name="ProjectGUID" ColumnName="ProjectGUID" />
+                <ScalarProperty Name="DocumentCategory" ColumnName="DocumentCategory" />
+                <ScalarProperty Name="DocumentGUID" ColumnName="DocumentGUID" />
+                <ScalarProperty Name="DocumentID" ColumnName="DocumentID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentCategory">
+            <EntityTypeMapping TypeName="ProjectManagementModel.DocumentCategory">
+              <MappingFragment StoreEntitySet="DocumentCategory">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DocumentModified">
+            <EntityTypeMapping TypeName="ProjectManagementModel.DocumentModified">
+              <MappingFragment StoreEntitySet="DocumentModified">
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="IsChecked" ColumnName="IsChecked" />
+                <ScalarProperty Name="ModifiedEmpGUID" ColumnName="ModifiedEmpGUID" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+                <ScalarProperty Name="ModifiedGUID" ColumnName="ModifiedGUID" />
+                <ScalarProperty Name="DocumentGUID" ColumnName="DocumentGUID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

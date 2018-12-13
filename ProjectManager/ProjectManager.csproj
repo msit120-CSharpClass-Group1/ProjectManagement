@@ -240,6 +240,7 @@
     <Compile Include="Controllers\CostController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\EmployeesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -275,6 +276,15 @@
     <Compile Include="Models\DataObject\AllowCrossSiteJsonAttribute.cs" />
     <Compile Include="Models\DataObject\Grouped.cs" />
     <Compile Include="Models\Department.cs">
+      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Document.cs">
+      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DocumentCategory.cs">
+      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DocumentModified.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Employee.cs">
@@ -453,6 +463,7 @@
     <Content Include="Views\Perfomance\ScoreByPM.cshtml" />
     <Content Include="Views\Perfomance\ScoreByMySelf.cshtml" />
     <Content Include="Views\Notification\Index.cshtml" />
+    <Content Include="Views\Document\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

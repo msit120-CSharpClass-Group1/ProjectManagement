@@ -60,6 +60,15 @@
         <AssociationConnector Association="ProjectManagementModel.FK_Tasks_TaskStatus" ManuallyRouted="false" />
         <AssociationConnector Association="ProjectManagementModel.ProjectRelationDept" ManuallyRouted="false" />
         <EntityTypeShape EntityType="ProjectManagementModel.Calendar" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Document" Width="1.5" PointX="18.75" PointY="18.5" />
+        <EntityTypeShape EntityType="ProjectManagementModel.DocumentCategory" Width="1.5" PointX="16.5" PointY="23.375" />
+        <EntityTypeShape EntityType="ProjectManagementModel.DocumentModified" Width="1.5" PointX="21" PointY="16.625" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Document_DocumentCategory" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Document_Employee" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Document_Project" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Document_Tasks" />
+        <AssociationConnector Association="ProjectManagementModel.FK_DocumentModified_Document" />
+        <AssociationConnector Association="ProjectManagementModel.FK_DocumentModified_Employee" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
