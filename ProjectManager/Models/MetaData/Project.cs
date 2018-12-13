@@ -56,8 +56,10 @@ namespace ProjectManager.Models
         public Nullable<System.DateTime> StartDate { get; set; }
         [DisplayName("實際結束日期")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
-        public Nullable<System.DateTime> EndDate { get; set; }        
-        public Nullable<System.Guid> InChargeDeptGUID { get; set; }        
+        public Nullable<System.DateTime> EndDate { get; set; }
+        [DisplayName("負責部門")]
+        public Nullable<System.Guid> InChargeDeptGUID { get; set; }
+        [DisplayName("負責部門PM")]
         public Nullable<System.Guid> InChargeDeptPMGUID { get; set; }
         [DisplayName("專案階段")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
