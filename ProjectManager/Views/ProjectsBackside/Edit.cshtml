@@ -1,0 +1,153 @@
+﻿@model ProjectManager.Models.Project
+@{
+    ViewBag.Title = "修改專案";
+}
+
+
+<div class="container mt-3">
+    <div class="card">
+        <div class="card-header text-white bg-dark">
+            <h3>@Model.ProjectID-@Model.ProjectName</h3>
+        </div>
+        <div class="card-body">
+            <form class="form-horizontal " action="~/ProjectsBackside/Edit" method="post">
+                <input name="ProjectGUID" type="hidden" class="form-control d-inline" style="width:10em;" value=@Model.ProjectGUID />
+                <input name="ProjectID" type="hidden" class="form-control d-inline" style="width:10em;" value=@Model.ProjectID />
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ProjectName)
+                    @Html.TextBoxFor(m => m.ProjectName, new { @class = "form-control", style = "width:18em;" })
+                </div>
+
+                <div class="row">
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.RequiredDeptGUID)
+                        @Html.DropDownList("RequiredDeptGUID", (SelectList)ViewBag.Departments, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    </div>
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.RequiredDeptPMGUID)
+                        @Html.DropDownList("RequiredDeptPMGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.InChargeDeptGUID)
+                        @Html.DropDownList("InChargeDeptGUID", (SelectList)ViewBag.Departments, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    </div>
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.InChargeDeptPMGUID)
+                        @Html.DropDownList("InChargeDeptPMGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.EstStartDate)
+                        @{
+                            string strDate = string.Format("{0:yyyy-MM-dd}", Model.EstStartDate.Value);
+                        }<br />
+                        <input name="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+                    </div>
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.EstEndDate)
+                        @{
+                            strDate = string.Format("{0:yyyy-MM-dd}", Model.EstEndDate.Value);
+                        }<br />
+                        <input name="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+                    </div>
+                </div>
+                <div class="row" id="ActualDurationGroup">
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.StartDate)
+                        @{
+                            strDate = string.Format("{0:yyyy-MM-dd}", Model.StartDate.Value);
+                        }<br />
+                        <input name="StartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+                    </div>
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.EndDate)
+                        @{
+                            strDate = string.Format("{0:yyyy-MM-dd}", Model.StartDate.Value);
+                        }<br />
+                        <input name="EndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.ProjectStatusID)
+                        @Html.DropDownList("ProjectStatusID", (SelectList)ViewBag.ProjectStatuses, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    </div>
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.ProjectCategoryID)
+                        @Html.DropDownList("ProjectCategoryID", (SelectList)ViewBag.ProjectCategories, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.ProjectBudget)
+                        @Html.TextBoxFor(m => m.ProjectBudget, new { @class = "form-control", style = "width:18em;" })
+                    </div>
+                    <div class="col-6 form-group ">
+                        @Html.LabelFor(m => m.IsGeneralManagerConcerned)<br />
+                        @Html.RadioButton("IsGeneralManagerConcerned", true, (bool)Model.IsGeneralManagerConcerned, new { @class = "form-control d-inline align-middle", style = "width:1.2em;" })<span class="mr-2">是</span>
+                        @Html.RadioButton("IsGeneralManagerConcerned", false, (bool)!Model.IsGeneralManagerConcerned, new { @class = "form-control d-inline align-middle", style = "width:1.2em;" })<span>否</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 form-group">
+                        @Html.Label("專案督導部門")
+                        @Html.DropDownList("ProjectSupervisorDeptGUID", (SelectList)ViewBag.Departments, "請選擇", new { @class = "form-control", style = "width:12em;" })
+                    </div>
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.ProjectSupervisorGUID)
+                        @Html.DropDownList("ProjectSupervisorGUID", (SelectList)ViewBag.Employees, "請選擇", new { @class = "form-control", style = "width:10em;" })
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-12 form-group">
+                        @Html.LabelFor(m => m.Description)
+                        @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div id="formBtns" class="mt-3 mx-auto text-center ">
+                    <a href="~/ProjectsBackside/Index" class="btn btn-default py-1 px-5">取消</a>
+                    <button id="confiredBtn" type="submit" class="btn btn-primary py-1 px-5">儲存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section script{
+    <script>
+        $(document).ready(function () {
+            $('#RequiredDeptGUID').change(GetEmployees);
+            $('#InChargeDeptGUID').change(GetEmployees);
+            $('#ProjectSupervisorDeptGUID').change(GetEmployees);
+
+            function GetEmployees() {
+                var selectName = $(this).attr('name');
+                $.getJSON("@Url.Action("GetEmployeesByDept","Projects")", { DeptGUID: $(this).val() }, function (data) {
+                    var docFrag = $(document.createDocumentFragment());
+                    $.each(data, function (index,emp) {
+                        var opt = $('<option></option>').text(emp.EmployeeName).val(emp.EmployeeGUID);
+                        docFrag.append(opt);                       
+                    });                    
+                        
+                    switch (selectName) {
+                        case 'RequiredDeptGUID': 
+                            $('#RequiredDeptPMGUID').html(docFrag);
+                            break;
+                        case 'InChargeDeptGUID':
+                            $('#InChargeDeptPMGUID').html(docFrag);
+                            break;
+                        case 'ProjectSupervisorDeptGUID':
+                            $('#ProjectSupervisorGUID').html(docFrag);
+                            break;
+                        default:                           
+                    }
+                    
+                });
+            }
+        });
+    </script>
+}
+
