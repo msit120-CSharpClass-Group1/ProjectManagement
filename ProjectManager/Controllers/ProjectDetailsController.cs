@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "管理員,專案經理,處長")]
     public class ProjectDetailsController : Controller
     {
         // GET: ProjectDetails

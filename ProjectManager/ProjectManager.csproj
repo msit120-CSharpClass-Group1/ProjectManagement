@@ -366,6 +366,7 @@
     <Compile Include="Models\ViewModel\ProjectMemberScoreVM.cs" />
     <Compile Include="Models\ViewModel\HolidaysVM.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
+    <Compile Include="Models\ViewModel\ResourceFilterVM.cs" />
     <Compile Include="Models\ViewModel\TaskVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
@@ -452,6 +453,7 @@
     <Content Include="Views\Perfomance\TaskScoreAVGReview.cshtml" />
     <Content Include="Views\Perfomance\ScoreByPM.cshtml" />
     <Content Include="Views\Perfomance\ScoreByMySelf.cshtml" />
+    <Content Include="Views\Notification\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

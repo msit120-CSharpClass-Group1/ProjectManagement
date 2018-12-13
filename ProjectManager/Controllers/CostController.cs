@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace ProjectManager.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "管理員,專案經理,處長")]
     public class CostController : Controller
     {
         Repository<ResourceCategory> ResourceCatRepo = new Repository<ResourceCategory>();
@@ -62,7 +62,7 @@ namespace ProjectManager.Controllers
             return Content(JsonConvert.SerializeObject(TaskList), "application/json");
         }
 
-        public ActionResult GetTaskResources(Guid id, int? page, string sortBy)
+        public ActionResult GetTaskResources(Guid id, int? page, string sortBy, ResourceFilterVM filterBy)
         {
             var q = from p in ProjectRepo.GetCollections()
                     join t in TaskRepo.GetCollections() on p.ProjectGUID equals t.ProjectGUID
@@ -88,8 +88,9 @@ namespace ProjectManager.Controllers
                         Description = tr.Description
                     };
 
-            var ProjectResourceList = q.ToList().AsQueryable().Sort(sortBy);
+            var ProjectResourceList = q.ToList().AsQueryable().Sort(sortBy).Filter(filterBy);
 
+            Response.Cookies["sortBy"].Value = sortBy;
             ViewBag.Count = ProjectResourceList.Count();
             ViewBag.sortByDate = string.IsNullOrEmpty(sortBy) ? "DateDesc" : "";
             ViewBag.sortByTaskName = sortBy == "TaskName" ? "TaskNameDesc" : "TaskName";
