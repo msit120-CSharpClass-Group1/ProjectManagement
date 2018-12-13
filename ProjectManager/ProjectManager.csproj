@@ -253,6 +253,7 @@
     <Compile Include="Controllers\ProjectDetailsController.cs" />
     <Compile Include="Controllers\MyBoardController.cs" />
     <Compile Include="Controllers\ProjectMemberController.cs" />
+    <Compile Include="Controllers\ProjectsBacksideController.cs" />
     <Compile Include="Controllers\ProjectStatusController.cs" />
     <Compile Include="Controllers\SelectMBoarController.cs" />
     <Compile Include="Controllers\SelectProjectController.cs" />
@@ -463,6 +464,9 @@
     <Content Include="Views\Perfomance\ScoreByPM.cshtml" />
     <Content Include="Views\Perfomance\ScoreByMySelf.cshtml" />
     <Content Include="Views\Notification\Index.cshtml" />
+    <Content Include="Views\ProjectsBackside\Index.cshtml" />
+    <Content Include="Views\ProjectsBackside\Edit.cshtml" />
+    <Content Include="Views\ProjectsBackside\Insert.cshtml" />
     <Content Include="Views\Document\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
