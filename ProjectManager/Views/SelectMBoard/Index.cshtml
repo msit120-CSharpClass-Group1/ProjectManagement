@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<ProjectManager.Models.ProjectMembers>
 @{
-    ViewBag.Title = "選擇成員1";
+    ViewBag.Title = "選擇成員";
 }
 
 @section style{
@@ -51,6 +51,12 @@
             "position": "relative",
             "border-radius": "15px 15px 0 0"
         });
+
+        $(document).ready(function () {
+            var breadProjecta = $(' <a> 選擇專案</a >').attr("href", "/SelectProject/Index");
+            var breadProjectLi = $('<li></li>').append(breadProjecta);
+            $('.breadcrumb>li').first().after(breadProjectLi);
+        })
        
     </script>
 }

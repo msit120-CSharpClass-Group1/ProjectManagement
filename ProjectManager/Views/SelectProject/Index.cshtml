@@ -59,7 +59,7 @@
     @foreach (var p in Model)
     {
     <div class="project">
-        <a class="projectLink" href="@Url.Action("Index", "SelectMBoar",new {id=p.ProjectGUID })"></a>
+        <a class="projectLink" href="@Url.Action("Index", "SelectMBoard",new {id=p.ProjectGUID })"></a>
         <div class="progressBar"></div>
         <div class="bar"></div>
         <span class="barNum">50%</span>

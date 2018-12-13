@@ -253,7 +253,7 @@
     <Compile Include="Controllers\MyBoardController.cs" />
     <Compile Include="Controllers\ProjectMemberController.cs" />
     <Compile Include="Controllers\ProjectStatusController.cs" />
-    <Compile Include="Controllers\SelectMBoarController.cs" />
+    <Compile Include="Controllers\SelectMBoardController.cs" />
     <Compile Include="Controllers\SelectProjectController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
@@ -398,7 +398,6 @@
     <Content Include="Scripts\jquery-ui-1.12.1-Effects\package.json" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\MyBoard\Index.cshtml" />
-    <Content Include="Views\SelectMBoar\Index.cshtml" />
     <Content Include="Views\SelectProject\Index.cshtml" />
     <Content Include="Views\Cost\GetTaskResources.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
@@ -453,6 +452,7 @@
     <Content Include="Views\Perfomance\ScoreByPM.cshtml" />
     <Content Include="Views\Perfomance\ScoreByMySelf.cshtml" />
     <Content Include="Views\Notification\Index.cshtml" />
+    <Content Include="Views\SelectMBoard\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
