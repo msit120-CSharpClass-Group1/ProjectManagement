@@ -18,7 +18,7 @@ namespace ProjectManager.Controllers
         // GET: ProjectMember
         public ActionResult Index()
         {
-            if (Request.Cookies["ProjectGUID"].Value == null)
+            if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid indexPJID = new Guid(Request.Cookies["ProjectGUID"].Value);
             ViewBag.FirstEmpList = employee.GetCollections().ToList();
@@ -27,7 +27,7 @@ namespace ProjectManager.Controllers
         }
         public ActionResult SelectDep(Guid depid)
         {
-            if (Request.Cookies["ProjectGUID"].Value == null)
+            if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             var depGUID = depid;      
             var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);            
@@ -73,7 +73,7 @@ namespace ProjectManager.Controllers
 
         public ActionResult AssignTask()
         {
-            if (Request.Cookies["ProjectGUID"].Value == null)
+            if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 1 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
@@ -107,7 +107,7 @@ namespace ProjectManager.Controllers
         }
         public ActionResult ReloadTaskList()
         {
-            if (Request.Cookies["ProjectGUID"].Value == null)
+            if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).GetLeafTasks().ToList();
@@ -126,7 +126,7 @@ namespace ProjectManager.Controllers
 
         public ActionResult GetTaskDesc(Guid TaskGUID)
         {
-            if (Request.Cookies["ProjectGUID"].Value == null)
+            if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             var TaskName = tasks.GetCollections().Where(t => t.TaskGUID == TaskGUID).FirstOrDefault().Description;
             return Content(TaskName);
