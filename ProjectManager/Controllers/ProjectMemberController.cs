@@ -39,6 +39,8 @@ namespace ProjectManager.Controllers
             ProjectMembers pm = new ProjectMembers();
             pm.ProjectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             pm.EmployeeGUID = memberID;
+            pm.IsRead = false;
+            pm.InvideDate = DateTime.Now;
             projectMembers.Add(pm);
             return RedirectToAction("Index", "ProjectMember");
         }
