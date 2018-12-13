@@ -19,6 +19,8 @@ namespace ProjectManager.Views.Shared
         public static string ExpChart = "Cost/Charts";
         //行事曆
         public static string Calendar = "Calendar/Index";
+        //文件管理
+        public static string Document = "Document/Index";
         //專案評分
         public static string Perfomance = "Perfomance/Index";
         //後臺管理

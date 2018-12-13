@@ -27,6 +27,8 @@ namespace ProjectManager.Models
             this.ProjectMembers = new HashSet<ProjectMembers>();
             this.TaskDetail = new HashSet<TaskDetail>();
             this.Tasks = new HashSet<Tasks>();
+            this.Document = new HashSet<Document>();
+            this.DocumentModified = new HashSet<DocumentModified>();
         }
     
         public System.Guid EmployeeGUID { get; set; }
@@ -61,5 +63,9 @@ namespace ProjectManager.Models
         public virtual ICollection<TaskDetail> TaskDetail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Tasks> Tasks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Document> Document { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DocumentModified> DocumentModified { get; set; }
     }
 }
