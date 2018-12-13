@@ -23,18 +23,15 @@ namespace ProjectManager.Controllers
         {
             if (ProjectGUID != null)
             {
-                Session["ProjectGUID"] = ProjectGUID;
                 Response.Cookies["ProjectGUID"].Value = ProjectGUID.ToString();
                 Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddDays(7);
             }
 
-            //if (Session["ProjectGUID"] == null)
-            //    return RedirectToAction("Index", "Projects");
             return View();
         }
         public ActionResult RootTasksCompletedRate()
         {
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
 
@@ -51,7 +48,7 @@ namespace ProjectManager.Controllers
         }
         public ActionResult RootTasksEstWorkTimeSum()
         {
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
@@ -69,7 +66,7 @@ namespace ProjectManager.Controllers
         }
         public ActionResult ProjectMembersEstWorkTimeSum()
         {
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var members = projectMembersRepo.GetCollections().Where(m => m.ProjectGUID == _projectGUID).Distinct();
             ChartData<SingleColorChartDataset> _data = new ChartData<SingleColorChartDataset>();
             _data.labels.AddRange(members.Select(m => m.Employee.EmployeeName));
@@ -85,7 +82,7 @@ namespace ProjectManager.Controllers
         }
         public ActionResult RootTasksResourceSum()
         {
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
@@ -107,14 +104,14 @@ namespace ProjectManager.Controllers
         [HttpGet]
         public ActionResult ProjectEdit()
         {
-            if (Session["ProjectGUID"] == null)
+            if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
 
             ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             return View(projectRepo.Find(_projectGUID));
         }
         [HttpPost]
@@ -139,9 +136,9 @@ namespace ProjectManager.Controllers
         #region Project Distribution
         public ActionResult ProjectDistribution()
         {
-            if (Session["ProjectGUID"] == null)
+            if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
                 .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
             ViewBag.Projects = projectRepo.GetCollections().Where(p => p.ProjectGUID == _projectGUID).ToList();
@@ -151,9 +148,9 @@ namespace ProjectManager.Controllers
         }
         public ActionResult TreeGridPartialView()
         {
-            if (Session["ProjectGUID"] == null)
+            if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
                 .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
             return PartialView(tasks);
@@ -161,9 +158,9 @@ namespace ProjectManager.Controllers
         [HttpPost]
         public ActionResult InsertTask(Tasks task)
         {
-            if (Session["ProjectGUID"] == null)
+            if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            Guid _projectGUID = new Guid(Session["ProjectGUID"].ToString());
+            Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             task.ProjectGUID = _projectGUID;
             task.TaskGUID = Guid.NewGuid();
             task.EstWorkTime = task.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
@@ -238,7 +235,7 @@ namespace ProjectManager.Controllers
         [HttpPost]
         public ActionResult LoadHolidays(HolidaysVM holidays)
         {
-            Session["Holidays"] = "loaded";
+            Response.Cookies["Holidays"].Value = "loaded";
             System.Web.HttpContext.Current.Application.Lock();
             System.Web.HttpContext.Current.Application["Holidays"] = holidays;
             System.Web.HttpContext.Current.Application.UnLock();
