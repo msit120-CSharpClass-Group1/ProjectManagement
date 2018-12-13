@@ -63,7 +63,6 @@ namespace ProjectManager.Controllers
         }
         public ActionResult Logout()
         {
-            Session.RemoveAll();
             Response.Cookies["MemberGUID"].Expires = DateTime.Now.AddSeconds(-1);
             Response.Cookies["TitleGUID"].Expires = DateTime.Now.AddSeconds(-1);
             Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddSeconds(-1);
