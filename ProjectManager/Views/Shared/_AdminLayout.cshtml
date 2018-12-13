@@ -17,18 +17,20 @@
 <body>
     <nav class="top-navbar">
         <span class="leftOpenbtn" style="cursor:pointer">&#9776;</span>
-        <a class="title" href="~/@Link.Do">專案管理系統</a>
+        <a class="title" href="~/@Link.Dashboard">專案管理系統</a>
         <div class="topnav-right">
             <div class="dropdown">
                 <button id="logoutbtn" class="navdropbtn">Logout</button>
             </div>
             <div class="dropdown">
                 <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">@EmployeeInfo.EmployeeName</button>
+                <div class="dropdown-content">
+                    <a href="#">message1</a>
+                </div>
             </div>
             <div class="dropdown">
-                <button id="notificationbtn" class="navdropbtn"><i class="far fa-envelope"></i><span class="label">9</span></button>
-                <div class="dropdown-content">
-                  
+                <button id="notificationbtn" class="navdropbtn"><i class="far fa-envelope"></i><span id="msgcount" class="label"></span></button>
+                <div id="notificationmsg" class="dropdown-content">
                 </div>
             </div>
         </div>
@@ -62,14 +64,14 @@
                 <button class="dropdown-btn">
                     <i class="fas fa-chart-pie"></i><span>成本管理</span><i class="fa fa-caret-down"></i>
                 </button>
-                <ul class="dropdown-container hide">
-                    <li>
+                <ul id="ul_costManagement" class="dropdown-container hide">
+                    <li id="li_ExpList">
                         <a href="~/@Link.ExpList">費用管理</a>
                     </li>
-                    <li>
+                    <li id="li_ExpCatMgr">
                         <a href="~/@Link.ExpCatMgr">費用類別管理</a>
                     </li>
-                    <li>
+                    <li id="li_Charts">
                         <a href="~/@Link.ExpChart">統計與圖表</a>
                     </li>
                 </ul>

@@ -32,8 +32,14 @@ namespace ProjectManager.Controllers
             VM.Project = p.GetCollections().Where(x => x.ProjectGUID.ToString() == PID).ToList();
             VM.TaskDetail = td.GetCollections();
             q.ToList();
+            foreach (var task in VM.Tasks)
+            {
+                task.IsRead = true;
+                t.Update(task);
+            }
             return View(VM);
         }
+       
         public ActionResult GetDetailTask(Guid id)
         {
             BoardVM VM = new BoardVM();

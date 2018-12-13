@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace ProjectManager.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "管理員,專案經理,處長")]
     public class ProjectsController : Controller
     {
         Repository<Project> projectRepo = new Repository<Project>();

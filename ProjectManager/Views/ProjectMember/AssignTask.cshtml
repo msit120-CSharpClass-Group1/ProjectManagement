@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <div></div>
+
             <div class="col-7" id="projectMemberDivL1">
                 @foreach (var _projectMember in Model)
                 {
@@ -244,6 +244,22 @@
                             .attr("title",taskName)
                             .draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5 });
                         $(".list-group").append(backToList);
+                        var memberCardDiv = document.getElementById("projectMemberDivL1");
+
+                        for (var i = 1; i <= memberCardDiv.childElementCount; i++)
+                        {                         
+                            var cardTwoDiv = $('#projectMemberDivL1 div:nth-child(' + i + ')').children("div:nth-child(2)");
+
+                            for (var j = 1; j <= cardTwoDiv.children().length; j++)
+                            {
+                                var memberCardLi = cardTwoDiv.children('#projectMemberDivL1 li:nth-child(' + j + ')').data("tag")
+                                if (memberCardLi == taskName)
+                                {
+                                    cardTwoDiv.children('#projectMemberDivL1 li:nth-child(' + j + ')').remove();
+                                }
+                            }
+                        }
+
                     }
                     else {
                         var EmpName = $(this).parent().prev().prev().text()
