@@ -29,6 +29,7 @@
                         if (_member.Key == item.ProjectName)
                         {
                             <p class="mb-0" style="float:right">團隊成員數量: @_member.Count</p>
+                           
                         }
                     }
                     @foreach (var _pmscore in Model.GetPMscore)
@@ -36,6 +37,7 @@
                         if (_pmscore.Key == item.ProjectName)
                         {
                             <p class="mb-0">團隊成員平均表現(PM) :@_pmscore.Avg</p>
+                            <p class="mb-0">已評分成員數:@item.ProjectMembers.Where(p=>p.PMscore!=null).Count()</p>
                         }
                     }
                 </div>

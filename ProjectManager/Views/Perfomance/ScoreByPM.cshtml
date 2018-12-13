@@ -9,7 +9,7 @@
 <!-- Team -->
 <section id="team" class="pb-5">
     <div class="container">
-        <h5 class="section-title h1">專案團隊成員</h5>
+        <h5 class="section-title h1">專案團隊成員評分介面</h5>
         <div class="row">
             <!-- Team member -->
             @foreach (var member in Model.ProjectMembers)
@@ -37,11 +37,11 @@
                             <div class="backside">
                                 <div class="card">
                                     <div class="card-body text-center mt-4">
-                                        <h4 class="card-title">@member.Employee.EmployeeName</h4>
+                                        <h4 class="card-title" data-guid="@member.EmployeeGUID">@member.Employee.EmployeeName</h4>
                                         <p class="card-text" style="width:300px">此專案承接工作數:100件</p>
                                         <p class="card-text">準時完成的工作數:100件</p>
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-memberguid="@member.EmployeeGUID" id="scoreBtn">
-                                            對他評分
+                                            我要評分
                                         </button>
                                     </div>
                                 </div>
@@ -60,7 +60,7 @@
         <div class="modal-content">
             <!--Header-->
             <div class="modal-header">
-                <p class="heading lead" id="modalEmpName">
+                <p class="heading lead" id="modalEmpName" data-guid="">
                     這裡放對某某評分
                 </p>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -76,15 +76,15 @@
                 </div>
                 <hr>
                 <div class="boxes">
-                    <input type="checkbox" id="box-1">
+                    <input type="checkbox" id="box-1" value="30">
                     <label for="box-1" title="按專案進度完成所有功能開發">能夠於專案開始後依規定時間內完成基本功能開發</label>
-                    <input type="checkbox" id="box-2">
+                    <input type="checkbox" id="box-2" value="30">
                     <label for="box-2" title="維護專案">能夠依照客戶需求, 依規定時間內完成修改項目</label>
-                    <input type="checkbox" id="box-3">
+                    <input type="checkbox" id="box-3" value="20">
                     <label for="box-3" title="確保軟體品質與穩定度">軟體嚴重程度的Bug依規定時限內修改完</label>
-                    <input type="checkbox" id="box-4">
+                    <input type="checkbox" id="box-4" value="10">
                     <label for="box-4" title="團隊合作">能夠與團隊有效溝通</label>
-                    <input type="checkbox" id="box-5">
+                    <input type="checkbox" id="box-5" value="10">
                     <label for="box-5" title="知識學習與分享">至少一次的團隊內技術發表</label>
                 </div>
                 <!--Footer-->
@@ -93,7 +93,7 @@
                         送出評分
                         <i class="fa fa-paper-plane ml-1"></i>
                     </a>
-                    <a class="btn btn-outline-primary waves-effect" data-dismiss="modal">取消</a>
+                    <a class="btn btn-outline-primary waves-effect" data-dismiss="modal" id="cancelscore">取消</a>
                 </div>
             </div>
         </div>
@@ -102,19 +102,47 @@
 
 
     @section script{
-        <script>
+<script>
         $(document).ready(function ()
         {
             $(".backside").on("click", 'button', function ()
             {
                 var EmployeeName = $(this).siblings(".card-title").text()
-                $("#modalEmpName").text(EmployeeName)
+                var EmployeeGUID = $(this).siblings(".card-title").data("guid");
+                $("#modalEmpName").text(EmployeeName).attr("data-guid", EmployeeGUID)
             })
             $("label").tooltip();
 
-            //$("#sendScoreBtn").
+            var score = 0;
+            var scoreArea = $(".boxes");
+            $("#sendScoreBtn").click(function ()
+            {
+                var ChkBoxLength = scoreArea.children().length - 5;
+                var EmployeeGUID = $("#modalEmpName").data("guid");
+
+                for (var i = 0; i <= ChkBoxLength; i++)
+                {
+                    var inputelement = $(".boxes input:eq('" + i + "')");
+                    if (inputelement.is(':checked'))
+                    {
+                        score += parseInt(inputelement.val());
+                    }
+                }
+                    $.ajax({
+                        url: '@Url.Action("EditPMScore", "Perfomance")',
+                        data: {"EmployeeGUID": EmployeeGUID,"PMScore": score},
+                        type:"POST",
+                        success: function (data)
+                        {
+                            score = 0;
+                            scoreArea.children("input").prop("checked", false);
+                            $('#exampleModalCenter').modal('hide');
+                        }
+                });               
+            })
+            $("#cancelscore").click(function () { $(".boxes").children("input").prop("checked", false)})
         })
 
-        </script>
+</script>
 
     }

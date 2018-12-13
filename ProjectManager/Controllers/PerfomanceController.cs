@@ -70,5 +70,13 @@ namespace ProjectManager.Controllers
             }
             return RedirectToAction("Index", "Perfomance");
         }
+
+        public ActionResult EditPMScore(ProjectMembers _projectMember)
+        {
+            var pm = ProjectMembersRepo.Find(_projectMember.EmployeeGUID, new Guid(Request.Cookies["ProjectGUID"].Value));
+            pm.PMscore = _projectMember.PMscore;
+            ProjectMembersRepo.Update(pm);
+            return Content("success");
+        }
     }
 }
