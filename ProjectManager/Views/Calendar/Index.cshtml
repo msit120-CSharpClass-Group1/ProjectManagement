@@ -1,30 +1,28 @@
 ﻿
 @{
     ViewBag.Title = "行事曆";
+    ViewBag.Activity = "行事曆";
 }
 
-
 @section style{
-    <link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.css" rel="stylesheet" />
-    <link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.print.css" rel="stylesheet" media="print" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="~/Content/fullcalendar.min.css" rel="stylesheet" />
     <style>
-
-        .modal-dialog {
-            z-index: 1050;
-        }
-
-        .rightOpenbtn{
-            display:none !important;
+        .rightOpenbtn {
+            display: none !important;
         }
 
         .fc-widget-header > table > thead {
             color: white;
             background-color: darkcyan;
         }
+
+        .right {
+            float: right !important;
+        }
     </style>
 }
-<div id="calender"></div>
+
+<div id='calendar'></div>
 
 <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -34,10 +32,10 @@
                 <h4 class="modal-title"><span id="eventTitle"></span></h4>
             </div>
             <div class="modal-body">
-                <button id="btnDelete" class="btn btn-default btn-sm pull-right">
+                <button id="btnDelete" class="btn btn-secondary right">
                     <span class="glyphicon glyphicon-remove"></span> 刪除
                 </button>
-                <button id="btnEdit" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
+                <button id="btnEdit" class="btn btn-secondary right" style="margin-right:5px;">
                     <span class="glyphicon glyphicon-pencil"></span> 更新
                 </button>
                 <p id="pDetails"></p>
@@ -52,7 +50,7 @@
 <div id="myModalSave" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="">
+            <div class="m-2">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">儲存事件</h4>
             </div>
@@ -66,10 +64,7 @@
                     <div class="form-group">
                         <label>開始時間</label>
                         <div class="input-group date" id="dtp1">
-                            <input type="text" id="txtStart" class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
+                            <input type="datetime" id="txtStart" class="form-control" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -80,10 +75,7 @@
                     <div class="form-group" id="divEndDate" style="display:none">
                         <label>結束時間</label>
                         <div class="input-group date" id="dtp2">
-                            <input type="text" id="txtEnd" class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
+                            <input type="datetime" id="txtEnd" class="form-control" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -101,7 +93,7 @@
                         </select>
                     </div>
                     <button type="button" id="btnSave" class="btn btn-success">儲存</button>
-                    <input  type="hidden" id="calGUID"/>
+                    <input type="hidden" id="calGUID" />
                     <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
                 </form>
             </div>
@@ -109,36 +101,26 @@
     </div>
 </div>
 
-@*<p id="mytime">我的時間</p>*@
-
 @section script{
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-
-        <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/fullcalendar.min.js"></script>
 
     <script>
-    $(document).ready(function () {       
-        var events = [];
-        var selectedEvent = null;
-        FetchEventAndRenderCalendar();
-        function FetchEventAndRenderCalendar() {
-            events = [];
-            $.ajax({
-                type: "GET",
-                url: '@Url.Action("GetEvents", "Calendar")',
-                success: function (data) 
+        $(document).ready(function ()
+        {
+            var events = [];
+            var selectedEvent = null;
+
+            $('#li_Calendar').addClass('active');
+
+            FetchEventAndRenderCalendar();
+            function FetchEventAndRenderCalendar()
+            {
+                events = [];
+                $.getJSON('@Url.Action("GetEvents", "Calendar")', function (data)
                 {
-                    $.each(data, function (i, v) {
+                    $.each(data, function (i, v)
+                    {
                         events.push({
                             CalendarGUID: v.CalendarGUID,
                             eventID: v.EventID,
@@ -153,214 +135,227 @@
                     })
 
                     GenerateCalender(events);
-                },
-                error: function (error) {
-                    alert('failed');
-                }
-            })
-        }
+                });
+            }
 
-        function GenerateCalender(events) {
-            $('#calender').fullCalendar('destroy');
-            $('#calender').fullCalendar({
-                contentHeight: 580,
-                defaultDate: new Date(),
-                timeFormat: 'h(:mm)a',
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,basicWeek,basicDay,agenda'
-                },
-                eventLimit: true,
-                eventColor: '#378006',
-                events: events,
-                eventClick: function (calEvent, jsEvent, view) {
-                    selectedEvent = calEvent;
-                    $('#myModal #eventTitle').text(calEvent.title);
-                    var $description = $('<div/>');
-                    $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("MM/DD/YYYY HH:mm A")));
-                    if (calEvent.end != null) {
-                        $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("MM/DD/YYYY HH:mm A")));
-                    }
-                    $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
-                    $("#calGUID").val(calEvent.CalendarGUID)
-                    
-                    $('#myModal #pDetails').empty().html($description);
-
-                    $('#myModal').modal(); //Show出填寫的Modal
-                },
-                selectable: true,
-                select: function (start, end) {
-                    selectedEvent = {
-                        eventID: 0,
-                        title: '',
-                        description: '',
-                        start: start,
-                        end: end,
-                        allDay: false,
-                        color: ''
-                    };
-                    AddForm();
-                    $('#calendar').fullCalendar('unselect');
-                },
-                editable: true,
-                eventDrop: function (event) {
-                    var data = {
-                        CalendarGUID: event.CalendarGUID,
-                        EventID: event.eventID,
-                        Subject: event.title,
-                        Start: event.start.format('MM/DD/YYYY HH:mm A'),
-                        EndDay: event.end != null ? event.end.format('MM/DD/YYYY HH:mm A') : null,
-                        Description: event.description,
-                        ThemeColor: event.color,
-                        IsFullDay: event.allDay
-                    };
-                    SaveEvent(data);
-                }
-            })
-            $(".fc-today-button").text("今日");
-            $(".fc-month-button").text("月");
-            $(".fc-basicWeek-button").text("周");
-            $(".fc-basicDay-button").text("日");
-            $(".fc-agenda-button").text("時間表");
-        }
-
-        $(".fc-view-container").attr("style", "background-color:darkcyan");
-
-        $('#btnEdit').click(function () {
-            //Open modal dialog for edit event
-            EditForm();
-        })
-        $('#btnDelete').click(function () {
-            if (selectedEvent != null && confirm('確定要刪除嗎?')) {
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("DeleteEvent", "Calendar")',
-                    data: { 'eventID': selectedEvent.eventID },
-                    success: function (data) {
-                        if (data.status) {
-                            //Refresh the calender
-                            FetchEventAndRenderCalendar();
-                            $('#myModal').modal('hide');
-                        }
+            function GenerateCalender(events)
+            {
+                $('#calendar').fullCalendar('destroy');
+                $('#calendar').fullCalendar({
+                    contentHeight: 580,
+                    defaultDate: new Date(),
+                    timeFormat: 'h(:mm)a',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,basicWeek,basicDay,agenda'
                     },
-                    error: function () {
-                        alert('Failed');
+                    eventLimit: true,
+                    eventColor: '#378006',
+                    events: events,
+                    eventClick: function (calEvent, jsEvent, view)
+                    {
+                        selectedEvent = calEvent;
+                        $('#myModal #eventTitle').text(calEvent.title);
+                        var $description = $('<div/>');
+                        $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("MM/DD/YYYY HH:mm A")));
+                        if (calEvent.end != null)
+                        {
+                            $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("MM/DD/YYYY HH:mm A")));
+                        }
+                        $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
+                        $("#calGUID").val(calEvent.CalendarGUID)
+
+                        $('#myModal #pDetails').empty().html($description);
+
+                        $('#myModal').modal(); //Show出填寫的Modal
+                    },
+                    selectable: true,
+                    select: function (start, end)
+                    {
+                        selectedEvent = {
+                            eventID: 0,
+                            title: '',
+                            description: '',
+                            start: start,
+                            end: end,
+                            allDay: false,
+                            color: ''
+                        };
+                        AddForm();
+                        $('#calendar').fullCalendar('unselect');
+                    },
+                    editable: true,
+                    eventDrop: function (event)
+                    {
+                        var data = {
+                            CalendarGUID: event.CalendarGUID,
+                            EventID: event.eventID,
+                            Subject: event.title,
+                            Start: event.start.format('MM/DD/YYYY HH:mm A'),
+                            EndDay: event.end != null ? event.end.format('MM/DD/YYYY HH:mm A') : null,
+                            Description: event.description,
+                            ThemeColor: event.color,
+                            IsFullDay: event.allDay
+                        };
+                        SaveEvent(data);
                     }
+
                 })
+                $(".fc-today-button").text("今日");
+                $(".fc-month-button").text("月");
+                $(".fc-basicWeek-button").text("周");
+                $(".fc-basicDay-button").text("日");
+                $(".fc-agenda-button").text("時間表");
             }
-        })
 
-        $('#dtp1,#dtp2').datetimepicker({
-            format: 'MM/DD/YYYY HH:mm A'
-        });
+            $('#btnEdit').click(function ()
+            {
+                //Open modal dialog for edit event
+                EditForm();
+            });
 
-        $('#chkIsFullDay').change(function () {
-            if ($(this).is(':checked')) {
-                $('#divEndDate').hide();
-            }
-            else {
-                $('#divEndDate').show();
-            }
-        });
+            $('#btnDelete').click(function ()
+            {
+                if (selectedEvent != null && confirm('確定要刪除嗎?'))
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("DeleteEvent", "Calendar")',
+                        data: { 'eventID': selectedEvent.eventID },
+                        success: function (result)
+                        {
+                            if (result.status)
+                            {
+                                //Refresh the calender
+                                FetchEventAndRenderCalendar();
+                                $('#myModal').modal('hide');
+                            }
+                        },
+                        error: function ()
+                        {
+                            alert('Failed');
+                        }
+                    });
+                }
+            });
 
-        function AddForm() {
-            if (selectedEvent != null)
-            {               
-                $("#calGUID").val(guid());
-                $('#hdEventID').val(selectedEvent.eventID);
-                $('#txtSubject').val(selectedEvent.title);
-                $('#txtStart').val(selectedEvent.start.format('MM/DD/YYYY HH:mm A'));
-                $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
-                $('#chkIsFullDay').change();
-                $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('MM/DD/YYYY HH:mm A') : '');
-                $('#txtDescription').val(selectedEvent.description);
-                $('#ddThemeColor').val(selectedEvent.color);
-            }
-            $('#myModal').modal('hide');
-            $('#myModalSave').modal();
-        }
+            $('#chkIsFullDay').change(function ()
+            {
+                if ($(this).is(':checked'))
+                {
+                    $('#divEndDate').hide();
+                }
+                else
+                {
+                    $('#divEndDate').show();
+                }
+            });
 
-        function EditForm() {
-            if (selectedEvent != null) {
-                $("#calGUID").val();
-                $('#hdEventID').val(selectedEvent.eventID);
-                $('#txtSubject').val(selectedEvent.title);
-                $('#txtStart').val(selectedEvent.start.format('MM/DD/YYYY HH:mm A'));
-                $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
-                $('#chkIsFullDay').change();
-                $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('MM/DD/YYYY HH:mm A') : '');
-                $('#txtDescription').val(selectedEvent.description);
-                $('#ddThemeColor').val(selectedEvent.color);
-            }
-            $('#myModal').modal('hide');
-            $('#myModalSave').modal();
-        }
+            function AddForm()
+            {
+                if (selectedEvent != null)
+                {
+                    $("#calGUID").val(guid());
+                    $('#hdEventID').val(selectedEvent.eventID);
+                    $('#txtSubject').val(selectedEvent.title);
+                    $('#txtStart').val(selectedEvent.start.format('MM/DD/YYYY HH:mm A'));
+                    $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
+                    $('#chkIsFullDay').change();
+                    $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('MM/DD/YYYY HH:mm A') : '');
+                    $('#txtDescription').val(selectedEvent.description);
+                    $('#ddThemeColor').val(selectedEvent.color);
+                }
+                $('#myModal').modal('hide');
+                $('#myModalSave').modal();
+            };
 
-        $('#btnSave').click(function () {    
-            //Validation/
-            if ($('#txtSubject').val().trim() == "") {
-                alert('請必須要填寫標題!');
-                return;
-            }
-            if ($('#txtStart').val().trim() == "") {
-                alert('無效的開始時間!');
-                return;
-            }
-            if ($('#chkIsFullDay').is(':checked') == false && $('#txtEnd').val().trim() == "") {
-                alert('無效的結束時間!');
-                return;
-            }
-            else {
-                var startDate = moment($('#txtStart').val(), "MM/DD/YYYY HH:mm A").toDate();
-                var endDate = moment($('#txtEnd').val(), "MM/DD/YYYY HH:mm A").toDate();
-                if (startDate > endDate) {
-                    alert('無效的日期!');
+            function EditForm()
+            {
+                if (selectedEvent != null)
+                {
+                    $("#calGUID").val();
+                    $('#hdEventID').val(selectedEvent.eventID);
+                    $('#txtSubject').val(selectedEvent.title);
+                    $('#txtStart').val(selectedEvent.start.format('MM/DD/YYYY HH:mm A'));
+                    $('#chkIsFullDay').prop("checked", selectedEvent.allDay || false);
+                    $('#chkIsFullDay').change();
+                    $('#txtEnd').val(selectedEvent.end != null ? selectedEvent.end.format('MM/DD/YYYY HH:mm A') : '');
+                    $('#txtDescription').val(selectedEvent.description);
+                    $('#ddThemeColor').val(selectedEvent.color);
+                };
+                $('#myModal').modal('hide');
+                $('#myModalSave').modal();
+            };
+
+            $('#btnSave').click(function ()
+            {
+                //Validation/
+                if ($('#txtSubject').val().trim() == "")
+                {
+                    alert('請必須要填寫標題!');
                     return;
                 }
-            }
-
-
-            
-            var data = {
-                CalendarGUID: $("#calGUID").val(),
-                EventID: $('#hdEventID').val(),
-                Subject: $('#txtSubject').val().trim(),
-                Start: $('#txtStart').val().trim(),
-                EndDay: $('#chkIsFullDay').is(':checked') ? null : $('#txtEnd').val().trim(),
-                Description: $('#txtDescription').val(),
-                ThemeColor: $('#ddThemeColor').val(),
-                IsFullDay: $('#chkIsFullDay').is(':checked')
-            }
-            SaveEvent(data);
-            // call function for submit data to the server
-        })
-
-        function SaveEvent(data) {
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("SaveEvent", "Calendar")',
-                data: data,
-                success: function (data) {
-                    if (data.status) {
-                        //Refresh the calender
-                        FetchEventAndRenderCalendar();
-                        $('#myModalSave').modal('hide');
-                    }
-                },
-                error: function () {
-                    alert('Failed');
+                if ($('#txtStart').val().trim() == "")
+                {
+                    alert('無效的開始時間!');
+                    return;
                 }
-            });
-        }
+                if ($('#chkIsFullDay').is(':checked') == false && $('#txtEnd').val().trim() == "")
+                {
+                    alert('無效的結束時間!');
+                    return;
+                }
+                else
+                {
+                    var startDate = moment($('#txtStart').val(), "MM/DD/YYYY HH:mm A").toDate();
+                    var endDate = moment($('#txtEnd').val(), "MM/DD/YYYY HH:mm A").toDate();
+                    if (startDate > endDate)
+                    {
+                        alert('無效的日期!');
+                        return;
+                    }
+                }
 
-        function guid() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        }
+                var data =
+                {
+                    CalendarGUID: $("#calGUID").val(),
+                    EventID: $('#hdEventID').val(),
+                    Subject: $('#txtSubject').val().trim(),
+                    Start: $('#txtStart').val().trim(),
+                    EndDay: $('#chkIsFullDay').is(':checked') ? null : $('#txtEnd').val().trim(),
+                    Description: $('#txtDescription').val(),
+                    ThemeColor: $('#ddThemeColor').val(),
+                    IsFullDay: $('#chkIsFullDay').is(':checked')
+                }
 
-    });
+                // call function for submit data to the server
+                SaveEvent(data);
+            });
+
+            function SaveEvent(data)
+            {
+                $.post('@Url.Action("SaveEvent","Calendar")', data, function ()
+                {
+                    FetchEventAndRenderCalendar();
+                    $('#myModalSave').modal('hide');
+                });
+            };
+
+            function guid()
+            {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c)
+                {
+                    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            };
+
+            $("#TestRefresh").click(function ()
+            {
+                FetchEventAndRenderCalendar();
+            })
+
+        });
     </script>
 }
