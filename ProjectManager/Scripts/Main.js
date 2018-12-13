@@ -48,7 +48,7 @@
         window.location.href = '/Login/Logout';
     });
     //通知訊息下拉選單
-    window.setInterval(msgcount, 30000);
+    window.setInterval(msgcount, 120000);
     msgcount();
     function msgcount()
     {
