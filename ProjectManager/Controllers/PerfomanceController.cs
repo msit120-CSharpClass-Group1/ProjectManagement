@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "工程師,專案經理,管理員")]
     public class PerfomanceController : Controller
     {
         Repository<Project> projectRepo = new Repository<Project>();

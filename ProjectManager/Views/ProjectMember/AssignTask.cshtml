@@ -270,7 +270,7 @@
                 $("#mappingTable").on("click", 'a', function () {
                     var taskName = $(this).parent().prev().text();
                     var taskGUID = $(this).parent().next().next().val();
-                    if ($(this).attr("title") == "刪除") {
+                    if ($(this).attr("title") == "退回清單") {
                         submitCount -= 1;
                         $(this).parent().parent().remove();
                         var backToList = $("<li></li>").attr("class", "list-group-item draggable")
