@@ -120,6 +120,7 @@
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\PMScore.css" />
     <Content Include="Content\skin-black.css" />
+    <Content Include="image\NoTask.jpg" />
     <Content Include="webfonts\fa-brands-400.svg" />
     <Content Include="webfonts\fa-regular-400.svg" />
     <Content Include="webfonts\fa-solid-900.svg" />
