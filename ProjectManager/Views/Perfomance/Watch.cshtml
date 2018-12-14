@@ -79,11 +79,25 @@
             {
                 foreach (var item in _member.value)
                 {
-                    <tr>
-                        <td>@item.Employee.EmployeeName</td>
-                        <td>@item.PMscore</td>
-                        <td>@item.Selfscore</td>
-                    </tr>
+            <tr>
+                <td>@item.Employee.EmployeeName</td>
+                @if (item.PMscore != null)
+                {
+                    <td>@item.PMscore</td>
+                }
+                else
+                {
+                    <td>尚未評分</td>
+                }
+                @if (item.Selfscore != null)
+                {
+                    <td>@item.Selfscore</td>
+                }
+                else
+                {
+                    <td>尚未評分</td>
+                }
+            </tr>
                 }
             }
         </tbody>
@@ -115,7 +129,7 @@
                 for (var i = 1; i < tableRow; i++)
                 {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
-                    if (value >= $("#groupAvg").text())
+                    if (value >= $("#groupAvg").text() && value!="尚未評分")
                     {
                         $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
                     }
@@ -139,7 +153,7 @@
                 for (var i = 1; i < tableRow; i++)
                 {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
-                    if (value <= 20 &&value!="")
+                    if (value <= 20 &&value!="尚未評分")
                     {
                         $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
                     }
@@ -150,7 +164,7 @@
             {
                 for (var i = 1; i < tableRow; i++) {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
-                    if (value=="") {
+                    if (value=="尚未評分") {
                         $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
                     }
                 }
