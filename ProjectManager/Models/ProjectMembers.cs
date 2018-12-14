@@ -18,6 +18,8 @@ namespace ProjectManager.Models
         public System.Guid ProjectGUID { get; set; }
         public Nullable<byte> PMscore { get; set; }
         public Nullable<byte> Selfscore { get; set; }
+        public Nullable<System.DateTime> InvideDate { get; set; }
+        public Nullable<bool> IsRead { get; set; }
     
         public virtual Employee Employee { get; set; }
         public virtual Project Project { get; set; }

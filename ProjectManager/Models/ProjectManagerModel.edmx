@@ -190,6 +190,8 @@
           <Property Name="ProjectGUID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="PMscore" Type="tinyint" />
           <Property Name="Selfscore" Type="tinyint" />
+          <Property Name="InvideDate" Type="datetime" />
+          <Property Name="IsRead" Type="bit" />
         </EntityType>
         <EntityType Name="ProjectRelationDept">
           <Key>
@@ -1144,6 +1146,8 @@
           <Property Name="Selfscore" Type="Byte" />
           <NavigationProperty Name="Employee" Relationship="Self.FK_ProjectMembers_Employee" FromRole="ProjectMembers" ToRole="Employee" />
           <NavigationProperty Name="Project" Relationship="Self.FK_ProjectMembers_Project" FromRole="ProjectMembers" ToRole="Project" />
+          <Property Name="InvideDate" Type="DateTime" Precision="3" />
+          <Property Name="IsRead" Type="Boolean" />
         </EntityType>
         <EntityType Name="ProjectStatus">
           <Key>
@@ -2098,6 +2102,8 @@
           <EntitySetMapping Name="ProjectMembers">
             <EntityTypeMapping TypeName="ProjectManagementModel.ProjectMembers">
               <MappingFragment StoreEntitySet="ProjectMembers">
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="InvideDate" ColumnName="InvideDate" />
                 <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />
                 <ScalarProperty Name="ProjectGUID" ColumnName="ProjectGUID" />
                 <ScalarProperty Name="PMscore" ColumnName="PMscore" />
