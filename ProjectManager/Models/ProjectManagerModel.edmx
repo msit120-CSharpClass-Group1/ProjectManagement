@@ -52,6 +52,7 @@
           <Property Name="DocumentName" Type="nvarchar" MaxLength="50" />
           <Property Name="CreateDate" Type="datetime" />
           <Property Name="CreateEmpGUID" Type="uniqueidentifier" />
+          <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="DocumentCategory">
           <Key>
@@ -190,6 +191,8 @@
           <Property Name="ProjectGUID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="PMscore" Type="tinyint" />
           <Property Name="Selfscore" Type="tinyint" />
+          <Property Name="InvideDate" Type="datetime" />
+          <Property Name="IsRead" Type="bit" />
         </EntityType>
         <EntityType Name="ProjectRelationDept">
           <Key>
@@ -1144,6 +1147,8 @@
           <Property Name="Selfscore" Type="Byte" />
           <NavigationProperty Name="Employee" Relationship="Self.FK_ProjectMembers_Employee" FromRole="ProjectMembers" ToRole="Employee" />
           <NavigationProperty Name="Project" Relationship="Self.FK_ProjectMembers_Project" FromRole="ProjectMembers" ToRole="Project" />
+          <Property Name="InvideDate" Type="DateTime" Precision="3" />
+          <Property Name="IsRead" Type="Boolean" />
         </EntityType>
         <EntityType Name="ProjectStatus">
           <Key>
@@ -1852,6 +1857,7 @@
           <NavigationProperty Name="Project" Relationship="ProjectManagementModel.FK_Document_Project" FromRole="Document" ToRole="Project" />
           <NavigationProperty Name="Tasks" Relationship="ProjectManagementModel.FK_Document_Tasks" FromRole="Document" ToRole="Tasks" />
           <NavigationProperty Name="DocumentModified" Relationship="ProjectManagementModel.FK_DocumentModified_Document" FromRole="Document" ToRole="DocumentModified" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="DocumentCategory">
           <Key>
@@ -2098,6 +2104,8 @@
           <EntitySetMapping Name="ProjectMembers">
             <EntityTypeMapping TypeName="ProjectManagementModel.ProjectMembers">
               <MappingFragment StoreEntitySet="ProjectMembers">
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="InvideDate" ColumnName="InvideDate" />
                 <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />
                 <ScalarProperty Name="ProjectGUID" ColumnName="ProjectGUID" />
                 <ScalarProperty Name="PMscore" ColumnName="PMscore" />
@@ -2241,6 +2249,7 @@
           <EntitySetMapping Name="Document">
             <EntityTypeMapping TypeName="ProjectManagementModel.Document">
               <MappingFragment StoreEntitySet="Document">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="CreateEmpGUID" ColumnName="CreateEmpGUID" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
