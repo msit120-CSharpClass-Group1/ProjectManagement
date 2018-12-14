@@ -52,6 +52,7 @@
           <Property Name="DocumentName" Type="nvarchar" MaxLength="50" />
           <Property Name="CreateDate" Type="datetime" />
           <Property Name="CreateEmpGUID" Type="uniqueidentifier" />
+          <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="DocumentCategory">
           <Key>
@@ -1856,6 +1857,7 @@
           <NavigationProperty Name="Project" Relationship="ProjectManagementModel.FK_Document_Project" FromRole="Document" ToRole="Project" />
           <NavigationProperty Name="Tasks" Relationship="ProjectManagementModel.FK_Document_Tasks" FromRole="Document" ToRole="Tasks" />
           <NavigationProperty Name="DocumentModified" Relationship="ProjectManagementModel.FK_DocumentModified_Document" FromRole="Document" ToRole="DocumentModified" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="DocumentCategory">
           <Key>
@@ -2247,6 +2249,7 @@
           <EntitySetMapping Name="Document">
             <EntityTypeMapping TypeName="ProjectManagementModel.Document">
               <MappingFragment StoreEntitySet="Document">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="CreateEmpGUID" ColumnName="CreateEmpGUID" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />

@@ -28,6 +28,7 @@ namespace ProjectManager.Models
         public string DocumentName { get; set; }
         public Nullable<System.DateTime> CreateDate { get; set; }
         public Nullable<System.Guid> CreateEmpGUID { get; set; }
+        public string Description { get; set; }
     
         public virtual DocumentCategory DocumentCategory1 { get; set; }
         public virtual Employee Employee { get; set; }
