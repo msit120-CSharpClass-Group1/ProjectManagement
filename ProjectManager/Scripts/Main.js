@@ -33,9 +33,9 @@
     });
 
     //點及訊息內容後隱藏訊息列表
-    $('.dropup-content').children().click(function () {
-        $(this).parent().fadeToggle();
-    });
+    //$('.dropup-content').children().click(function () {
+    //    $(this).parent().fadeToggle();
+    //});
 
     //強調左邊欄選單
     //var leftnavli = $("#myLeftsidenav > ul > li");
@@ -97,9 +97,5 @@
             }
             btn.html(Fragcount);
         });
-       
-    }
-   
-    
-
+    } 
 });
