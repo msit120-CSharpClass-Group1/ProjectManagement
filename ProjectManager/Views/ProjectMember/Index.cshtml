@@ -66,13 +66,13 @@
                 <div class="panel" id="teamPanel">
                     @foreach (var _ProjectMemeber in (List<ProjectMembers>)ViewBag.ThisProjectMember)
                     {
-                        if (_ProjectMemeber.Employee.JobTitle.TitleName != "專案經理")
+                        if (_ProjectMemeber.Employee.TitleGUID!= new Guid("724d4916-0f1b-417b-a927-25d04425146d"))
                         {
-                            <img src="~/image/avatar.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" data-title="@_ProjectMemeber.Employee.JobTitle.TitleName" />
+                            <img src="~/image/avatar.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" data-title="@_ProjectMemeber.Employee.TitleGUID" />
                         }
                         else
                         {
-                            <img src="~/image/leader.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" data-title="@_ProjectMemeber.Employee.JobTitle.TitleName"/>
+                            <img src="~/image/leader.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" data-title="@_ProjectMemeber.Employee.TitleGUID"/>
                         }
                     }
                 </div>
@@ -211,13 +211,12 @@
                     if (_emp.Employee.TitleGUID != "724d4916-0f1b-417b-a927-25d04425146d")
                     {
                         var empImg = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("title", _emp.Employee.EmployeeName)
-                            .attr("data-guid", _emp.EmployeeGUID).attr("data-title", _emp.Employee.JobTitle.TitleName).tooltip();
-                        //todo 滑入滑出失效問題，要給職稱
+                            .attr("data-guid", _emp.EmployeeGUID).attr("data-title", _emp.Employee.TitleGUID).tooltip();
                     }
                     else
                     {
                         var empImg = $("<img/>").attr("src", "/image/leader.png").attr("class", "rounded-circle").attr("title", _emp.Employee.EmployeeName)
-                            .attr("data-guid", _emp.EmployeeGUID).attr("data-title", _emp.Employee.JobTitle.TitleName).tooltip();
+                            .attr("data-guid", _emp.EmployeeGUID).attr("data-title", _emp.Employee.TitleGUID).tooltip();
                     }
                     docFrag.append(empImg);                   
                 })
@@ -236,8 +235,8 @@
             $(this).attr("src", "/image/CancelIcon.png").attr("class", "rounded-circle").attr("style", "opacity:0.4");
         })
         $("#teamPanel").on("mouseleave", "img", function () {
-            var titleName = $(this).data("title");
-            if (titleName != "專案經理")
+            var titleGuid = $(this).data("title");
+            if (titleGuid != "724d4916-0f1b-417b-a927-25d04425146d")
             {
                 $(this).attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("style", "opacity:1");
             }
@@ -282,9 +281,15 @@
                                circleimg.remove();
                             }
                 });
-                if ($("#scrollDiv input").val() == memberGUID)
+                var divlength = $("#scrollDiv").children().length;
+                for (var i = 0; i <= divlength; i++)
                 {
-                    $("#scrollDiv input").prop('checked', false);
+                    var empBar = $("#scrollDiv div:eq('" + i + "')").children("input");
+                    if (empBar.val() == memberGUID)
+                    {
+                        empBar.prop('checked', false);
+                        empBar.parent().removeClass().addClass("alert alert-primary");
+                    }
                 }
             }
         })
