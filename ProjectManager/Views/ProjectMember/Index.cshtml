@@ -55,7 +55,7 @@
         <div class="col-sm">
             <label>選擇部門</label>
             <select id="sel1">
-                <option>所有部門</option>
+                <option>選擇部門</option>
                 @foreach (var _dep in Model)
                 {
                     <option value="@_dep.DepartmentGUID">@_dep.DepartmentName</option>
@@ -78,11 +78,11 @@
                 <!--runin-->
                 @foreach (var _emp in (List<Employee>)ViewBag.FirstEmpList)
                 {
-                    <div class="alert alert-primary" role="alert" id="empDiv">
-                        <img src="~/image/avatar.png" class="rounded-circle" />
-                        <p>@_emp.EmployeeName</p>
-                        <input type="checkbox" class="ckbox1" style="float:right" value="@_emp.EmployeeGUID" />
-                    </div>
+                <div class="alert alert-primary" role="alert" id="empDiv">
+                    <img src="~/image/avatar.png" class="rounded-circle" />
+                    <p>@_emp.EmployeeName</p>
+                    <input type="checkbox" class="ckbox1" style="float:right;" value="@_emp.EmployeeGUID" />
+                </div>
                 }
             </div>
         </div>
@@ -137,7 +137,7 @@
                     if (!flag) { selecter.children().first().remove()};
                     flag = true;
                     SendIDToTeamTable();
-            })
+                }).done(function () { InTeamChecked()})
         })
 
         SendIDToTeamTable();
@@ -157,6 +157,7 @@
                         success: function ()
                         {
                             ReloadTeamCount();
+                            chkboxcheck.parent().removeClass().addClass("alert alert-success");
                         }
                         , error: function () { alert(memberName + " 已存在於此專案"); chkboxcheck.prop('checked', false); ReloadTeamCount();}
                     });
@@ -170,6 +171,7 @@
                         success: function ()
                         {
                             ReloadTeamCount();
+                            chkboxcheck.parent().removeClass().addClass("alert alert-primary");
                         }
                     });
                 }
@@ -224,14 +226,14 @@
                          RemoveMember();
                      }
                  }
-        })
+              })
 
             $("#yes").click(function ()
             {
                 RemoveMember();
                 $('#myModal').modal('hide');
             })
-
+        
             function RemoveMember()
             {
                   $.ajax({
@@ -247,7 +249,27 @@
                 }
             }
         })
+
         $(".rounded-circle").tooltip();
+        InTeamChecked();
+        function InTeamChecked() //已經在專案內的成員會被打勾
+        {
+            var ScrollDiv = $("#scrollDiv");
+            for (var j = 1; j <= ScrollDiv.children().length; j++)
+            {
+                var EmployeeName = $('#scrollDiv div:nth-child(' + j + ')').children('p:nth-child(2)').text();
+                var teamArea = $("#teamPanel");
+                for (var i = 1; i <= teamArea.children().length; i++)
+                {
+                    var PMemberName = $('#teamPanel img:nth-child(' + i + ')').data("original-title");
+                    if (EmployeeName == PMemberName)
+                    {
+                        $('#scrollDiv div:nth-child(' + j + ')').children('input:nth-child(3)').prop('checked', true);
+                        $('#scrollDiv div:nth-child(' + j + ')').removeClass().addClass("alert alert-success");
+                    }
+                }
+            }
+        }
     })
 </script>
 }
