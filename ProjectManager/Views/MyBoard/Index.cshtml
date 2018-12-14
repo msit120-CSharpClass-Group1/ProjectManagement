@@ -507,7 +507,7 @@
             <div class="listNewItem">
                 <textarea name="newItem" id="newItem">新增項目...</textarea>
             </div>
-            <button type="button" class="@*btn*@ slide btn-insert">新增</button>
+            <button type="button" class="slide btn-insert">新增</button>
         </div>
     </div>
 </div>
@@ -581,7 +581,8 @@
             var breadMembera = $(' <a> 選擇成員</a >').attr("href", "/SelectMBoard/Index/@Request.Cookies["PID"].Value");
             var breadMemberLi = $('<li></li>').append(breadMembera);
             $('.breadcrumb>li').first().after(breadProjectLi, breadMemberLi);
-           
+
+
 
 
             //判斷看版權限
@@ -595,8 +596,8 @@
              }).done(function (datas) {
                  if (datas === false)
                  {
-                     $(":button").attr('disabled', 'disabled');
-                     $(":input").attr('disabled', 'disabled');
+                     $('.wrapper').find(":button").attr('disabled', 'disabled');
+                     $('.content').find(":input").attr('disabled', 'disabled');
                      $(".checkLists").off("click",".checkListCkeck");
                      $(".checkLists").off('mousedown', '.cardDetailDelete');
                      $('.checkLists').off("click", ".checkListContent");
