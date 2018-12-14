@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace ProjectManager.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "工程師,專案經理,管理員")]
     public class PerfomanceController : Controller
     {
         Repository<Project> projectRepo = new Repository<Project>();
@@ -69,6 +69,14 @@ namespace ProjectManager.Controllers
                 return View(vm);          
             }
             return RedirectToAction("Index", "Perfomance");
+        }
+
+        public ActionResult EditPMScore(ProjectMembers _projectMember)
+        {
+            var pm = ProjectMembersRepo.Find(_projectMember.EmployeeGUID, new Guid(Request.Cookies["ProjectGUID"].Value));
+            pm.PMscore = _projectMember.PMscore;
+            ProjectMembersRepo.Update(pm);
+            return Content("success");
         }
     }
 }

@@ -14,7 +14,7 @@ namespace ProjectManager.Models
         /// <returns></returns>
         public static IEnumerable<Group<string, ProjectMemberScoreVM>> GetTeamMemberCount(this IEnumerable<ProjectMembers> projectMembers)
         {
-            var teamCount = projectMembers.Where(p => p.EmployeeGUID != null).GroupBy(p => p.Project.ProjectName).Select(g => new Group<string, ProjectMemberScoreVM> { Key = g.Key, Count = g.Count() });
+            var teamCount = projectMembers.Where(p => p.EmployeeGUID != null).GroupBy(p => p.Project.ProjectName).Select(g => new Group<string, ProjectMemberScoreVM> { Key = g.Key, Count = g.Count()});
             return teamCount;
         }
 
@@ -122,6 +122,6 @@ namespace ProjectManager.Models
                 avgTasksScore.Add(item);
             }
             return avgTasksScore;
-        }
+        }       
     }
 }

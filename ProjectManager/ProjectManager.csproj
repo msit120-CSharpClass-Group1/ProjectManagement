@@ -208,6 +208,7 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="image\NoTask.jpg" />
     <Content Include="webfonts\fa-brands-400.svg" />
     <Content Include="webfonts\fa-regular-400.svg" />
     <Content Include="webfonts\fa-solid-900.svg" />
@@ -461,6 +462,7 @@
     <Compile Include="Models\ViewModel\DisplayTaskStatusCountVM.cs" />
     <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
     <Compile Include="Models\ViewModel\EmployeeInfo.cs" />
+    <Compile Include="Models\ViewModel\InviteMemberVM.cs" />
     <Compile Include="Models\ViewModel\ProjectMemberScoreVM.cs" />
     <Compile Include="Models\ViewModel\HolidaysVM.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
