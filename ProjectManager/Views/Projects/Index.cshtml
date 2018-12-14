@@ -16,7 +16,8 @@
         default:
             break;
     }
-    ViewBag.Title = "專案 > " + strStatus;
+    ViewBag.Title = strStatus;
+    ViewBag.Activity = "專案列表";
 }
 @section style{
     <style>
@@ -161,6 +162,21 @@
         $(document).ready(function () {
             $(".rightOpenbtn").html('<i class="fas fa-plus"></i>');
             $('input[type="date"]').val("@string.Format("{0:yyyy-MM-dd}", DateTime.Now)");
+            $('#ul_Projects').slideDown();
+            switch (@ViewBag.StatusID)
+            {
+                case 1:
+                    $('#li_ProjectDo').addClass('active');
+                    break;
+                case 2:
+                    $('#li_ProjectCheck').addClass('active');
+                    break;
+                case 3:
+                    $('#li_ProjectDone').addClass('active');
+                    break;
+                default:
+                    break;
+            }
 
             var createProjectForm = $('#CreateProjectForm');
             var Overview = $('#ProjectsOverview');

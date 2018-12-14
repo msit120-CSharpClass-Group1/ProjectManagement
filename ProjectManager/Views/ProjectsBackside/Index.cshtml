@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ProjectManager.Models.Project>
+@{
+    ViewBag.Title = "專案";
+}
+
+<a href="~/ProjectsBackside/Insert" class="btn btn-info mb-2">新增專案</a>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>專案編號</th>
+            <th>分類</th>
+            <th>專案名稱</th>
+            <th>階段</th>
+            <th>需求單位</th>
+            <th>需求單位PM</th>
+            <th>預計起始區間</th>
+            <th>實際起始區間</th>
+            <th>負責單位</th>
+            <th>負責單位PM</th>
+            <th>督導</th>
+            <th>總經理關注</th>
+            <th>預算</th>
+            <th>說明</th>
+            <th>修改</th>
+            <th>工作項目</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var _project in Model)
+        {
+        <tr>
+            <td>@_project.ProjectID</td>
+            <td>@_project.ProjectCategory.ProjectCategoryName</td>
+            <td>@_project.ProjectName</td>
+            <td>@_project.ProjectStatus.ProjectStatusName</td>
+            <td>@_project.Department.DepartmentName</td>
+            <td>@_project.Employee.EmployeeName</td>
+            <td>@Html.DisplayFor(m => _project.EstStartDate)-@Html.DisplayFor(m => _project.EstEndDate)</td>
+            <td>@Html.DisplayFor(m => _project.EndDate)-@Html.DisplayFor(m => _project.StartDate)</td>
+            <td>@_project.Department1.DepartmentName</td>
+            <td>@_project.Employee1.EmployeeName</td>
+            <td>@_project.Employee2.EmployeeName</td>
+            @{
+                if ((bool)_project.IsGeneralManagerConcerned)
+                {
+                    <td>是</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
+            }
+            <td>@_project.ProjectBudget</td>
+            <td>@_project.Description</td>
+            <td class=" text-center align-middle p-2">
+                <a href="@Url.Action("Edit","ProjectsBackside",new {projectGUID=_project.ProjectGUID })" class="btn btn-info mb-1">修改</a>
+                <a href="@Url.Action("Delete","ProjectsBackside",new {projectGUID=_project.ProjectGUID })" class="btn btn-danger">刪除</a>
+            </td>
+            <td class="text-center align-middle p-2">
+                <a href="@Url.Action("Index","Tasks",new {projectGUID=_project.ProjectGUID })" class="btn btn-success ">
+                    工作項目
+                    <sup><i class="fas fa-external-link-alt"></i></sup>
+                </a>
+            </td>
+
+
+        </tr>
+        }
+
+    </tbody>
+</table>
+

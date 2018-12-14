@@ -1,6 +1,6 @@
 ﻿@model ProjectManager.Models.BoardVM
 @{
-    ViewBag.Title = "看板";
+    ViewBag.Title = ViewBag.UserName;
 }
 @section style{
     <style>
@@ -97,6 +97,7 @@
             margin-bottom: 0;
             overflow-y: auto;
             overflow-x: hidden;
+            cursor: pointer;
             margin: 0 4px;
             padding: 0 4px;
             z-index: 1;
@@ -106,8 +107,7 @@
         .listCard {
             background-color: #fff;
             border-radius: 3px;
-            box-shadow: 0 1px 0 rgba(9,45,66,.25);
-            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0, 0, 0, 0.24);
             display: block;
             margin-bottom: 8px;
             min-height: 20px;
@@ -223,6 +223,7 @@
             color: #000;
             font-size: 16px;
             flex: 0 1 30px;
+
         }
 
         .checklist-progress-bar {
@@ -236,7 +237,8 @@
         }
 
         .checklist-progress-bar-current {
-            background: #5ba4cf;
+            background: rgb(34, 185, 252);
+            border-radius: 4px;
             bottom: 0;
             left: 0;
             position: absolute;
@@ -281,7 +283,7 @@
 
         .checkListItem {
             border-radius: 3px;
-            margin: 0 10px 0 10px;
+            /*margin: 0 10px 0 10px;*/
             display: flex;
             -webkit-transform-origin: left bottom;
             transform-origin: left bottom;
@@ -294,11 +296,10 @@
             align-items: center;
             overflow: hidden;
             justify-content: space-around;
-            padding: 5px 0;
+            padding: 5px;
         }
 
             .checkListItem:hover {
-                /*background-color: rgba(9,45,66,0.8);*/
                 background: #EFEFEF;
                 color: rgba(9,45,66,0.9);
             }
@@ -317,7 +318,7 @@
         }
 
             .checkListCkeck i {
-                color: #000;
+                color: #77a88d;
                 width: 20px;
                 display: none;
             }
@@ -415,6 +416,27 @@
         .dropdown button:hover {
             background-color: rgba(225,225,225,0.8);
         }
+        .rightOpenbtn {
+            display:none;
+        }
+        /*------------*/
+        .dragging {
+            opacity: 0.7;
+        }
+
+        .hover {
+            background-color: rgba(0,191,165,.04);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        }
+
+        .listContent:nth-of-type(2) {
+            margin-top: 10px;
+        }
+
+        .lists {
+            height: auto;
+            margin-top: 10px;
+        }
     </style>
 }
 <h2> @Model.Project.First().ProjectName</h2>
@@ -423,28 +445,30 @@
         @foreach (var s in Model.TaskStatus)
         {
             <div class="board">
-                <div class="listContent" data-taskStatusid="@s.TaskStatusID" id="listContent-@s.TaskStatusID" ondragover="dragoverHandler(event)" ondrop="dropHandler(event)">
-                    <div class="listHeader" @*ondragstart="return false"*@>
+                <div class="listContent" data-taskStatusid="@s.TaskStatusID" id="listContent-@s.TaskStatusID"  ondragover="dragoverHandler(event)" ondrop="dropHandler(event)" ondragleave="dragLeave(event)">
+                    <div class="listHeader" id="listHeader-@s.TaskStatusID" ondragstart="return false">
                         <div class="listHeaderTitle">@s.TaskStatusName</div>
                     </div>
-                    @foreach (var t in Model.Tasks.Where(x => x.TaskStatusID == s.TaskStatusID))
-                    {
-                        <div class="listCards" data-tguid="@t.TaskGUID" draggable="true" ondragstart="dragstart(event)">
-                            <a class="listCard" data-tid="@t.TaskGUID">
-                                <span class="listCardTitle">@t.TaskName</span>
-                                <div class="badges">
-                                    <div class="badge" title="待辦清單項目">
-                                        <span class="completeDT">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID && x.TaskDetailStatusID == 2).Count()</span>
-                                        <span>/</span>
-                                        <span class="badge-text totalDT" id="badge-text">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID).Count()</span>
+                    <div class="lists">
+                        @foreach (var t in Model.Tasks.Where(x => x.TaskStatusID == s.TaskStatusID))
+                        {
+                            <div class="listCards" data-tguid="@t.TaskGUID" draggable="true" ondragstart="dragstart(event)" ondragend="dragEnd(event)" ondragleave="dragLeave(event)">
+                                <a class="listCard" data-tid="@t.TaskGUID">
+                                    <span class="listCardTitle">@t.TaskName</span>
+                                    <div class="badges">
+                                        <div class="badge" title="待辦清單項目">
+                                            <span class="completeDT">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID && x.TaskDetailStatusID == 2).Count()</span>
+                                            <span>/</span>
+                                            <span class="badge-text totalDT" id="badge-text">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID).Count()</span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        </div>
-                    }
+                                </a>
+                            </div>
+                        }
+                    </div>
 
+                    </div>
                 </div>
-            </div>
         }
     </div>
     <div class="detailsection">
@@ -494,6 +518,12 @@
         var moveItem = document.getElementsByClassName('listCards');
 
         //拖拉放
+        $("#listContent-4").removeAttr("ondrop");
+        $("#listContent-5").removeAttr("ondrop");
+        $("#listContent-4").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default"});
+        $("#listContent-5").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default" });
+       
+
         function dragstart(e)
         {
             for (let i = 0; i < moveItem.length; i++)
@@ -502,16 +532,30 @@
                 e.dataTransfer.setData("id", e.target.id);
             }
             cardGuid = e.target.getAttribute("data-tguid");
+            $(e.target).addClass('dragging');
+        }
+
+        function dragEnd(e) {
+            $(e.target).removeClass('dragging')
         }
 
         function dragoverHandler(e) {
             e.preventDefault();
+            if ($(e.currentTarget).data('taskstatusid') < 4)
+            {
+                $(e.currentTarget).addClass('hover');
+            }
+        }
+
+        function dragLeave(e) {
+            $(e.currentTarget).removeClass('hover');
         }
 
         function dropHandler(e) {
             e.preventDefault();
             var id = e.dataTransfer.getData('id');
             var elem = document.getElementById(id);
+            $(e.currentTarget).removeClass("hover");
             e.currentTarget.appendChild(elem.parentNode.removeChild(elem));
             var taskStatusid = e.currentTarget.getAttribute("data-taskStatusid");
             $.ajax({
@@ -523,6 +567,32 @@
         }
 
         $(document).ready(function () {
+            var colorarr = ["rgba(255, 167, 47,0.8)", "rgba(34, 185, 252,0.6)", "rgba(252, 222, 69,0.8)", "rgba(0, 228, 151,0.5)"];
+            for (i = 2; i <= 5; i++) {
+                $("#listHeader-" + i).css("background-color", colorarr[i - 2]);
+            }
+
+            //判斷看版權限
+            var hrefarr = $('@Html.ActionLink("MyBoard","Index")').attr("href").split("/");
+            var employeeGuid = hrefarr[3];
+             $.ajax({
+                type: 'Post',
+                 url: '@Url.Action("GetEmployee", "Myboard")',
+                 data: { id : employeeGuid},
+                dataType: 'json'
+             }).done(function (datas) {
+                 if (datas === false)
+                 {
+                     $(":button").attr('disabled', 'disabled');
+                     $(":input").attr('disabled', 'disabled');
+                     $(".checkLists").off("click",".checkListCkeck");
+                     $(".checkLists").off('mousedown', '.cardDetailDelete');
+                     $('.checkLists').off("click", ".checkListContent");
+                     $(".listContent").removeAttr("ondrop");
+                     $(".listContent").unbind("ondragover");
+                     $(".listCards").attr("draggable", false).css({ "-webkit-user-select": "none","cursor":"default"});
+                 }
+            });
             //load cardDetail
             $(".detail-close").mousedown(function () {
                 $('.detailsection').hide();
@@ -604,7 +674,6 @@
                         badgeText.text(checklist.children().length);
                         var _percent = parseInt(completeDT.text()) / parseInt(checklist.children().length) * 100;
                         var percent = _percent.toFixed() + "%";
-                        console.log(completeDT.text());
                             $('.checklist-progress-bar-current').css('width', percent);
                             $('.checklist-progress-percentage').text(percent);
                         checkListCkeck.attr("data-detailGuid", datas);

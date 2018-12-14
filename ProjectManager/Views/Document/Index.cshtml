@@ -1,0 +1,93 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IEnumerable<ProjectManager.Models.DocumentCategory>
+
+@{
+    ViewBag.Title = "文件管理";
+    ViewBag.Activity = "文件管理";
+}
+@section style
+{
+    <style>
+        .topnav a {
+            cursor:pointer;
+        }
+            .topnav a:hover {
+                border-bottom: 3px solid ;
+            }
+    </style>
+    }
+<nav>
+    <div class="topnav nav nav-tabs nav-fill " id="nav-tab" role="tablist">
+        @foreach (var category in Model)
+        {
+            <a class="nav-item nav-link" data-categoryid="@category.CategoryID" role="tab" aria-controls="nav-home" aria-selected="true">@category.CategoryName</a>
+        }
+    </div>
+</nav>
+<div id="PartialView" class="hide">
+</div>
+@section asideRight{
+    <div class="container text-light mt-3" style="min-width:350px;">
+        <form class="needs-validation" novalidate>
+            <h4  style="display:inline">新增專案費用</h4>
+            <div>
+                <div class="row col-12">
+                    <div class="form-group mb-0">
+                        <label for="DocumentName">文件名稱：</label>
+                        <input name="DocumentName" class="form-control" style="width:18em;" required />
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="form-group mt-3 mb-0">
+                        <lable for="CategoryID">文件類別：</lable><br />
+                        @Html.DropDownList("CategoryID", (SelectList)ViewBag.DocCategory, "請選擇類別", new { @class = "form-control custom-select", required = true })
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="form-group mb-0">
+                        <label for="FileName">檔案上傳：</label>
+                        <input type="file" name="FileName" style="width:18em;" required />
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="form-group  mt-3 mb-0">
+                        <lable for="Description">備註：</lable>
+                        <textarea name="Description" class="form-control" style="width:300px;height:300px;resize:none"></textarea>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="row col-12">
+                <div id="formBtns" class="mt-3 mx-auto text-center">
+                    <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
+                    <button id="btn_ConfirmAdd" type="button" class="btn btn-primary py-1 px-3">上傳</button>
+                </div>
+            </div>
+        </form>
+    </div>
+}
+@section script
+{
+    <script>
+        $(document).ready(function () {
+            $("#PartialView").load("/Document/GetDocument/1", {}, function () {
+            }).fadeIn();
+
+            $('#nav-tab > a').click(function () {
+                var PartialView = $("#PartialView");
+                var docCategory = $(this).data('categoryid');
+                console.log(docCategory)
+                if (docCategory) {
+                    PartialView.load("/Document/GetDocument/" + docCategory, {}, function () {
+                       
+                    }).fadeIn();
+                }
+            })
+            
+        })
+    </script>
+}
