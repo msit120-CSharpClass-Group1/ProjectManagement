@@ -20,7 +20,7 @@ namespace ProjectManager.Controllers
         public JsonResult GetEvents()
         {
             var events = CalRepo.GetCollections().ToList();
-            return new JsonResult { Data = events, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            return Json(events, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -49,7 +49,9 @@ namespace ProjectManager.Controllers
                 {
                    CalRepo.Add(e);
                 }
+
             status = true;
+
             return new JsonResult { Data = new { status = status } };
         }
 
