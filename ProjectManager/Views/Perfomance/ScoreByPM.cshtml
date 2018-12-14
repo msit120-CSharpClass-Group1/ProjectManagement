@@ -1,6 +1,6 @@
 ﻿@model ProjectManager.Models.ProjectMemberScoreVM
 @{
-    ViewBag.Title = "ScoreByPM";
+    ViewBag.Title = "專案經理評分";
 }
 
 @section style{
@@ -20,7 +20,7 @@
                             <div class="frontside">
                                 <div class="card">
                                     <div class="card-body text-center">
-                                        <p><img class=" img-fluid" src="~/image/avatar.png"></p>
+                                        <p><img class=" img-fluid" src="~/image/leader.png"></p>
                                         <h4 class="card-title">@member.Employee.EmployeeName</h4>
                                         <p class="card-text">@member.Employee.JobTitle.TitleName</p>
                                         @if (member.Selfscore != null)

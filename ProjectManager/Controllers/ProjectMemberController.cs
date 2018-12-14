@@ -56,7 +56,7 @@ namespace ProjectManager.Controllers
         public ActionResult ReloadTeamCount()
         {
             Guid InvitePJGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID);
+            var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID);        
             return Content(JsonConvert.SerializeObject(pjmb), "application/json");
         }
 

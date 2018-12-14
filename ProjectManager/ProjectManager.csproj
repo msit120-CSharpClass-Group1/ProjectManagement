@@ -124,6 +124,7 @@
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\PMScore.css" />
     <Content Include="Content\skin-black.css" />
+    <Content Include="image\leader.png" />
     <Content Include="Scripts\fullcalendar.js" />
     <Content Include="Scripts\fullcalendar.min.js" />
     <Content Include="Scripts\fullcalendar\fullcalendar.js" />
