@@ -25,16 +25,12 @@ namespace ProjectManager.Controllers
             vm.GetTaskAVGScore = taskRepo.GetCollections().Where(p => p.Project.ProjectStatusID == 2).GetTaskAVGScore();
             return View(vm);
         }
-        public ActionResult ScoreByMySelf(Guid? ProjectGUID)
-        {
-            return View();
-        }
         public ActionResult ScoreByPM(Guid? ProjectGUID)
         {
             if (ProjectGUID != null)
             {
                 ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
-                vm.ProjectMembers = ProjectMembersRepo.GetCollections().Where(p => p.Project.ProjectStatusID == 1 && p.PMscore == null && p.ProjectGUID == ProjectGUID);
+                vm.ProjectMembers = ProjectMembersRepo.GetCollections().Where(p => p.Project.ProjectStatusID == 1 && p.PMscore == null && p.ProjectGUID == ProjectGUID && p.Employee.JobTitle.TitleName!="專案經理");
                 return View(vm);
             }
             return RedirectToAction("Index", "Perfomance");
@@ -77,6 +73,13 @@ namespace ProjectManager.Controllers
             pm.PMscore = _projectMember.PMscore;
             ProjectMembersRepo.Update(pm);
             return Content("success");
+        }
+
+        public ActionResult ScoreByMySelf(Guid? ProjectGUID) //自評界面
+        {
+            ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
+            
+            return View();
         }
     }
 }
