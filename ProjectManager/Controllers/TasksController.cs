@@ -10,15 +10,18 @@ namespace ProjectManager.Controllers
     [Authorize(Roles = "管理員")]
     public class TasksController : Controller
     {
-        private Repository<Tasks> tasksRepo = new Repository<Tasks>();
-        Repository<Project> projectRepo = new Repository<Project>();
-        Repository<ProjectMembers> ProjectMembersRepo = new Repository<ProjectMembers>();
+        private Repository<Tasks> taskRepo = new Repository<Tasks>();
+        private Repository<Project> projectRepo = new Repository<Project>();
+        private Repository<ProjectMembers> projectMemberRepo = new Repository<ProjectMembers>();
+        private Repository<Document> documentRepo = new Repository<Document>();
+        private Repository<TaskDetail> taskDetailRepo = new Repository<TaskDetail>();
+        private Repository<TaskResource> resourceRepo = new Repository<TaskResource>();
 
         public ActionResult Index(Guid? projectGUID)
         {
             if (projectGUID == null)
                 return RedirectToAction("Index", "ProjectsBackside");
-            var data = tasksRepo.GetCollections()
+            var data = taskRepo.GetCollections()
                 .Where(t => t.ProjectGUID == projectGUID)
                 .OrderBy(t => t.TaskID)
                 .GetSortedTasks();
@@ -30,7 +33,7 @@ namespace ProjectManager.Controllers
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            var tasks = tasksRepo.GetCollections().OrderBy(t => t.TaskID)
+            var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
                 .Where(t => t.ProjectGUID == projectGUID).GetSortedTasks();
 
             ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
@@ -47,10 +50,10 @@ namespace ProjectManager.Controllers
             if (taskGUID == null)
                 return RedirectToAction("Index", "ProjectsBackside");
 
-            Tasks task = tasksRepo.Find(taskGUID);
-            var leafTasks = tasksRepo.GetCollections().Where(t => t.ProjectGUID == task.ProjectGUID).GetLeafTasks();
+            Tasks task = taskRepo.Find(taskGUID);
+            var leafTasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == task.ProjectGUID).GetLeafTasks();
             var parentTasks = task.Project.Tasks.Except(leafTasks);
-            var projectMembers = ProjectMembersRepo.GetCollections()
+            var projectMembers = projectMemberRepo.GetCollections()
                 .Where(m => m.ProjectGUID == _projectGUID)
                 .Select(m => new { m.EmployeeGUID, m.Employee.EmployeeName }).ToList();
 
@@ -67,7 +70,7 @@ namespace ProjectManager.Controllers
         [HttpPost]
         public ActionResult Edit(Tasks task)
         {
-            Tasks recentTask = tasksRepo.Find(task.TaskGUID);
+            Tasks recentTask = taskRepo.Find(task.TaskGUID);
             recentTask.TaskName = task.TaskName;
             recentTask.ParentTaskGUID = task.ParentTaskGUID;
             recentTask.EmployeeGUID = task.EmployeeGUID;
@@ -80,8 +83,46 @@ namespace ProjectManager.Controllers
             recentTask.EstWorkTime = recentTask.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
             recentTask.WorkTime = recentTask.GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
 
-            tasksRepo.Update(recentTask);
+            taskRepo.Update(recentTask);
             return Json("succes", JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult Delete(Guid? taskGUID)
+        {            
+            Tasks recentTask = taskRepo.Find(taskGUID);
+            string errorMsg = "";
+            var allTasks = recentTask.GetAllChildTasks().ToList();
+            allTasks.Insert(0, recentTask);
+
+            try
+            {                
+                foreach (var child in allTasks.AsQueryable().Reverse())
+                {
+                    foreach (var doc in child.Document.ToList())
+                    {
+                        documentRepo.Delete(documentRepo.Find(doc.DocumentGUID));
+                    }
+                    foreach (var detail in child.TaskDetail.ToList())
+                    {
+                        taskDetailRepo.Delete(taskDetailRepo.Find(detail.TaskDetailGUID));
+                    }
+                    foreach (var resource in child.TaskResource.ToList())
+                    {
+                        resourceRepo.Delete(resourceRepo.Find(resource.ResourceGUID));
+                    }
+                }
+                
+                foreach (var child in allTasks.AsQueryable().Reverse())
+                {
+                    taskRepo.Delete(taskRepo.Find(child.TaskGUID));
+                }
+            }
+            catch
+            {
+                errorMsg = "刪除失敗";
+            }
+
+            return Json(errorMsg, JsonRequestBehavior.AllowGet);
         }
     }
 }

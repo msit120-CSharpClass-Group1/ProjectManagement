@@ -71,6 +71,7 @@
     <h4>@project.ProjectID &nbsp; @project.ProjectName</h4>
 }
 <div id="treeGridContainer"></div>
+
 <!--Modal For Delete Comfirm-->
 <div class="modal fade" style="top:120px;" id="DeleteAlarmModal" tabindex="-1" role="dialog" aria-labelledby="DeleteAlarmModalTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -84,11 +85,11 @@
                 <div class="row">
                     <h6 id="deleteAlarm" class="col-12">將會刪除包含此工作項目及其子項目，所有費用細項及任務細項</h6>
                 </div>
-                <div id="deleteAlarm_detail">確認刪除嗎?</div>
+                <h6 id="deleteAlarm_detail">確認刪除嗎?</h6>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" id="btn_ConfirmDelete" class="btn btn-danger">全部刪除</button>
+                <button type="button" id="btn_ConfirmDelete" class="btn btn-danger" data-taskGUID="" >全部刪除</button>
             </div>
         </div>
     </div>
@@ -108,10 +109,18 @@
 
             let treeGridContainer = $('#treeGridContainer');
             var asideRightContainer = $('#asideRightContainer');
+            var deleteAlarmModal = $('#DeleteAlarmModal');
             LoadTreeGrid();
 
             asideRightContainer.on("click", 'button[name="CancelBtn"]', ClearAsideRight);
             asideRightContainer.on("click", 'button[name="EditBtn"]', EditTask);
+
+            $('#btn_ConfirmDelete').click(function () {
+                $.post("@Url.Action("Delete", "Tasks")", { taskGUID: $(this).attr('data-taskGUID') }, function (msg) {
+                    deleteAlarmModal.modal('hide');
+                    LoadTreeGrid();
+                });                               
+            });
 
             function ClearAsideRight() {
                 $('.rightOpenbtn').click().mouseup(function () { $(this).delay(500); asideRightContainer.html(""); });
@@ -121,13 +130,16 @@
                     ClearAsideRight();
                     LoadTreeGrid();
                 });
+            }            
+            function SetDeleteModal() { 
+                $('#btn_ConfirmDelete').attr('data-taskGUID', $(this).attr('data-taskGUID'));
+                deleteAlarmModal.modal('show');
             }
-
             function LoadTreeGrid() {
                 treeGridContainer.load("@Url.Action("TreeGridPartialView_backSide", "Tasks", new { projectGUID = project.ProjectGUID })", function () {
                     $(this).find('table').treegrid();
                     $(this).find('tbody td button[name="EditBtn"]').on('click', LoadRightAsideEdit); 
-                    $(this).find('tbody td button[name="DeleteBtn"]').on('click', function () { $('#DeleteAlarmModal').modal('show');})
+                    $(this).find('tbody td button[name="DeleteBtn"]').on('click', SetDeleteModal);
                 });
             }
             function LoadRightAsideEdit() {
