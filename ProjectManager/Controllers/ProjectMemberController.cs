@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProjectManager.Models;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace ProjectManager.Controllers
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             var depGUID = depid;      
-            var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);            
+            var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);
             return Content(JsonConvert.SerializeObject(emp), "application/json");
         }
 

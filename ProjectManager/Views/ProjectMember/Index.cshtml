@@ -162,7 +162,7 @@
                 }).done(function () { InTeamChecked()})
         })
 
-        SendIDToTeamTable();
+        //SendIDToTeamTable();
         function SendIDToTeamTable()//勾選成員、取消勾選事件
         {
             $('.ckbox1').on('change', function ()
@@ -177,9 +177,9 @@
                         url: '@Url.Action("AddProjectMember", "ProjectMember")',
                         data: { "memberID": memberGUID},
                         success: function ()
-                        {
-                            ReloadTeamCount();
+                        {                          
                             chkboxcheck.parent().removeClass().addClass("alert alert-success");
+                            ReloadTeamCount();
                         }
                         , error: function () { alert(memberName + " 已存在於此專案"); chkboxcheck.prop('checked', false); ReloadTeamCount();}
                     });
@@ -218,7 +218,7 @@
                         var empImg = $("<img/>").attr("src", "/image/leader.png").attr("class", "rounded-circle").attr("title", _emp.Employee.EmployeeName)
                             .attr("data-guid", _emp.EmployeeGUID).attr("data-title", _emp.Employee.TitleGUID).tooltip();
                     }
-                    docFrag.append(empImg);                   
+                    docFrag.append(empImg);           
                 })
                 panel.html(docFrag);
             })
