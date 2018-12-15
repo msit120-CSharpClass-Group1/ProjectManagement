@@ -1,0 +1,88 @@
+﻿@using ProjectManager.Models
+@model ProjectManager.Models.Tasks
+
+<h4 id="ModeTitle">修改工作項目</h4>
+<form id="TaskForm" class="form-horizontal" method="put">
+    <input name="TaskGUID" id="TaskGUID" type="text" hidden value="@Model.TaskGUID" />
+    <div class="form-group">
+        @Html.LabelFor(m => m.TaskName)
+        @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:22em;" })
+    </div>
+    <div class="row ">
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.ParentTaskGUID)
+            <br />
+            @Html.DropDownList("ParentTaskGUID", (SelectList)ViewBag.ParentTasks, null, new { @class = "form-control", style = "width:10em;" })
+        </div>        
+    </div>
+    <div class="row ">
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.EmployeeGUID)
+            <br />
+            @Html.DropDownList("EmployeeGUID", (SelectList)ViewBag.ProjectMembers, null, new { @class = "form-control", style = "width:10em;" })
+        </div>
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.TaskStatusID)
+            <br />
+            @Html.DropDownList("TaskStatusID", (SelectList)ViewBag.TaskStatuses, null, new { @class = "form-control", style = "width:10em;" })
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.EstStartDate)
+            @{
+                string strDate = string.Format("{0:yyyy-MM-dd}", Model.EstStartDate);
+            }
+            <br />
+            <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:10em;" />
+        </div>
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.EstEndDate)
+            @{
+                strDate = string.Format("{0:yyyy-MM-dd}", Model.EstEndDate);
+            }
+            <br />
+            <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:10em;" />
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.StartDate)
+            @{
+                strDate = string.Format("{0:yyyy-MM-dd}", Model.StartDate);
+            }
+            <br />
+            <input name="StartDate" id="StartDate" type="date" class="form-control d-inline" value="@strDate" style="width:10em;" />
+        </div>
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.EndDate)
+            @{
+                strDate = string.Format("{0:yyyy-MM-dd}", Model.EndDate);
+            }
+            <br />
+            <input name="EndDate" id="EndDate" type="date" class="form-control d-inline" value="@strDate" style="width:10em;" />
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.AssignedDate)
+            @{
+                strDate = string.Format("{0:yyyy-MM-dd}", Model.AssignedDate);
+            }
+            <br />
+            <input name="AssignedDate" id="AssignedDate" type="date" class="form-control d-inline" value="@strDate" style="width:10em;" />
+        </div>
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.IsRead)<br />
+            @Html.RadioButton("IsRead", true, (bool)Model.IsRead, new { @class = "form-control d-inline align-middle", style = "width:1.2em;" })<span class="mr-2">是</span>
+            @Html.RadioButton("IsRead", false, !(bool)Model.IsRead, new { @class = "form-control d-inline align-middle", style = "width:1.2em;" })<span>否</span>
+        </div>
+    </div>
+
+
+    <div id="formBtns" class="mt-5 mx-auto text-center ">
+        <button id="CancelBtn" name="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
+        <button id="EditBtn" name="EditBtn" type="button" class="btn btn-primary py-1 px-5">確認修改</button>
+    </div>
+</form>
+

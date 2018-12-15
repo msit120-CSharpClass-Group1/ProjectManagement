@@ -7,63 +7,81 @@ using ProjectManager.Models;
 
 namespace ProjectManager.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "管理員")]
     public class TasksController : Controller
     {
-        private IRepository<Tasks> tasksRepository = new Repository<Tasks>();
-        public ActionResult Index()
+        private Repository<Tasks> tasksRepo = new Repository<Tasks>();
+        Repository<Project> projectRepo = new Repository<Project>();
+        Repository<ProjectMembers> ProjectMembersRepo = new Repository<ProjectMembers>();
+
+        public ActionResult Index(Guid? projectGUID)
         {
-            return View(tasksRepository.GetCollections().OrderBy(p=>p.TaskID));
+            if (projectGUID == null)
+                return RedirectToAction("Index", "ProjectsBackside");
+            var data = tasksRepo.GetCollections()
+                .Where(t => t.ProjectGUID == projectGUID)
+                .OrderBy(t => t.TaskID)
+                .GetSortedTasks();
+            ViewBag.Project = projectRepo.Find(projectGUID); 
+            return View(data);
         }
-
-        public ActionResult Insert(Tasks tasks)
+        public ActionResult TreeGridPartialView_backSide(Guid? projectGUID)
         {
-            if(Request.Form.Count>0)
-            {
-                Tasks _tasks = new Tasks();
-                if (!(Request.Form["ParentTaskGUID"] == null || Request.Form["ParentTaskGUID"] == "0"))
-                {
-                    _tasks.ParentTaskGUID = new Guid(Request.Form["ParentTaskGUID"]);
-                }
-                _tasks.TaskGUID = Guid.NewGuid();
-                _tasks.TaskName = tasks.TaskName;
-                _tasks.EstStartDate = (DateTime)tasks.EstEndDate;
-                _tasks.EstEndDate = (DateTime)tasks.EstEndDate;
-                _tasks.StartDate = (DateTime)tasks.StartDate;
-                _tasks.EndDate = (DateTime)tasks.EndDate;
-                _tasks.EstWorkTime = tasks.EstWorkTime;
-                _tasks.WorkTime = tasks.WorkTime;
-                _tasks.Tag = tasks.Tag;
-                _tasks.Description = tasks.Description;               
-                tasksRepository.Add(_tasks);
-                return RedirectToAction("Index");
-            }
+            if (Request.Cookies["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
+            var tasks = tasksRepo.GetCollections().OrderBy(t => t.TaskID)
+                .Where(t => t.ProjectGUID == projectGUID).GetSortedTasks();
 
-            return View(tasksRepository.GetCollections());
+            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
+            ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
+            ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
+            ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
+            return PartialView(tasks);
         }
-
-        [HttpGet]
-        public ActionResult Edit(string id)
+        public ActionResult AsideRightPartialView(Guid? taskGUID)
         {
-            ViewBag.Task = tasksRepository.Find(new Guid(id));
-            return View(tasksRepository.GetCollections());
-        }
+            if (Request.Cookies["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
+            if (taskGUID == null)
+                return RedirectToAction("Index", "ProjectsBackside");
 
+            Tasks task = tasksRepo.Find(taskGUID);
+            var leafTasks = tasksRepo.GetCollections().Where(t => t.ProjectGUID == task.ProjectGUID).GetLeafTasks();
+            var parentTasks = task.Project.Tasks.Except(leafTasks);
+            var projectMembers = ProjectMembersRepo.GetCollections()
+                .Where(m => m.ProjectGUID == _projectGUID)
+                .Select(m => new { m.EmployeeGUID, m.Employee.EmployeeName }).ToList();
+
+            ViewBag.ParentTasks = new SelectList(parentTasks, "TaskGUID", "TaskName");
+            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
+            ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
+            ViewBag.TaskStatuses = new SelectList(new Repository<TaskStatus>().GetCollections(), "TaskStatusID", "TaskStatusName");
+            ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");            
+            ViewBag.ProjectMembers = new SelectList(projectMembers, "EmployeeGUID","EmployeeName");
+
+            return PartialView(task);
+        }
+        
         [HttpPost]
-        public ActionResult Edit(Tasks tasks)
+        public ActionResult Edit(Tasks task)
         {
-            //Tasks _tasks = new Tasks();
-            //_tasks.TaskName = tasks.TaskName;
-            //_tasks.EstStartDate = (DateTime)tasks.EstEndDate;
-            //_tasks.EstEndDate = (DateTime)tasks.EstEndDate;
-            //_tasks.StartDate = (DateTime)tasks.StartDate;
-            //_tasks.EndDate = (DateTime)tasks.EndDate;
-            //_tasks.EstWorkTime = tasks.EstWorkTime;
-            //_tasks.WorkTime = tasks.WorkTime;
-            //_tasks.Tag = tasks.Tag;
-            //_tasks.Description = tasks.Description;
-            tasksRepository.Update(tasks);
-            return RedirectToAction("Index");
+            Tasks recentTask = tasksRepo.Find(task.TaskGUID);
+            recentTask.TaskName = task.TaskName;
+            recentTask.ParentTaskGUID = task.ParentTaskGUID;
+            recentTask.EmployeeGUID = task.EmployeeGUID;
+            recentTask.TaskStatusID = task.TaskStatusID;
+            recentTask.EstStartDate = task.EstStartDate;
+            recentTask.EstEndDate = task.EstEndDate;
+            recentTask.StartDate = task.StartDate;
+            recentTask.EndDate = task.EndDate;
+            recentTask.IsRead = task.IsRead;
+            recentTask.EstWorkTime = recentTask.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+            recentTask.WorkTime = recentTask.GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+
+            tasksRepo.Update(recentTask);
+            return Json("succes", JsonRequestBehavior.AllowGet);
         }
     }
 }

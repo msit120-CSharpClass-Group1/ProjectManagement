@@ -70,9 +70,9 @@
 @section nav{
     @Html.Partial("_PartialPageNav", "Shared")
 }
-@foreach (var item in (List<Project>)ViewBag.Projects)
-{
-    <h4>@item.ProjectID &nbsp; @item.ProjectName</h4>
+@{
+    var project = (Project)ViewBag.Project;
+    <h4>@project.ProjectID &nbsp; @project.ProjectName</h4>
 }
 
 @*<input id="isGanttShowed" type="checkbox" /> Show Gantt*@
@@ -269,6 +269,19 @@
             </div>
             <div id="ReviewDiv">
                 <div class="row">
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().EstWorkTime)
+                        <br />
+                        @Html.TextBox("EstWorkTime", null, new { @class = "form-control", style = "width:6em;" })
+
+                    </div>
+                    <div class="col-6 form-group">
+                        @Html.LabelFor(m => m.FirstOrDefault().WorkTime)
+                        <br />
+                        @Html.TextBox("WorkTime", null, new { @class = "form-control", style = "width:6em;" })
+                    </div>
+                </div>                
+                <div class="row">
                     <div class="col-12 form-group">
                         @Html.LabelFor(m => m.FirstOrDefault().ReviewScore)
                         <br />
@@ -279,7 +292,7 @@
                     <div class="col-12 form-group">
                         @Html.LabelFor(m => m.FirstOrDefault().ReviewDescription)
                         <br />
-                        <textarea name="ReviewDescription" id="ReviewDescription" class="form-control d-inline" style="width:18em;height:8em;"></textarea>
+                        <textarea name="ReviewDescription" id="ReviewDescription" class="form-control d-inline" style="width:18em;height:6em;"></textarea>
                     </div>
                 </div>
             </div>
@@ -314,9 +327,10 @@
     <script src="~/Scripts/jquery.treegrid.min.js"></script>
     <script>
         $(document).ready(function () {
+            //$('.leftOpenbtn').click();
             $('.rightOpenbtn').html('<i class="fas fa-plus"></i>').mouseup(function () { $(this).delay(500); SetRightAsideToAdd(); });
             $('#DeleteBtn').hide();
-
+            
             var tasks_layout = $('#tasks_layout');
             var treeGridContainer = $('#treeGridContainer');
             var ganttContainer = $('#ganttContainer');
@@ -346,6 +360,8 @@
                             $('#Tag').val(task.Tag);
                             $('#EstStartDate').val(ConvertDatetime(task.EstStartDate));
                             $('#EstEndDate').val(ConvertDatetime(task.EstEndDate));
+                            $('#EstWorkTime').val(task.EstWorkTime);
+                            $('#WorkTime').val(task.WorkTime);
                             $('#Description').val(task.Description);
                             $('#ParentTaskGUID').val(task.ParentTaskGUID);
                             $('#TaskGUID').val(task.TaskGUID);
@@ -487,7 +503,8 @@
 
                 acceptanceModal.find('input:checked').each(function () {
                     if (!$(this).prop('disabled')) {
-                        reviewDescription += " " + $(this).parent('div.form-check').children('label').text();
+                        reviewDescription += (reviewDescription.length == 0) ?
+                            $(this).parent('div.form-check').children('label').text() : "，" + $(this).parent('div.form-check').children('label').text();
                         Score += 10;
                     }
                 });
@@ -554,7 +571,7 @@
             {
                 var name = cname + "=";
                 var ca = document.cookie.split(';');
-                for (var i = 0; i < ca.length; i++) 
+                for (var i = 0; i < ca.length; i++)
                 {
                     var c = ca[i].trim();
                     if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
@@ -562,7 +579,7 @@
                 return "";
             }
 
-            var isHolidayLoaded = getCookie("Holidays");
+            var isHolidayLoaded = getCookie("Holidays");  
             if (!(isHolidayLoaded == "loaded")) {
                 GetHolidays();
             }

@@ -52,6 +52,7 @@
           <Property Name="DocumentName" Type="nvarchar" MaxLength="50" />
           <Property Name="CreateDate" Type="datetime" />
           <Property Name="CreateEmpGUID" Type="uniqueidentifier" />
+          <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="DocumentCategory">
           <Key>
@@ -190,6 +191,8 @@
           <Property Name="ProjectGUID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="PMscore" Type="tinyint" />
           <Property Name="Selfscore" Type="tinyint" />
+          <Property Name="InvideDate" Type="datetime" />
+          <Property Name="IsRead" Type="bit" />
         </EntityType>
         <EntityType Name="ProjectRelationDept">
           <Key>
@@ -744,6 +747,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Tasks_Tasks">
+          <End Role="Tasks" Type="Self.Tasks" Multiplicity="0..1" />
+          <End Role="Tasks1" Type="Self.Tasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tasks">
+              <PropertyRef Name="TaskGUID" />
+            </Principal>
+            <Dependent Role="Tasks1">
+              <PropertyRef Name="ParentTaskGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Tasks_TaskStatus">
           <End Role="TaskStatus" Type="Self.TaskStatus" Multiplicity="0..1" />
           <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
@@ -943,6 +958,10 @@
           <AssociationSet Name="FK_Tasks_Project" Association="Self.FK_Tasks_Project">
             <End Role="Project" EntitySet="Project" />
             <End Role="Tasks" EntitySet="Tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tasks_Tasks" Association="Self.FK_Tasks_Tasks">
+            <End Role="Tasks" EntitySet="Tasks" />
+            <End Role="Tasks1" EntitySet="Tasks" />
           </AssociationSet>
           <AssociationSet Name="FK_Tasks_TaskStatus" Association="Self.FK_Tasks_TaskStatus">
             <End Role="TaskStatus" EntitySet="TaskStatus" />
@@ -1144,6 +1163,8 @@
           <Property Name="Selfscore" Type="Byte" />
           <NavigationProperty Name="Employee" Relationship="Self.FK_ProjectMembers_Employee" FromRole="ProjectMembers" ToRole="Employee" />
           <NavigationProperty Name="Project" Relationship="Self.FK_ProjectMembers_Project" FromRole="ProjectMembers" ToRole="Project" />
+          <Property Name="InvideDate" Type="DateTime" Precision="3" />
+          <Property Name="IsRead" Type="Boolean" />
         </EntityType>
         <EntityType Name="ProjectStatus">
           <Key>
@@ -1245,6 +1266,8 @@
           <Property Name="ReviewScore" Type="Byte" />
           <Property Name="ReviewDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Document" Relationship="ProjectManagementModel.FK_Document_Tasks" FromRole="Tasks" ToRole="Document" />
+          <NavigationProperty Name="Tasks1" Relationship="ProjectManagementModel.FK_Tasks_Tasks" FromRole="Tasks" ToRole="Tasks1" />
+          <NavigationProperty Name="Tasks2" Relationship="ProjectManagementModel.FK_Tasks_Tasks" FromRole="Tasks1" ToRole="Tasks" />
         </EntityType>
         <EntityType Name="TaskStatus">
           <Key>
@@ -1820,6 +1843,10 @@
             <End Role="Employee" EntitySet="Employee" />
             <End Role="DocumentModified" EntitySet="DocumentModified" />
           </AssociationSet>
+          <AssociationSet Name="FK_Tasks_Tasks" Association="ProjectManagementModel.FK_Tasks_Tasks">
+            <End Role="Tasks" EntitySet="Tasks" />
+            <End Role="Tasks1" EntitySet="Tasks" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Calendar">
           <Key>
@@ -1852,6 +1879,7 @@
           <NavigationProperty Name="Project" Relationship="ProjectManagementModel.FK_Document_Project" FromRole="Document" ToRole="Project" />
           <NavigationProperty Name="Tasks" Relationship="ProjectManagementModel.FK_Document_Tasks" FromRole="Document" ToRole="Tasks" />
           <NavigationProperty Name="DocumentModified" Relationship="ProjectManagementModel.FK_DocumentModified_Document" FromRole="Document" ToRole="DocumentModified" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="DocumentCategory">
           <Key>
@@ -1945,6 +1973,18 @@
             </Principal>
             <Dependent Role="DocumentModified">
               <PropertyRef Name="ModifiedEmpGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tasks_Tasks">
+          <End Type="ProjectManagementModel.Tasks" Role="Tasks" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Tasks" Role="Tasks1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tasks">
+              <PropertyRef Name="TaskGUID" />
+            </Principal>
+            <Dependent Role="Tasks1">
+              <PropertyRef Name="ParentTaskGUID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2098,6 +2138,8 @@
           <EntitySetMapping Name="ProjectMembers">
             <EntityTypeMapping TypeName="ProjectManagementModel.ProjectMembers">
               <MappingFragment StoreEntitySet="ProjectMembers">
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="InvideDate" ColumnName="InvideDate" />
                 <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />
                 <ScalarProperty Name="ProjectGUID" ColumnName="ProjectGUID" />
                 <ScalarProperty Name="PMscore" ColumnName="PMscore" />
@@ -2241,6 +2283,7 @@
           <EntitySetMapping Name="Document">
             <EntityTypeMapping TypeName="ProjectManagementModel.Document">
               <MappingFragment StoreEntitySet="Document">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="CreateEmpGUID" ColumnName="CreateEmpGUID" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />

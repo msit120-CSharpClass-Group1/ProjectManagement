@@ -468,6 +468,8 @@
     <Content Include="Views\ProjectsBackside\Edit.cshtml" />
     <Content Include="Views\ProjectsBackside\Insert.cshtml" />
     <Content Include="Views\Document\Index.cshtml" />
+    <Content Include="Views\Tasks\TreeGridPartialView_backSide.cshtml" />
+    <Content Include="Views\Tasks\AsideRightPartialView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
