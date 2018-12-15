@@ -23,7 +23,7 @@
                 <button id="logoutbtn" class="navdropbtn">Logout</button>
             </div>
             <div class="dropdown">
-                <button class="navdropbtn"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">@EmployeeInfo.EmployeeName</button>
+                <button class="navdropbtn" id="wantname"><img src="~/image/user2-160x160.jpg" class="user-image" alt="User Image">@EmployeeInfo.EmployeeName</button>
                 <div class="dropdown-content">
                     <a href="#">message1</a>
                 </div>
@@ -38,21 +38,21 @@
 
     <aside id="myLeftsidenav" class="left-sidenav left-sidenav-open">
         <ul>
-            <li>
+            <li id="li_Dashboard">
                 <a href="~/@Link.Dashboard"><i class="fas fa-tachometer-alt"></i><span>儀錶板</span></a>
             </li>
             <li>
                 <button class="dropdown-btn">
                     <i class="fas fa-copy"></i><span>專案列表</span><i class="fa fa-caret-down"></i>
                 </button>
-                <ul class="dropdown-container hide">
-                    <li>
+                <ul id="ul_Projects" class="dropdown-container hide">
+                    <li id="li_ProjectDo">
                         <a href="~/@Link.Do">進行中</a>
                     </li>
-                    <li>
+                    <li id="li_ProjectCheck">
                         <a href="~/@Link.Check">審議中</a>
                     </li>
-                    <li>
+                    <li id="li_ProjectDone">
                         <a href="~/@Link.Done">已結案</a>
                     </li>
                 </ul>
@@ -76,12 +76,12 @@
                     </li>
                 </ul>
             </li>
-            <li>
+            <li id="li_Calendar">
                 <a href="~/@Link.Calendar"><i class="fas fa-calendar-alt"></i><span>行事曆</span></a>
             </li>
             <li>
-            <a href="~/@Link.Document"><i class="fas fa-users"></i><span>文件管理</span></a>
-              </li>
+                <a href="~/@Link.Document"><i class="fas fa-users"></i><span>文件管理</span></a>            
+            </li>
             <li>
                 <a href="~/@Link.Perfomance"><i class="fas fa-chalkboard"></i><span>專案評分</span></a>
             </li>
@@ -145,16 +145,28 @@
         }
         <div class="content">
             @RenderBody()
-            @*<div class="dropup">
-                <button class="dropupbtn" title="Message" type="button"><i class="fas fa-comments"></i><span class="message">20</span></button>
-                <div class="dropup-content">
-                    <a href="#">message1</a>
-                    <a href="#">message2</a>
-                    <a href="#">message3</a>
-                </div>
-            </div>*@
-            <button type="button" class="rightOpenbtn" title="Go to top">&#9776;</button>
 
+            <div class="dropup">
+                <button class="dropupbtn" title="聊天訊息" type="button"><i class="fas fa-comments"></i></button>
+                <div class="dropup-content">
+
+
+                    <div class="chatbox-padding">
+                        <div class="card-header text-white">
+                            <h6>@EmployeeInfo.EmployeeName 專案聊天室</h6>
+                        </div>
+                        <div class="chatbox-window" id="test">
+
+                        </div>
+                        <input type="text" id="message" placeholder="請輸入文字" class="form-control" />
+                        <button id="sendmessage" class="btn btn-block">傳送訊息</button>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <button type="button" class="rightOpenbtn" title="Go to top">&#9776;</button>
             <aside id="myRightsidenav" class="right-sidenav" style="display: none;">
                 @{
                     if (IsSectionDefined("asideRight"))
@@ -184,7 +196,6 @@
                                 </ul>
                             </li>
                         </ul>
-
                     }
                 }
             </aside>
@@ -198,6 +209,10 @@
     <script src="~/Scripts/bootstrap.bundle.min.js"></script>
     <script src="~/Scripts/Main.js"></script>
 
+    <script src="~/Scripts/jquery.signalR-2.4.0.min.js"></script>
+    <script type="text/javascript" src="~/signalr/hubs"></script>
     @RenderSection("script", false)
+    <script src="~/Scripts/SignalRChat.js"></script>
 </body>
 </html>
+

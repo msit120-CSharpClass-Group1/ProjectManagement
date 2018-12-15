@@ -45,15 +45,15 @@
                 <button class="dropdown-btn">
                     <i class="fas fa-copy"></i><span>專案列表</span><i class="fa fa-caret-down"></i>
                 </button>
-                <ul class="dropdown-container hide">
-                    <li>
-                        <a href="~/Projects/Index?ProjectStatusID=1">進行中</a>
+                <ul id="ul_Projects" class="dropdown-container hide">
+                    <li id="li_ProjectDo">
+                        <a href="~/@Link.Do">進行中</a>
                     </li>
-                    <li>
-                        <a href="~/Projects/Index?ProjectStatusID=2">審議中</a>
+                    <li id="li_ProjectCheck">
+                        <a href="~/@Link.Check">審議中</a>
                     </li>
-                    <li>
-                        <a href="~/Projects/Index?ProjectStatusID=3">已結案</a>
+                    <li id="li_ProjectDone">
+                        <a href="~/@Link.Done">已結案</a>
                     </li>
                 </ul>
             </li>
@@ -77,7 +77,7 @@
                     </li>
                 </ul>
             </li>
-            <li>
+            <li id="li_Calendar">
                 <a href="~/Calendar/Index"><i class="fas fa-calendar-alt"></i><span>行事曆</span></a>
             </li>
             <li>

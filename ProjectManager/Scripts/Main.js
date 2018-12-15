@@ -33,9 +33,9 @@
     });
 
     //點及訊息內容後隱藏訊息列表
-    $('.dropup-content').children().click(function () {
-        $(this).parent().fadeToggle();
-    });
+    //$('.dropup-content').children().click(function () {
+    //    $(this).parent().fadeToggle();
+    //});
 
     //強調左邊欄選單
     //var leftnavli = $("#myLeftsidenav > ul > li");
@@ -48,7 +48,7 @@
         window.location.href = '/Login/Logout';
     });
     //通知訊息下拉選單
-    window.setInterval(msgcount, 30000);
+    window.setInterval(msgcount, 120000);
     msgcount();
     function msgcount()
     {
@@ -97,9 +97,5 @@
             }
             btn.html(Fragcount);
         });
-       
-    }
-   
-    
-
+    } 
 });

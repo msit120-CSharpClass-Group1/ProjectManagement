@@ -1,0 +1,32 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<ProjectManager.Models.DocumentVM>
+
+@Html.PagedListPager(Model, page => Url.Action("GetDocument", new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+<table id="tb_Document" class="table table-bordered">
+    <thead>
+        <tr>
+            <td >@Html.DisplayNameFor(p=>p.First().DocumentID)</td>
+            <td >@Html.DisplayNameFor(p => p.First().DocumentName)</td>
+            <td >@Html.DisplayNameFor(p => p.First().CreateDate)</td>
+            <td >@Html.DisplayNameFor(p => p.First().CreateEmpName)</td>
+            <td >@Html.DisplayNameFor(p => p.First().ModifiedDate)</td>
+            <td >@Html.DisplayNameFor(p => p.First().ModifiedEmpName)</td>
+            <td>下載</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doc in Model)
+        {
+            <tr>
+                <td><p>@doc.DocumentID</p></td>
+                <td data-docguid="@doc.DocumentGUID"><p>@doc.DocumentName</p></td>
+                <td><p>@doc.CreateDate</p></td>
+                <td data-createempguid="@doc.CreateEmpGUID"><p>@doc.CreateEmpName</p></td>
+                <td ><p>@doc.ModifiedDate</p></td>
+                <td  data-modifiedempguid="@doc.ModifiedEmpGUID"><p>@doc.ModifiedEmpName</p></td>
+                <td style="width:75px"><button name="btn_download" class="btn btn-info">下載</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
