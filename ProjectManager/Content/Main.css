@@ -18,7 +18,7 @@
     padding-top: 56px;
     transition: margin .5s;
     position: relative;
-    min-height:700px;
+    /*min-height: 700px;*/
 }
 
 .main-left-toggle {
@@ -53,7 +53,7 @@
     transform: translate(250px, 0);
 }
 
-    .right-sidenav-toggle {
+.right-sidenav-toggle {
     margin-right: 250px;
 }
 
@@ -79,6 +79,20 @@
     .right-dropdown-btn:focus {
         outline: none;
     }
+
+@media screen and (min-width: 450px) and (max-width: 1366px) {
+    .right-sidenav {
+        height: auto;
+    }
+
+        .right-sidenav form {            
+            width: 300px;
+        }
+
+        .right-sidenav a, .right-dropdown-btn {
+            font-size: 16px;
+        }
+}
 
 @media screen and (max-height: 450px) {
     .right-sidenav {
@@ -226,8 +240,8 @@ dropdown-btn > a {
 
 .leftOpenbtn {
     cursor: pointer;
-    height:56px;
-    width:56px;
+    height: 56px;
+    width: 56px;
     float: left;
     color: #f2f2f2;
     text-align: center;
@@ -268,10 +282,12 @@ dropdown-btn > a {
 .dropdown {
     float: right;
 }
+
 .IsRead {
     background-color: #e1e8f2;
     color: black;
 }
+
 .dropdown-content {
     display: none;
     position: absolute;
@@ -289,8 +305,9 @@ dropdown-btn > a {
         text-decoration: none;
         display: block;
     }
+
     .dropdown-content p {
-        font-size:12px;
+        font-size: 12px;
     }
 
 .dropdown a:hover {

@@ -10,11 +10,16 @@
 {
     <style>
         .topnav a {
-            cursor:pointer;
+            cursor: pointer;           
         }
-            .topnav a:hover {
-                border-bottom: 3px solid ;
+            .click {
+                background-color: #dddfe2;
             }
+        thead {
+            background-color: darkcyan;
+            color: white;
+            text-align: center;
+        }
     </style>
     }
 <nav>
@@ -28,8 +33,8 @@
 <div id="PartialView" class="hide">
 </div>
 @section asideRight{
-    <div class="container text-light mt-3" style="min-width:350px;">
-        <form class="needs-validation" novalidate>
+    <div class="container text-light mt-3 mb-3" style="min-width:350px;">
+        <form class="needs-validation" novalidate action="~/Document/AddFile/" method="post" enctype="multipart/form-data">
             <h4  style="display:inline">新增專案費用</h4>
             <div>
                 <div class="row col-12">
@@ -42,20 +47,20 @@
                 <div class="row col-12">
                     <div class="form-group mt-3 mb-0">
                         <lable for="CategoryID">文件類別：</lable><br />
-                        @Html.DropDownList("CategoryID", (SelectList)ViewBag.DocCategory, "請選擇類別", new { @class = "form-control custom-select", required = true })
+                        @Html.DropDownList("DocumentCategory", (SelectList)ViewBag.DocCategory, "請選擇類別", new { @class = "form-control custom-select", required = true })
                     </div>
                 </div>
                 <div class="row col-12">
                     <div class="form-group mb-0">
-                        <label for="FileName">檔案上傳：</label>
-                        <input type="file" name="FileName" style="width:18em;" required />
+                        <label for="file">檔案上傳：</label>
+                        <input type="file" name="file" style="width:18em;" required />
                     </div>
                 </div>
 
                 <div class="row col-12">
                     <div class="form-group  mt-3 mb-0">
                         <lable for="Description">備註：</lable>
-                        <textarea name="Description" class="form-control" style="width:300px;height:300px;resize:none"></textarea>
+                        <textarea name="Description" class="form-control" style="width:300px;height:auto;min-height:100px;resize:none"></textarea>
                         
                     </div>
                 </div>
@@ -63,8 +68,8 @@
 
             <div class="row col-12">
                 <div id="formBtns" class="mt-3 mx-auto text-center">
-                    <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
-                    <button id="btn_ConfirmAdd" type="button" class="btn btn-primary py-1 px-3">上傳</button>
+                    <button id="btn_CancelEdit" type="reset" class="btn btn-default py-1 px-3 mr-3">取消</button>
+                    <button id="btn_ConfirmAdd" type="submit" class="btn btn-primary py-1 px-3">上傳</button>
                 </div>
             </div>
         </form>
@@ -75,12 +80,14 @@
     <script>
         $(document).ready(function () {
             $("#PartialView").load("/Document/GetDocument/1", {}, function () {
+                $('#nav-tab > a').first().addClass('click');
             }).fadeIn();
 
             $('#nav-tab > a').click(function () {
                 var PartialView = $("#PartialView");
                 var docCategory = $(this).data('categoryid');
-                console.log(docCategory)
+                $('#nav-tab > a').removeClass('click')
+                $(this).addClass('click');
                 if (docCategory) {
                     PartialView.load("/Document/GetDocument/" + docCategory, {}, function () {
                        
