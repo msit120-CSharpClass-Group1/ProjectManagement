@@ -66,22 +66,37 @@
                 <div class="panel" id="teamPanel">
                     @foreach (var _ProjectMemeber in (List<ProjectMembers>)ViewBag.ThisProjectMember)
                     {
-                        <img src="~/image/avatar.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" />
+                        if (_ProjectMemeber.Employee.TitleGUID!= new Guid("724d4916-0f1b-417b-a927-25d04425146d"))
+                        {
+                            <img src="~/image/avatar.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" data-title="@_ProjectMemeber.Employee.TitleGUID" />
+                        }
+                        else
+                        {
+                            <img src="~/image/leader.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" data-title="@_ProjectMemeber.Employee.TitleGUID"/>
+                        }
                     }
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="margin-top:20px">
         <div class="col-sm">
             <div id="scrollDiv">
                 <!--runin-->
                 @foreach (var _emp in (List<Employee>)ViewBag.FirstEmpList)
                 {
                 <div class="alert alert-primary" role="alert" id="empDiv">
-                    <img src="~/image/avatar.png" class="rounded-circle" />
+                    @if (_emp.JobTitle.TitleName != "專案經理")
+                    {
+                        <img src="~/image/avatar.png" class="rounded-circle" />
+                    }
+                    else
+                    {
+                        <img src="~/image/leader.png" class="rounded-circle" />
+                    }
                     <p>@_emp.EmployeeName</p>
                     <input type="checkbox" class="ckbox1" style="float:right;" value="@_emp.EmployeeGUID" />
+                    @*<h4>@_emp.JobTitle.TitleName</h4>*@
                 </div>
                 }
             </div>
@@ -128,7 +143,14 @@
                     {
                         var p = $("<p></p>").text(_emp.EmployeeName);// Find assigned
                         var input = $("<input/>").attr("type", "checkbox").attr("class", "ckbox1").attr("style", "float:right").val(_emp.EmployeeGUID);
-                        var img = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle");
+                        if (_emp.TitleGUID != "724d4916-0f1b-417b-a927-25d04425146d")
+                        {
+                            var img = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle");
+                        }
+                        else
+                        {
+                            var img = $("<img/>").attr("src", "/image/leader.png").attr("class", "rounded-circle");
+                        }
                         var empdiv = $("<div></div>").attr("class", "alert alert-primary");
                         empdiv.append([img, p, input]);
                         docFrag.append(empdiv);
@@ -140,7 +162,7 @@
                 }).done(function () { InTeamChecked()})
         })
 
-        SendIDToTeamTable();
+        //SendIDToTeamTable();
         function SendIDToTeamTable()//勾選成員、取消勾選事件
         {
             $('.ckbox1').on('change', function ()
@@ -155,9 +177,9 @@
                         url: '@Url.Action("AddProjectMember", "ProjectMember")',
                         data: { "memberID": memberGUID},
                         success: function ()
-                        {
-                            ReloadTeamCount();
+                        {                          
                             chkboxcheck.parent().removeClass().addClass("alert alert-success");
+                            ReloadTeamCount();
                         }
                         , error: function () { alert(memberName + " 已存在於此專案"); chkboxcheck.prop('checked', false); ReloadTeamCount();}
                     });
@@ -186,9 +208,17 @@
                 var panel = $(".panel");
                 $.each(datas, function (idx, _emp)
                 {
-                    var empImg = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("title", _emp.Employee.EmployeeName)
-                        .attr("data-guid", _emp.EmployeeGUID).tooltip();
-                    docFrag.append(empImg);
+                    if (_emp.TitleGUID != "724d4916-0f1b-417b-a927-25d04425146d")
+                    {
+                        var empImg = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("title", _emp.EmployeeName)
+                            .attr("data-guid", _emp.EmployeeGUID).attr("data-title", _emp.TitleGUID).tooltip();
+                    }
+                    else
+                    {
+                        var empImg = $("<img/>").attr("src", "/image/leader.png").attr("class", "rounded-circle").attr("title", _emp.EmployeeName)
+                            .attr("data-guid", _emp.EmployeeGUID).attr("data-title", _emp.TitleGUID).tooltip();
+                    }
+                    docFrag.append(empImg);           
                 })
                 panel.html(docFrag);
             })
@@ -205,7 +235,15 @@
             $(this).attr("src", "/image/CancelIcon.png").attr("class", "rounded-circle").attr("style", "opacity:0.4");
         })
         $("#teamPanel").on("mouseleave", "img", function () {
-            $(this).attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("style", "opacity:1");
+            var titleGuid = $(this).data("title");
+            if (titleGuid != "724d4916-0f1b-417b-a927-25d04425146d")
+            {
+                $(this).attr("src", "/image/avatar.png").attr("class", "rounded-circle").attr("style", "opacity:1");
+            }
+            else
+            {
+                $(this).attr("src", "/image/leader.png").attr("class", "rounded-circle").attr("style", "opacity:1");
+            }
         })
 
         $("#teamPanel").on("click", "img", function () { //直接由專案成員方塊刪除
@@ -243,9 +281,15 @@
                                circleimg.remove();
                             }
                 });
-                if ($("#scrollDiv input").val() == memberGUID)
+                var divlength = $("#scrollDiv").children().length;
+                for (var i = 0; i <= divlength; i++)
                 {
-                    $("#scrollDiv input").prop('checked', false);
+                    var empBar = $("#scrollDiv div:eq('" + i + "')").children("input");
+                    if (empBar.val() == memberGUID)
+                    {
+                        empBar.prop('checked', false);
+                        empBar.parent().removeClass().addClass("alert alert-primary");
+                    }
                 }
             }
         })

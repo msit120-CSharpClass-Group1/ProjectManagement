@@ -1,5 +1,5 @@
 ﻿@using ProjectManager.Models
-@model IEnumerable<ProjectManager.Models.Grouped<string,Project>>
+@model IEnumerable<ProjectManager.Models.Grouped<string, Project>>
 @{
     string strStatus = "";
     switch (ViewBag.StatusID)
@@ -25,6 +25,12 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .bookMark {
+            position: relative;
+            top: -5px;            
+            float: right;
+            margin-right: 0.5rem !important;
+        }
     </style>
 }
 
@@ -38,7 +44,7 @@
     @foreach (var g in Model)
     {
         i++;
-        <h4 class="text-dark" style="font-size:20px;" data-Dept=Dept@(i)>
+        <h4 class="text-dark my-4" style="font-size:20px;" data-Dept=Dept@(i)>
             <span class="float-left"><i class="fas fa-caret-down"></i></span>
             @g.Key
         </h4>
@@ -47,12 +53,30 @@
             @foreach (var item in g.group)
             {
                 <a href="~/ProjectDetails/ProjectReport?ProjectGUID=@item.ProjectGUID" data-ProjectGUID="@item.ProjectGUID">
-                    <div class="card d-inline-block mr-3 mb-2 " style="width:18rem;">
-                        <div class="card-header bg-dark">
+                    <div class="card d-inline-block mr-3 mb-2 mt-1" style="width:18rem;">
+                        @{
+                            if ((bool)item.IsGeneralManagerConcerned)
+                            {
+                                <span class="bookMark" data-toggle="tooltip" title="總經理關注"><img style="width:28px;" src="~/image/bookmark_icon30.png" /></span>
+                            }
+                        }
+                        <div class="card-header text-center text-muted ">
+                            <div class="row align-items-center mx-0">                                
+                                <div class="col pl-3">
+                                    <h6 class="mb-0">
+                                        @Html.DisplayFor(m => item.ProjectName)
+                                    </h6>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-dark pt-2 pb-3">
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().CompletedRate)</span>
                             <div class="progress">
-                                @{ 
-                                    string percent = string.Format("{0}%",item.CompletedRate);
+                                @{
+                                    string percent = string.Format("{0}%", item.CompletedRate);
                                     string value = item.CompletedRate.ToString();
                                 }
                                 <div class="progress-bar" role="progressbar" style="width: @percent;" aria-valuenow="@value" aria-valuemin="0" aria-valuemax="100">@percent</div>
@@ -60,24 +84,6 @@
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().DurationSavedRate)</span>
                             <div class="progress ">
                                 <div class="progress-bar " role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
-                            </div>
-                        </div>
-                        <div class="card-footer text-center text-muted ">
-                            <div class="row align-items-center">
-                                <div class="col-2"></div>
-                                <div class="col-8 small">@Html.DisplayFor(m => item.ProjectName)</div>
-                                <div class="col-2">
-                                    @{
-                                        if ((bool)item.IsGeneralManagerConcerned)
-                                        {
-                                            <i class='far fa-check-square' style='color:black' data-toggle="tooltip" title='總經理關注'></i>
-                                        }
-                                        else
-                                        {
-                                            <i class='far fa-square' style='color:black' data-toggle="tooltip" title='總經理未關注'></i>
-                                        }
-                                    }
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -191,20 +197,20 @@
             Overview.find('h4').on("click", function () {
                 var _dept = "#" + $(this).attr("data-Dept");
                 $(_dept).toggle("blind", {}, 300);
-                $(this).find("i").toggleClass("fas fa-caret-down").toggleClass("fas fa-caret-right");
+                $(this).find("i").toggleClass("fas fa-caret-down").toggleClass("fas fa-caret-right");                
             });
 
             $('#RequiredDeptGUID').change(GetEmployees);
             $('#ProjectSupervisorDeptGUID').change(GetSupervisor);
-            //$('#EstStartDate').change(function () { $('#StartDate').val($(this).val());}); 
-            //$('#EstEndDate').change(function () { $('#EndDate').val($(this).val()); }); 
+            //$('#EstStartDate').change(function () { $('#StartDate').val($(this).val());});
+            //$('#EstEndDate').change(function () { $('#EndDate').val($(this).val()); });
 
             function GetEmployees() {
                 $.getJSON("@Url.Action("GetEmployeesByDept","Projects")", { DeptGUID : $(this).val()}, function (data) {
                     var docFrag = $(document.createDocumentFragment());
                     $.each(data, function (index,emp) {
                         var opt = $('<option></option>').text(emp.EmployeeName).val(emp.EmployeeGUID);
-                        docFrag.append(opt);                       
+                        docFrag.append(opt);
                     });
                     $('#RequiredDeptPMGUID').html(docFrag);
                 });
@@ -214,13 +220,13 @@
                     var docFrag = $(document.createDocumentFragment());
                     $.each(data, function (index,emp) {
                         var opt = $('<option></option>').text(emp.EmployeeName).val(emp.EmployeeGUID);
-                        docFrag.append(opt);                       
+                        docFrag.append(opt);
                     });
                     $('#ProjectSupervisorGUID').html(docFrag);
                 });
             }
 
-            $('[data-toggle="tooltip"]').tooltip(); 
+            $('[data-toggle="tooltip"]').tooltip();
 
             //Demo button
             $('#demoBtn').click(function () {
@@ -230,7 +236,7 @@
                     var docFrag = $(document.createDocumentFragment());
                     $.each(data, function (index,emp) {
                         var opt = $('<option></option>').text(emp.EmployeeName).val(emp.EmployeeGUID);
-                        docFrag.append(opt);                       
+                        docFrag.append(opt);
                     });
                     $('#RequiredDeptPMGUID').html(docFrag);
                 });

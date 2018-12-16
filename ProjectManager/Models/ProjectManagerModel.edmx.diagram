@@ -69,6 +69,7 @@
         <AssociationConnector Association="ProjectManagementModel.FK_Document_Tasks" />
         <AssociationConnector Association="ProjectManagementModel.FK_DocumentModified_Document" />
         <AssociationConnector Association="ProjectManagementModel.FK_DocumentModified_Employee" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Tasks_Tasks" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

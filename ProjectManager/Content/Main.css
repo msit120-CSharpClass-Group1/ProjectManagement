@@ -355,6 +355,7 @@ dropdown-btn > a {
     bottom: 40px;
     z-index: 1;
     right: 0;
+    border-radius:10px;
 }
 
     .dropup-content a {
@@ -475,6 +476,21 @@ dropdown-btn > a {
     .content-header > .breadcrumb > li + li:before {
         content: '>\00a0';
     }
+
+.chatbox-padding {
+    padding: 5px;
+    background-color: darkcyan;
+    border-radius:10px;
+}
+
+.chatbox-window {
+    height: 250px;
+    width: 300px;
+    overflow: auto;
+    background-color: whitesmoke;
+}
+
+    
 
 @media (max-width: 991px) {
     .content-header > .breadcrumb {

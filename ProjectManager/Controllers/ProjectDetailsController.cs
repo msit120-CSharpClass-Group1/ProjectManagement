@@ -141,7 +141,7 @@ namespace ProjectManager.Controllers
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
                 .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
-            ViewBag.Projects = projectRepo.GetCollections().Where(p => p.ProjectGUID == _projectGUID).ToList();
+            ViewBag.Project = projectRepo.Find(_projectGUID);
             ViewBag.TaskStatuses = new SelectList(new Repository<TaskStatus>().GetCollections(), "TaskStatusID", "TaskStatusName");
 
             return View(tasks);
