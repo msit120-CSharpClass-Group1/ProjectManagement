@@ -17,10 +17,10 @@ namespace ProjectManager.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Tasks()
         {
+            this.Document = new HashSet<Document>();
             this.TaskDetail = new HashSet<TaskDetail>();
             this.TaskModified = new HashSet<TaskModified>();
             this.TaskResource = new HashSet<TaskResource>();
-            this.Document = new HashSet<Document>();
             this.Tasks1 = new HashSet<Tasks>();
         }
     
@@ -45,6 +45,8 @@ namespace ProjectManager.Models
         public Nullable<byte> ReviewScore { get; set; }
         public string ReviewDescription { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Document> Document { get; set; }
         public virtual Employee Employee { get; set; }
         public virtual PreTasks PreTasks { get; set; }
         public virtual Project Project { get; set; }
@@ -54,11 +56,9 @@ namespace ProjectManager.Models
         public virtual ICollection<TaskModified> TaskModified { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TaskResource> TaskResource { get; set; }
-        public virtual TaskStatus TaskStatus { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Document> Document { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Tasks> Tasks1 { get; set; }
         public virtual Tasks Tasks2 { get; set; }
+        public virtual TaskStatus TaskStatus { get; set; }
     }
 }
