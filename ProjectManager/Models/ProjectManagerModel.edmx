@@ -193,6 +193,9 @@
           <Property Name="Selfscore" Type="tinyint" />
           <Property Name="InvideDate" Type="datetime" />
           <Property Name="IsRead" Type="bit" />
+          <Property Name="PMScoreDate" Type="datetime" />
+          <Property Name="SelfScoreDate" Type="datetime" />
+          <Property Name="Reviewer" Type="nchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="ProjectRelationDept">
           <Key>
@@ -1165,6 +1168,9 @@
           <NavigationProperty Name="Project" Relationship="Self.FK_ProjectMembers_Project" FromRole="ProjectMembers" ToRole="Project" />
           <Property Name="InvideDate" Type="DateTime" Precision="3" />
           <Property Name="IsRead" Type="Boolean" />
+          <Property Name="PMScoreDate" Type="DateTime" Precision="3" />
+          <Property Name="SelfScoreDate" Type="DateTime" Precision="3" />
+          <Property Name="Reviewer" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
         </EntityType>
         <EntityType Name="ProjectStatus">
           <Key>
@@ -2138,6 +2144,9 @@
           <EntitySetMapping Name="ProjectMembers">
             <EntityTypeMapping TypeName="ProjectManagementModel.ProjectMembers">
               <MappingFragment StoreEntitySet="ProjectMembers">
+                <ScalarProperty Name="Reviewer" ColumnName="Reviewer" />
+                <ScalarProperty Name="SelfScoreDate" ColumnName="SelfScoreDate" />
+                <ScalarProperty Name="PMScoreDate" ColumnName="PMScoreDate" />
                 <ScalarProperty Name="IsRead" ColumnName="IsRead" />
                 <ScalarProperty Name="InvideDate" ColumnName="InvideDate" />
                 <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />

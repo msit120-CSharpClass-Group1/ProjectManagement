@@ -9,7 +9,6 @@
 
 namespace ProjectManager.Models
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -29,6 +28,7 @@ namespace ProjectManager.Models
         public int DepartmentID { get; set; }
         public string DepartmentName { get; set; }
         public Nullable<System.Guid> ParentDepartmentGUID { get; set; }
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Department> Department1 { get; set; }
         public virtual Department Department2 { get; set; }
