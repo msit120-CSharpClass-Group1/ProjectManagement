@@ -102,7 +102,7 @@ namespace ProjectManager.Controllers
         public ActionResult Modified(Guid id)
         {
             ViewBag.doc = Doc.Find(id);
-            var docm = DocModified.GetCollections().Where(n => n.DocumentGUID == id);
+            var docm = DocModified.GetCollections().Where(n => n.DocumentGUID == id).OrderBy(n=>n.Version);
             return View(docm);
         }
         public ActionResult MDownLoad(Guid id)
@@ -123,12 +123,13 @@ namespace ProjectManager.Controllers
 
                     DocumentModified _docm = new DocumentModified();
                     Members _members = members.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-                    Doc.Update(_doc);
+                    var doc = Doc.Find(_doc.DocumentGUID);                   
+                    doc.Description = _doc.Description;
+                    Doc.Update(doc);                    
                     _docm.DocumentGUID = _doc.DocumentGUID;
                     _docm.IsChecked = false;
                     _docm.ModifiedEmpGUID = _members.EmployeeGUID;
                     _docm.ModifiedDate = DateTime.Now;
-
                     int? lastVersion = 0;
                     var _lastDocID = DocModified.GetCollections().Where(n => n.DocumentGUID == _doc.DocumentGUID);
                     if (_lastDocID.Count() != 0)
@@ -137,15 +138,15 @@ namespace ProjectManager.Controllers
                     }
                     _docm.Version = lastVersion +1;
                     var fileExtension = System.IO.Path.GetExtension(file.FileName);
-                    _docm.FileName = _doc.DocumentName + "_" + _docm.Version + fileExtension;
+                    _docm.FileName = doc.DocumentName + "_" + _docm.Version + fileExtension;
                     _docm.ModifiedGUID = Guid.NewGuid();
                     DocModified.Add(_docm);
                     var fileName = _docm.FileName;
-                    var path = Path.Combine(Server.MapPath("/Document/" + _doc.DocumentCategory), fileName);
+                    var path = Path.Combine(Server.MapPath("/Document/" + doc.DocumentCategory), fileName);
                     file.SaveAs(path);
                 }
             }
-            return RedirectToAction("/Index");
+            return RedirectToAction("/Modified/"+ _doc.DocumentGUID);
         }
     }
 }
