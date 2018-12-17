@@ -10,7 +10,12 @@ namespace ProjectManager.Controllers
     public class ProjectsBacksideController : Controller
     {
         // GET: ProjectsBackside
-        Repository<Project> projectRepo = new Repository<Project>();
+        private Repository<Project> projectRepo = new Repository<Project>();
+        private Repository<Tasks> taskRepo = new Repository<Tasks>();
+        private static Repository<ProjectMembers> projectMemberRepo = new Repository<ProjectMembers>();
+        private Repository<Document> documentRepo = new Repository<Document>();
+        private Repository<TaskDetail> taskDetailRepo = new Repository<TaskDetail>();
+        private Repository<TaskResource> resourceRepo = new Repository<TaskResource>();
 
         public ActionResult Index()
         {
@@ -27,7 +32,7 @@ namespace ProjectManager.Controllers
                 projectRepo.Add(_project);
                 return RedirectToAction("Index");
             }
-            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
+            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections().OrderBy(d => d.DepartmentID), "DepartmentGUID", "DepartmentName");
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
@@ -37,7 +42,7 @@ namespace ProjectManager.Controllers
         [HttpGet]
         public ActionResult Edit(Guid? projectGUID)
         {           
-            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
+            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections().OrderBy(d => d.DepartmentID), "DepartmentGUID", "DepartmentName");
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
@@ -59,6 +64,8 @@ namespace ProjectManager.Controllers
             recentProject.Description = _project.Description;
             recentProject.IsGeneralManagerConcerned = _project.IsGeneralManagerConcerned;
             recentProject.ProjectBudget = _project.ProjectBudget;
+            recentProject.InChargeDeptGUID = _project.InChargeDeptGUID;
+            recentProject.InChargeDeptPMGUID = _project.InChargeDeptPMGUID;
 
             projectRepo.Update(recentProject);
             return RedirectToAction("Index");
@@ -66,7 +73,44 @@ namespace ProjectManager.Controllers
         public ActionResult Delete(Guid? projectGUID)
         {
             Project project = projectRepo.Find(projectGUID);
-            projectRepo.Delete(project);
+            var allTasks = taskRepo.GetCollections()
+                .Where(t => t.ProjectGUID == projectGUID)
+                .OrderBy(t=>t.TaskID)
+                .GetSortedTasks()
+                .Reverse();
+            var allMembers = projectMemberRepo.GetCollections().Where(m => m.ProjectGUID == projectGUID);
+            
+            try
+            {
+                foreach (var child in allTasks)
+                {
+                    foreach (var doc in child.Document.ToList())
+                    {
+                        documentRepo.Delete(documentRepo.Find(doc.DocumentGUID));
+                    }
+                    foreach (var detail in child.TaskDetail.ToList())
+                    {
+                        taskDetailRepo.Delete(taskDetailRepo.Find(detail.TaskDetailGUID));
+                    }
+                    foreach (var resource in child.TaskResource.ToList())
+                    {
+                        resourceRepo.Delete(resourceRepo.Find(resource.ResourceGUID));
+                    }
+                    taskRepo.Delete(taskRepo.Find(child.TaskGUID));
+                }
+
+                foreach (var member in allMembers)
+                {
+                    projectMemberRepo.Delete(member);
+                }
+
+                projectRepo.Delete(project);
+            }
+            catch
+            {
+               
+            }
+            
             return RedirectToAction("Index");
         }
 

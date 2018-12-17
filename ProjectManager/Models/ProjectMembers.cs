@@ -20,6 +20,9 @@ namespace ProjectManager.Models
         public Nullable<byte> Selfscore { get; set; }
         public Nullable<System.DateTime> InvideDate { get; set; }
         public Nullable<bool> IsRead { get; set; }
+        public Nullable<System.DateTime> PMScoreDate { get; set; }
+        public Nullable<System.DateTime> SelfScoreDate { get; set; }
+        public string Reviewer { get; set; }
     
         public virtual Employee Employee { get; set; }
         public virtual Project Project { get; set; }

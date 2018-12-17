@@ -19,7 +19,7 @@ namespace ProjectManager.Controllers
         public ActionResult Index(int ProjectStatusID=1)
         {
             ViewBag.StatusID = ProjectStatusID;
-            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
+            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections().OrderBy(d=>d.DepartmentID), "DepartmentGUID", "DepartmentName");
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
@@ -54,6 +54,13 @@ namespace ProjectManager.Controllers
                 .Where(e => e.Department.DepartmentGUID == DeptGUID)
                 .Select(e => new { e.EmployeeGUID, e.EmployeeName });
             return Content(JsonConvert.SerializeObject(emps), "application/json");
+        }
+        [HttpGet]
+        public ActionResult InsertProjectForDemo()
+        {
+            StoredProcedureForDemo storedProcedure = new StoredProcedureForDemo("InsertProjectForDemo");            
+            storedProcedure.Execute();
+            return Content("success", "application/json");
         }
 
     }

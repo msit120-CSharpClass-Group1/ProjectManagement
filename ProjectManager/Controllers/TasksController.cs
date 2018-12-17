@@ -36,7 +36,7 @@ namespace ProjectManager.Controllers
             var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
                 .Where(t => t.ProjectGUID == projectGUID).GetSortedTasks();
 
-            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
+            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections().OrderBy(d => d.DepartmentID), "DepartmentGUID", "DepartmentName");
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
@@ -58,7 +58,7 @@ namespace ProjectManager.Controllers
                 .Select(m => new { m.EmployeeGUID, m.Employee.EmployeeName }).ToList();
 
             ViewBag.ParentTasks = new SelectList(parentTasks, "TaskGUID", "TaskName");
-            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
+            ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections().OrderBy(d => d.DepartmentID), "DepartmentGUID", "DepartmentName");
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.TaskStatuses = new SelectList(new Repository<TaskStatus>().GetCollections(), "TaskStatusID", "TaskStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");            
@@ -110,12 +110,10 @@ namespace ProjectManager.Controllers
                     {
                         resourceRepo.Delete(resourceRepo.Find(resource.ResourceGUID));
                     }
-                }
-                
-                foreach (var child in allTasks.AsQueryable().Reverse())
-                {
                     taskRepo.Delete(taskRepo.Find(child.TaskGUID));
                 }
+                
+
             }
             catch
             {

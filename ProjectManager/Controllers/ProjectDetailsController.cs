@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Web;
 using System.Web.Mvc;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ProjectManager.Controllers
 {
@@ -273,7 +274,13 @@ namespace ProjectManager.Controllers
             taskRepo.Update(_task);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
-
-        #endregion 
+        [HttpGet]
+        public ActionResult InsertTasksForDemo()
+        {
+            StoredProcedureForDemo storedProcedure = new StoredProcedureForDemo("InsertTasksForDemo");
+            storedProcedure.Execute();            
+            return Content("success", "application/json");
+        }
+        #endregion
     }
 }

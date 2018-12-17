@@ -17,11 +17,11 @@ namespace ProjectManager.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Project()
         {
+            this.Document = new HashSet<Document>();
             this.Meeting = new HashSet<Meeting>();
             this.ProjectMembers = new HashSet<ProjectMembers>();
             this.Tasks = new HashSet<Tasks>();
             this.Department2 = new HashSet<Department>();
-            this.Document = new HashSet<Document>();
         }
     
         public string ProjectID { get; set; }
@@ -44,6 +44,8 @@ namespace ProjectManager.Models
     
         public virtual Department Department { get; set; }
         public virtual Department Department1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Document> Document { get; set; }
         public virtual Employee Employee { get; set; }
         public virtual Employee Employee1 { get; set; }
         public virtual Employee Employee2 { get; set; }
@@ -57,7 +59,5 @@ namespace ProjectManager.Models
         public virtual ICollection<Tasks> Tasks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Department> Department2 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Document> Document { get; set; }
     }
 }
