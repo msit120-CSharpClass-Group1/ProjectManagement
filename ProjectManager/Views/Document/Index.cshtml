@@ -10,18 +10,20 @@
 {
     <style>
         .topnav a {
-            cursor: pointer;           
+            cursor: pointer;
         }
-            .click {
-                background-color: #dddfe2;
-            }
+
+        .click {
+            background-color: #dddfe2;
+        }
+
         thead {
             background-color: darkcyan;
             color: white;
             text-align: center;
         }
     </style>
-    }
+}
 <nav>
     <div class="topnav nav nav-tabs nav-fill " id="nav-tab" role="tablist">
         @foreach (var category in Model)
@@ -35,7 +37,7 @@
 @section asideRight{
     <div class="container text-light mt-3 mb-3" style="min-width:350px;">
         <form class="needs-validation" novalidate action="~/Document/AddFile/" method="post" enctype="multipart/form-data">
-            <h4  style="display:inline">新增專案費用</h4>
+            <h4 style="display:inline">新增文件</h4>
             <div>
                 <div class="row col-12">
                     <div class="form-group mb-0">
@@ -61,7 +63,7 @@
                     <div class="form-group  mt-3 mb-0">
                         <lable for="Description">備註：</lable>
                         <textarea name="Description" class="form-control" style="width:300px;height:auto;min-height:100px;resize:none"></textarea>
-                        
+
                     </div>
                 </div>
             </div>
@@ -90,11 +92,11 @@
                 $(this).addClass('click');
                 if (docCategory) {
                     PartialView.load("/Document/GetDocument/" + docCategory, {}, function () {
-                       
+
                     }).fadeIn();
                 }
             })
-            
+
         })
     </script>
 }

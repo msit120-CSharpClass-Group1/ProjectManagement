@@ -587,6 +587,7 @@
     <Content Include="Views\Tasks\TreeGridPartialView_backSide.cshtml" />
     <Content Include="Views\Tasks\AsideRightPartialView.cshtml" />
     <Content Include="Views\Document\GetDocument.cshtml" />
+    <Content Include="Views\Document\Modified.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
