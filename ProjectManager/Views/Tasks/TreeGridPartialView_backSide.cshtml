@@ -1,0 +1,52 @@
+﻿@using ProjectManager.Models
+@model IEnumerable<ProjectManager.Models.Tasks>
+
+<table id="treeGrid" class="table table-bordered table-hover tree">
+    <thead class="panel-heading">
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.TaskName)</th>
+            <th>@Html.DisplayNameFor(m => m.TaskStatusID)</th>
+            <th>@Html.DisplayNameFor(m => m.EmployeeGUID)</th>
+            <th>預計區間</th>
+            <th>實際區間</th>
+            <th>預計工時</th>
+            <th>實際工時</th>
+            <th>@Html.DisplayNameFor(m => m.Tag)</th>
+            <th>@Html.DisplayNameFor(m => m.Description)</th>
+            <th>@Html.DisplayNameFor(m => m.AssignedDate)</th>
+            <th>@Html.DisplayNameFor(m => m.ReviewScore)</th>
+            <th>@Html.DisplayNameFor(m => m.ReviewDescription)</th>
+            <th>編輯</th>
+            <th>刪除</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var task in @Model)
+        {
+            var class1 = "treegrid-" + task.orderID;
+            var class2 = task.parentOrderID == 0 ? "" : "treegrid-parent-" + task.parentOrderID;
+        <tr class="@class1 @class2" data-orderID="@task.orderID" data-taskGUID="@task.TaskGUID">
+            <td style="width:300px;">@task.TaskName</td>
+            <td>@task.TaskStatus.TaskStatusName</td>
+            <td>@Html.DisplayFor(m => task.Employee.EmployeeName)</td>
+            <td>@Html.DisplayFor(m => task.EstStartDate) <br /> @Html.DisplayFor(m => task.EstEndDate)</td>
+            <td>@Html.DisplayFor(m => task.StartDate) <br /> @Html.DisplayFor(m => task.EndDate)</td>
+            <td>@Html.DisplayFor(m => task.EstWorkTime)</td>
+            <td>@Html.DisplayFor(m => task.WorkTime)</td>
+            <td>@Html.DisplayFor(m => task.Tag)</td>
+            <td>@Html.DisplayFor(m => task.Description)</td>
+            <td>@Html.DisplayFor(m => task.AssignedDate)</td>
+            <td>@Html.DisplayFor(m => task.ReviewScore)</td>
+            <td>@Html.DisplayFor(m => task.ReviewDescription)</td>
+            <td class="p-0 align-middle">
+                <button type="button" name="EditBtn" data-taskGUID="@task.TaskGUID" class="btn btn-info mr-2">修改</button>                
+            </td>
+            <td class="p-0 align-middle">
+                <button type="button" name="DeleteBtn" data-taskGUID="@task.TaskGUID" class="btn btn-danger mr-2">刪除</button>
+            </td>
+        </tr>
+        }
+    
+    </tbody>
+</table>

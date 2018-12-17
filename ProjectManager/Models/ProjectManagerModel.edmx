@@ -747,6 +747,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Tasks_Tasks">
+          <End Role="Tasks" Type="Self.Tasks" Multiplicity="0..1" />
+          <End Role="Tasks1" Type="Self.Tasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tasks">
+              <PropertyRef Name="TaskGUID" />
+            </Principal>
+            <Dependent Role="Tasks1">
+              <PropertyRef Name="ParentTaskGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Tasks_TaskStatus">
           <End Role="TaskStatus" Type="Self.TaskStatus" Multiplicity="0..1" />
           <End Role="Tasks" Type="Self.Tasks" Multiplicity="*" />
@@ -946,6 +958,10 @@
           <AssociationSet Name="FK_Tasks_Project" Association="Self.FK_Tasks_Project">
             <End Role="Project" EntitySet="Project" />
             <End Role="Tasks" EntitySet="Tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tasks_Tasks" Association="Self.FK_Tasks_Tasks">
+            <End Role="Tasks" EntitySet="Tasks" />
+            <End Role="Tasks1" EntitySet="Tasks" />
           </AssociationSet>
           <AssociationSet Name="FK_Tasks_TaskStatus" Association="Self.FK_Tasks_TaskStatus">
             <End Role="TaskStatus" EntitySet="TaskStatus" />
@@ -1250,6 +1266,8 @@
           <Property Name="ReviewScore" Type="Byte" />
           <Property Name="ReviewDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Document" Relationship="ProjectManagementModel.FK_Document_Tasks" FromRole="Tasks" ToRole="Document" />
+          <NavigationProperty Name="Tasks1" Relationship="ProjectManagementModel.FK_Tasks_Tasks" FromRole="Tasks" ToRole="Tasks1" />
+          <NavigationProperty Name="Tasks2" Relationship="ProjectManagementModel.FK_Tasks_Tasks" FromRole="Tasks1" ToRole="Tasks" />
         </EntityType>
         <EntityType Name="TaskStatus">
           <Key>
@@ -1825,6 +1843,10 @@
             <End Role="Employee" EntitySet="Employee" />
             <End Role="DocumentModified" EntitySet="DocumentModified" />
           </AssociationSet>
+          <AssociationSet Name="FK_Tasks_Tasks" Association="ProjectManagementModel.FK_Tasks_Tasks">
+            <End Role="Tasks" EntitySet="Tasks" />
+            <End Role="Tasks1" EntitySet="Tasks" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Calendar">
           <Key>
@@ -1951,6 +1973,18 @@
             </Principal>
             <Dependent Role="DocumentModified">
               <PropertyRef Name="ModifiedEmpGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tasks_Tasks">
+          <End Type="ProjectManagementModel.Tasks" Role="Tasks" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Tasks" Role="Tasks1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tasks">
+              <PropertyRef Name="TaskGUID" />
+            </Principal>
+            <Dependent Role="Tasks1">
+              <PropertyRef Name="ParentTaskGUID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

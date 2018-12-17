@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProjectManager.Models;
 using System;
 using System.Collections.Generic;
@@ -29,8 +30,8 @@ namespace ProjectManager.Controllers
         {
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
-            var depGUID = depid;      
-            var emp = employee.GetCollections().Where(e => e.Department.DepartmentGUID == depGUID);            
+            var emp = employee.GetCollections().Where(e => e.DepartmentGUID == depid)
+                .Select(e=>new { e.DepartmentGUID,e.EmployeeGUID,e.EmployeeName,e.TitleGUID});
             return Content(JsonConvert.SerializeObject(emp), "application/json");
         }
 
@@ -56,7 +57,8 @@ namespace ProjectManager.Controllers
         public ActionResult ReloadTeamCount()
         {
             Guid InvitePJGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID);
+            var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID)
+                .Select(p => new { p.EmployeeGUID, p.Employee.TitleGUID, p.Employee.EmployeeName });
             return Content(JsonConvert.SerializeObject(pjmb), "application/json");
         }
 

@@ -22,7 +22,9 @@ namespace ProjectManager.Models
         {
             public Nullable<System.Guid> ProjectGUID { get; set; }
             public System.Guid TaskGUID { get; set; }
+            [DisplayName("父工作項目")]
             public Nullable<System.Guid> ParentTaskGUID { get; set; }
+            [DisplayName("工作項目編號")]
             public int TaskID { get; set; }
 
             [DisplayName("工作項目名稱")]
@@ -44,10 +46,10 @@ namespace ProjectManager.Models
             [DisplayName("實際結束時間")]
             public Nullable<System.DateTime> EndDate { get; set; }
 
-            [DisplayName("實際開始時間")]
+            [DisplayName("預計工時")]
             public Nullable<int> EstWorkTime { get; set; }
 
-            [DisplayName("實際結束時間")]
+            [DisplayName("實際工時")]
             public Nullable<int> WorkTime { get; set; }
 
             [DisplayName("狀態")]
@@ -68,6 +70,12 @@ namespace ProjectManager.Models
             [DisplayName("驗收評價")]
             public string ReviewDescription { get; set; }
 
+            [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]
+            [DisplayName("分配日期")]
+            public Nullable<System.DateTime> AssignedDate { get; set; }
+            [DisplayName("已讀")]
+            public Nullable<bool> IsRead { get; set; }
+
             [JsonIgnore()]
             public virtual Employee Employee { get; set; }
             [JsonIgnore()]
@@ -85,6 +93,10 @@ namespace ProjectManager.Models
             public virtual ICollection<TaskResource> TaskResource { get; set; }
             [JsonIgnore()]
             public virtual TaskStatus TaskStatus { get; set; }
+            [JsonIgnore()]
+            public virtual ICollection<Tasks> Tasks1 { get; set; }
+            [JsonIgnore()]
+            public virtual Tasks Tasks2 { get; set; }
         }
     }
 }

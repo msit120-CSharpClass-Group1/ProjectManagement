@@ -1,57 +1,200 @@
-﻿@model IEnumerable<ProjectManager.Models.Tasks>
+﻿@using ProjectManager.Models
+@model IEnumerable<ProjectManager.Models.Tasks>
 @{
-    ViewBag.Title = "任務";
+    ViewBag.Title = "工作項目";
 }
-
-<a href="~/Tasks/Insert" class="btn btn-warning">新增任務</a>
-<table class="table table-bordered table-hover">
-    <thead>
-        <tr>
-            <th>任務編號</th>
-            <th>直屬任務名稱</th>
-            <th>任務名稱</th>
-            <th>預計開始日期</th>
-            <th>預計結束日期</th>
-            <th>實際開始日期</th>
-            <th>實際結束日期</th>
-            <th>預計工作時間</th>
-            <th>實際工作時間</th>
-            <th>標籤</th>
-            <th>描述</th>
-            <th>修改</th>
-            <th>刪除</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var _tasks in Model)
-        {
-        <tr>
-            <td>@_tasks.TaskID</td>
-            <td>
-                @if (@_tasks.ParentTaskGUID != null)
-                {
-                    @_tasks.ProjectGUID
-                }
-                else
-                {
-                    <text>-</text>
-                }
-            </td>
-            <td>@_tasks.TaskName</td>
-            <td>@_tasks.EstStartDate</td>
-            <td>@_tasks.EstEndDate</td>
-            <td>@_tasks.StartDate</td>
-            <td>@_tasks.EndDate</td>
-            <td>@_tasks.EstWorkTime</td>
-            <td>@_tasks.WorkTime</td>
-            <td>@_tasks.Tag</td>
-            <td>@_tasks.Description</td>
-            <td><a href="~/Permissions/Edit/@_tasks.TaskGUID" class="btn btn-info">修改</a></td>
-            <td><a href="~/Permissions/Delete/@_tasks.TaskGUID" class="btn btn-danger">刪除</a></td>
-        </tr>
+@section style{
+    <style>
+        .treegrid-indent {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            position: relative;
         }
 
-    </tbody>
-</table>
+        .treegrid-expander {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .treegrid-expander-expanded {
+            background-image: url(../image/collapse.png);
+        }
+
+        .treegrid-expander-collapsed {
+            background-image: url(../image/expand.png);
+        }
+
+        .AlarmIcon {
+            font-size: 120%;
+            color: #dc3545;
+            margin-right: 5px;
+        }
+
+        .EditIcon {
+            font-size: 120%;
+            color: black;
+            margin-right: 5px;
+        }
+
+        .boldLabel {
+            font-weight: 600;
+        }
+
+        thead {
+            background-color: rgba(0, 0, 0, 0.060);
+            color: black;
+            /*text-align: center;*/
+        }
+
+        .form-control-inline {
+            display: inline-block;
+            width: 100%;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+    </style>
+}
+@{
+    var project = (Project)ViewBag.Project;
+    <h4>@project.ProjectID &nbsp; @project.ProjectName</h4>
+}
+<div id="treeGridContainer"></div>
+
+<!--Modal For Delete Comfirm-->
+<div class="modal fade" style="top:120px;" id="DeleteAlarmModal" tabindex="-1" role="dialog" aria-labelledby="DeleteAlarmModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:3px 4px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DeleteAlarmModalTitle">
+                    <span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span>刪除確認
+                </h5>
+            </div>
+            <div class="modal-body pl-3">
+                <div class="row">
+                    <h6 id="deleteAlarm" class="col-12">將會刪除包含此工作項目及其子項目，所有費用細項及任務細項</h6>
+                </div>
+                <h6 id="deleteAlarm_detail">確認刪除嗎?</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="btn_ConfirmDelete" class="btn btn-danger" data-taskGUID="" >全部刪除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section asideRight{
+    <div id="asideRightContainer" class="container text-light mt-3">
+    </div>
+}
+
+@section script{
+    <script src="~/Scripts/jquery.treegrid.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $('.leftOpenbtn').click();
+
+            let treeGridContainer = $('#treeGridContainer');
+            var asideRightContainer = $('#asideRightContainer');
+            var deleteAlarmModal = $('#DeleteAlarmModal');
+            LoadTreeGrid();
+
+            asideRightContainer.on("click", 'button[name="CancelBtn"]', ClearAsideRight);
+            asideRightContainer.on("click", 'button[name="EditBtn"]', EditTask);
+
+            $('#btn_ConfirmDelete').click(function () {
+                $.post("@Url.Action("Delete", "Tasks")", { taskGUID: $(this).attr('data-taskGUID') }, function (msg) {
+                    deleteAlarmModal.modal('hide');
+                    LoadTreeGrid();
+                });                               
+            });
+
+            function ClearAsideRight() {
+                $('.rightOpenbtn').click().mouseup(function () { $(this).delay(500); asideRightContainer.html(""); });
+            }
+            function EditTask() {
+                $.post("@Url.Action("Edit","Tasks")", $('#TaskForm').serialize(), function (data) {
+                    ClearAsideRight();
+                    LoadTreeGrid();
+                });
+            }            
+            function SetDeleteModal() { 
+                $('#btn_ConfirmDelete').attr('data-taskGUID', $(this).attr('data-taskGUID'));
+                deleteAlarmModal.modal('show');
+            }
+            function LoadTreeGrid() {
+                treeGridContainer.load("@Url.Action("TreeGridPartialView_backSide", "Tasks", new { projectGUID = project.ProjectGUID })", function () {
+                    $(this).find('table').treegrid();
+                    $(this).find('tbody td button[name="EditBtn"]').on('click', LoadRightAsideEdit); 
+                    $(this).find('tbody td button[name="DeleteBtn"]').on('click', SetDeleteModal);
+                });
+            }
+            function LoadRightAsideEdit() {
+                var _taskGUID = $(this).attr('data-taskGUID');
+
+                asideRightContainer.load("Tasks/AsideRightPartialView?taskGUID=" + _taskGUID, function (data) { $('.rightOpenbtn').click(); });
+                $('#CancelBtn').click(ClearAsideRight);
+            }
+
+           function getCookie(cname)
+            {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++)
+                {
+                    var c = ca[i].trim();
+                    if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+                }
+                return "";
+            }
+            var isHolidayLoaded = getCookie("Holidays");
+            if (!(isHolidayLoaded == "loaded")) {
+                GetHolidays();
+            }
+
+            function GetHolidays() {/*?scope=resourceAquire&rid=b0011e96-3fc3-43ec-8bf5-07fb46dd22bb&offset=599*/
+                $.getJSON("https://data.taipei/opendata/datalist/apiAccess", { scope:'resourceAquire', rid:'b0011e96-3fc3-43ec-8bf5-07fb46dd22bb',offset:599}, function (holidays) {
+                    $.ajax({
+                        url: "@Url.Action("LoadHolidays", "ProjectDetails")",
+                        method: "post",
+                        data: holidays,
+                        dataType: "json"
+                    });
+                });
+            }
+
+        });
+
+    </script>
+    <style>
+        .table-bordered td, .table-bordered th {
+            border: 0px solid;
+            vertical-align: middle;
+        }
+
+        .table-bordered tbody tr {
+            border: 1px solid #dee2e6;
+            background-color: white;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.015);
+        }
+    </style>
+
+}
 
 
