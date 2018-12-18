@@ -12,6 +12,8 @@ namespace ProjectManager.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class ProjectManagementEntities : DbContext
     {
@@ -25,8 +27,12 @@ namespace ProjectManager.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Calendar> Calendar { get; set; }
         public virtual DbSet<Dashboard> Dashboard { get; set; }
         public virtual DbSet<Department> Department { get; set; }
+        public virtual DbSet<Document> Document { get; set; }
+        public virtual DbSet<DocumentCategory> DocumentCategory { get; set; }
+        public virtual DbSet<DocumentModified> DocumentModified { get; set; }
         public virtual DbSet<Employee> Employee { get; set; }
         public virtual DbSet<JobTitle> JobTitle { get; set; }
         public virtual DbSet<Meeting> Meeting { get; set; }
@@ -47,9 +53,15 @@ namespace ProjectManager.Models
         public virtual DbSet<Tasks> Tasks { get; set; }
         public virtual DbSet<TaskStatus> TaskStatus { get; set; }
         public virtual DbSet<WidgetDetail> WidgetDetail { get; set; }
-        public virtual DbSet<Calendar> Calendar { get; set; }
-        public virtual DbSet<Document> Document { get; set; }
-        public virtual DbSet<DocumentCategory> DocumentCategory { get; set; }
-        public virtual DbSet<DocumentModified> DocumentModified { get; set; }
+    
+        public virtual int InsertProjectForDemo()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProjectForDemo");
+        }
+    
+        public virtual int InsertTasksForDemo()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertTasksForDemo");
+        }
     }
 }

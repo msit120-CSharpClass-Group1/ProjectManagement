@@ -7,6 +7,7 @@
     <link href="~/Content/PMScore.css" rel="stylesheet" />
 }
 <!-- Team -->
+<p hidden id="pjGUID">@Model.ProjectGUIDShow</p>
 <section id="team" class="pb-5">
     <div class="container">
         <h5 class="section-title h1">專案團隊成員評分介面</h5>
@@ -77,15 +78,15 @@
                 <hr>
                 <div class="boxes">
                     <input type="checkbox" id="box-1" value="30">
-                    <label for="box-1" title="按專案進度完成所有功能開發">能夠於專案開始後依規定時間內完成基本功能開發</label>
+                    <label for="box-1" title="按專案進度完成所有功能開發(30%)">能夠於專案開始後依規定時間內完成基本功能開發</label>
                     <input type="checkbox" id="box-2" value="30">
-                    <label for="box-2" title="維護專案">能夠依照客戶需求, 依規定時間內完成修改項目</label>
+                    <label for="box-2" title="維護專案(30%)">能夠依照客戶需求, 依規定時間內完成修改項目</label>
                     <input type="checkbox" id="box-3" value="20">
-                    <label for="box-3" title="確保軟體品質與穩定度">軟體嚴重程度的Bug依規定時限內修改完</label>
+                    <label for="box-3" title="確保軟體品質與穩定度(20%)">軟體嚴重程度的Bug依規定時限內修改完</label>
                     <input type="checkbox" id="box-4" value="10">
-                    <label for="box-4" title="團隊合作">能夠與團隊有效溝通</label>
+                    <label for="box-4" title="團隊合作(10%)">能夠與團隊有效溝通</label>
                     <input type="checkbox" id="box-5" value="10">
-                    <label for="box-5" title="知識學習與分享">至少一次的團隊內技術發表</label>
+                    <label for="box-5" title="知識學習與分享(10%)">至少一次的團隊內技術發表</label>
                 </div>
                 <!--Footer-->
                 <div class="modal-footer justify-content-center">
@@ -130,7 +131,7 @@
                 }
                     $.ajax({
                         url: '@Url.Action("EditPMScore", "Perfomance")',
-                        data: {"EmployeeGUID": EmployeeGUID,"PMScore": score},
+                        data: { "EmployeeGUID": EmployeeGUID, "PMScore": score, "ProjectGUID": $("#pjGUID").text()},
                         type:"POST",
                         success: function (data)
                         {

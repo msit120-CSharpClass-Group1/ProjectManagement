@@ -9,6 +9,7 @@ namespace ProjectManager.Models
     {
         public System.Guid EmployeeGUID { get; set; }
         public IEnumerable<Guid> ProjectGUID { get; set; }
+        public Guid? ProjectGUIDShow { get; set; }
         public IEnumerable<string> ProjectName { get; set; }
         public Nullable<byte> PMscore { get; set; }
         public Nullable<byte> Selfscore { get; set; }

@@ -20,6 +20,8 @@ namespace ProjectManager.Controllers
         Repository<ProjectManager.Models.Tasks> t = new Repository<ProjectManager.Models.Tasks>();
         Repository<ProjectManager.Models.Project> p = new Repository<ProjectManager.Models.Project>();
         Repository<ProjectManager.Models.Members> m = new Repository<ProjectManager.Models.Members>();
+        Repository<ProjectManager.Models.Employee> e = new Repository<ProjectManager.Models.Employee>();
+
         public ActionResult Index(Guid id, string EmployeeName)
         {
             BoardVM VM = new BoardVM();
@@ -27,12 +29,17 @@ namespace ProjectManager.Controllers
             var q = from parentTask in t.GetCollections()
                     join childrenTask in t.GetCollections() on parentTask.TaskGUID equals childrenTask.ParentTaskGUID
                     select childrenTask;
-            VM.TaskStatus = s.GetCollections().Where(x=>x.TaskStatusID!=1);
+            VM.TaskStatus = s.GetCollections().Where(x => x.TaskStatusID != 1);
             VM.Tasks = q.Where(x => x.ProjectGUID.ToString() == PID && x.EmployeeGUID == id).ToList();
             VM.Project = p.GetCollections().Where(x => x.ProjectGUID.ToString() == PID).ToList();
             VM.TaskDetail = td.GetCollections();
-            ViewBag.UserName = Response.Cookies["WhoBoard"].Value = EmployeeName + "的看板";
+            ViewBag.UserName = e.Find(id).EmployeeName+ "的看板";
             q.ToList();
+            foreach (var task in VM.Tasks)
+            {
+                task.IsRead = true;
+                t.Update(task);
+            }
             return View(VM);
         }
         public ActionResult GetEmployee(Guid id)
@@ -59,8 +66,8 @@ namespace ProjectManager.Controllers
         public ActionResult GetCard(Guid id)
         {
             BoardVM VM = new BoardVM();
-            VM.Task = t.Find(id);            
-            return Content(JsonConvert.SerializeObject(VM),"application/Json");
+            VM.Task = t.Find(id);
+            return Content(JsonConvert.SerializeObject(VM), "application/Json");
 
         }
         public ActionResult GetDetail(Guid id)
@@ -74,11 +81,11 @@ namespace ProjectManager.Controllers
 
         public ActionResult EditTaskStatusID(Guid id, int TaskStatusID)
         {
-            
+
             BoardVM VM = new BoardVM();
             VM.Task = t.Find(id);
             VM.Task.TaskStatusID = TaskStatusID;
-            if (TaskStatusID==3)
+            if (TaskStatusID == 3)
             {
                 VM.Task.EndDate = DateTime.Now;
                 VM.Task.WorkTime = t.Find(id).GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
@@ -116,7 +123,7 @@ namespace ProjectManager.Controllers
             return Json(true);
         }
 
-        public ActionResult DeleteTaskDatail(Guid id,Guid cardID)
+        public ActionResult DeleteTaskDatail(Guid id, Guid cardID)
         {
             BoardVM VM = new BoardVM();
             VM.TaskDetails = td.Find(id);

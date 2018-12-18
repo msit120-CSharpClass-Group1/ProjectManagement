@@ -6,12 +6,13 @@
 <table id="tb_Document" class="table table-bordered">
     <thead>
         <tr>
-            <td >@Html.DisplayNameFor(p=>p.First().DocumentID)</td>
-            <td >@Html.DisplayNameFor(p => p.First().DocumentName)</td>
-            <td >@Html.DisplayNameFor(p => p.First().CreateDate)</td>
-            <td >@Html.DisplayNameFor(p => p.First().CreateEmpName)</td>
-            <td >@Html.DisplayNameFor(p => p.First().ModifiedDate)</td>
-            <td >@Html.DisplayNameFor(p => p.First().ModifiedEmpName)</td>
+            <td>@Html.DisplayNameFor(p => p.First().DocumentID)</td>
+            <td>@Html.DisplayNameFor(p => p.First().DocumentName)</td>
+            <td>@Html.DisplayNameFor(p => p.First().Description)</td>
+            <td>@Html.DisplayNameFor(p => p.First().CreateDate)</td>
+            <td>@Html.DisplayNameFor(p => p.First().CreateEmpName)</td>
+            <td>@Html.DisplayNameFor(p => p.First().ModifiedDate)</td>
+            <td>@Html.DisplayNameFor(p => p.First().ModifiedEmpName)</td>
             <td>下載</td>
         </tr>
     </thead>
@@ -20,12 +21,13 @@
         {
             <tr>
                 <td><p>@doc.DocumentID</p></td>
-                <td data-docguid="@doc.DocumentGUID"><p>@doc.DocumentName</p></td>
-                <td><p>@doc.CreateDate</p></td>
+                <td data-docguid="@doc.DocumentGUID"><a href="Modified/@doc.DocumentGUID"><p>@doc.DocumentName</p></a></td>
+                <td><p>@doc.Description</p></td>
+                <td><p>@doc.CreateDate.Value.ToShortDateString()</p></td>
                 <td data-createempguid="@doc.CreateEmpGUID"><p>@doc.CreateEmpName</p></td>
-                <td ><p>@doc.ModifiedDate</p></td>
+                <td ><p>@doc.ModifiedDate.Value.ToShortDateString()</p></td>
                 <td  data-modifiedempguid="@doc.ModifiedEmpGUID"><p>@doc.ModifiedEmpName</p></td>
-                <td style="width:75px"><button name="btn_download" class="btn btn-info">下載</button></td>
+                <td style="width:75px"><a name="btn_download" class="btn btn-info download" href="DownLoad/@doc.DocumentGUID">下載</a></td>
             </tr>
         }
     </tbody>
