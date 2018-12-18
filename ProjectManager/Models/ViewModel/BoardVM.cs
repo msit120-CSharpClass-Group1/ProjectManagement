@@ -9,6 +9,7 @@ namespace ProjectManager.Models
     public class BoardVM
     {
         public IEnumerable<Project> Project { get; set; }
+        public IEnumerable<Grouped<string , Project>> GetProjectDepartment { get; set; }
         public IEnumerable<TaskStatus> TaskStatus { get; set; }
         public IEnumerable<Tasks> Tasks { get; set; }
         public Tasks Task { get; set; }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjectManager.Models.ProjectMembers>
+﻿@model ProjectManager.Models.BoardVM
 @{
     ViewBag.Title = "選擇專案";
 }
@@ -55,17 +55,58 @@
     }
 </style>
 }
-<div class="ProjectFlex_a">
-    @foreach (var p in Model)
+<div class="ProjectFlex_a container mt-5">
+    @*@foreach (var d in Model.ProjectMember)
     {
-    <div class="project">
-        <a class="projectLink" href="@Url.Action("Index", "SelectMBoar",new {id=p.ProjectGUID })"></a>
-        <div class="progressBar"></div>
-        <div class="bar"></div>
-        <span class="barNum">50%</span>
-        <p>@p.Project.ProjectName</p>
-    </div>
-    }
+        <h4 class="text-dark" style="font-size:20px;" data-dept="Dept2">
+            <span class="float-left"><i class="fas fa-caret-down"></i></span>
+            @d.Project.Department.DepartmentName
+        </h4>
+        <div>*@
+            @foreach (var p in Model.ProjectMember)
+            {
+                <a href="@Url.Action("Index", "SelectMBoard",new {id=p.ProjectGUID })">
+                    <div class="card d-inline-block mr-3 mb-2 " style="width:18rem;">
+                        <div class="card-header bg-dark">
+                            <span class="text-light">完成比率</span>
+                            <div class="progress">
+
+                                <div class="progress-bar" role="progressbar" style="width: 58%;" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100">58%</div>
+                            </div>
+                            <span class="text-light">實際工期節省比率</span>
+                            <div class="progress ">
+                                <div class="progress-bar " role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center text-muted ">
+                            <div class="row align-items-center">
+                                <div class="col-2"></div>
+                                <div class="col-8 small">@p.Project.ProjectName</div>
+                                <div class="col-2">
+                                    <i class="far fa-check-square" style="color:black" data-toggle="tooltip" title="" data-original-title="總經理關注"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            }
+        @*</div>*@
+    @*}*@
+
+
+
+
+
+    @*@foreach (var p in Model.ProjectMember)
+    {
+        <div class="project">
+            <a class="projectLink" href="@Url.Action("Index", "SelectMBoard",new {id=p.ProjectGUID })"></a>
+            <div class="progressBar"></div>
+            <div class="bar"></div>
+            <span class="barNum">50%</span>
+            <p>@p.Project.ProjectName</p>
+        </div>
+    }*@
 </div>
 @section script{
     <script>
