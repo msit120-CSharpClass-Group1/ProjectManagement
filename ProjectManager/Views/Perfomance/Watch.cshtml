@@ -20,7 +20,7 @@
 <div class="row">
     <div class="col-sm">
         <div class="card bg-light mb-3" style="max-width: 18rem;">
-            <div class="card-header" style="cursor:pointer" id="good">表現優秀占比(>80)</div>
+            <div class="card-header" style="cursor:pointer" id="good">表現優秀占比(>90)</div>
             <div class="card-body">
                 <h5 class="card-title">@Math.Round((double)HightPercent, 1)%</h5>
                 <p class="card-text">@HighestPJmembers 位成員</p>
@@ -72,6 +72,7 @@
                 <th>團隊成員</th>
                 <th>PM評分紀錄</th>
                 <th>自評紀錄</th>
+                <th>評級</th>
             </tr>
         </thead>
         <tbody>
@@ -97,6 +98,22 @@
                 {
                     <td>尚未評分</td>
                 }
+                @if ((item.PMscore + item.Selfscore)/2 < 60)
+                {
+                    <td>C等級</td>
+                }
+                else if ((item.PMscore + item.Selfscore)/2 < 80 && (item.PMscore + item.Selfscore) / 2 >= 60)
+                {
+                    <td>B等級</td>
+                }
+                else if((item.PMscore + item.Selfscore)/2>90)
+                {
+                    <td>A等級</td>
+                }
+                else
+                {
+                    <td>尚未評級</td>
+                }
             </tr>
                 }
             }
@@ -113,7 +130,7 @@
                 for (var i = 1; i < tableRow; i++)
                 {                                     
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
-                    if (value >= 80)
+                    if (value >= 90)
                     {
                         $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
                     }
@@ -129,7 +146,7 @@
                 for (var i = 1; i < tableRow; i++)
                 {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
-                    if (value >= $("#groupAvg").text() && value!="尚未評分")
+                    if (value > parseInt($("#groupAvg").text()) && value!="尚未評分")
                     {
                         $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
                     }
@@ -141,7 +158,7 @@
                 for (var i = 1; i < tableRow; i++)
                 {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
-                    if (value <= $("#groupAvg").text() && value!="")
+                    if (value <= parseInt($("#groupAvg").text()) && value !="尚未評分")
                     {
                         $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
                     }
