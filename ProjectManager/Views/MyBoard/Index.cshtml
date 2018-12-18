@@ -401,17 +401,17 @@
         .shownav {
             transform: translateX(0px);
             transition-duration: 0.5s;
-        }
+        }*/
         button.rightOpenbtn, button.dropupbtn {
             outline: none;
         }
-        button.rightOpenbtn {
+        /*button.rightOpenbtn {
             top:70px;
             right:15px;
-        }*/
+        }
         .left-sidenav ul:first-child {
             margin-top: 20px;
-        }
+        }*/
 
         .dropdown button:hover {
             background-color: rgba(225,225,225,0.8);
@@ -436,6 +436,10 @@
         .lists {
             height: auto;
             margin-top: 10px;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: none;
         }
     </style>
 }
@@ -503,13 +507,13 @@
             <div class="listNewItem">
                 <textarea name="newItem" id="newItem">新增項目...</textarea>
             </div>
-            <button type="button" class="@*btn*@ slide btn-insert @*btn-light*@">新增</button>
+            <button type="button" class="slide btn-insert">新增</button>
         </div>
     </div>
 </div>
 @section script
 {
-    <script>
+<script>
         var cardID = null;
         var cardGuid;
         var btnInsert = $('.btn-insert');
@@ -522,7 +526,7 @@
         $("#listContent-5").removeAttr("ondrop");
         $("#listContent-4").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default"});
         $("#listContent-5").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default" });
-       
+
 
         function dragstart(e)
         {
@@ -572,6 +576,15 @@
                 $("#listHeader-" + i).css("background-color", colorarr[i - 2]);
             }
 
+            var breadProjecta = $(' <a> 選擇專案</a >').attr("href", "/SelectProject/Index");
+            var breadProjectLi = $('<li></li>').append(breadProjecta);
+            var breadMembera = $(' <a> 選擇成員</a >').attr("href", "/SelectMBoard/Index/@Request.Cookies["PID"].Value");
+            var breadMemberLi = $('<li></li>').append(breadMembera);
+            $('.breadcrumb>li').first().after(breadProjectLi, breadMemberLi);
+
+
+
+
             //判斷看版權限
             var hrefarr = $('@Html.ActionLink("MyBoard","Index")').attr("href").split("/");
             var employeeGuid = hrefarr[3];
@@ -583,8 +596,8 @@
              }).done(function (datas) {
                  if (datas === false)
                  {
-                     $(":button").attr('disabled', 'disabled');
-                     $(":input").attr('disabled', 'disabled');
+                     $('.wrapper').find(":button").attr('disabled', 'disabled');
+                     $('.content').find(":input").attr('disabled', 'disabled');
                      $(".checkLists").off("click",".checkListCkeck");
                      $(".checkLists").off('mousedown', '.cardDetailDelete');
                      $('.checkLists').off("click", ".checkListContent");
@@ -669,7 +682,7 @@
                         url: '@Url.Action("InsertDetailTask", "Myboard")',
                         data: { TaskGUID: cardID, TaskDetailName: userNewList, TaskDetailStatusID: statusID },
                         dataType: "json"
-                    }).done(function (datas) {                       
+                    }).done(function (datas) {
                         var checklist=$('.checkLists')
                         badgeText.text(checklist.children().length);
                         var _percent = parseInt(completeDT.text()) / parseInt(checklist.children().length) * 100;
@@ -769,7 +782,7 @@
                 var cardDetailDelete = $(this);
                 var completeCount;
                 var taskDetailStatusID = cardDetailDelete.parent().find('.checkListCkeck').attr("data-statusID");
-               
+
                 $(this).parent().remove();
                 $.ajax({
                     type: "Post",
@@ -791,7 +804,7 @@
                     {
                         percent="0%"
                     }
-                   
+
                     $('.checklist-progress-bar-current').css('width', percent);
                     $('.checklist-progress-percentage').text(percent);
                 });
@@ -799,5 +812,5 @@
 
         });
 
-    </script>
+</script>
 }

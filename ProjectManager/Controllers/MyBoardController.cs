@@ -20,6 +20,8 @@ namespace ProjectManager.Controllers
         Repository<ProjectManager.Models.Tasks> t = new Repository<ProjectManager.Models.Tasks>();
         Repository<ProjectManager.Models.Project> p = new Repository<ProjectManager.Models.Project>();
         Repository<ProjectManager.Models.Members> m = new Repository<ProjectManager.Models.Members>();
+        Repository<ProjectManager.Models.Employee> e = new Repository<ProjectManager.Models.Employee>();
+
         public ActionResult Index(Guid id, string EmployeeName)
         {
             BoardVM VM = new BoardVM();
@@ -31,7 +33,7 @@ namespace ProjectManager.Controllers
             VM.Tasks = q.Where(x => x.ProjectGUID.ToString() == PID && x.EmployeeGUID == id).ToList();
             VM.Project = p.GetCollections().Where(x => x.ProjectGUID.ToString() == PID).ToList();
             VM.TaskDetail = td.GetCollections();
-            ViewBag.UserName = Response.Cookies["WhoBoard"].Value = EmployeeName + "的看板";
+            ViewBag.UserName = e.Find(id).EmployeeName+ "的看板";
             q.ToList();
             foreach (var task in VM.Tasks)
             {
