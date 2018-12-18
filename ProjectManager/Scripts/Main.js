@@ -63,7 +63,6 @@
             var Fragdoc = $(document.createDocumentFragment());
             var msg = $('#notificationmsg');
             $(datas).each(function (id, data) {
-                //console.log(data.TaskName + ',' + data.IsRead);
                 var time = new Date(data.AssignedDate.match(/\d+/)[0] * 1);
                 var taskName = $('<P></p>').html('「'+data.EmployeeName+'」在「' + data.ProjectName+'」分配了「' + data.TaskName + '」給你');
                 var taskTime = $('<span></span>').html(time.toLocaleDateString());
