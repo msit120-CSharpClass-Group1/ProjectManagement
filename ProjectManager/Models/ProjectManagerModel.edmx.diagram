@@ -21,7 +21,7 @@
         <EntityTypeShape EntityType="ProjectManagementModel.Project" Width="1.5" PointX="10.25" PointY="12" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.ProjectCategory" Width="1.5" PointX="8" PointY="13.25" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.ProjectDiscuss" Width="1.5" PointX="5.25" PointY="35" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProjectManagementModel.ProjectMembers" Width="1.5" PointX="12.5" PointY="17.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProjectManagementModel.ProjectMembers" Width="2" PointX="12.5" PointY="17.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.ProjectStatus" Width="1.5" PointX="8" PointY="10.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.ResourceCategory" Width="1.5" PointX="18.5" PointY="28" IsExpanded="true" />
         <EntityTypeShape EntityType="ProjectManagementModel.TaskDetail" Width="1.5" PointX="20.75" PointY="18.875" IsExpanded="true" />
