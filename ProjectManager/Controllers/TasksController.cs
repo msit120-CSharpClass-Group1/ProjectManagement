@@ -21,6 +21,7 @@ namespace ProjectManager.Controllers
         {
             if (projectGUID == null)
                 return RedirectToAction("Index", "ProjectsBackside");
+            Response.Cookies["ProjectGUID"].Value = projectGUID.ToString();
             var data = taskRepo.GetCollections()
                 .Where(t => t.ProjectGUID == projectGUID)
                 .OrderBy(t => t.TaskID)
