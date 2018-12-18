@@ -2201,6 +2201,11 @@
           <EntitySetMapping Name="ProjectMembers">
             <EntityTypeMapping TypeName="ProjectManagementModel.ProjectMembers">
               <MappingFragment StoreEntitySet="ProjectMembers">
+                <ScalarProperty Name="Reviewer" ColumnName="Reviewer" />
+                <ScalarProperty Name="SelfScoreDate" ColumnName="SelfScoreDate" />
+                <ScalarProperty Name="PMScoreDate" ColumnName="PMScoreDate" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="InvideDate" ColumnName="InvideDate" />
                 <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />
                 <ScalarProperty Name="ProjectGUID" ColumnName="ProjectGUID" />
                 <ScalarProperty Name="PMscore" ColumnName="PMscore" />

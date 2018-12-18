@@ -144,6 +144,7 @@
     <Content Include="Content\skin-black.css" />
     <Content Include="image\bookmark_icon30.png" />
     <Content Include="image\leader.png" />
+    <Content Include="image\notask2.png" />
     <Content Include="Models\ProjectManagerModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
@@ -588,6 +589,7 @@
     <Content Include="Views\Tasks\TreeGridPartialView_backSide.cshtml" />
     <Content Include="Views\Tasks\AsideRightPartialView.cshtml" />
     <Content Include="Views\Document\GetDocument.cshtml" />
+    <Content Include="Views\Perfomance\ChanceProject.cshtml" />
     <Content Include="Views\Document\Modified.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
