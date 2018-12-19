@@ -19,6 +19,8 @@ namespace ProjectManager.Models
         [DisplayName("文件類別")]
         public string DocumentCategory { get; set; }
         public Nullable<int> CategoryID { get; set; }
+        [DisplayName("備註")]
+        public string Description { get; set; }
         [DisplayName("建立日期")]
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]

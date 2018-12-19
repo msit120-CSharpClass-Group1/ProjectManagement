@@ -31,6 +31,7 @@ namespace ProjectManager.Controllers
             {
                 ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
                 vm.ProjectMembers = ProjectMembersRepo.GetCollections().Where(p => p.Project.ProjectStatusID == 1 && p.PMscore == null && p.ProjectGUID == ProjectGUID && p.Employee.JobTitle.TitleName!="專案經理");
+                vm.ProjectGUIDShow = ProjectGUID;
                 return View(vm);
             }
             return RedirectToAction("Index", "Perfomance");
@@ -61,7 +62,7 @@ namespace ProjectManager.Controllers
                 ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
                 vm.GroupMemberTaskScore = taskRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID && p.EmployeeGUID != null).GetLeafTasks()
                     .GroupBy(g => g.Employee.EmployeeName)
-                    .Select(g => new Group<string, Tasks> { Key = g.Key, value = g, Avg = g.Average(p => p.ReviewScore) });             
+                    .Select(g => new Group<string, Tasks> { Key = g.Key, value = g, Avg = g.Average(p => p.ReviewScore) });
                 return View(vm);          
             }
             return RedirectToAction("Index", "Perfomance");
@@ -69,16 +70,30 @@ namespace ProjectManager.Controllers
 
         public ActionResult EditPMScore(ProjectMembers _projectMember)
         {
-            var pm = ProjectMembersRepo.Find(_projectMember.EmployeeGUID, new Guid(Request.Cookies["ProjectGUID"].Value));
+            var pm = ProjectMembersRepo.Find(_projectMember.EmployeeGUID, _projectMember.ProjectGUID);
             pm.PMscore = _projectMember.PMscore;
+            pm.PMScoreDate = DateTime.Now;
             ProjectMembersRepo.Update(pm);
             return Content("success");
         }
 
-        public ActionResult ScoreByMySelf(Guid? ProjectGUID) //自評界面
+        public ActionResult ChanceProject()//自評界面(選擇專案)
         {
-            ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
-            
+            //傳入自己所負責專案的介面
+            return View();
+        }
+        public ActionResult ScoreByMySelf(Guid? ProjectGUID) //自評界面(問項)
+        {
+            ProjectMemberScoreVM vm = new ProjectMemberScoreVM();            
+            return View();
+        }
+        public ActionResult EditSelfScore(ProjectMembers _projectMember)//編輯自評
+        {
+            return Content("success");
+        }
+
+        public ActionResult OverAllReview()//總覽介面(含評分時間、誰評、是哪個專案、可篩選人)
+        {
             return View();
         }
     }

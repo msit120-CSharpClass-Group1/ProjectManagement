@@ -18,6 +18,8 @@ namespace ProjectManager.Models
         public Employee()
         {
             this.Dashboard = new HashSet<Dashboard>();
+            this.Document = new HashSet<Document>();
+            this.DocumentModified = new HashSet<DocumentModified>();
             this.Employee1 = new HashSet<Employee>();
             this.Members = new HashSet<Members>();
             this.Project = new HashSet<Project>();
@@ -27,8 +29,6 @@ namespace ProjectManager.Models
             this.ProjectMembers = new HashSet<ProjectMembers>();
             this.TaskDetail = new HashSet<TaskDetail>();
             this.Tasks = new HashSet<Tasks>();
-            this.Document = new HashSet<Document>();
-            this.DocumentModified = new HashSet<DocumentModified>();
         }
     
         public System.Guid EmployeeGUID { get; set; }
@@ -43,6 +43,10 @@ namespace ProjectManager.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Dashboard> Dashboard { get; set; }
         public virtual Department Department { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Document> Document { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DocumentModified> DocumentModified { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Employee> Employee1 { get; set; }
         public virtual Employee Employee2 { get; set; }
@@ -63,9 +67,5 @@ namespace ProjectManager.Models
         public virtual ICollection<TaskDetail> TaskDetail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Tasks> Tasks { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Document> Document { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DocumentModified> DocumentModified { get; set; }
     }
 }

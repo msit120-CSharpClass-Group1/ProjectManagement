@@ -23,6 +23,7 @@ namespace ProjectManager.Views.Shared
         public static string Document = "Document/Index";
         //專案評分
         public static string Perfomance = "Perfomance/Index";
+        public static string ChanceProject = "Perfomance/ChanceProject";
         //後臺管理
         public static string BackStage_Project = "ProjectsBackside/Index";
         public static string BackStage_ProjectCategory = "ProjectCategory/Index";

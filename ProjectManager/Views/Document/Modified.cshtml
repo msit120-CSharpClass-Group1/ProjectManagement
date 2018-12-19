@@ -1,0 +1,88 @@
+﻿@model IEnumerable<ProjectManager.Models.DocumentModified>
+
+@{
+    var doc = (ProjectManager.Models.Document)ViewBag.doc;
+    ViewBag.Title = doc.DocumentName;
+    ViewBag.Activity = "文件管理";
+
+
+}
+@section style
+{
+    <style>
+        .topnav a {
+            cursor: pointer;
+        }
+
+        .click {
+            background-color: #dddfe2;
+        }
+
+        thead {
+            background-color: darkcyan;
+            color: white;
+            text-align: center;
+        }
+    </style>
+}
+
+<table id="tb_Document" class="table table-bordered">
+    <thead>
+        <tr>
+            <td>版本</td>
+            <td>修改人員</td>
+            <td>修改日期</td>
+            <td>下載</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var docm in Model)
+        {
+
+            <tr>
+                <td data-modifiedguid="@docm.ModifiedGUID"><p>@docm.Version</p></td>
+                <td><p>@docm.Employee.EmployeeName</p></td>
+                <td><p>@docm.ModifiedDate.Value.ToShortDateString()</p></td>
+                <td style="width:75px"><a name="btn_download" class="btn btn-info download" href="~/Document/MDownLoad/@docm.ModifiedGUID">下載</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section asideRight{
+    <div class="container text-light mt-3 mb-3" style="min-width:350px;">
+        <form class="needs-validation" novalidate action="~/Document/Edit/" method="post" enctype="multipart/form-data">
+            <div>
+                <div class="row col-12">
+                    <div class="form-group mb-0">
+                        <label for="DocumentName">文件名稱：</label>
+                        <label class="form-control" style="width:18em;">@doc.DocumentName</label>
+                        <input name="DocumentGUID" type="hidden" value="@doc.DocumentGUID" />
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="form-group mb-0">
+                        <label for="file">檔案上傳：</label>
+                        <input type="file" name="file" style="width:18em;" required />
+                    </div>
+                </div>
+
+                <div class="row col-12">
+                    <div class="form-group  mt-3 mb-0">
+                        <lable for="Description">備註：</lable>
+                        <textarea name="Description" class="form-control" style="width:300px;height:auto;min-height:100px;resize:none">@doc.Description</textarea>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row col-12">
+                <div id="formBtns" class="mt-3 mx-auto text-center">
+                    <button id="btn_CancelEdit" type="reset" class="btn btn-default py-1 px-3 mr-3">取消</button>
+                    <button id="btn_ConfirmAdd" type="submit" class="btn btn-primary py-1 px-3">上傳</button>
+                </div>
+            </div>
+        </form>
+    </div>
+}

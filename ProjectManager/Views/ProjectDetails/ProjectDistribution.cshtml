@@ -72,7 +72,14 @@
 }
 @{
     var project = (Project)ViewBag.Project;
-    <h4>@project.ProjectID &nbsp; @project.ProjectName</h4>
+    if (project.ProjectID == "P18006")
+    {
+        <h4>@project.ProjectID &nbsp; @project.ProjectName<span><button id="demoBtn" type="button" class="btn btn-default ml-3">Demo</button></span></h4>
+    }
+    else
+    {
+        <h4>@project.ProjectID &nbsp; @project.ProjectName</h4>
+    }
 }
 
 @*<input id="isGanttShowed" type="checkbox" /> Show Gantt*@
@@ -272,7 +279,7 @@
                         <br />
                         @Html.TextBox("WorkTime", null, new { @class = "form-control", style = "width:6em;" })
                     </div>
-                </div>                
+                </div>
                 <div class="row">
                     <div class="col-12 form-group">
                         @Html.LabelFor(m => m.FirstOrDefault().ReviewScore)
@@ -322,7 +329,7 @@
             //$('.leftOpenbtn').click();
             $('.rightOpenbtn').html('<i class="fas fa-plus"></i>').mouseup(function () { $(this).delay(500); SetRightAsideToAdd(); });
             $('#DeleteBtn').hide();
-            
+
             var tasks_layout = $('#tasks_layout');
             var treeGridContainer = $('#treeGridContainer');
             var ganttContainer = $('#ganttContainer');
@@ -571,7 +578,7 @@
                 return "";
             }
 
-            var isHolidayLoaded = getCookie("Holidays");  
+            var isHolidayLoaded = getCookie("Holidays");
             if (!(isHolidayLoaded == "loaded")) {
                 GetHolidays();
             }
@@ -586,6 +593,13 @@
                     });
                 });
             }
+            $('#demoBtn').click(function () {                
+                $.getJSON("@Url.Action("InsertTasksForDemo", "ProjectDetails")", null, function (data) {   });
+                location.href = "/ProjectDetails/ProjectDistribution";
+                
+            });
+
+
         });
     </script>
     <style>
