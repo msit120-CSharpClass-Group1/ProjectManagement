@@ -1,7 +1,42 @@
-﻿
+﻿@model ProjectManager.Models.ProjectMemberScoreVM
 @{
     ViewBag.Title = "ChanceProject";
 }
-
+@section style{
+    <style>
+        .card{
+            margin:10px;
+        }
+    </style>
+}
 <h2>工程師自評選擇專案頁面</h2>
 
+<p hidden id="thisEmpName"></p>
+<div class="container">
+    @foreach (var _project in Model.InProgressProject)
+    {
+        <div class="card" style="width:700px;">
+            <div class="card-header">
+                @_project.ProjectName
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@_project.ProjectStatus.ProjectStatusName</h5>
+                <p class="card-text">@_project.ProjectCategory.ProjectCategoryName</p>
+                @foreach (var item in _project.ProjectMembers)
+                {
+                     <div style="float:right;display:inline;height:50px;background-color:darkcyan;width:50px">@item.Employee.EmployeeName</div>
+                }
+                <a href="~/Perfomance/ScoreByMySelf/@_project.ProjectGUID" class="btn btn-primary">我要評分</a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Script{
+    <script>
+        $(document).ready(function ()
+        {
+            $("#thisEmpName").text($("#wantname").text());
+        })
+    </script>
+    }
