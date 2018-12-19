@@ -1,0 +1,21 @@
+﻿@model ProjectManager.Models.BoardVM
+
+<table id="tb_allTasks" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(x => x.Tasks.First().TaskName)</th>
+            <th>@Html.DisplayNameFor(x => x.Project.First().ProjectName)</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var t in Model.Tasks)
+        {
+        <tr>
+            <td>@t.TaskName</td>
+            <td>@t.Project.ProjectName</td>
+
+        </tr>
+        }
+    </tbody>
+</table>
