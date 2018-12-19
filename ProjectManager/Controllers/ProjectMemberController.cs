@@ -78,7 +78,8 @@ namespace ProjectManager.Controllers
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 1 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
+            var q = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID).GetLeafTasks();
+            ViewBag.LoadTask = q.Where(p => p.TaskStatusID == 1);
             ViewBag.Workload = tasks.GetCollections().GetLeafTasks().GetTeamWorkLoad();
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }

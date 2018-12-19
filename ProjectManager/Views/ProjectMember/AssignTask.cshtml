@@ -137,7 +137,7 @@
             <h3 class="asidetitle">工作項目</h3>
             <div style="margin:20px;overflow-y: scroll;height:300px">
                 <ul class="list-group" id="taskitem">
-                    @foreach (var _task in (List<Tasks>)ViewBag.LoadTask)
+                    @foreach (var _task in (IEnumerable<Tasks>)ViewBag.LoadTask)
                     {
                         <li class="list-group-item draggable" data-tag="@_task.TaskName" data-tag2="@_task.TaskGUID" title="@_task.TaskName">@_task.TaskName</li>
                     }
@@ -261,7 +261,7 @@
                         var LastRow = $("#mappingTable tr:last").children("input:nth-child(4)").attr("name").substring(12, 15);
                         $("#rowcount").val(TotalRow);
                         $("#firstrow").val(FirstRow);
-                        $("#lastrow").val(LastRow);
+                        $("#lastrow").val(parseInt(LastRow)+1);
                         $(this).parent().effect("highlight", "slow");
                         if (flag) { $(".panel").slideToggle("slow"); flag = false }
                     }
