@@ -145,6 +145,7 @@
     <Content Include="image\bookmark_icon30.png" />
     <Content Include="image\leader.png" />
     <Content Include="image\notask2.png" />
+    <Content Include="image\sign-check-icon.png" />
     <Content Include="Models\ProjectManagerModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ProjectManagerModel.edmx</DependentUpon>

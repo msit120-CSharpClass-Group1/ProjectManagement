@@ -15,6 +15,20 @@
     double NoneScorePercent = (double)(NoneScoremembers * 100) / thisPJmembers;
 }
 
+@section style{
+    <style>
+        thead {
+            background-color: rgba(0, 0, 0, 0.060);
+            color: black;
+        }
+
+        td {
+            border: 1px solid #dee2e6;
+            background-color: white;
+            vertical-align: middle;
+        }
+    </style>  
+    }
 <p id="groupAvg" hidden="hidden">@memberPMScoreAVG </p>
 <div class="col-md-12">
 <div class="row">
@@ -82,6 +96,7 @@
                 {
             <tr>
                 <td>@item.Employee.EmployeeName</td>
+                @*<td>@item.Employee.JobTitle.TitleName</td>*@
                 @if (item.PMscore != null)
                 {
                     <td>@item.PMscore</td>
@@ -132,7 +147,7 @@
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
                     if (value >= 90)
                     {
-                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
+                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightseagreen")
                     }
                 }
             })
@@ -148,7 +163,7 @@
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
                     if (value > parseInt($("#groupAvg").text()) && value!="尚未評分")
                     {
-                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
+                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightseagreen")
                     }
                 }
             })
@@ -160,7 +175,7 @@
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
                     if (value <= parseInt($("#groupAvg").text()) && value !="尚未評分")
                     {
-                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
+                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightseagreen")
                     }
                 }
             })
@@ -172,7 +187,7 @@
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
                     if (value <= 20 &&value!="尚未評分")
                     {
-                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
+                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightseagreen")
                     }
                 }
             })
@@ -182,7 +197,7 @@
                 for (var i = 1; i < tableRow; i++) {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
                     if (value=="尚未評分") {
-                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightpink")
+                        $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightseagreen")
                     }
                 }
             })
