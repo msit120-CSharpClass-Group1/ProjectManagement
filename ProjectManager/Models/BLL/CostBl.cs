@@ -59,7 +59,29 @@ namespace ProjectManager.Models
             return ProjectResourceList;
         }
 
-        public static IEnumerable<int> GetSubtotalByDepartment(this IEnumerable<Department> departments)
+        public static IQueryable<ProjectResourceVM> Filter(this IQueryable<ProjectResourceVM> ProjectResourceList, ResourceFilterVM filter)
+        {
+            if (filter.filter_EndDate == DateTime.MinValue)
+            {
+                filter.filter_EndDate = DateTime.MaxValue;
+            }
+
+            ProjectResourceList = ProjectResourceList.Where(r => r.Date > filter.filter_StartDate && r.Date < filter.filter_EndDate);
+
+            if (filter.filter_TaskGUID != null)
+            {
+                ProjectResourceList = ProjectResourceList.Where(r => r.TaskGUID == filter.filter_TaskGUID);
+            }
+
+            if (filter.filter_CategoryID != null)
+            {
+                ProjectResourceList = ProjectResourceList.Where(r => r.CategoryID == filter.filter_CategoryID);
+            }
+
+            return ProjectResourceList;
+        }
+
+        public static IEnumerable<int> GetCostsByDepartment(this IEnumerable<Department> departments)
         {
             List<int> result = new List<int>();
 
@@ -74,6 +96,25 @@ namespace ProjectManager.Models
                         sum += (int)task.TaskResource.Select(r => r.UnitPrice * r.Quantity).Sum();
                     }
                 }
+                result.Add(sum);
+            }
+
+            return result;
+        }
+
+        public static IEnumerable<int> GetBudgetsByDepartment(this IEnumerable<Department> departments)
+        {
+            List<int> result = new List<int>();
+
+            foreach (var department in departments)
+            {
+                int sum = 0;
+
+                foreach (var project in department.Project)
+                {
+                    sum += (int)project.ProjectBudget;
+                }
+
                 result.Add(sum);
             }
 
@@ -135,26 +176,5 @@ namespace ProjectManager.Models
             return result;
         }
 
-        public static IQueryable<ProjectResourceVM> Filter(this IQueryable<ProjectResourceVM> ProjectResourceList, ResourceFilterVM filter)
-        {
-            if(filter.filter_EndDate == DateTime.MinValue)
-            {
-                filter.filter_EndDate = DateTime.MaxValue;
-            }
-
-            ProjectResourceList = ProjectResourceList.Where(r => r.Date > filter.filter_StartDate && r.Date < filter.filter_EndDate);
-
-            if(filter.filter_TaskGUID != null)
-            {
-                ProjectResourceList = ProjectResourceList.Where(r => r.TaskGUID == filter.filter_TaskGUID);
-            }
-
-            if(filter.filter_CategoryID != null)
-            {
-                ProjectResourceList = ProjectResourceList.Where(r => r.CategoryID == filter.filter_CategoryID);
-            }
-
-            return ProjectResourceList;
-        }
     }
 }

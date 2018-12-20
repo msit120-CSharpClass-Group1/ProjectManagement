@@ -27,6 +27,10 @@ namespace ProjectManager.Models
     public class SingleColorChartDataset
     {
         /// <summary>
+        /// 次要資料表類型
+        /// </summary>
+        public string type { get; set; }
+        /// <summary>
         /// 表格資料名稱
         /// </summary>
         public string label { get; set; }
@@ -42,6 +46,10 @@ namespace ProjectManager.Models
     public class MultiColorChartDataset
     {
         /// <summary>
+        /// 次要資料表類型
+        /// </summary>
+        public string type { get; set; }
+        /// <summary>
         /// 表格資料名稱
         /// </summary>
         public string label { get; set; }
@@ -53,8 +61,12 @@ namespace ProjectManager.Models
         public IEnumerable<int> data { get; set; }
     }
 
-    public class SingleColorChartDatasetD
+    public class SingleColorChartDataset<T> where T:struct
     {
+        /// <summary>
+        /// 次要資料表類型
+        /// </summary>
+        public string type { get; set; }
         /// <summary>
         /// 表格資料名稱
         /// </summary>
@@ -65,11 +77,15 @@ namespace ProjectManager.Models
         /// <summary>
         /// 個別資料數值
         /// </summary>
-        public IEnumerable<double> data { get; set; }
+        public IEnumerable<T> data { get; set; }
     }
 
-    public class MultiColorChartDatasetD
+    public class MultiColorChartDataset<T> where T : struct
     {
+        /// <summary>
+        /// 次要資料表類型
+        /// </summary>
+        public string type { get; set; }
         /// <summary>
         /// 表格資料名稱
         /// </summary>
@@ -79,7 +95,7 @@ namespace ProjectManager.Models
         /// <summary>
         /// 個別資料數值
         /// </summary>
-        public IEnumerable<double> data { get; set; }
+        public IEnumerable<T> data { get; set; }
     }
 
 }

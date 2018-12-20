@@ -105,7 +105,7 @@ namespace ProjectManager.Controllers
 
         public ActionResult AddTaskResource(TaskResource resource)
         {
-            if(resource.ResourceName != null)
+            if (resource.ResourceName != null)
             {
                 resource.ResourceGUID = Guid.NewGuid();
                 ResourceRepo.Add(resource);
@@ -181,10 +181,19 @@ namespace ProjectManager.Controllers
 
             chartData.datasets.Add(new SingleColorChartDataset
             {
-                label = "Cost",
+                type = "line",
+                label = "累計費用",
+                backgroundColor = "#d9006c",
+                borderColor = "#d9006c",
+                data = departments.GetCostsByDepartment()
+            });
+
+            chartData.datasets.Add(new SingleColorChartDataset
+            {
+                label = "總專案預算",
                 backgroundColor = "rgba(91, 155, 213, 0.5)",
                 borderColor = "rgba(91, 155, 213, 1)",
-                data = departments.GetSubtotalByDepartment()
+                data = departments.GetBudgetsByDepartment()
             });
 
             return Content(JsonConvert.SerializeObject(chartData), "application/json");
@@ -192,10 +201,10 @@ namespace ProjectManager.Controllers
 
         public ActionResult OverallRates()
         {
-            ChartData<SingleColorChartDatasetD> chartData = new ChartData<SingleColorChartDatasetD>();
+            ChartData<SingleColorChartDataset<double>> chartData = new ChartData<SingleColorChartDataset<double>>();
             chartData.labels = new List<string>() { "總體專案完成率", "總體預算執行率" };
 
-            chartData.datasets.Add(new SingleColorChartDatasetD
+            chartData.datasets.Add(new SingleColorChartDataset<double>
             {
                 label = "Rate",
                 backgroundColor = "rgba(91, 155, 213, 0.5)",
@@ -209,13 +218,25 @@ namespace ProjectManager.Controllers
         public ActionResult CostsByCategories()
         {
             ChartData<MultiColorChartDataset> chartData = new ChartData<MultiColorChartDataset>();
-            List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF", "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
-            chartData.labels = ResourceCatRepo.GetCollections().Select(c => c.CategoryName).ToList();
+            List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
+            List<string> Cats = ResourceCatRepo.GetCollections().Select(c => c.CategoryName).ToList();
+            List<int> Subtotals = ResourceCatRepo.GetCollections().GetSubtotalByCat().ToList();
+
+            Dictionary<string, int> CatPairs = new Dictionary<string, int>();
+
+            for (int i = 0; i <= Cats.Count - 1; i++)
+            {
+                CatPairs.Add(Cats[i], Subtotals[i]);
+            }
+
+            var SortedCatPairs = CatPairs.OrderByDescending(c => c.Value);
+
+            chartData.labels = SortedCatPairs.Select(c => c.Key).ToList();
             chartData.datasets.Add(new MultiColorChartDataset
             {
                 backgroundColor = Colors,
                 borderColor = Colors,
-                data = ResourceCatRepo.GetCollections().GetSubtotalByCat(),
+                data = SortedCatPairs.Select(c => c.Value),
             });
 
             return Content(JsonConvert.SerializeObject(chartData), "application/json");
@@ -228,10 +249,10 @@ namespace ProjectManager.Controllers
             chartData.labels = StatusRepo.GetCollections().Select(s => s.TaskStatusName).ToList();
             chartData.datasets.Add(new SingleColorChartDataset
             {
-                label="Count",
-                backgroundColor= "rgba(91, 155, 213, 0.5)",
-                borderColor= "rgba(91, 155, 213, 1)",
-                data= StatusRepo.GetCollections().CountTasksByStatus(),
+                label = "Count",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = StatusRepo.GetCollections().CountTasksByStatus(),
             });
 
             return Content(JsonConvert.SerializeObject(chartData), "application/json");

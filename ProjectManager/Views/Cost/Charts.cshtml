@@ -4,25 +4,9 @@
     ViewBag.Title = "圖表與統計";
 }
 
-<div>
+@*<div>
     <form class="form-inline">
-        <div class="form-group">
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="ProjectID">專案編號：</label>
-            </div>
-            <div>
-                <input class="form-control" id="ProjectID" name="ProjectID" placeholder="請輸入專案編號" style="width:9em" type="text" value="">
-                <div style="display:none">
-                    <ul>
-                        <li>
-                            <div id="showProjectID"></div>
-                            <div id="showProjectName"></div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="form-group ml-3">
+        <div class="form-group mr-3">
             <div class="input-group-prepend">
                 <lable class="input-group-text" for="RequiredDeptGUID">需求部門：</lable>
             </div>
@@ -31,35 +15,35 @@
             }
             @Html.DropDownList("RequiredDeptGUID", Departments, "請選擇部門", new { @class = "custom-select" })
         </div>
-        <div class="form-group ml-3">
+        <div class="form-group">
             <div class="input-group-prepend">
                 <lable class="input-group-text" for="Select_ProjectName">專案名稱：</lable>
             </div>
             <select id="Select_ProjectName" class="custom-select"></select>
         </div>
     </form>
-</div>
+</div>*@
 
 <div id="ChartContainer" class="hide">
     <div class="row mt-3 mb-3">
-        <div class="col-6">
+        <div class="col-xl-6 col-lg-12">
             <div id="CostsByDepartmentsContainer" class="chart-container bg-light p-3">
                 <canvas id="CostsByDepartmentsChart"></canvas>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-xl-6 col-lg-12">
             <div id="OverallRatesContainer" class="chart-container bg-light p-3">
                 <canvas id="OverallRatesChart"></canvas>
             </div>
         </div>
     </div>
     <div class="row mb-3">
-        <div class="col-6">
+        <div class="col-xl-6 col-lg-12">
             <div id="CostsByCatsContainer" class="chart-container bg-light p-3">
                 <canvas id="CostsByCatsChart"></canvas>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-xl-6 col-lg-12">
             <div id="TasksByStatusContainer" class="chart-container bg-light p-3">
                 <canvas id="TasksByStatusChart"></canvas>
             </div>
@@ -116,11 +100,12 @@
                 {
                     var myChart = new Chart($('#CostsByDepartmentsChart'),
                         {
-                            type: 'line',
+                            type: 'bar',
                             data: datas,
                             options:
                             {
                                 responsive: true,
+                                maintainAspectRatio: true,
                                 legend:
                                 {
                                     position: 'top',
@@ -128,7 +113,7 @@
                                 title:
                                 {
                                     display: true,
-                                    text: 'Project Consumption By Department',
+                                    text: '部門別專案預算及費用統計',
                                     fontSize: 20,
                                     padding: 10,
                                 },
@@ -160,15 +145,20 @@
                             options:
                             {
                                 responsive: true,
+                                maintainAspectRatio: true,
                                 scales:
                                 {
                                     xAxes: [
-                                    {
-                                        ticks:
                                         {
-                                            beginAtZero: true
-                                        }
-                                    }]
+                                            ticks:
+                                            {
+                                                beginAtZero: true,
+                                                callback: function (value)
+                                                {
+                                                    return value + "%";
+                                                }
+                                            }
+                                        }]
                                 },
                                 legend:
                                 {
@@ -177,7 +167,7 @@
                                 title:
                                 {
                                     display: true,
-                                    text: 'Overall Rates',
+                                    text: '綜合比率',
                                     fontSize: 20,
                                     padding: 10,
                                 },
@@ -209,6 +199,7 @@
                             options:
                             {
                                 responsive: true,
+                                maintainAspectRatio: true,
                                 legend:
                                 {
                                     position: 'right',
@@ -216,7 +207,7 @@
                                 title:
                                 {
                                     display: true,
-                                    text: 'Project Consumption By Category',
+                                    text: '費用類別統計',
                                     fontSize: 20,
                                     padding: 10,
                                 },
@@ -248,6 +239,7 @@
                             options:
                             {
                                 responsive: true,
+                                maintainAspectRatio: true,
                                 legend:
                                 {
                                     position: 'top',
@@ -255,7 +247,7 @@
                                 title:
                                 {
                                     display: true,
-                                    text: 'Tasks By Status',
+                                    text: '任務狀態統計',
                                     fontSize: 20,
                                     padding: 10,
                                 },
