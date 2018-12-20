@@ -80,19 +80,9 @@
         outline: none;
     }
 
-@media screen and (min-width: 450px) and (max-width: 1366px) {
-    .right-sidenav {
-        height: auto;
-    }
 
-        .right-sidenav form {            
-            width: 300px;
-        }
 
-        .right-sidenav a, .right-dropdown-btn {
-            font-size: 16px;
-        }
-}
+
 
 @media screen and (max-height: 450px) {
     .right-sidenav {
@@ -309,6 +299,9 @@ dropdown-btn > a {
     .dropdown-content p {
         font-size: 12px;
     }
+    .dropdown-content span {
+        font-size: 12px;
+    }
 
 .dropdown a:hover {
     background-color: #ddd;
@@ -506,4 +499,142 @@ dropdown-btn > a {
         .content-header > .breadcrumb li:before {
             color: #97a0b3;
         }
+}
+@media screen and (min-width: 450px) and (max-width: 1366px) {
+    .dropupbtn {
+        background-color: #25292c;
+        color: white;
+        padding: 4px 7px;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+    .rightOpenbtn {
+        display: block;
+        position: fixed;
+        top: 50px;
+        right: 10px;
+        z-index: 99999;
+        border: none;
+        outline: none;
+        background-color: #25292c;
+        color: lightgray;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border-radius: 10px;
+        font-size: 16px;
+        line-height: 32px;
+        transition: display 5s;
+    }
+    .dropdown-content a {
+        color: black;
+        padding: 8px 16px;
+        font-size: 12px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content p {
+        font-size: 12px;
+        margin: 0;
+    }
+
+    .dropdown-content span {
+        font-size: 12px;
+        margin-top:3px;
+    }
+    .user-image {
+        width: 22px;
+        height: 22px;
+        margin-right: 10px;
+        margin-top: -2px;
+    }
+    .label {
+        position: absolute;
+        top: 5px;
+        right: 3px;
+        text-align: center;
+        font-size: 9px;
+        padding: 2px 3px;
+        line-height: .9;
+        border-radius: 25%;
+        background-color: red;
+    }
+    .navdropbtn {
+        padding: 10px;
+        font-size: 14px;
+
+    }
+    .right-sidenav {
+        height: auto;
+    }
+
+        .right-sidenav form {
+            width: 300px;
+        }
+
+        .right-sidenav a, .right-dropdown-btn {
+            font-size: 16px;
+        }
+
+    body > .left-sidenav {
+        width: 185px;
+        margin-top: 40px;
+    }
+
+    body > .left-sidenav-collapse {
+        transform: translate(-185px, 0);
+    }
+
+    body > .left-sidenav a {
+        padding: 8px 8px 8px 20px;
+        font-size: 14px;
+    }
+    .dropdown-btn {
+        padding: 8px 8px 8px 20px;
+        
+        font-size: 14px;
+        
+    }
+    body > .left-sidenav span {
+        font-size: 14px;
+    }
+
+    body > .left-sidenav i {
+        width: 25px;
+    }
+
+    body > .main-left-toggle {
+        margin-left: 185px;
+    }
+
+    .fa-caret-down {
+        padding-top: 3px;
+    }
+
+    .title, .title:hover {
+        height: 40px;
+        float: left;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 9px 10px 10px 10px;
+        text-decoration: none;
+        font-size: 16px;
+    }
+    .top-navbar {
+        
+        max-height: 40px;
+        
+    }
+    .leftOpenbtn {
+        
+        height: 40px;
+        width: 40px;
+        padding: 10px;
+        text-decoration: none;
+        font-size: 14px;
+    }
 }
