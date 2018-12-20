@@ -354,7 +354,7 @@
                 {
                     $("#ProjectID").val(opt.val());
                     $("#sp_ProjectName").text(opt.text());
-                    PartialView.load("@Url.Action("GetTaskResources", "Cost")/" + projectGUID + "?sortBy=" + sortBy, filterBy, function ()
+                    PartialView.load(`@Url.Action("GetTaskResources", "Cost")/${projectGUID}?sortBy=${sortBy}`, filterBy, function ()
                     {
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
                         Binding();
@@ -393,7 +393,6 @@
             };
 
             $(".rightOpenbtn").click(SetRightAsideToAdd)
-
             function SetRightAsideToAdd()
             {
                 $("#asideTitle").text("新增專案費用");
@@ -601,7 +600,7 @@
                     var year = DateArray[0];
                     var month = DateArray[1].length == 1 ? "0" + DateArray[1] : DateArray[1];
                     var day = DateArray[2].length == 1 ? "0" + DateArray[2] : DateArray[2];
-                    var formattedDate = year + "-" + month + "-" + day;
+                    var formattedDate = `${year}-${month}-${day}`;
 
                     $("#date").val(formattedDate);
                     $("#TaskGUID").val(TaskGUID);
@@ -642,7 +641,7 @@
                     e.preventDefault();
                     var sortBy = getCookie("sortBy");
                     var filterBy = $("#ResourceFilter").serialize();
-                    var Action = $(this).attr("href") + "&sortBy=" + sortBy;
+                    var Action = $(this).attr("href") + `&sortBy=${sortBy}`;
                     $("#PartialView").load(Action, filterBy, function ()
                     {
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
