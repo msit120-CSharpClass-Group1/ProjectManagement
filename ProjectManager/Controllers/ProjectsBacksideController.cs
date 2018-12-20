@@ -99,7 +99,7 @@ namespace ProjectManager.Controllers
                     taskRepo.Delete(taskRepo.Find(child.TaskGUID));
                 }
 
-                foreach (var member in allMembers)
+                foreach (var member in allMembers.ToList())
                 {
                     projectMemberRepo.Delete(member);
                 }
