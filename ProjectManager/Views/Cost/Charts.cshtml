@@ -4,7 +4,15 @@
     ViewBag.Title = "圖表與統計";
 }
 
-@*<div>
+@section style{
+    <style>
+        .rightOpenbtn {
+            display: none;
+        }
+    </style>
+}
+
+<div class="ml-5">
     <form class="form-inline">
         <div class="form-group mr-3">
             <div class="input-group-prepend">
@@ -22,9 +30,9 @@
             <select id="Select_ProjectName" class="custom-select"></select>
         </div>
     </form>
-</div>*@
+</div>
 
-<div id="ChartContainer" class="hide">
+<div id="ChartContainer" class="hide px-5">
     <div class="row mt-3 mb-3">
         <div class="col-xl-6 col-lg-12">
             <div id="CostsByDepartmentsContainer" class="chart-container bg-light p-3">
@@ -73,7 +81,7 @@
                         docFrag.append(optionlabel);
                         $.each(projects, function (index, project)
                         {
-                            var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectID).attr("data-projectguid", project.ProjectGUID);
+                            var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectGUID);
                             docFrag.append(opt);
                         });
                         $("#Select_ProjectName").html(docFrag);
@@ -83,7 +91,13 @@
 
             LoadProjects();
 
-            $("#RequiredDeptGUID").change(LoadProjects);
+            $("#RequiredDeptGUID").change(() =>
+            {
+                LoadProjects();
+                UpdateChartDatas();
+            });
+
+            $("#Select_ProjectName").change(UpdateChartDatas);
 
             Chart.defaults.global.defaultFontFamily = 'Noto Sans CJK TC';
             Chart.defaults.global.defaultFontSize = 16;
@@ -94,11 +108,39 @@
                 $("#ChartContainer").fadeIn();
             }))));
 
+            function UpdateChartDatas()
+            {
+                var data =
+                {
+                    DepartmentID: $("#RequiredDeptGUID").val(),
+                    ProjectID: $("#Select_ProjectName").val()
+                }
+
+                $.getJSON("@Url.Action("CostsByDepartments", "Cost")", data, function (datas)
+                {
+                    myCostsByDepartmentsChart.data = datas;
+                    myCostsByDepartmentsChart.update();
+                });
+
+                $.getJSON("@Url.Action("OverallRates", "Cost")", data, function (datas)
+                {
+                    myOverallRatesChart.data = datas;
+                    myOverallRatesChart.update();
+                });
+
+                $.getJSON("@Url.Action("CostsByCategories", "Cost")", data, function (datas)
+                {
+                    myCostsByCatsChart.data = datas;
+                    myCostsByCatsChart.update();
+                });
+
+            }
+
             function CostsByDepartmentsChart(callback)
             {
-                $.getJSON("@Url.Action("CostsByDepartments", "Cost")", null, function (datas)
+                $.getJSON("@Url.Action("CostsByDepartments", "Cost")", { DepartmentID: $("#RequiredDeptGUID").val() }, function (datas)
                 {
-                    var myChart = new Chart($('#CostsByDepartmentsChart'),
+                    myCostsByDepartmentsChart = new Chart($('#CostsByDepartmentsChart'),
                         {
                             type: 'bar',
                             data: datas,
@@ -113,7 +155,7 @@
                                 title:
                                 {
                                     display: true,
-                                    text: '部門別專案預算及費用統計',
+                                    text: '專案預算及費用統計',
                                     fontSize: 20,
                                     padding: 10,
                                 },
@@ -129,16 +171,14 @@
                     {
                         callback();
                     }
-
                 });
-
             }
 
             function OverallRatesChart(callback)
             {
                 $.getJSON("@Url.Action("OverallRates", "Cost")", null, function (datas)
                 {
-                    var myChart = new Chart($('#OverallRatesChart'),
+                    myOverallRatesChart = new Chart($('#OverallRatesChart'),
                         {
                             type: 'horizontalBar',
                             data: datas,
@@ -192,7 +232,7 @@
             {
                 $.getJSON("@Url.Action("CostsByCategories", "Cost")", null, function (datas)
                 {
-                    var myChart = new Chart($('#CostsByCatsChart'),
+                    myCostsByCatsChart = new Chart($('#CostsByCatsChart'),
                         {
                             type: 'pie',
                             data: datas,
