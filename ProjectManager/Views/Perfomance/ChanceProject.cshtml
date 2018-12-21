@@ -1,42 +1,116 @@
 ﻿@model ProjectManager.Models.ProjectMemberScoreVM
+@using ProjectManager.Models.ViewModel
 @{
-    ViewBag.Title = "ChanceProject";
+    ViewBag.Title = "工程師自評選擇專案頁面";
 }
 @section style{
     <style>
-        .card{
-            margin:10px;
+        .card {
+            margin: 10px;
+        }
+
+        .ScoreBtn {
+            -moz-box-shadow: inset 0px 0px 0px 0px #ffffff;
+            -webkit-box-shadow: inset 0px 0px 0px 0px #ffffff;
+            box-shadow: inset 0px 0px 0px 0px #ffffff;
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #f6f6f6));
+            background: -moz-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+            background: -webkit-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+            background: -o-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+            background: -ms-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+            background: linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0);
+            background-color: #ffffff;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            border: 1px solid #dcdcdc;
+            display: inline-block;
+            cursor: pointer;
+            color: #666666;
+            font-family: Trebuchet MS;
+            font-size: 15px;
+            font-weight: bold;
+            padding: 6px 24px;
+            text-decoration: none;
+            text-shadow: 0px 1px 0px #ffffff;
+        }
+
+            .ScoreBtn:hover {
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f6f6f6), color-stop(1, #ffffff));
+                background: -moz-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background: -webkit-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background: -o-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background: -ms-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background: linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff',GradientType=0);
+                background-color: #f6f6f6;
+            }
+
+            .ScoreBtn:active {
+                position: relative;
+                top: 1px;
+            }
+        .scorearea
+        {
+            background-color:black;
         }
     </style>
 }
-<h2>工程師自評選擇專案頁面</h2>
-
 <p hidden id="thisEmpName"></p>
 <div class="container">
-    @foreach (var _project in Model.InProgressProject)
-    {
-        <div class="card" style="width:700px;">
-            <div class="card-header">
-                @_project.ProjectName
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">@_project.ProjectStatus.ProjectStatusName</h5>
-                <p class="card-text">@_project.ProjectCategory.ProjectCategoryName</p>
-                @foreach (var item in _project.ProjectMembers)
-                {
-                     <div style="float:right;display:inline;height:50px;background-color:darkcyan;width:50px">@item.Employee.EmployeeName</div>
-                }
-                <a href="~/Perfomance/ScoreByMySelf/@_project.ProjectGUID" class="btn btn-primary">我要評分</a>
-            </div>
+    <div class="row">
+        <div class="col-4">
+            @foreach (var _project in Model.InProgressProject)
+            {
+                <div style="background-color:darkcyan;width:10px">
+                    <div class="card border-info mb-3 shadow p-3 mb-5 bg-white rounded" style="width:300px; height:200px;">
+                        <div class="card-header">@_project.ProjectName</div>
+                        <div class="card-body text-info">
+                            <h5 class="card-title">@_project.ProjectStatus.ProjectStatusName</h5>
+                            <h1><span class="badge badge-secondary" style="float:right;margin-right:10px"><i class="fas fa-award"></i>  87</span></h1>
+                            @*<a href="~/Perfomance/ScoreByMySelf/@_project.ProjectGUID" class="ScoreBtn" style="margin-top:20px">我要評分</a>*@
+                            <a href="#" class="ScoreBtn" style="margin-top:20px">我要評分</a>
+                        </div>
+                    </div>
+                </div>
+                <div hidden class="scorearea">
+                    <p>隱藏區域</p>
+                </div>
+            }
         </div>
-    }
+
+        <div class="col-6">
+            @foreach (var _project in Model.InProgressProject)
+            {
+                <div class="card border-secondary mb-3 shadow p-3 mb-5 bg-white rounded" style="width:800px;height:200px;">
+                    <div class="card-header">我在專案中已完成的工作(@_project.Tasks.Where(t => t.TaskStatusID == 3 && t.Employee.EmployeeName == @EmployeeInfo.EmployeeName).Count())</div>
+                    <div class="card-body text-secondary" style="overflow-x:hidden">
+                        <div class="d-flex flex-row bd-highlight mb-3">
+                            @foreach (var _item in _project.Tasks.Where(t => t.TaskStatusID == 3 && t.Employee.EmployeeName == @EmployeeInfo.EmployeeName))
+                            {
+                                <div id="taskitem" class="p-2 bd-highlight"style="background-color:cornsilk;margin:5px;cursor:pointer;display:inline" title="完成時間 @_item.EndDate">@_item.TaskName</div>
+                            }
+                        </div>
+                        </div>
+                </div>
+                <div hidden class="scorearea">
+                    <p>隱藏區域</p>
+                </div>
+            }
+        </div>
+    </div>
 </div>
 
 @section Script{
     <script>
         $(document).ready(function ()
         {
-            $("#thisEmpName").text($("#wantname").text());
+            $(".bd-highlight").tooltip();
+            $(".ScoreBtn").click(function ()
+            {
+                $(".scorearea").prop("hidden", false);
+            })
         })
     </script>
-    }
+}

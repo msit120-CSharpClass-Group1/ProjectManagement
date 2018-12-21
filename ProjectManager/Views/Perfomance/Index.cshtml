@@ -14,7 +14,7 @@
             <div class="alert alert-info" role="alert">
                 @if (item.ProjectMembers.FirstOrDefault() != null)
                 {
-                    if (item.ProjectMembers.FirstOrDefault().PMscore != null)
+                    if (item.ProjectMembers.Average(p => p.PMscore)!= null)
                     {
                         <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
                     }
