@@ -168,7 +168,8 @@ namespace ProjectManager.Controllers
             task.StartDate = task.EstStartDate;
             task.EndDate = task.EstEndDate;
             task.TaskStatusID = (int)ProjectManager.Models.TasksBL.Task_Status.Discussing;
-            task.AssignedDate = DateTime.Now; 
+            task.AssignedDate = DateTime.Now;
+            task.IsRead = false;
             taskRepo.Add(task);
             return Json("success", JsonRequestBehavior.AllowGet);            
         }

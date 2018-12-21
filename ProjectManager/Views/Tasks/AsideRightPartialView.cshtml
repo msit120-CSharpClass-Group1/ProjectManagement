@@ -74,6 +74,12 @@
         </div>
         <div class="col-6 form-group">
             @Html.LabelFor(m => m.IsRead)<br />
+            @{ 
+                if (Model.IsRead == null)
+                {
+                    Model.IsRead = false;
+                }
+            }
             @Html.RadioButton("IsRead", true, (bool)Model.IsRead, new { @class = "form-control d-inline align-middle", style = "width:1.2em;" })<span class="mr-2">是</span>
             @Html.RadioButton("IsRead", false, !(bool)Model.IsRead, new { @class = "form-control d-inline align-middle", style = "width:1.2em;" })<span>否</span>
         </div>
