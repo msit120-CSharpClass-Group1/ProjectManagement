@@ -176,10 +176,10 @@ namespace ProjectManager.Controllers
                                             join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
                                             select d).Distinct().ToList();
 
-            ChartData<SingleColorChartDataset> chartData = new ChartData<SingleColorChartDataset>();
+            ChartData<SingleColorChartDataset<int>> chartData = new ChartData<SingleColorChartDataset<int>>();
             chartData.labels = departments.Select(d => d.DepartmentName).ToList();
 
-            chartData.datasets.Add(new SingleColorChartDataset
+            chartData.datasets.Add(new SingleColorChartDataset<int>
             {
                 label = "Cost",
                 backgroundColor = "rgba(91, 155, 213, 0.5)",
@@ -192,10 +192,10 @@ namespace ProjectManager.Controllers
 
         public ActionResult OverallRates()
         {
-            ChartData<SingleColorChartDatasetD> chartData = new ChartData<SingleColorChartDatasetD>();
+            ChartData<SingleColorChartDataset<double>> chartData = new ChartData<SingleColorChartDataset<double>>();
             chartData.labels = new List<string>() { "總體專案完成率", "總體預算執行率" };
 
-            chartData.datasets.Add(new SingleColorChartDatasetD
+            chartData.datasets.Add(new SingleColorChartDataset<double>
             {
                 label = "Rate",
                 backgroundColor = "rgba(91, 155, 213, 0.5)",
@@ -208,10 +208,10 @@ namespace ProjectManager.Controllers
 
         public ActionResult CostsByCategories()
         {
-            ChartData<MultiColorChartDataset> chartData = new ChartData<MultiColorChartDataset>();
+            ChartData<MultiColorChartDataset<int>> chartData = new ChartData<MultiColorChartDataset<int>>();
             List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF", "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
             chartData.labels = ResourceCatRepo.GetCollections().Select(c => c.CategoryName).ToList();
-            chartData.datasets.Add(new MultiColorChartDataset
+            chartData.datasets.Add(new MultiColorChartDataset<int>
             {
                 backgroundColor = Colors,
                 borderColor = Colors,
@@ -223,10 +223,10 @@ namespace ProjectManager.Controllers
 
         public ActionResult TasksByStatus()
         {
-            ChartData<SingleColorChartDataset> chartData = new ChartData<SingleColorChartDataset>();
+            ChartData<SingleColorChartDataset<int>> chartData = new ChartData<SingleColorChartDataset<int>>();
 
             chartData.labels = StatusRepo.GetCollections().Select(s => s.TaskStatusName).ToList();
-            chartData.datasets.Add(new SingleColorChartDataset
+            chartData.datasets.Add(new SingleColorChartDataset<int>
             {
                 label="Count",
                 backgroundColor= "rgba(91, 155, 213, 0.5)",
