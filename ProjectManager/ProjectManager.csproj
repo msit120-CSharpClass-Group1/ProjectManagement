@@ -378,6 +378,7 @@
     </Compile>
     <Compile Include="Hubs\ChatHub.cs" />
     <Compile Include="Models\BLL\CostBL.cs" />
+    <Compile Include="Models\BLL\NotificationBL.cs" />
     <Compile Include="Models\BLL\ProjectMemberBL.cs" />
     <Compile Include="Models\BLL\ProjectsBL.cs" />
     <Compile Include="Models\BLL\TasksBL.cs" />
@@ -489,6 +490,7 @@
     <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
     <Compile Include="Models\ViewModel\EmployeeInfo.cs" />
     <Compile Include="Models\ViewModel\InviteMemberVM.cs" />
+    <Compile Include="Models\ViewModel\NotificationVM.cs" />
     <Compile Include="Models\ViewModel\ProjectMemberScoreVM.cs" />
     <Compile Include="Models\ViewModel\HolidaysVM.cs" />
     <Compile Include="Models\ViewModel\DocumentVM.cs" />
