@@ -17,6 +17,9 @@ namespace ProjectManager.Models
         public int orderID { get; set; }    //for treeGrid class
         [NotMapped]
         public int parentOrderID { get; set; }
+        [NotMapped]
+        [DisplayName("預計區間總時數")]
+        public int AutoWorkTime { get; set; }
 
         public class TasksMetadata
         {

@@ -594,6 +594,9 @@
     <Content Include="Views\Document\GetDocument.cshtml" />
     <Content Include="Views\Perfomance\ChanceProject.cshtml" />
     <Content Include="Views\Document\Modified.cshtml" />
+    <Content Include="Views\ProjectDetails\AsideRightReadOnlyMode.cshtml" />
+    <Content Include="Views\ProjectDetails\AsideRightEditMode.cshtml" />
+    <Content Include="Views\ProjectDetails\AsideRightInsertMode.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

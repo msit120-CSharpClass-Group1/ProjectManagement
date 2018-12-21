@@ -81,7 +81,7 @@ namespace ProjectManager.Controllers
             recentTask.StartDate = task.StartDate;
             recentTask.EndDate = task.EndDate;
             recentTask.IsRead = task.IsRead;
-            recentTask.EstWorkTime = recentTask.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+            recentTask.EstWorkTime = recentTask.GetAutoEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
             recentTask.WorkTime = recentTask.GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
 
             taskRepo.Update(recentTask);
