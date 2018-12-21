@@ -53,7 +53,7 @@ namespace ProjectManager.Models
 
         public static IEnumerable<Group<string, ProjectMembers>> GetHighestMember(this IEnumerable<ProjectMembers> projectMembers)
         {
-            var memeberList = projectMembers.Where(p => p.PMscore >= 80 && p.EmployeeGUID != null).GroupBy(g => g.Employee.EmployeeName)
+            var memeberList = projectMembers.Where(p => p.PMscore >= 90 && p.EmployeeGUID != null).GroupBy(g => g.Employee.EmployeeName)
                                          .Select(g => new Group<string, ProjectMembers> { Key = g.Key,value =g,Count=g.Count()});
             return memeberList;
         }
@@ -101,7 +101,7 @@ namespace ProjectManager.Models
             {
                 foreach (var _item in _member.value)
                 {
-                    if (_item.PMscore < memberPMScoreAVG)
+                    if (_item.PMscore <= memberPMScoreAVG)
                     {
                         AvgMemberScore.Add(_item);
                     }
