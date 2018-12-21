@@ -34,11 +34,10 @@ namespace ProjectManager.Controllers
         {
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
-            var rootTasks = _tasks.GetRootTasks();
-
-            ChartData<SingleColorChartDataset> _data = new ChartData<SingleColorChartDataset>();
+            var rootTasks = _tasks.GetRootTasks();            
+            ChartData<SingleColorChartDataset<int>> _data = new ChartData<SingleColorChartDataset<int>>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new SingleColorChartDataset()
+            _data.datasets.Add(new SingleColorChartDataset<int>()
             {
                 label = "項目完成度",
                 backgroundColor = "#007BFF",
@@ -54,9 +53,9 @@ namespace ProjectManager.Controllers
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
 
-            ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
+            ChartData<MultiColorChartDataset<int>> _data = new ChartData<MultiColorChartDataset<int>>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MultiColorChartDataset()
+            _data.datasets.Add(new MultiColorChartDataset<int>()
             {
                 label = "dataset",
                 backgroundColor = colors,
@@ -69,9 +68,9 @@ namespace ProjectManager.Controllers
         {
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var members = projectMembersRepo.GetCollections().Where(m => m.ProjectGUID == _projectGUID).Distinct();
-            ChartData<SingleColorChartDataset> _data = new ChartData<SingleColorChartDataset>();
+            ChartData<SingleColorChartDataset<int>> _data = new ChartData<SingleColorChartDataset<int>>();
             _data.labels.AddRange(members.Select(m => m.Employee.EmployeeName));
-            _data.datasets.Add(new SingleColorChartDataset()
+            _data.datasets.Add(new SingleColorChartDataset<int>()
             {
                 label = "工時總和",
                 backgroundColor = "#007BFF",
@@ -87,9 +86,9 @@ namespace ProjectManager.Controllers
             List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
-            ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
+            ChartData<MultiColorChartDataset<int>> _data = new ChartData<MultiColorChartDataset<int>>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MultiColorChartDataset()
+            _data.datasets.Add(new MultiColorChartDataset<int>()
             {
                 label = "dataset",
                 backgroundColor = colors,

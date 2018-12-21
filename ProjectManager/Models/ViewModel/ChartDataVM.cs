@@ -9,7 +9,7 @@ namespace ProjectManager.Models
     {
         
     }
-
+    
     public class ChartData<T> where T:class
     {
         public ChartData()
@@ -17,69 +17,35 @@ namespace ProjectManager.Models
             labels = new List<string>();
             datasets = new List<T>();
         }
-        /// <summary>
-        /// 個別資料名稱
-        /// </summary>
         public List<string> labels { get; set; }
         public List<T> datasets { get; set; }
     }
 
-    public class SingleColorChartDataset
-    {
-        /// <summary>
-        /// 表格資料名稱
-        /// </summary>
+    /// <summary>
+    /// T 為data的類型，請填int、double等。
+    /// label 表格資料名稱，data 為個別資料數值
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class SingleColorChartDataset<T> where T:struct
+    {        
         public string label { get; set; }
         public string backgroundColor { get; set; } 
         public string borderColor { get; set; }
         public bool fill { get; set; }
-        /// <summary>
-        /// 個別資料數值
-        /// </summary>
-        public IEnumerable<int> data { get; set; }
+        public IEnumerable<T> data { get; set; }
     }
 
-    public class MultiColorChartDataset
+    /// <summary>
+    /// T 為data的類型，請填int、double等。
+    /// label 表格資料名稱，data 為個別資料數值
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class MultiColorChartDataset<T> where T : struct
     {
-        /// <summary>
-        /// 表格資料名稱
-        /// </summary>
         public string label { get; set; }
         public IEnumerable<string> backgroundColor { get; set; }
         public IEnumerable<string> borderColor { get; set; }
-        /// <summary>
-        /// 個別資料數值
-        /// </summary>
-        public IEnumerable<int> data { get; set; }
-    }
-
-    public class SingleColorChartDatasetD
-    {
-        /// <summary>
-        /// 表格資料名稱
-        /// </summary>
-        public string label { get; set; }
-        public string backgroundColor { get; set; }
-        public string borderColor { get; set; }
-        public bool fill { get; set; }
-        /// <summary>
-        /// 個別資料數值
-        /// </summary>
-        public IEnumerable<double> data { get; set; }
-    }
-
-    public class MultiColorChartDatasetD
-    {
-        /// <summary>
-        /// 表格資料名稱
-        /// </summary>
-        public string label { get; set; }
-        public IEnumerable<string> backgroundColor { get; set; }
-        public IEnumerable<string> borderColor { get; set; }
-        /// <summary>
-        /// 個別資料數值
-        /// </summary>
-        public IEnumerable<double> data { get; set; }
+        public IEnumerable<T> data { get; set; }
     }
 
 }
