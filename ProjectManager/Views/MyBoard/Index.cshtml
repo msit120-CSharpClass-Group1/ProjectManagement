@@ -456,7 +456,7 @@
                     <div class="lists">
                         @foreach (var t in Model.Tasks.Where(x => x.TaskStatusID == s.TaskStatusID))
                         {
-                            <div class="listCards" data-tguid="@t.TaskGUID" draggable="true" ondragstart="dragstart(event)" ondragend="dragEnd(event)" ondragleave="dragLeave(event)">
+                            <div class="listCards" data-tguid="@t.TaskGUID" data-statusGuid="@t.TaskStatusID" draggable="true" ondragstart="dragstart(event)" ondragend="dragEnd(event)" ondragleave="dragLeave(event)">
                                 <a class="listCard" data-tid="@t.TaskGUID">
                                     <span class="listCardTitle">@t.TaskName</span>
                                     <div class="badges">
@@ -470,9 +470,8 @@
                             </div>
                         }
                     </div>
-
-                    </div>
                 </div>
+            </div>
         }
     </div>
     <div class="detailsection">
@@ -511,6 +510,37 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade mt-5" id="workTimeModal" tabindex="-1" role="dialog" aria-labelledby="workTimeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:3px 4px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="workTimeModalLabel">工時填報</h5>
+                <input type="hidden" id="_TaskGUID"  />
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="f_reportWorkT" actions="~/Myboard/workTime" method="post">
+                    <div class="form-group">
+                        <label for="taskName" class="col-form-label">任務名稱: </label>
+                        <label class="col-form-label" id="taskName" ></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="Description" class="col-form-label">實際工時:</label>
+                        <input required type="text" class="form-control" id="realWorkTime" name="realWorkTime">
+                        <span id="alert"></span>
+                    </div>
+                </form>
+                <div class="form-group modal-footer">
+                    <button type="reset" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" id="btn_OK" class="btn btn-primary">確認</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @section script
 {
 <script>
@@ -520,14 +550,17 @@
         var badgeText;
         var completeDT;
         var moveItem = document.getElementsByClassName('listCards');
+        var modal = $("#workTimeModal");
+        var dragCard;
+        var dropElem;
+
 
         //拖拉放
         $("#listContent-4").removeAttr("ondrop");
         $("#listContent-5").removeAttr("ondrop");
         $("#listContent-4").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default"});
         $("#listContent-5").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default" });
-
-
+       
         function dragstart(e)
         {
             for (let i = 0; i < moveItem.length; i++)
@@ -537,6 +570,8 @@
             }
             cardGuid = e.target.getAttribute("data-tguid");
             $(e.target).addClass('dragging');
+            dragCard = $(e.target);
+            
         }
 
         function dragEnd(e) {
@@ -549,25 +584,73 @@
             {
                 $(e.currentTarget).addClass('hover');
             }
+           
         }
 
         function dragLeave(e) {
             $(e.currentTarget).removeClass('hover');
         }
 
+        $('#btn_OK').mousedown(function () {
+            $('#alert').html('');
+            var id = $('#_TaskGUID').val();        
+            var elem = document.getElementById(id);
+            var taskStatusid = dropElem.getAttribute("data-taskStatusid")
+            var workTime = $('input[name="realWorkTime"]').val();
+            if ($('input[name="realWorkTime"]').val() == "" || isNaN(workTime)) {
+
+                $('#alert').css('color', 'red');
+                $('#alert').html('請輸入數值');
+               
+            } else
+            {
+                $.ajax({
+                    type: 'Post',
+                    url: '@Url.Action("EditTaskStatusID", "Myboard")',
+                    data: { id: cardGuid, TaskStatusID: taskStatusid, WorkTime: workTime },
+                    dataType: 'json'
+                }).done(function (datas) {
+                    if (datas == true) {
+                        dragCard.attr('data-statusGuid', taskStatusid);
+                        dropElem.appendChild(elem.parentNode.removeChild(elem));
+                        modal.modal('hide');
+                    }
+                });
+                
+            }
+
+            $('input[name="realWorkTime"]').val('');
+        })
+
+    
         function dropHandler(e) {
             e.preventDefault();
             var id = e.dataTransfer.getData('id');
+            $('#_TaskGUID').val(id);
             var elem = document.getElementById(id);
+            dropElem = e.currentTarget;
+
             $(e.currentTarget).removeClass("hover");
-            e.currentTarget.appendChild(elem.parentNode.removeChild(elem));
             var taskStatusid = e.currentTarget.getAttribute("data-taskStatusid");
-            $.ajax({
-                type: 'Post',
-                url: '@Url.Action("EditTaskStatusID", "Myboard")',
-                data: { id: cardGuid, TaskStatusID: taskStatusid },
-                dataType: 'json'
-            }).done();
+            console.log(dragCard.attr('data-statusGuid'));
+            console.log($(dropElem).attr('data-taskStatusid'));
+            if (dragCard.attr('data-statusGuid') == 2 && $(dropElem).attr('data-taskStatusid') == 3) {
+                $('#taskName').html(dragCard.find('.listCardTitle').text());
+                modal.modal('show');
+                
+            } else {
+                 $.ajax({
+                    type: 'Post',
+                     url: '@Url.Action("EditTaskStatusID", "Myboard")',
+                     data: { id: cardGuid, TaskStatusID: taskStatusid, WorkTime: 0 },
+                    dataType: 'json'
+                }).done(function (datas) {
+                    if (datas == true) {
+                        dragCard.attr('data-statusGuid', taskStatusid);
+                        dropElem.appendChild(elem.parentNode.removeChild(elem));
+                    }
+                });
+            }
         }
 
         $(document).ready(function () {

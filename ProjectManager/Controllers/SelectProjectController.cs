@@ -29,11 +29,10 @@ namespace ProjectManager.Controllers
         {
             BoardVM VM = new BoardVM();
             var members = m.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            var q = from parentTask in t.GetCollections();
+            var q = from parentTask in t.GetCollections()
                     join childrenTask in t.GetCollections() on parentTask.TaskGUID equals childrenTask.ParentTaskGUID
                     select childrenTask;
-
-            VM.Tasks = q.Where(x => x.EmployeeGUID == members.EmployeeGUID).ToList();
+            VM.Tasks = q.Where(x => x.EmployeeGUID == members.EmployeeGUID && x.Project.ProjectStatusID == 1 && x.TaskStatusID==2).ToList();
             return PartialView(VM);
         }
 

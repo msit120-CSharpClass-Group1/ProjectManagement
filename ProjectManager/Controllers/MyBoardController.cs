@@ -79,7 +79,7 @@ namespace ProjectManager.Controllers
         }
 
 
-        public ActionResult EditTaskStatusID(Guid id, int TaskStatusID)
+        public ActionResult EditTaskStatusID(Guid id, int TaskStatusID, int? WorkTime)
         {
 
             BoardVM VM = new BoardVM();
@@ -88,11 +88,12 @@ namespace ProjectManager.Controllers
             if (TaskStatusID == 3)
             {
                 VM.Task.EndDate = DateTime.Now;
-                VM.Task.WorkTime = t.Find(id).GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+                VM.Task.WorkTime = WorkTime;
             }
             t.Update(VM.Task);
             return Json(true);
         }
+     
         public ActionResult InsertDetailTask(TaskDetail taskDetail)
         {
             if (taskDetail != null)
