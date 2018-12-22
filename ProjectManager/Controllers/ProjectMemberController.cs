@@ -78,7 +78,8 @@ namespace ProjectManager.Controllers
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 1 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
+            var q = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID).GetLeafTasks();
+            ViewBag.LoadTask = q.Where(p => p.TaskStatusID == 1);
             ViewBag.Workload = tasks.GetCollections().GetLeafTasks().GetTeamWorkLoad();
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
@@ -112,7 +113,8 @@ namespace ProjectManager.Controllers
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).GetLeafTasks().ToList();
+            var q = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID).GetLeafTasks().ToList();
+            var taskList = q.Where(t => t.TaskStatusID == 1);
             return Content(JsonConvert.SerializeObject(taskList), "application/json");
         }
 
@@ -136,7 +138,7 @@ namespace ProjectManager.Controllers
 
         public ActionResult GetProjectMemberTasks(Guid EmployeeGUID)
         {
-            var memberTask = tasks.GetCollections().Where(t => t.EmployeeGUID == EmployeeGUID &&t.TaskStatusID ==2 && t.ProjectGUID == new Guid(Request.Cookies["ProjectGUID"].Value));
+            var memberTask = tasks.GetCollections().Where(t => t.EmployeeGUID == EmployeeGUID && t.TaskStatusID==2 &&  t.ProjectGUID == new Guid(Request.Cookies["ProjectGUID"].Value));
             return Content(JsonConvert.SerializeObject(memberTask), "application/json");
         }
 

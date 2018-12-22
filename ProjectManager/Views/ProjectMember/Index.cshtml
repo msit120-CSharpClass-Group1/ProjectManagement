@@ -96,6 +96,10 @@
                     }
                     <p>@_emp.EmployeeName</p>
                     <input type="checkbox" class="ckbox1" style="float:right;" value="@_emp.EmployeeGUID" />
+                    @if (_emp.ProjectMembers.Average(p => p.PMscore) != null)
+                    {
+                        <h4 style="display:inline;float:right"><span class="badge badge-secondary">@_emp.ProjectMembers.Average(p => p.PMscore)</span></h4>
+                    }
                     @*<h4>@_emp.JobTitle.TitleName</h4>*@
                 </div>
                 }

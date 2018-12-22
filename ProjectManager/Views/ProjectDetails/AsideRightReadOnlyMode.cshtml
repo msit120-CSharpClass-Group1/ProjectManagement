@@ -1,0 +1,65 @@
+﻿@using ProjectManager.Models
+@model ProjectManager.Models.Tasks
+<h4 id="ModeTitle">已驗收工作項目</h4>
+<form id="TaskForm" class="form-horizontal" method="put">
+    <input name="ParentTaskGUID" id="ParentTaskGUID" type="text" hidden />
+    <input name="TaskGUID" id="TaskGUID" type="text" hidden />
+    <input name="TaskStatusID" id="TaskStatusID" type="text" hidden />
+    <div class="form-group">
+        @Html.LabelFor(m => m.TaskName)
+        @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:18em;" })
+    </div>
+    <div class="row ">
+        <div class="col-12 form-group">
+            @Html.LabelFor(m => m.EstStartDate)
+            @{
+                string strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+            }
+            <br />
+            <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-12 form-group">
+            @Html.LabelFor(m => m.EstEndDate)
+            @{
+                strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+            }
+            <br />
+            <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+        </div>
+    </div>
+    <div id="ReviewDiv">
+        <div class="row">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.EstWorkTime)
+                <br />
+                @Html.TextBox("EstWorkTime", null, new { @class = "form-control", style = "width:6em;" })
+
+            </div>
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.WorkTime)
+                <br />
+                @Html.TextBox("WorkTime", null, new { @class = "form-control", style = "width:6em;" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 form-group">
+                @Html.LabelFor(m => m.ReviewScore)
+                <br />
+                @Html.TextBox("ReviewScore", null, new { @class = "form-control", style = "width:18em;" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 form-group">
+                @Html.LabelFor(m => m.ReviewDescription)
+                <br />
+                <textarea name="ReviewDescription" id="ReviewDescription" class="form-control d-inline" style="width:18em;height:6em;">@Model.ReviewDescription</textarea>
+            </div>
+        </div>
+    </div>
+    <div id="formBtns" class="mt-2 mx-auto text-center ">
+        <button id="CancelBtn" name="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
+    </div>
+</form>
+

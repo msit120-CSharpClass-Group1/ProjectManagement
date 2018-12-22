@@ -138,7 +138,7 @@ namespace ProjectManager.Models
                                            .Select(g => new Group<string, DisplayWorkloadVM> { Key = g.Key, Sum = g.Sum(e => e.EstWorkTime) }).OrderByDescending(g=>g.Sum);
             return workload;
         }
-        public static int GetEstWorkTime(this Tasks task, HolidaysVM holidays)
+        public static int GetAutoEstWorkTime(this Tasks task, HolidaysVM holidays)
         {
             int estWorkDays = 0;
             DateTime estStart = (DateTime)task.EstStartDate;
