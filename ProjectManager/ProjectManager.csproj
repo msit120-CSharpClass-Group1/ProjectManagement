@@ -145,6 +145,7 @@
     <Content Include="image\bookmark_icon30.png" />
     <Content Include="image\leader.png" />
     <Content Include="image\notask2.png" />
+    <Content Include="image\sign-check-icon.png" />
     <Content Include="Models\ProjectManagerModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
@@ -378,6 +379,7 @@
     </Compile>
     <Compile Include="Hubs\ChatHub.cs" />
     <Compile Include="Models\BLL\CostBL.cs" />
+    <Compile Include="Models\BLL\NotificationBL.cs" />
     <Compile Include="Models\BLL\ProjectMemberBL.cs" />
     <Compile Include="Models\BLL\ProjectsBL.cs" />
     <Compile Include="Models\BLL\TasksBL.cs" />
@@ -489,6 +491,7 @@
     <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
     <Compile Include="Models\ViewModel\EmployeeInfo.cs" />
     <Compile Include="Models\ViewModel\InviteMemberVM.cs" />
+    <Compile Include="Models\ViewModel\NotificationVM.cs" />
     <Compile Include="Models\ViewModel\ProjectMemberScoreVM.cs" />
     <Compile Include="Models\ViewModel\HolidaysVM.cs" />
     <Compile Include="Models\ViewModel\DocumentVM.cs" />
@@ -591,6 +594,9 @@
     <Content Include="Views\Document\GetDocument.cshtml" />
     <Content Include="Views\Perfomance\ChanceProject.cshtml" />
     <Content Include="Views\Document\Modified.cshtml" />
+    <Content Include="Views\ProjectDetails\AsideRightReadOnlyMode.cshtml" />
+    <Content Include="Views\ProjectDetails\AsideRightEditMode.cshtml" />
+    <Content Include="Views\ProjectDetails\AsideRightInsertMode.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
