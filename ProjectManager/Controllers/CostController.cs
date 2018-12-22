@@ -62,13 +62,28 @@ namespace ProjectManager.Controllers
             return Content(JsonConvert.SerializeObject(TaskList), "application/json");
         }
 
-        public ActionResult GetTaskResources(Guid id, int? page, string sortBy, ResourceFilterVM filterBy)
+        public ActionResult GetTaskResources(Guid? DepartmentID, Guid? ProjectID, int? page, string sortBy, ResourceFilterVM filterBy)
         {
-            var q = from p in ProjectRepo.GetCollections()
+            IEnumerable<Project> projects;
+
+            if (DepartmentID == null && ProjectID == null)
+            {
+                projects = ProjectRepo.GetCollections();
+
+            }
+            else if (ProjectID != null)
+            {
+                projects = ProjectRepo.GetCollections().Where(p => p.ProjectGUID == ProjectID);
+            }
+            else
+            {
+                projects = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID);
+            }
+
+            var q = from p in projects
                     join t in TaskRepo.GetCollections() on p.ProjectGUID equals t.ProjectGUID
                     join tr in ResourceRepo.GetCollections() on t.TaskGUID equals tr.TaskGUID
                     join c in ResourceCatRepo.GetCollections() on tr.CategoryID equals c.CategoryID
-                    //where p.ProjectGUID == id
                     select new ProjectResourceVM
                     {
                         ProjectGUID = p.ProjectGUID,
