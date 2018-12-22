@@ -1,0 +1,67 @@
+﻿@using ProjectManager.Models
+@model ProjectManager.Models.Tasks
+<div class="row align-middle">
+    <h4 class="ml-3">新增工作項目</h4>    
+</div>
+<form id="TaskForm" class="form-horizontal" method="put">
+    <input name="ParentTaskGUID" id="ParentTaskGUID" value="@Model.ParentTaskGUID" type="text" hidden/>
+    <input name="TaskGUID" id="TaskGUID" value="@Model.TaskGUID" type="text" hidden/>
+    <input name="TaskStatusID" id="TaskStatusID" value="@Model.TaskStatusID" type="text" hidden />
+    <div class="form-group">
+        @Html.LabelFor(m => m.TaskName)
+        @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:18em;" })
+    </div>
+    <div class="row ">
+        <div class="col-12 form-group">
+            @Html.LabelFor(m => m.EstStartDate)
+            @{
+                string strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+            }
+            <br />
+            <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-12 form-group">
+            @Html.LabelFor(m => m.EstEndDate)
+            @{
+                strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
+            }
+            <br />
+            <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.EstWorkTime)
+            @Html.TextBox("EstWorkTime", null, new { @class = "form-control", style = "width:8em;" })
+        </div>
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.AutoWorkTime)
+            @Html.TextBox("AutoWorkTime", null, new { @class = "form-control", style = "width:8em;" })
+        </div>
+    </div>
+    <div id="DescriptionDiv">
+        <div class="row ">
+            <div class="col-12 form-group">
+                @Html.LabelFor(m => m.Tag)
+                @Html.TextBox("Tag", null, new { @class = "form-control", style = "width:18em;" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 form-group">
+                @Html.LabelFor(m => m.Description)
+                <br />
+                <textarea name="Description" id="Description" class="form-control d-inline" style="width:18em;height:5em;">@Model.Description</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="formBtns" class="mt-2 mx-auto text-center ">
+        <button name="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
+        <button name="InsertBtn" type="button" class="btn btn-primary py-1 px-5">確認新增</button>
+    </div>
+</form>
+
+
+
