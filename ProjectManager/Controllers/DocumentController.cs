@@ -7,6 +7,7 @@ using ProjectManager.Models;
 using PagedList;
 using PagedList.Mvc;
 using System.IO;
+using ProjectManager.Models.BLL;
 
 namespace ProjectManager.Controllers
 {
@@ -17,6 +18,8 @@ namespace ProjectManager.Controllers
         IRepository<DocumentCategory> DocCategory = new Repository<DocumentCategory>();
         IRepository<DocumentModified> DocModified = new Repository<DocumentModified>();
         IRepository<Members> members = new Repository<Members>();
+        IRepository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
+        IRepository<Tasks> tasks = new Repository<Tasks>();
         // GET: Document
         public ActionResult Index()
         {
@@ -27,31 +30,7 @@ namespace ProjectManager.Controllers
         public ActionResult GetDocument(int id, int? page=1)
         {
             ViewBag.Category = id;
-            List<DocumentVM> Docs = new List<DocumentVM>();
-            foreach (var doc in Doc.GetCollections().Where(n=>n.DocumentCategory == id))
-            {
-                DocumentVM vm = new DocumentVM();
-                vm.DocumentGUID = doc.DocumentGUID;
-                vm.ProjectGUID = doc.ProjectGUID;
-                vm.TaskGUID = doc.TaskGUID;
-                vm.DocumentID = doc.DocumentID;
-                vm.DocumentName = doc.DocumentName;
-                vm.DocumentCategory = doc.DocumentCategory1.CategoryName;
-                vm.CategoryID = doc.DocumentCategory;
-                vm.Description = doc.Description;
-                vm.CreateDate = doc.CreateDate;
-                vm.CreateEmpName = doc.Employee.EmployeeName;
-                vm.CreateEmpGUID = doc.CreateEmpGUID;
-                var modified = doc.DocumentModified.OrderByDescending(n => n.ModifiedDate).FirstOrDefault();
-                vm.ModifiedDate = modified.ModifiedDate;
-                vm.ModifiedEmpName = modified.Employee.EmployeeName;
-                vm.ModifiedEmpGUID = modified.ModifiedEmpGUID;
-                //if ((bool)modified.IsChecked)
-                //{
-                //    Docs.Add(vm);
-                //}
-                Docs.Add(vm);
-            }
+            var Docs = id.GetDocumentsByCategory();
             return PartialView(Docs.ToPagedList(page ?? 1, 8));
         }
         public ActionResult AddFile(HttpPostedFileBase file, Document _doc)
@@ -147,6 +126,55 @@ namespace ProjectManager.Controllers
                 }
             }
             return RedirectToAction("/Modified/"+ _doc.DocumentGUID);
+        }
+
+        public ActionResult Delete()
+        {
+            var vm =DocumentBL.GetDocuments();
+            return View(vm);
+        }
+
+        public ActionResult _Delete(Guid id)
+        {
+            var doc = Doc.Find(id);
+            var mdoc =DocModified.GetCollections().Where(n => n.DocumentGUID == id).ToList();
+            foreach (var _mdoc in mdoc)
+            {
+                DocModified.Delete(_mdoc);
+            }
+            Doc.Delete(doc);
+            return RedirectToAction("/Delete");
+        }
+        public ActionResult MDelete(Guid id)
+        {
+            ViewBag.doc = Doc.Find(id);
+            var docm = DocModified.GetCollections().Where(n => n.DocumentGUID == id).OrderBy(n => n.Version);
+            return View(docm);
+        }
+        public ActionResult _MDelete(Guid id)
+        {
+            var docm = DocModified.Find(id);
+            Guid _docGuid = docm.DocumentGUID;
+            var doc = DocModified.GetCollections().Where(n => n.DocumentGUID == _docGuid).Count();
+            if (doc>1)
+            {
+                DocModified.Delete(docm);
+            }
+            return RedirectToAction("/MDelete/"+ _docGuid);
+        }
+        public ActionResult GetProjectList()
+        {
+            var member = new Guid(Request.Cookies["MemberGUID"].Value);
+            var employeeGuid = members.Find(member).EmployeeGUID;
+            var _GetProjectList= projectMembers.GetCollections().Where(n => n.EmployeeGUID == employeeGuid).Select(n => new { n.Project.ProjectName, n.ProjectGUID }).ToList();
+            return Json(_GetProjectList, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetTaskList(Guid id)
+        {
+            var member = new Guid(Request.Cookies["MemberGUID"].Value);
+            var employeeGuid = members.Find(member).EmployeeGUID;
+            var _GetTaskList = tasks.GetCollections().Where(n => n.EmployeeGUID == employeeGuid&& n.ProjectGUID==id).Select(n => new { n.TaskName, n.TaskGUID }).ToList();
+            return Json(_GetTaskList, JsonRequestBehavior.AllowGet);
         }
     }
 }

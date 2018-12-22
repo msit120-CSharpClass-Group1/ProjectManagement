@@ -21,6 +21,7 @@ namespace ProjectManager.Views.Shared
         public static string Calendar = "Calendar/Index";
         //文件管理
         public static string Document = "Document/Index";
+        public static string Document_Edit = "Document/Delete";
         //專案評分
         public static string Perfomance = "Perfomance/Index";
         public static string ChanceProject = "Perfomance/ChanceProject";

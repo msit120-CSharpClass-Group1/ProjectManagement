@@ -378,6 +378,7 @@
     </Compile>
     <Compile Include="Hubs\ChatHub.cs" />
     <Compile Include="Models\BLL\CostBL.cs" />
+    <Compile Include="Models\BLL\DocumentBL.cs" />
     <Compile Include="Models\BLL\NotificationBL.cs" />
     <Compile Include="Models\BLL\ProjectMemberBL.cs" />
     <Compile Include="Models\BLL\ProjectsBL.cs" />
@@ -593,6 +594,8 @@
     <Content Include="Views\Document\GetDocument.cshtml" />
     <Content Include="Views\Perfomance\ChanceProject.cshtml" />
     <Content Include="Views\Document\Modified.cshtml" />
+    <Content Include="Views\Document\Delete.cshtml" />
+    <Content Include="Views\Document\MDelete.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
