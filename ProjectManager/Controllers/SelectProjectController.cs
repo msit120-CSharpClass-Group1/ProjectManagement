@@ -14,15 +14,15 @@ namespace ProjectManager.Controllers
         Repository<ProjectManager.Models.ProjectMembers> pm = new Repository<ProjectManager.Models.ProjectMembers>();
         Repository<ProjectManager.Models.Members> m = new Repository<ProjectManager.Models.Members>();
         Repository<ProjectManager.Models.Project> p = new Repository<ProjectManager.Models.Project>();
-        Repository<ProjectManager.Models.Tasks> t = new Repository<ProjectManager.Models.Tasks>();
+        Repository<ProjectManager.Models.Tasks> t = new Repository<ProjectManager.Models.Tasks>(); 
 
         // GET: SelectProject
         public ActionResult Index()
         {
-            BoardVM VM = new BoardVM();
             var members = m.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            VM.ProjectMember = pm.GetCollections().Where(x => x.EmployeeGUID == members.EmployeeGUID && x.Project.ProjectStatusID == 1).ToList();
-            return View(VM);
+            var q = pm.GetCollections().Where(x => x.EmployeeGUID == members.EmployeeGUID && x.Project.ProjectStatusID == 1).Select(x => x.Project).ToList();
+            var data = q.GetGroupedProject();
+            return View(data);
         }
 
         public ActionResult AllTasks()

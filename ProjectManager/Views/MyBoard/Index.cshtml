@@ -69,6 +69,7 @@
 
         .btn-insert {
             padding: 3px 15px;
+            display:none;
         }
 
         .listContent {
@@ -385,33 +386,10 @@
             -webkit-user-select: none;
             -ms-user-select: none;
         }
-        /*.badge-text {
-            visibility:hidden;
-        }*/
-        /*rightnav
-        .right-sidenav {
-            min-width: 280px;
-            right: 15px;
-            border-radius: 10px;
-        }
-        .hidenav {
-            transform: translateX(295px);
-            transition-duration: 0.5s;
-        }
-        .shownav {
-            transform: translateX(0px);
-            transition-duration: 0.5s;
-        }*/
+     
         button.rightOpenbtn, button.dropupbtn {
             outline: none;
         }
-        /*button.rightOpenbtn {
-            top:70px;
-            right:15px;
-        }
-        .left-sidenav ul:first-child {
-            margin-top: 20px;
-        }*/
 
         .dropdown button:hover {
             background-color: rgba(225,225,225,0.8);
@@ -549,10 +527,10 @@
         var btnInsert = $('.btn-insert');
         var badgeText;
         var completeDT;
-        var moveItem = document.getElementsByClassName('listCards');
         var modal = $("#workTimeModal");
         var dragCard;
         var dropElem;
+        var taskDetail;
 
 
         //拖拉放
@@ -563,6 +541,7 @@
        
         function dragstart(e)
         {
+            var moveItem = document.getElementsByClassName('listCards');
             for (let i = 0; i < moveItem.length; i++)
             {
                 moveItem[i].setAttribute('id', 'listcard' + i);
@@ -615,10 +594,8 @@
                         dropElem.appendChild(elem.parentNode.removeChild(elem));
                         modal.modal('hide');
                     }
-                });
-                
+                });   
             }
-
             $('input[name="realWorkTime"]').val('');
         })
 
@@ -632,8 +609,6 @@
 
             $(e.currentTarget).removeClass("hover");
             var taskStatusid = e.currentTarget.getAttribute("data-taskStatusid");
-            console.log(dragCard.attr('data-statusGuid'));
-            console.log($(dropElem).attr('data-taskStatusid'));
             if (dragCard.attr('data-statusGuid') == 2 && $(dropElem).attr('data-taskStatusid') == 3) {
                 $('#taskName').html(dragCard.find('.listCardTitle').text());
                 modal.modal('show');
@@ -665,9 +640,6 @@
             var breadMemberLi = $('<li></li>').append(breadMembera);
             $('.breadcrumb>li').first().after(breadProjectLi, breadMemberLi);
 
-
-
-
             //判斷看版權限
             var hrefarr = $('@Html.ActionLink("MyBoard","Index")').attr("href").split("/");
             var employeeGuid = hrefarr[3];
@@ -688,7 +660,8 @@
                      $(".listContent").unbind("ondragover");
                      $(".listCards").attr("draggable", false).css({ "-webkit-user-select": "none","cursor":"default"});
                  }
-            });
+             });
+
             //load cardDetail
             $(".detail-close").mousedown(function () {
                 $('.detailsection').hide();
@@ -741,8 +714,7 @@
             });
 
             //設定rightsection按鈕效果
-            btnInsert.hide();
-            $('.listNewItem textarea').focus(function () {
+            $('.listNewItem>textarea').focus(function () {
                 btnInsert.show();
             }).blur(function () {
                 btnInsert.hide();
@@ -787,6 +759,7 @@
             function editContent() {
                 editbtn();
                 var edittext = $(this);
+                taskDetail = $(this).prev(".checkListCkeck");
                 var btn = $('<button type="button" class="btn btn-edit slide">修改</button>');
                 $('.cardDetailDelete').css("visibility", "hidden");
                 var editinput = $('<input type="text" class="form-control edit-input" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm id="/>');
@@ -848,9 +821,11 @@
                 });
             });
             //Edit
-            $(".checkLists").on('mousedown', ':button', function () {
+            $(".checkLists").on('mousedown', '.btn-edit', function () {
                 var editinputTxt = $(this).parent().find('.edit-input').val();
-                var taskDetailGUID = $(this).parent().find('.checkListCkeck').attr('data-detailguid');
+                var taskDetailGUID = taskDetail.attr('data-detailguid');
+
+                console.log(editinputTxt + ',' + taskDetailGUID);
                 $.ajax({
                     type: "Post",
                     url: '@Url.Action("EditTaskDatail", "Myboard")',

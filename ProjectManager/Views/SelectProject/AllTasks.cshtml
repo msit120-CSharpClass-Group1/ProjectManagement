@@ -1,27 +1,29 @@
 ﻿@model ProjectManager.Models.BoardVM
 
-<table id="tb_allTasks" class="table table-bordered">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(x => x.Tasks.First().TaskName)</th>
-            <th>@Html.DisplayNameFor(x => x.Project.First().ProjectName)</th>
-            <th>@Html.DisplayNameFor(x => x.Tasks.First().StartDate)</th>
-            <th>@Html.DisplayNameFor(x => x.Tasks.First().EndDate)</th>
-            <th>@Html.DisplayNameFor(x => x.Tasks.First().Tag)</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var t in Model.Tasks)
-        {
+<div class="container mt-5">
+    <table id="tb_allTasks" class="table table-bordered">
+        <thead>
             <tr>
-                <td>@t.TaskName</td>
-                <td>@t.Project.ProjectName</td> 
-                <td>@t.StartDate</td>
-                <td>@t.EndDate</td>
-                <td>@t.Tag</td>
+                <th>@Html.DisplayNameFor(x => x.Tasks.First().TaskName)</th>
+                <th>@Html.DisplayNameFor(x => x.Project.First().ProjectName)</th>
+                <th>@Html.DisplayNameFor(x => x.Tasks.First().StartDate)</th>
+                <th>@Html.DisplayNameFor(x => x.Tasks.First().EndDate)</th>
+                <th>@Html.DisplayNameFor(x => x.Tasks.First().Tag)</th>
+
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var t in Model.Tasks)
+            {
+                <tr>
+                    <td>@t.TaskName</td>
+                    <td>@t.Project.ProjectName</td>
+                    <td>@t.StartDate</td>
+                    <td>@t.EndDate</td>
+                    <td>@t.Tag</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
