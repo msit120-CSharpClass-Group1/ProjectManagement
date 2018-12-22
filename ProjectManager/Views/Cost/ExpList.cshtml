@@ -35,25 +35,25 @@
     </style>
 }
 <div class="row">
-    <div class="col-8">
+    <div class="col-7">
         <form class="form-inline">
-            <div class="form-group">
-                <div class="input-group-prepend">
-                    <label class="input-group-text" for="ProjectID">專案編號：</label>
-                </div>
-                <div>
-                    <input class="form-control" id="ProjectID" name="ProjectID" placeholder="請輸入專案編號" style="width:9em" type="text" value="">
-                    <div style="display:none">
-                        <ul>
-                            <li>
-                                <div id="showProjectID"></div>
-                                <div id="showProjectName"></div>
-                            </li>
-                        </ul>
+            @*<div class="form-group mr-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="ProjectID">專案編號：</label>
                     </div>
-                </div>
-            </div>
-            <div class="form-group ml-3">
+                    <div>
+                        <input class="form-control" id="ProjectID" name="ProjectID" placeholder="請輸入專案編號" style="width:9em" type="text" value="">
+                        <div style="display:none">
+                            <ul>
+                                <li>
+                                    <div id="showProjectID"></div>
+                                    <div id="showProjectName"></div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>*@
+            <div class="form-group mr-3">
                 <div class="input-group-prepend">
                     <lable class="input-group-text" for="RequiredDeptGUID">需求部門：</lable>
                 </div>
@@ -62,7 +62,7 @@
                 }
                 @Html.DropDownList("RequiredDeptGUID", Departments, "請選擇部門", new { @class = "custom-select" })
             </div>
-            <div class="form-group ml-3">
+            <div class="form-group">
                 <div class="input-group-prepend">
                     <lable class="input-group-text" for="Select_ProjectName">專案名稱：</lable>
                 </div>
@@ -71,8 +71,8 @@
         </form>
 
         <div id="result" class="mt-3" style="display:none">
-            <span id="sp_ProjectName"></span>
-            <span>中的費用，共有</span>
+            <span id="ResultName"></span>
+            <span>中符合條件的的費用，共有</span>
             <span id="Count_of_Resources"></span>
             <span>筆。</span>
         </div>
@@ -80,18 +80,18 @@
         <div id="PageListPager"></div>
 
     </div>
-    <div class="col-4">
-        <form id="ResourceFilter" class="hide">
+    <div class="col-5">
+        <form id="ResourceFilter" class="hide" style="min-width:410px;">
             <div class="form-group row">
                 <lable class="input-group-text" for="filter_StartDate">依日期篩選：</lable>
                 <div>
-                    <input type="date" class="form-control" id="filter_StartDate" name="filter_StartDate"/>
+                    <input type="date" class="form-control" id="filter_StartDate" name="filter_StartDate" />
                 </div>
                 <div style="padding:6px 0">
                     &nbsp;～&nbsp;
                 </div>
                 <div>
-                    <input type="date" class="form-control" id="filter_EndDate" name="filter_EndDate"/>
+                    <input type="date" class="form-control" id="filter_EndDate" name="filter_EndDate" />
                 </div>
             </div>
             <div class="form-group row">
@@ -110,7 +110,7 @@
     </div>
 </div>
 
-<div id="PartialView" class="hide">
+<div id="PartialView" class="hide mt-3">
 </div>
 
 <div class="modal fade" style="top:50px;" id="DeleteExpModal" tabindex="-1" role="dialog" aria-labelledby="DeleteExpModalLabel" aria-hidden="true">
@@ -296,7 +296,6 @@
             {
                 var optionlabel = $("<option></option>").text("請選擇專案").val("");
                 $("#Select_ProjectName").html(optionlabel);
-                $("#result").hide();
 
                 if ($("#RequiredDeptGUID").val())
                 {
@@ -315,8 +314,13 @@
             }
 
             LoadProjects();
+            LoadResources();
 
-            $("#RequiredDeptGUID").change(LoadProjects);
+            $("#RequiredDeptGUID").change(function ()
+            {
+                LoadProjects();
+                LoadResources();
+            });
 
             $("#Select_ProjectName").change(function ()
             {
@@ -331,7 +335,7 @@
             {
                 var name = cname + "=";
                 var ca = document.cookie.split(';');
-                for (var i = 0; i < ca.length; i++) 
+                for (var i = 0; i < ca.length; i++)
                 {
                     var c = ca[i].trim();
                     if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
@@ -341,35 +345,57 @@
 
             function LoadResources()
             {
-                var opt = $("#Select_ProjectName>:selected");
-                var projectGUID = opt.data('projectguid');
+                var DepartmentOpt = $("#RequiredDeptGUID>:selected");
+                var departmentGUID = DepartmentOpt.val();
+                var projectOpt = $("#Select_ProjectName>:selected");
+                var projectGUID = projectOpt.data('projectguid');
                 var PartialView = $("#PartialView");
                 var result = $("#result");
                 var pager = $("#PageListPager");
-                var sortBy = getCookie("sortBy");
                 var filter = $("#ResourceFilter");
-                var filterBy = filter.serialize();
 
-                if (projectGUID)
+                var datas =
                 {
-                    $("#ProjectID").val(opt.val());
-                    $("#sp_ProjectName").text(opt.text());
-                    PartialView.load(`@Url.Action("GetTaskResources", "Cost")/${projectGUID}?sortBy=${sortBy}`, filterBy, function ()
+                    DepartmentID: departmentGUID,
+                    ProjectID: projectGUID,
+                    sortBy: getCookie("sortBy"),
+                    filter_StartDate: $("#filter_StartDate").val(),
+                    filter_EndDate: $("#filter_EndDate").val(),
+                    filter_TaskGUID: $("#filter_TaskGUID").val(),
+                    filter_CategoryID: $("#filter_CategoryID").val()
+                }
+
+                    //$("#ProjectID").val(opt.val());
+
+                    PartialView.load("@Url.Action("GetTaskResources", "Cost")", datas, function ()
                     {
+                        if (datas.ProjectID)
+                        {
+                            $("#ResultName").text(projectOpt.text());
+                        }
+                        else if (datas.DepartmentID)
+                        {
+                            $("#ResultName").text(DepartmentOpt.text());
+                        }
+                        else
+                        {
+                            $("#ResultName").text("所有專案");
+                        }
+
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+
                         Binding();
+
                     }).fadeIn();
                     result.fadeIn();
                     pager.fadeIn();
-                    filter.fadeIn();
-                }
-                else
-                {
-                    PartialView.fadeOut();
-                    result.fadeOut();
-                    pager.fadeOut();
-                    filter.fadeOut();
-                }
+                filter.fadeIn();
+
+                var optionlabel = $("<option></option>").text("請先選擇專案").val("");
+                var TaskSelector = $("#TaskGUID");
+                TaskSelector.html(optionlabel);
+                $("#filter_TaskGUID").html(TaskSelector.html());
+
             }
 
             function LoadTasks()
@@ -636,32 +662,54 @@
                     $("#dd_Description").text(Description);
                 }
 
+                //換頁
                 $('.pagination a').click(function (e)
                 {
                     e.preventDefault();
-                    var sortBy = getCookie("sortBy");
-                    var filterBy = $("#ResourceFilter").serialize();
-                    var Action = $(this).attr("href") + `&sortBy=${sortBy}`;
-                    $("#PartialView").load(Action, filterBy, function ()
+
+                    var datas =
+                    {
+                        DepartmentID: $("#RequiredDeptGUID").val(),
+                        ProjectID: $("#Select_ProjectName").val(),
+                        sortBy: getCookie("sortBy"),
+                        filter_StartDate: $("#filter_StartDate").val(),
+                        filter_EndDate: $("#filter_EndDate").val(),
+                        filter_TaskGUID: $("#filter_TaskGUID").val(),
+                        filter_CategoryID: $("#filter_CategoryID").val()
+                    }
+
+                    var Action = $(this).attr("href");
+                    $("#PartialView").load(Action, datas, function ()
                     {
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
                         Binding();
                     });
                 })
 
+                //點td也可排序
                 $('#tb_TaskResources > thead td').click(function ()
                 {
                     $(this).children('a').click();
                 })
 
+                //欄位排序
                 $('#tb_TaskResources > thead a').click(function (e)
                 {
                     e.stopPropagation();
                     e.preventDefault();
 
-                    var filterBy = $("#ResourceFilter").serialize();
+                    var datas =
+                    {
+                        DepartmentID: $("#RequiredDeptGUID").val(),
+                        ProjectID: $("#Select_ProjectName").val(),
+                        filter_StartDate: $("#filter_StartDate").val(),
+                        filter_EndDate: $("#filter_EndDate").val(),
+                        filter_TaskGUID: $("#filter_TaskGUID").val(),
+                        filter_CategoryID: $("#filter_CategoryID").val()
+                    }
+
                     var Action = $(this).attr("href");
-                    $("#PartialView").load(Action, filterBy, function ()
+                    $("#PartialView").load(Action, datas, function ()
                     {
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
                         Binding();
