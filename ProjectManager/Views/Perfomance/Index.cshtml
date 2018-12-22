@@ -14,8 +14,22 @@
             <div class="alert alert-info" role="alert">
                 @if (item.ProjectMembers.FirstOrDefault() != null)
                 {
-                    <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
-                    <a href="~/Perfomance/ScoreByPM?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>對成員評分</a>
+                    if (item.ProjectMembers.FirstOrDefault().PMscore != null)
+                    {
+                        <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
+                    }
+                    else
+                    {
+                        <a href="#" class="btn btn-dark" style="float:right"><i class="fas fa-exclamation-triangle"></i>尚未評分</a>
+                    }
+                    if (item.ProjectMembers.Where(p => p.Project.ProjectStatusID == 1 && p.PMscore == null && p.ProjectGUID == item.ProjectGUID && p.Employee.JobTitle.TitleName != "專案經理").Count() >= 1)
+                    {
+                        <a href="~/Perfomance/ScoreByPM?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>對成員評分</a>
+                    }
+                    else
+                    {
+                        <a href="~/Perfomance/ScoreByPM?ProjectGUID=@item.ProjectGUID" class="btn btn-success" style="float:right"><i class="fas fa-check-circle"></i>已全部評分完成</a>
+                    }
                 }
                 else
                 {
@@ -35,8 +49,16 @@
                 {
                     if (_pmscore.Key == item.ProjectName)
                     {
-                        <p class="mb-0">團隊成員平均表現(PM) :@_pmscore.Avg</p>
-                        <p class="mb-0">已評分成員數:@item.ProjectMembers.Where(p => p.PMscore != null).Count()</p>
+                        if (item.ProjectMembers.Where(p => p.PMscore != null).Count() != 0)
+                        {
+                            <p class="mb-0">團隊成員平均表現(PM) :@_pmscore.Avg</p>
+                            <p class="mb-0">已評分成員數:@item.ProjectMembers.Where(p => p.PMscore != null).Count()</p>
+                        }
+                    }
+                    else if (item.ProjectMembers.Where(p => p.PMscore != null).Count() < 1)
+                    {
+                        <p>目前沒有評分紀錄</p>
+                        break;
                     }
                 }
             </div>

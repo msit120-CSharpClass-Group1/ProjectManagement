@@ -21,13 +21,13 @@ namespace ProjectManager.Controllers
         {
             var data = projectRepo.GetCollections().OrderBy(p => p.ProjectID).ToList();
             return View(data);
-        }        
+        }
         public ActionResult Insert(Project _project)
         {
-            if(Request.Form.Count > 0)
+            if (Request.Form.Count > 0)
             {
                 _project.ProjectGUID = Guid.NewGuid();
-                _project.ProjectID = "P" + (projectRepo.GetCollections().GetLastProjectIntID() +1);
+                _project.ProjectID = "P" + (projectRepo.GetCollections().GetLastProjectIntID() + 1);
 
                 projectRepo.Add(_project);
                 return RedirectToAction("Index");
@@ -37,11 +37,11 @@ namespace ProjectManager.Controllers
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
             ViewBag.ProjectCategories = new SelectList(new Repository<ProjectCategory>().GetCollections(), "ProjectCategoryID", "ProjectCategoryName");
 
-            return View();            
+            return View();
         }
         [HttpGet]
         public ActionResult Edit(Guid? projectGUID)
-        {           
+        {
             ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections().OrderBy(d => d.DepartmentID), "DepartmentGUID", "DepartmentName");
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
             ViewBag.ProjectStatuses = new SelectList(new Repository<ProjectStatus>().GetCollections(), "ProjectStatusID", "ProjectStatusName");
@@ -75,13 +75,13 @@ namespace ProjectManager.Controllers
             Project project = projectRepo.Find(projectGUID);
             var allTasks = taskRepo.GetCollections()
                 .Where(t => t.ProjectGUID == projectGUID)
-                .OrderBy(t=>t.TaskID)
+                .OrderBy(t => t.TaskID)
                 .GetSortedTasks()
                 .Reverse();
             var allMembers = projectMemberRepo.GetCollections().Where(m => m.ProjectGUID == projectGUID);
-            
+
             try
-            {
+            {              
                 foreach (var child in allTasks)
                 {
                     foreach (var doc in child.Document.ToList())
@@ -101,18 +101,16 @@ namespace ProjectManager.Controllers
 
                 foreach (var member in allMembers.ToList())
                 {
-                    projectMemberRepo.Delete(member);
+                    projectMemberRepo.Delete(projectMemberRepo.Find(member.EmployeeGUID, member.ProjectGUID));
                 }
 
                 projectRepo.Delete(project);
             }
             catch
             {
-               
+
             }
-            
             return RedirectToAction("Index");
         }
-
     }
 }

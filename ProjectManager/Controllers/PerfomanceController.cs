@@ -79,8 +79,9 @@ namespace ProjectManager.Controllers
 
         public ActionResult ChanceProject()//自評界面(選擇專案)
         {
-            //傳入自己所負責專案的介面
-            return View();
+            ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
+            vm.InProgressProject = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 1).ToList();
+            return View(vm);
         }
         public ActionResult ScoreByMySelf(Guid? ProjectGUID) //自評界面(問項)
         {
