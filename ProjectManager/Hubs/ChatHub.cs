@@ -11,7 +11,7 @@ namespace ProjectManager.Hubs
     {
         public void SendMessage(string nickName, string message)  //給前端呼叫使用
         {
-            Clients.All.gotMessage(nickName, message);
+            Clients.All.gotMessage(nickName, message + "   (" + DateTime.Now.ToString("HH:mm:ss") + ")");
         }
     }
 }
