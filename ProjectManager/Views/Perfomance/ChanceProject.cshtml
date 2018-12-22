@@ -53,7 +53,7 @@
             }
         .scorearea
         {
-            background-color:black;
+            background-color:darkcyan;
         }
     </style>
 }
@@ -61,41 +61,41 @@
 <div class="container">
     <div class="row">
         <div class="col-4">
-            @foreach (var _project in Model.InProgressProject)
+            @foreach (var _project in Model.ProjectMembers)
             {
-                <div style="background-color:darkcyan;width:10px">
-                    <div class="card border-info mb-3 shadow p-3 mb-5 bg-white rounded" style="width:300px; height:200px;">
-                        <div class="card-header">@_project.ProjectName</div>
-                        <div class="card-body text-info">
-                            <h5 class="card-title">@_project.ProjectStatus.ProjectStatusName</h5>
-                            <h1><span class="badge badge-secondary" style="float:right;margin-right:10px"><i class="fas fa-award"></i>  87</span></h1>
-                            @*<a href="~/Perfomance/ScoreByMySelf/@_project.ProjectGUID" class="ScoreBtn" style="margin-top:20px">我要評分</a>*@
-                            <a href="#" class="ScoreBtn" style="margin-top:20px">我要評分</a>
-                        </div>
+            <div style="background-color:darkcyan;width:10px" class="cardA">
+                <div class="card border-info mb-3 shadow p-3 mb-5 bg-white rounded" style="width:300px; height:200px;">
+                    <div class="card-header">@_project.Project.ProjectName</div>
+                    <div class="card-body text-info">
+                        <h5 class="card-title">@_project.Project.ProjectStatus.ProjectStatusName</h5>
+                        <h1><span class="badge badge-secondary" style="float:right;margin-right:10px"><i class="fas fa-award"></i>@Math.Round((double)@_project.Project.Tasks.Average(t => t.ReviewScore), 0)</span></h1>
+                        @*<a href="~/Perfomance/ScoreByMySelf/@_project.ProjectGUID" class="ScoreBtn" style="margin-top:20px">我要評分</a>*@
+                        <a href="#" class="ScoreBtn" style="margin-top:20px">我要評分</a>
                     </div>
                 </div>
-                <div hidden class="scorearea">
-                    <p>隱藏區域</p>
+                <div class="scorearea" style="height:0px">
+                    <p></p>
                 </div>
+            </div>
             }
         </div>
 
         <div class="col-6">
-            @foreach (var _project in Model.InProgressProject)
+            @foreach (var _project in Model.ProjectMembers)
             {
                 <div class="card border-secondary mb-3 shadow p-3 mb-5 bg-white rounded" style="width:800px;height:200px;">
-                    <div class="card-header">我在專案中已完成的工作(@_project.Tasks.Where(t => t.TaskStatusID == 3 && t.Employee.EmployeeName == @EmployeeInfo.EmployeeName).Count())</div>
+                    <div class="card-header">我在專案中已完成的工作(@_project.Project.Tasks.Where(t => t.TaskStatusID == 4 && t.EmployeeGUID == _project.EmployeeGUID).Count())</div>
                     <div class="card-body text-secondary" style="overflow-x:hidden">
                         <div class="d-flex flex-row bd-highlight mb-3">
-                            @foreach (var _item in _project.Tasks.Where(t => t.TaskStatusID == 3 && t.Employee.EmployeeName == @EmployeeInfo.EmployeeName))
+                            @foreach (var _item in _project.Project.Tasks.Where(t => t.TaskStatusID == 4 && t.EmployeeGUID == _project.EmployeeGUID))
                             {
-                                <div id="taskitem" class="p-2 bd-highlight"style="background-color:cornsilk;margin:5px;cursor:pointer;display:inline" title="完成時間 @_item.EndDate">@_item.TaskName</div>
+                                <div id="taskitem" class="p-2 bd-highlight" style="background-color:cornsilk;margin:5px;cursor:pointer;display:inline" title="完成時間 @_item.EndDate">@_item.TaskName</div>
                             }
                         </div>
-                        </div>
+                    </div>
                 </div>
-                <div hidden class="scorearea">
-                    <p>隱藏區域</p>
+                <div class="scoreareat" style="height:0px;background-color:darkcyan">
+                    <p></p>
                 </div>
             }
         </div>
@@ -106,10 +106,22 @@
     <script>
         $(document).ready(function ()
         {
+            var flag = true;
             $(".bd-highlight").tooltip();
             $(".ScoreBtn").click(function ()
             {
-                $(".scorearea").prop("hidden", false);
+                if (flag)
+                {
+                    $(this).parents(".cardA").children().siblings(".scorearea").animate({ "height": "+=200px","width":"+=750px"}, "slow")
+                    $(".scoreareat").animate({ "height": "+=200px", "width": "+=280px" }, "slow")
+                    flag = false;
+                }
+                else
+                {
+                    $(this).parents(".cardA").children().siblings(".scorearea").animate({ "height": "-=200px", "width": "-=750px" },"slow")
+                    $(".scoreareat").animate({ "height": "-=200px", "width": "-=280px" }, "slow")
+                    flag = true;
+                }
             })
         })
     </script>
