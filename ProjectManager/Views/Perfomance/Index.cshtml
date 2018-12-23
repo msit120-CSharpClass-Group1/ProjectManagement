@@ -4,7 +4,6 @@
     ViewBag.Title = "專案表現評分";
 }
 
-
 <div class="container" style="height:200px">
     <div class="row">
         <div class="col-6">
@@ -12,9 +11,9 @@
             @foreach (var item in Model.InProgressProject)
             {
             <div class="alert alert-info" role="alert">
-                @if (item.ProjectMembers.FirstOrDefault() != null)
+                @if (item.Project.ProjectMembers.FirstOrDefault() != null)
                 {
-                    if (item.ProjectMembers.FirstOrDefault().PMscore != null)
+                    if (item.Project.ProjectMembers.Average(p => p.PMscore)!= null)
                     {
                         <a href="~/Perfomance/Watch?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
                     }
@@ -22,7 +21,7 @@
                     {
                         <a href="#" class="btn btn-dark" style="float:right"><i class="fas fa-exclamation-triangle"></i>尚未評分</a>
                     }
-                    if (item.ProjectMembers.Where(p => p.Project.ProjectStatusID == 1 && p.PMscore == null && p.ProjectGUID == item.ProjectGUID && p.Employee.JobTitle.TitleName != "專案經理").Count() >= 1)
+                    if (item.Project.ProjectMembers.Where(p => p.Project.ProjectStatusID == 1 && p.PMscore == null && p.ProjectGUID == item.ProjectGUID && p.Employee.JobTitle.TitleName != "專案經理").Count() >= 1)
                     {
                         <a href="~/Perfomance/ScoreByPM?ProjectGUID=@item.ProjectGUID" class="btn btn-light" style="float:right"><i class="fas fa-star-half-alt"></i>對成員評分</a>
                     }
@@ -35,27 +34,27 @@
                 {
                     <a href="~/Projects/Index" class="btn btn-light" style="float:right">尚未加入成員，前往加入成員</a>
                 }
-                <h4 class="alert-heading">@item.ProjectName</h4>
-                <p>@item.ProjectStatus.ProjectStatusName</p>
+                <h4 class="alert-heading">@item.Project.ProjectName</h4>
+                <p>@item.Project.ProjectStatus.ProjectStatusName</p>
                 <hr>
                 @foreach (var _member in Model.GetMemberCount)
                 {
-                    if (_member.Key == item.ProjectName)
+                    if (_member.Key == item.Project.ProjectName)
                     {
                         <p class="mb-0" style="float:right;">團隊成員數量: @_member.Count</p>
                     }
                 }
                 @foreach (var _pmscore in Model.GetPMscore)
                 {
-                    if (_pmscore.Key == item.ProjectName)
+                    if (_pmscore.Key == item.Project.ProjectName)
                     {
-                        if (item.ProjectMembers.Where(p => p.PMscore != null).Count() != 0)
+                        if (item.Project.ProjectMembers.Where(p => p.PMscore != null).Count() != 0)
                         {
                             <p class="mb-0">團隊成員平均表現(PM) :@_pmscore.Avg</p>
-                            <p class="mb-0">已評分成員數:@item.ProjectMembers.Where(p => p.PMscore != null).Count()</p>
+                            <p class="mb-0">已評分成員數:@item.Project.ProjectMembers.Where(p => p.PMscore != null).Count()</p>
                         }
                     }
-                    else if (item.ProjectMembers.Where(p => p.PMscore != null).Count() < 1)
+                    else if (item.Project.ProjectMembers.Where(p => p.PMscore != null).Count() < 1)
                     {
                         <p>目前沒有評分紀錄</p>
                         break;
@@ -71,7 +70,7 @@
             {
                 bool flag = true;
             <div class="alert alert-success" role="alert">
-                @if (item.ProjectMembers.FirstOrDefault() != null)
+                @if (item.Project.ProjectMembers.FirstOrDefault() != null)
                 {
                     <a href="~/Perfomance/TaskScoreAVGReview?ProjectGUID=@item.ProjectGUID" class="btn btn-dark" style="float:right"><i class="fas fa-eye"></i>查看評分</a>
                 }
@@ -79,19 +78,19 @@
                 {
                     <a href="#" class="btn btn-light" style="float:right">專案沒有成員!</a>
                 }
-                <h4 class="alert-heading">@item.ProjectName</h4>
-                <p>@item.ProjectStatus.ProjectStatusName</p>
+                <h4 class="alert-heading">@item.Project.ProjectName</h4>
+                <p>@item.Project.ProjectStatus.ProjectStatusName</p>
                 <hr>
                 @foreach (var _member in Model.GetMemberCount)
                 {
-                    if (_member.Key == item.ProjectName)
+                    if (_member.Key == item.Project.ProjectName)
                     {
                         <p class="mb-0" style="float:right">團隊成員數量: @_member.Count</p>
                     }
                 }
                 @foreach (var _taskscore in Model.GetTaskAVGScore)
                 {
-                    if (_taskscore.Key == item.ProjectName)
+                    if (_taskscore.Key == item.Project.ProjectName)
                     {
                         <p class="mb-0">團隊成員平均表現 :@_taskscore.Avg</p>
                     }

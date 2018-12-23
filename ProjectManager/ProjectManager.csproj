@@ -597,7 +597,7 @@
     <Content Include="Views\Tasks\TreeGridPartialView_backSide.cshtml" />
     <Content Include="Views\Tasks\AsideRightPartialView.cshtml" />
     <Content Include="Views\Document\GetDocument.cshtml" />
-    <Content Include="Views\Perfomance\ChanceProject.cshtml" />
+    <Content Include="Views\Perfomance\ChoseProject.cshtml" />
     <Content Include="Views\Document\Modified.cshtml" />
     <Content Include="Views\ProjectDetails\AsideRightReadOnlyMode.cshtml" />
     <Content Include="Views\ProjectDetails\AsideRightEditMode.cshtml" />

@@ -108,48 +108,43 @@
         }
     </style>
     }
-<h2>ScoreByMySelf</h2>
-<div class="container">
-    <div class="row">
-        <div class="holder">
-            <table width="100%">
-                <tr>
-                    <td>Include me in the public list</td>
-                    <td>
-                        <div>
-                            <input type="checkbox" />
-                            <span></span>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Let my friends see my phone number</td>
-                    <td>
-                        <div>
-                            <input type="checkbox" />
-                            <span></span>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Let my friends see my email address</td>
-                    <td>
-                        <div>
-                            <input type="checkbox" checked="" />
-                            <span></span>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="submit" value="Save Settings">
-                    </td>
-                </tr>
-            </table>
+    <div class="container">
+        <div class="row">
+            @*<div class="holder" style="width:2000px;display:inline">*@
+            <div class="d-flex flex-row bd-highlight mb-3" style="width:1500px;background-color:white">
+                <h5 class="question">1.您近期是否有盡全力在工作上</h5>
+                <div>
+                    <input type="checkbox" checked="" class="ckBtn" value="yes" />
+                    <span></span>
+                </div>
+            </div>
+            @*</div>*@
         </div>
     </div>
-</div>
 
 @section script{
-
+     <script>
+         $(document).ready(function ()
+         {
+             let flag = false;
+             let orgText;
+             $(".ckBtn").click(function ()
+             {
+                 if (!flag)
+                 {
+                     orgText = $(this).parent().prev().text();
+                     $(this).parents(".mb-3").animate({ "width": "-=900px", "background-color": "lightgreen" }, "slow")
+                     $(this).parent().prev().text("第一題")
+                     flag = true;
+                 }
+                 else
+                 {
+                     $(this).parents(".mb-3").animate({ "width": "+=900px", "background-color": "white"}, "slow")
+                     $(this).parent().prev().text(orgText)
+                     flag = false;
+                 }
+             })
+         })
+        
+     </script>
     }
