@@ -14,22 +14,15 @@ namespace ProjectManager.Models
     
     public partial class Dashboard
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Dashboard()
-        {
-            this.WidgetDetail = new HashSet<WidgetDetail>();
-        }
-    
         public System.Guid DashBoardGUID { get; set; }
-        public int SequenceID { get; set; }
-        public Nullable<int> PositionTop { get; set; }
-        public Nullable<int> PositionLeft { get; set; }
         public Nullable<int> WidgetWidth { get; set; }
         public Nullable<int> WidgetHeight { get; set; }
         public Nullable<System.Guid> EmployeeGUID { get; set; }
+        public Nullable<System.Guid> WidgetGUID { get; set; }
+        public Nullable<int> OrderID { get; set; }
+        public Nullable<int> ColumnNum { get; set; }
     
         public virtual Employee Employee { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<WidgetDetail> WidgetDetail { get; set; }
+        public virtual Widgets Widgets { get; set; }
     }
 }

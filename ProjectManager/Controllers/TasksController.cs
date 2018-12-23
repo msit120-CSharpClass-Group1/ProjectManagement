@@ -81,8 +81,8 @@ namespace ProjectManager.Controllers
             recentTask.StartDate = task.StartDate;
             recentTask.EndDate = task.EndDate;
             recentTask.IsRead = task.IsRead;
-            recentTask.EstWorkTime = recentTask.GetAutoEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
-            recentTask.WorkTime = recentTask.GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+            recentTask.EstWorkTime = task.EstWorkTime;
+            recentTask.WorkTime = task.WorkTime;
 
             taskRepo.Update(recentTask);
             return Json("succes", JsonRequestBehavior.AllowGet);
@@ -112,8 +112,7 @@ namespace ProjectManager.Controllers
                         resourceRepo.Delete(resourceRepo.Find(resource.ResourceGUID));
                     }
                     taskRepo.Delete(taskRepo.Find(child.TaskGUID));
-                }
-                
+                }                
 
             }
             catch
