@@ -14,12 +14,18 @@ namespace ProjectManager.Models
     
     public partial class WidgetDetail
     {
-        public System.Guid WidgetGUID { get; set; }
-        public string WidgetName { get; set; }
-        public string WidgetDesc { get; set; }
-        public string WidgetImagePath { get; set; }
-        public Nullable<System.Guid> DashBoardGUID { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public WidgetDetail()
+        {
+            this.Widgets = new HashSet<Widgets>();
+        }
     
-        public virtual Dashboard Dashboard { get; set; }
+        public System.Guid WidgetDetailGUID { get; set; }
+        public Nullable<System.Guid> DashBoardGUID { get; set; }
+        public Nullable<System.Guid> TaskGUID { get; set; }
+        public Nullable<System.Guid> ProjectGuid { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Widgets> Widgets { get; set; }
     }
 }

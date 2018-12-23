@@ -1,0 +1,34 @@
+﻿@using ProjectManager.Models;
+@model IEnumerable<Grouped<string, Tasks>>
+<div class="col-lg-6 col-sm-12 bg-white p-4">
+    <h5>分配給@(ViewBag.UserName)的工作(@(ViewBag.TasksSum))</h5>
+    <table id="TasksTable" class="table bg-white ">
+        <thead>
+            @*class="thead-light"*@
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().TaskName)</th>
+                <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().TaskStatusID)</th>
+                <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().Project.ProjectName)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var g in Model)
+            {
+                foreach (var task in g.group)
+                {
+                    <tr data-TaskGUID="@task.TaskGUID">
+                        <td><span name="taskLink">@task.TaskName</span></td>
+                        <td>@task.TaskStatus.TaskStatusName</td>
+                        <td>
+                            <span name="projectLink" class="projectLink" title="跳轉至我的任務個版" data-projectGUID="@task.ProjectGUID">
+                                @task.Project.ProjectID-@task.Project.ProjectName
+                                <sup><i class="fas fa-external-link-alt"></i></sup>
+                            </span>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
