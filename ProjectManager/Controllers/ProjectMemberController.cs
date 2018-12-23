@@ -86,26 +86,30 @@ namespace ProjectManager.Controllers
 
         public ActionResult EditTaskM()
         {
-            if (Request.Form["TotalRow"] != "")
+            try
             {
-                var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
-                var LastRow = Convert.ToInt32(Request.Form["LastRow"]);
-
-                for (int i = FirstRow; i <= LastRow; i++)
+                if (Request.Form["TotalRow"] != "")
                 {
-                    if (Request.Form["EmployeeGUID" + i] != null && Request.Form["TaskGUID" + i] != null)
+                    var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
+                    var LastRow = Convert.ToInt32(Request.Form["LastRow"]);
+
+                    for (int i = FirstRow; i <= LastRow; i++)
                     {
-                        var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
-                        var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
-                        Tasks _tasks = tasks.Find(TaskGUID);
-                        _tasks.EmployeeGUID = EmpGUID;
-                        _tasks.AssignedDate = DateTime.Now;
-                        _tasks.TaskStatusID = 2;
-                        _tasks.IsRead = false;
-                        tasks.Update(_tasks);
+                        if (Request.Form["EmployeeGUID" + i] != null && Request.Form["TaskGUID" + i] != null)
+                        {
+                            var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
+                            var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
+                            Tasks _tasks = tasks.Find(TaskGUID);
+                            _tasks.EmployeeGUID = EmpGUID;
+                            _tasks.AssignedDate = DateTime.Now;
+                            _tasks.TaskStatusID = 2;
+                            _tasks.IsRead = false;
+                            tasks.Update(_tasks);
+                        }
                     }
                 }
             }
+            catch { }
             return RedirectToAction("AssignTask");
         }
         public ActionResult ReloadTaskList()

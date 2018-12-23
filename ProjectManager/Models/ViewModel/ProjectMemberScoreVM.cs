@@ -7,7 +7,7 @@ namespace ProjectManager.Models
 {
     public class ProjectMemberScoreVM
     {
-        public System.Guid EmployeeGUID { get; set; }
+        public System.Guid? EmployeeGUID { get; set; }
         public IEnumerable<Guid> ProjectGUID { get; set; }
         public Guid? ProjectGUIDShow { get; set; }
         public IEnumerable<string> ProjectName { get; set; }

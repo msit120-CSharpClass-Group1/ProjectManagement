@@ -82,12 +82,13 @@ namespace ProjectManager.Controllers
             return Content("success");
         }
 
-        public ActionResult ChanceProject()//自評界面(選擇專案)
+        public ActionResult ChoseProject()//自評界面(選擇專案)
         {
             var memberGUID = new Guid(Request.Cookies["MemberGUID"].Value);
             var character = memberRepo.GetCollections().Where(m => m.MemberGUID == memberGUID).Select(m => m.EmployeeGUID).FirstOrDefault();
             ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
             vm.ProjectMembers = ProjectMembersRepo.GetCollections().Where(p => p.EmployeeGUID == character && p.Project.ProjectStatusID ==1);
+            vm.EmployeeGUID = character;
             return View(vm);
         }
         public ActionResult ScoreByMySelf(Guid? ProjectGUID) //自評界面(問項)
@@ -97,6 +98,10 @@ namespace ProjectManager.Controllers
         }
         public ActionResult EditSelfScore(ProjectMembers _projectMember)//編輯自評
         {
+            var pm = ProjectMembersRepo.Find(_projectMember.EmployeeGUID, _projectMember.ProjectGUID);
+            pm.Selfscore = _projectMember.Selfscore;
+            pm.SelfScoreDate = DateTime.Now;
+            ProjectMembersRepo.Update(pm);
             return Content("success");
         }
 

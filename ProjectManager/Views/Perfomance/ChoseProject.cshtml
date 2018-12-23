@@ -1,0 +1,175 @@
+﻿@model ProjectManager.Models.ProjectMemberScoreVM
+@using ProjectManager.Models.ViewModel
+@{
+    ViewBag.Title = "工程師自評選擇專案頁面";
+}
+@section style{
+    <link href="~/Content/PMScore.css" rel="stylesheet" />
+    <style>
+        .card {
+            margin: 10px;
+        }
+
+        .ScoreBtn {
+            -moz-box-shadow: inset 0px 0px 0px 0px #ffffff;
+            -webkit-box-shadow: inset 0px 0px 0px 0px #ffffff;
+            box-shadow: inset 0px 0px 0px 0px #ffffff;
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #f6f6f6));
+            background: -moz-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+            background: -webkit-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+            background: -o-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+            background: -ms-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+            background: linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0);
+            background-color: #ffffff;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            border: 1px solid #dcdcdc;
+            display: inline-block;
+            cursor: pointer;
+            color: #666666;
+            font-family: Trebuchet MS;
+            font-size: 15px;
+            font-weight: bold;
+            padding: 6px 24px;
+            text-decoration: none;
+            text-shadow: 0px 1px 0px #ffffff;
+        }
+
+            .ScoreBtn:hover {
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f6f6f6), color-stop(1, #ffffff));
+                background: -moz-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background: -webkit-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background: -o-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background: -ms-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+                background: linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff',GradientType=0);
+                background-color: #f6f6f6;
+            }
+
+            .ScoreBtn:active {
+                position: relative;
+                top: 1px;
+            }
+    </style>
+}
+<p hidden id="thisEmpName">@Model.EmployeeGUID</p>
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            @foreach (var _project in Model.ProjectMembers)
+            {                
+                <div style="background-color:darkcyan;width:10px"class="cardA">
+                    <div class="card border-info mb-3 shadow p-3 mb-5 bg-white rounded" style="width:300px; height:200px;">
+                        <div class="card-header" title="@_project.ProjectGUID">@_project.Project.ProjectName</div>
+                        <div class="card-body text-info">
+                            <h5 class="card-title">@_project.Project.ProjectStatus.ProjectStatusName<span class="badge badge-pill badge-primary" style="float:right">平均驗收分數</span></h5>
+                            <h1><span class="badge badge-secondary" style="float:right;margin-right:5px"><i class="fas fa-award"></i>@Math.Round((double)@_project.Project.Tasks.Average(t => t.ReviewScore), 0)</span></h1>
+                            @if (_project.Selfscore == null)
+                            {
+                                <a href="#" class="ScoreBtn" style="margin-top:10px" data-toggle="modal" data-target=".bd-example-modal-lg" id="ScoreBtn">我要評分</a>
+                            }
+                            else
+                            {
+                                <a href="#" class="ScoreBtn" style="margin-top:10px; background-color:gray" disabled>已評分完成</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-7">
+            @foreach (var _project in Model.ProjectMembers)
+            {              
+                <div class="card border-secondary mb-3 shadow p-3 mb-5 bg-white rounded" style="width:800px;height:200px;" id="next">
+                    <div class="card-header">我在專案中已完成的工作(@_project.Project.Tasks.Where(t => t.TaskStatusID == 4 && t.EmployeeGUID == _project.EmployeeGUID).Count())</div>
+                    <div class="card-body text-secondary" style="overflow-x:hidden">
+                        <div class="d-flex flex-row bd-highlight mb-3">
+                            @foreach (var _item in _project.Project.Tasks.Where(t => t.TaskStatusID == 4 && t.EmployeeGUID == _project.EmployeeGUID))
+                            {
+                                <div id="taskitem" class="p-2 bd-highlight" style="background-color:cornsilk;margin:5px;cursor:pointer;display:inline" title="完成時間 @_item.EndDate">@_item.TaskName</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle"><i class="fas fa-check-square"></i>開始自評</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: #484848">
+                <input type="checkbox" id="box-1" value="30">
+                <label for="box-1" title="按專案進度完成所有功能開發(30%)">能夠於專案開始後依規定時間內完成基本功能開發</label>
+                <input type="checkbox" id="box-2" value="30">
+                <label for="box-2" title="維護專案(30%)">能夠依照客戶需求, 依規定時間內完成修改項目</label>
+                <input type="checkbox" id="box-3" value="20">
+                <label for="box-3" title="確保軟體品質與穩定度(20%)">軟體嚴重程度的Bug依規定時限內修改完</label>
+                <input type="checkbox" id="box-4" value="10">
+                <label for="box-4" title="團隊合作(10%)">能夠與團隊有效溝通</label>
+                <input type="checkbox" id="box-5" value="10">
+                <label for="box-5" title="知識學習與分享(10%)">至少一次的團隊內技術發表</label>
+                <hr />
+                <button type="button" class="btn btn-primary btn-sm" style="float:right;margin-right:20px" id="SendScoreBtn">送出自評</button>
+                <button type="button" class="btn btn-secondary btn-sm"  style="float:right" id="cancelscore">取消自評</button>
+            </div>
+            </div>
+        </div>
+</div>
+@section Script{
+    <script>
+        $(document).ready(function () {
+            $(".bd-highlight").tooltip();
+            $(".col-4").on("click", 'a', function ()
+            {
+                let thisBtn = $(this);
+                var project = $(this).parent().prev();
+                var projectName = project.text();
+                var projectGUID = project.attr("title");
+                var score = 0;
+                var scoreArea = $(".modal-body");
+                $("#exampleModalLongTitle").text("開始自評(" + projectName + ")");
+                $("#SendScoreBtn").click(function ()
+                {
+                    var ChkBoxLength = scoreArea.children().length - 5;
+                    for (var i = 0; i <= ChkBoxLength; i++)
+                    {
+                        var inputelement = $(".modal-body input:eq('" + i + "')");
+                        if (inputelement.is(':checked'))
+                        {
+                            score += parseInt(inputelement.val());
+                        }
+                    }
+                    $.ajax({
+                        url: '@Url.Action("EditSelfScore", "Perfomance")',
+                        data: { "EmployeeGUID": $("#thisEmpName").text(), "Selfscore": score, "ProjectGUID": projectGUID},
+                        type:"post",
+                        success: function (data)
+                        {
+                            scoreArea.children("input").prop("checked", false);
+                            $('.bd-example-modal-lg').modal('hide');
+                            thisBtn.attr("background-color", "red").text("已評分完成");
+                            score = 0;
+                        }
+                    });
+                })
+                $("#cancelscore").click(function ()
+                {
+                    $(".modal-body").children("input").prop("checked", false);
+                    $('.bd-example-modal-lg').modal('hide');
+                })
+            })
+        })
+
+    </script>
+}
