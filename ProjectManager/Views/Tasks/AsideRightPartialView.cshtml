@@ -28,14 +28,19 @@
     </div>
     <div class="row ">
         <div class="col-6 form-group">
-            @Html.LabelFor(m => m.EmployeeGUID)
-            <br />
-            @Html.DropDownList("EmployeeGUID", (SelectList)ViewBag.ProjectMembers, null, new { @class = "form-control", style = "width:10em;" })
-        </div>
-        <div class="col-6 form-group">
             @Html.LabelFor(m => m.TaskStatusID)
             <br />
             @Html.DropDownList("TaskStatusID", (SelectList)ViewBag.TaskStatuses, null, new { @class = "form-control", style = "width:10em;" })
+        </div>
+        <div class="col-6 form-group">
+            @{
+                if (Model.EmployeeGUID !=null)
+                {
+                    @Html.LabelFor(m => m.EmployeeGUID)
+                    <br />
+                    @Html.DropDownList("EmployeeGUID", (SelectList)ViewBag.ProjectMembers, null, new { @class = "form-control", style = "width:10em;" })
+                }
+            }
         </div>
     </div>
     <div class="row ">
