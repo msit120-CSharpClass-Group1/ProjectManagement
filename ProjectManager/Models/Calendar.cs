@@ -9,7 +9,6 @@
 
 namespace ProjectManager.Models
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -24,6 +23,7 @@ namespace ProjectManager.Models
         public string ThemeColor { get; set; }
         public bool IsFullDay { get; set; }
         public int EventID { get; set; }
+    
         public virtual Members Members { get; set; }
     }
 }

@@ -66,6 +66,8 @@ namespace ProjectManager.Controllers
             recentProject.ProjectBudget = _project.ProjectBudget;
             recentProject.InChargeDeptGUID = _project.InChargeDeptGUID;
             recentProject.InChargeDeptPMGUID = _project.InChargeDeptPMGUID;
+            recentProject.RequiredDeptGUID = _project.RequiredDeptGUID;
+            recentProject.RequiredDeptPMGUID = _project.RequiredDeptPMGUID;
 
             projectRepo.Update(recentProject);
             return RedirectToAction("Index");

@@ -1,4 +1,5 @@
 ﻿using ProjectManager.Models;
+using ProjectManager.Models.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +15,18 @@ namespace ProjectManager.Controllers
         Repository<ProjectMembers> ProjectMembersRepo = new Repository<ProjectMembers>();
         Repository<Tasks> taskRepo = new Repository<Tasks>();
         Repository<Employee> empRepo = new Repository<Employee>();
-
+        Repository<Members> memberRepo = new Repository<Members>();
+       
         public ActionResult Index()
         {
+            var memberGUID = new Guid(Request.Cookies["MemberGUID"].Value);
+            var character = memberRepo.GetCollections().Where(m => m.MemberGUID == memberGUID).Select(m => m.EmployeeGUID).FirstOrDefault();
             ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
-            vm.InProgressProject = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 1).ToList();        
-            vm.ClosedProject = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 2 ).ToList();
-            vm.GetPMscore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID != null).GetTeamPMAvgScore();
-            vm.GetMemberCount = ProjectMembersRepo.GetCollections().GetTeamMemberCount();
+            var collections = ProjectMembersRepo.GetCollections();
+            vm.InProgressProject = collections.Where(p => p.EmployeeGUID == character && p.Project.ProjectStatusID == 1);
+            vm.ClosedProject = collections.Where(p => p.EmployeeGUID == character && p.Project.ProjectStatusID == 2).ToList();
+            vm.GetPMscore = collections.Where(p => p.ProjectGUID != null).GetTeamPMAvgScore();
+            vm.GetMemberCount = collections.GetTeamMemberCount();
             vm.GetTaskAVGScore = taskRepo.GetCollections().Where(p => p.Project.ProjectStatusID == 2).GetTaskAVGScore();
             return View(vm);
         }
@@ -42,14 +47,14 @@ namespace ProjectManager.Controllers
             {
                 ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
                 vm.TeamMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID);
-                vm.GroupMembersScore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GroupMembersScore();
+                vm.GroupMembersScore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID && p.Employee.JobTitle.TitleName!="專案經理").GroupMembersScore();
                 vm.GetHighestMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetHighestMember();
                 vm.GetPMscore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetTeamPMAvgScore();
                 vm.GetMemberCount = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetTeamMemberCount();
                 vm.GetAboveAVGMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetAboveAVGMember();
                 vm.GetUnderAVGMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetUnderAVGMember(); 
                 vm.GetLowestMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetLowestMember();
-                vm.GetNoneScore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetNoneScore();
+                vm.GetNoneScore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID && p.Employee.JobTitle.TitleName != "專案經理").GetNoneScore();
 
                 return View(vm);
             }
@@ -77,10 +82,13 @@ namespace ProjectManager.Controllers
             return Content("success");
         }
 
-        public ActionResult ChanceProject()//自評界面(選擇專案)
+        public ActionResult ChoseProject()//自評界面(選擇專案)
         {
+            var memberGUID = new Guid(Request.Cookies["MemberGUID"].Value);
+            var character = memberRepo.GetCollections().Where(m => m.MemberGUID == memberGUID).Select(m => m.EmployeeGUID).FirstOrDefault();
             ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
-            vm.InProgressProject = projectRepo.GetCollections().Where(p => p.ProjectStatusID == 1).ToList();
+            vm.ProjectMembers = ProjectMembersRepo.GetCollections().Where(p => p.EmployeeGUID == character && p.Project.ProjectStatusID ==1);
+            vm.EmployeeGUID = character;
             return View(vm);
         }
         public ActionResult ScoreByMySelf(Guid? ProjectGUID) //自評界面(問項)
@@ -90,6 +98,10 @@ namespace ProjectManager.Controllers
         }
         public ActionResult EditSelfScore(ProjectMembers _projectMember)//編輯自評
         {
+            var pm = ProjectMembersRepo.Find(_projectMember.EmployeeGUID, _projectMember.ProjectGUID);
+            pm.Selfscore = _projectMember.Selfscore;
+            pm.SelfScoreDate = DateTime.Now;
+            ProjectMembersRepo.Update(pm);
             return Content("success");
         }
 

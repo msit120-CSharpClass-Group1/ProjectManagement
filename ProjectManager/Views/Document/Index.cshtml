@@ -49,11 +49,19 @@
                 <div class="row col-12">
                     <div class="form-group mt-3 mb-0">
                         <lable for="CategoryID">文件類別：</lable><br />
-                        @Html.DropDownList("DocumentCategory", (SelectList)ViewBag.DocCategory, "請選擇類別", new { @class = "form-control custom-select", required = true })
+                        @Html.DropDownList("DocumentCategory", (SelectList)ViewBag.DocCategory, null, new { @class = "form-control custom-select", required = true })
                     </div>
                 </div>
                 <div class="row col-12">
-                    <div class="form-group mb-0">
+                    <div id="projectList" class="form-group  mb-0">
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div id="taskList" class="form-group  mb-0">
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="form-group mt-3 mb-0">
                         <label for="file">檔案上傳：</label>
                         <input type="file" name="file" style="width:18em;" required />
                     </div>
@@ -97,6 +105,78 @@
                 }
             })
 
+
+            var projectGUID;
+            var projectList = $('#projectList');
+            var taskList = $('#taskList');
+            $("#DocumentCategory").change(function ()
+            {
+                projectList.html('');
+                projectList.removeClass('mt-3');
+                taskList.html('');
+                taskList.removeClass('mt-3');
+                var selectedopt = $(this).find(":selected").val();
+
+                switch (selectedopt) {
+                    case "2":
+                        $.getJSON('@Url.Action("GetProjectList", "Document")', function (datas) {
+                            var fragdoc = $(document.createDocumentFragment());
+                            var _label = $('<lable for="ProjectGUID">專案列表：</lable></br>');
+                            var _select = $('<select name="ProjectGUID" class="form-control custom-select"></select>')
+                            $(datas).each(function (id,data) {
+                                var _option = $('<option></option>');
+                                _option.html(data.ProjectName);
+                                _option.val(data.ProjectGUID);
+                                _select.append(_option);
+                            })
+                            fragdoc.append(_label);
+                            fragdoc.append(_select);
+                            projectList.addClass('mt-3');
+                            projectList.html(fragdoc);
+                        })
+                        break;
+                    case "3":
+                        $.getJSON('@Url.Action("GetProjectList", "Document")', function (datas) {
+                            var fragdoc = $(document.createDocumentFragment());
+                            var _label = $('<lable for="ProjectGUID">專案列表：</lable></br>');
+                            var _select = $('<select id="ProjectGUID" name="ProjectGUID" class="form-control custom-select"></select>')
+                            $(datas).each(function (id,data) {
+                                var _option = $('<option></option>');
+                                _option.html(data.ProjectName);
+                                _option.val(data.ProjectGUID);
+                                _select.append(_option);
+                            })
+                            fragdoc.append(_label);
+                            fragdoc.append(_select);
+                            projectList.addClass('mt-3');
+                            projectList.html(fragdoc);
+                            projectGUID = projectList.find(':selected').val();
+
+                        }).done(function () {
+                           $.getJSON('@Url.Action("GetTaskList", "Document")/' + projectGUID, function (datas) {
+                                console.log(projectGUID);
+                            var fragdoc = $(document.createDocumentFragment());
+                            var _label = $('<lable for="TaskGUID">任務列表：</lable></br>');
+                            var _select = $('<select name="TaskGUID" class="form-control custom-select"></select>')
+                            $(datas).each(function (id,data) {
+                                var _option = $('<option></option>');
+                                _option.html(data.TaskName);
+                                _option.val(data.TaskGUID);
+                                _select.append(_option);
+                            })
+
+                            fragdoc.append(_label);
+                            fragdoc.append(_select);
+                            taskList.addClass('mt-3');
+                                taskList.html(fragdoc);
+
+                            })
+                            })
+                        break;
+                    default:
+                        break;
+                }
+            })
         })
     </script>
 }

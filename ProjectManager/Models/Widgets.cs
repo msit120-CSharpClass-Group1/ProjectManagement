@@ -32,8 +32,8 @@ namespace ProjectManager.Models
         public Nullable<bool> ProgrammerPermit { get; set; }
         public string ActionResultName { get; set; }
     
-        public virtual WidgetDetail WidgetDetail { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Dashboard> Dashboard { get; set; }
+        public virtual WidgetDetail WidgetDetail { get; set; }
     }
 }

@@ -240,121 +240,38 @@
 
 
 @section asideRight{
-    <div id="AsideRightContainer" class="container text-light mt-3">
-        @*<h4 id="ModeTitle">新增工作項目</h4>
-        <form id="TaskForm" class="form-horizontal" method="put">
-            <input name="ParentTaskGUID" id="ParentTaskGUID" type="text" hidden />
-            <input name="TaskGUID" id="TaskGUID" type="text" hidden />
-            <input name="TaskStatusID" id="TaskStatusID" type="text" hidden />
-            <div class="form-group">
-                @Html.LabelFor(m => m.FirstOrDefault().TaskName)
-                @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:18em;" })
-            </div>
-            <div class="row ">
-                <div class="col-12 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().EstStartDate)
-                    @{
-                        string strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-                    }
-                    <br />
-                    <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
-                </div>
-            </div>
-            <div class="row ">
-                <div class="col-12 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().EstEndDate)
-                    @{
-                        strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-                    }
-                    <br />
-                    <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
-                </div>
-            </div>
-            <div id="ReviewDiv">
-                <div class="row">
-                    <div class="col-6 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().EstWorkTime)
-                        <br />
-                        @Html.TextBox("EstWorkTime", null, new { @class = "form-control", style = "width:6em;" })
-
-                    </div>
-                    <div class="col-6 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().WorkTime)
-                        <br />
-                        @Html.TextBox("WorkTime", null, new { @class = "form-control", style = "width:6em;" })
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().ReviewScore)
-                        <br />
-                        @Html.TextBox("ReviewScore", null, new { @class = "form-control", style = "width:18em;" })
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().ReviewDescription)
-                        <br />
-                        <textarea name="ReviewDescription" id="ReviewDescription" class="form-control d-inline" style="width:18em;height:6em;"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div id="DescriptionDiv">
-                <div class="row ">
-                    <div class="col-12 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().Tag)
-                        @Html.TextBox("Tag", null, new { @class = "form-control", style = "width:18em;" })
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().Description)
-                        <br />
-                        <textarea name="Description" id="Description" class="form-control d-inline" style="width:18em;height:5em;"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <div id="formBtns" class="mt-2 mx-auto text-center ">
-                <button id="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
-                <button id="ConfirmedAddBtn" type="button" class="btn btn-primary py-1 px-5">確認新增</button>
-                <button id="ConfirmedModifyBtn" type="button" class="btn btn-primary py-1 px-5">確認修改</button>
-                <br />
-                <button id="DeleteBtn" type="button" class="btn btn-danger py-1 px-3 mt-3">刪除工作項目</button>
-            </div>
-        </form>*@
-    </div>
+    <div id="AsideRightContainer" class="container text-light mt-3"></div>
 }
 
 @section script{
     <script src="~/Scripts/jquery.treegrid.min.js"></script>
     <script>
         $(document).ready(function () {
-            //$('.leftOpenbtn').click();
+            
             $('.rightOpenbtn').html('<i class="fas fa-plus"></i>').mouseup(function () {
                 $(this).delay(500);
                 asideRightContainer
-                        .load("@Url.Action("AsideRightInsertMode", "ProjectDetails")", AsideRightInsertMode);                        
-
+                        .load("@Url.Action("AsideRightInsertMode", "ProjectDetails")", AsideRightInsertMode);                      
             });
-            $('#DeleteBtn').hide();
 
             var tasks_layout = $('#tasks_layout');
             var treeGridContainer = $('#treeGridContainer');
             var ganttContainer = $('#ganttContainer');
-            var taskForm = $('#TaskForm');
             var acceptanceModal = $('#AcceptanceComfirmModal');
             var rejectAcceptModal = $('#RejectAcceptanceModal');
             var asideRightContainer = $('#AsideRightContainer');
 
-            treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+            LoadTreeGrid();
 
-            function SetTreeGrid() {
-                $(this).find('table').treegrid();
-                $(this).find('tr').each(DoubleClickToModifyTask);
-                $(this).find('tr a').each(ClickPlusIconToAddTask);
-                $(this).find('td button').each(TaskStatusConfirm);
+            function LoadTreeGrid() {
+                treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", function SetTreeGrid() {
+                    $(this).find('table').treegrid();
+                    $(this).find('tr').each(DoubleClickToModifyTask);
+                    $(this).find('tr a').each(ClickPlusIconToAddTask);
+                    $(this).find('td button').each(TaskStatusConfirm);
+                });
             }
+            
             function SetAsideRightReadOnlyMode() {
                 $(this).find('input').prop('disabled', true);
                 $(this).find('textarea').prop('disabled', true);
@@ -414,7 +331,7 @@
             function SubmitModifiedTask() {
                 var data = asideRightContainer.find('form').serialize();
                 $.post("@Url.Action("EditTask", "ProjectDetails")",data, function () {
-                     treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                     LoadTreeGrid();
                 });
                 $('button.rightOpenbtn').click();
             }
@@ -428,7 +345,7 @@
                 var _form = asideRightContainer.find('form');
                 $.post("@Url.Action("InsertTask", "ProjectDetails")", _form.serialize(), function () {
                     $('.rightOpenbtn').click();
-                     treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                     LoadTreeGrid();
                 });
             }
             function DeleteTask() {
@@ -460,8 +377,7 @@
                         $('#DeleteRejectedModal').modal('show');
                     }
                     $('.rightOpenbtn').click();
-                    //SetRightAsideToAdd();
-                    treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                    LoadTreeGrid();
                 });
             });
 
@@ -497,7 +413,7 @@
 
             $('#btn_EndTask').click(function () {
                 $.post("@Url.Action("EndTask", "ProjectDetails")", { taskGuid: $('#RA_taskGUID').val() }, function (data) {
-                        treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                    LoadTreeGrid();
                 });
                 rejectAcceptModal.modal('hide');
             });
@@ -505,7 +421,7 @@
             function Acceptance(_confirm, _taskGUID, _reviewScore, _reviewDescription) {
                 $.post("@Url.Action("TaskAcceptance", "ProjectDetails")", { isConfirmed: _confirm, taskGuid: _taskGUID, reviewScore: _reviewScore, reviewDescription: _reviewDescription },
                     function (data) {
-                        treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                        LoadTreeGrid();
                     });
             }
 
@@ -538,7 +454,7 @@
                     }
                     else if ($(this).attr('name') == "reviveBtn"){
                         $.post("@Url.Action("TaskRevivedToInProgress", "ProjectDetails")", { taskGuid: $(this).attr('data-taskGUID') }, function (data) {
-                            treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                            LoadTreeGrid();
                         });
                     }
                 });

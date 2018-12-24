@@ -379,7 +379,9 @@
     </Compile>
     <Compile Include="Hubs\ChatHub.cs" />
     <Compile Include="Models\BLL\CostBL.cs" />
+    <Compile Include="Models\BLL\DocumentBL.cs" />
     <Compile Include="Models\BLL\NotificationBL.cs" />
+    <Compile Include="Models\BLL\PermissionBL.cs" />
     <Compile Include="Models\BLL\ProjectMemberBL.cs" />
     <Compile Include="Models\BLL\ProjectsBL.cs" />
     <Compile Include="Models\BLL\TasksBL.cs" />
@@ -499,6 +501,7 @@
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\ViewModel\ResourceFilterVM.cs" />
     <Compile Include="Models\ViewModel\TaskVM.cs" />
+    <Compile Include="Models\ViewModel\WidgetsVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
@@ -596,11 +599,14 @@
     <Content Include="Views\Tasks\TreeGridPartialView_backSide.cshtml" />
     <Content Include="Views\Tasks\AsideRightPartialView.cshtml" />
     <Content Include="Views\Document\GetDocument.cshtml" />
-    <Content Include="Views\Perfomance\ChanceProject.cshtml" />
+    <Content Include="Views\Perfomance\ChoseProject.cshtml" />
     <Content Include="Views\Document\Modified.cshtml" />
+    <Content Include="Views\Document\Delete.cshtml" />
+    <Content Include="Views\Document\MDelete.cshtml" />
     <Content Include="Views\ProjectDetails\AsideRightReadOnlyMode.cshtml" />
     <Content Include="Views\ProjectDetails\AsideRightEditMode.cshtml" />
     <Content Include="Views\ProjectDetails\AsideRightInsertMode.cshtml" />
+    <Content Include="Views\Home\GetMyTasksWidgetPV.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
