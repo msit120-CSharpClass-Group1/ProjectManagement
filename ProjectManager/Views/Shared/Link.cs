@@ -35,6 +35,7 @@ namespace ProjectManager.Views.Shared
         public static string BackStage_JobTitle = "JobTitle/Index";
         public static string BackStage_Department = "Department/Index/";
         public static string BackStage_Permissions = "Permissions/Index";
+        public static string BackStage_ProjectMembers = "ProjectMBackside/Index";
         //修改密碼
         public static string ChangePassword = "Members/Edit";
         //登出

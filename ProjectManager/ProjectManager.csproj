@@ -366,6 +366,7 @@
     <Compile Include="Controllers\ProjectCategoryController.cs" />
     <Compile Include="Controllers\ProjectDetailsController.cs" />
     <Compile Include="Controllers\MyBoardController.cs" />
+    <Compile Include="Controllers\ProjectMBacksideController.cs" />
     <Compile Include="Controllers\ProjectMemberController.cs" />
     <Compile Include="Controllers\ProjectsBacksideController.cs" />
     <Compile Include="Controllers\ProjectStatusController.cs" />
@@ -603,6 +604,8 @@
     <Content Include="Views\ProjectDetails\AsideRightEditMode.cshtml" />
     <Content Include="Views\ProjectDetails\AsideRightInsertMode.cshtml" />
     <Content Include="Views\Home\GetMyTasksWidgetPV.cshtml" />
+    <Content Include="Views\ProjectMBackside\Index.cshtml" />
+    <Content Include="Views\ProjectMBackside\EditMember.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
