@@ -14,6 +14,12 @@ namespace ProjectManager.Models
     
     public partial class Members
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Members()
+        {
+            this.Calendar = new HashSet<Calendar>();
+        }
+    
         public System.Guid MemberGUID { get; set; }
         public Nullable<System.Guid> EmployeeGUID { get; set; }
         public string MemberID { get; set; }
@@ -25,5 +31,7 @@ namespace ProjectManager.Models
     
         public virtual Employee Employee { get; set; }
         public virtual Permissions Permissions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Calendar> Calendar { get; set; }
     }
 }

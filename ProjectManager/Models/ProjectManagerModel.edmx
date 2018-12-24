@@ -4,13 +4,13 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ProjectManagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ProjectManagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Calendar">
           <Key>
             <PropertyRef Name="CalendarGUID" />
           </Key>
           <Property Name="CalendarGUID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="EmployeeGUID" Type="uniqueidentifier" />
+          <Property Name="MemberGUID" Type="uniqueidentifier" />
           <Property Name="Subject" Type="nvarchar" MaxLength="100" />
           <Property Name="Description" Type="nvarchar" MaxLength="300" />
           <Property Name="Start" Type="datetime" Nullable="false" />
@@ -24,12 +24,12 @@
             <PropertyRef Name="DashBoardGUID" />
           </Key>
           <Property Name="DashBoardGUID" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="SequenceID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PositionTop" Type="int" />
-          <Property Name="PositionLeft" Type="int" />
           <Property Name="WidgetWidth" Type="int" />
           <Property Name="WidgetHeight" Type="int" />
           <Property Name="EmployeeGUID" Type="uniqueidentifier" />
+          <Property Name="WidgetGUID" Type="uniqueidentifier" />
+          <Property Name="OrderID" Type="int" />
+          <Property Name="ColumnNum" Type="int" />
         </EntityType>
         <EntityType Name="Department">
           <Key>
@@ -298,14 +298,41 @@
         </EntityType>
         <EntityType Name="WidgetDetail">
           <Key>
+            <PropertyRef Name="WidgetDetailGUID" />
+          </Key>
+          <Property Name="WidgetDetailGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DashBoardGUID" Type="uniqueidentifier" />
+          <Property Name="TaskGUID" Type="uniqueidentifier" />
+          <Property Name="ProjectGuid" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="Widgets">
+          <Key>
             <PropertyRef Name="WidgetGUID" />
           </Key>
           <Property Name="WidgetGUID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="WidgetName" Type="nvarchar" MaxLength="50" />
-          <Property Name="WidgetDesc" Type="nvarchar" MaxLength="50" />
-          <Property Name="WidgetImagePath" Type="nvarchar" MaxLength="50" />
-          <Property Name="DashBoardGUID" Type="uniqueidentifier" />
+          <Property Name="WidgetDesc" Type="nvarchar(max)" />
+          <Property Name="WidgetImage" Type="varbinary(max)" />
+          <Property Name="WidgetDetailGUID" Type="uniqueidentifier" />
+          <Property Name="AdminPermit" Type="bit" />
+          <Property Name="DirectorPermit" Type="bit" />
+          <Property Name="MinisterPermit" Type="bit" />
+          <Property Name="ProjectManagerPermit" Type="bit" />
+          <Property Name="ProgrammerPermit" Type="bit" />
+          <Property Name="ActionResultName" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <Association Name="FK_Calendar_Members">
+          <End Role="Members" Type="Self.Members" Multiplicity="0..1" />
+          <End Role="Calendar" Type="Self.Calendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Members">
+              <PropertyRef Name="MemberGUID" />
+            </Principal>
+            <Dependent Role="Calendar">
+              <PropertyRef Name="MemberGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Dashboard_Employee">
           <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
           <End Role="Dashboard" Type="Self.Dashboard" Multiplicity="*" />
@@ -315,6 +342,18 @@
             </Principal>
             <Dependent Role="Dashboard">
               <PropertyRef Name="EmployeeGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Dashboard_Widgets">
+          <End Role="Widgets" Type="Self.Widgets" Multiplicity="0..1" />
+          <End Role="Dashboard" Type="Self.Dashboard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Widgets">
+              <PropertyRef Name="WidgetGUID" />
+            </Principal>
+            <Dependent Role="Dashboard">
+              <PropertyRef Name="WidgetGUID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -774,15 +813,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_WidgetDetail_Dashboard">
-          <End Role="Dashboard" Type="Self.Dashboard" Multiplicity="0..1" />
-          <End Role="WidgetDetail" Type="Self.WidgetDetail" Multiplicity="*" />
+        <Association Name="FK_Widgets_WidgetDetail">
+          <End Role="WidgetDetail" Type="Self.WidgetDetail" Multiplicity="0..1" />
+          <End Role="Widgets" Type="Self.Widgets" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Dashboard">
-              <PropertyRef Name="DashBoardGUID" />
+            <Principal Role="WidgetDetail">
+              <PropertyRef Name="WidgetDetailGUID" />
             </Principal>
-            <Dependent Role="WidgetDetail">
-              <PropertyRef Name="DashBoardGUID" />
+            <Dependent Role="Widgets">
+              <PropertyRef Name="WidgetDetailGUID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -816,8 +855,17 @@
           <EntitySet Name="Tasks" EntityType="Self.Tasks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TaskStatus" EntityType="Self.TaskStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WidgetDetail" EntityType="Self.WidgetDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Widgets" EntityType="Self.Widgets" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Calendar_Members" Association="Self.FK_Calendar_Members">
+            <End Role="Members" EntitySet="Members" />
+            <End Role="Calendar" EntitySet="Calendar" />
+          </AssociationSet>
           <AssociationSet Name="FK_Dashboard_Employee" Association="Self.FK_Dashboard_Employee">
             <End Role="Employee" EntitySet="Employee" />
+            <End Role="Dashboard" EntitySet="Dashboard" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Dashboard_Widgets" Association="Self.FK_Dashboard_Widgets">
+            <End Role="Widgets" EntitySet="Widgets" />
             <End Role="Dashboard" EntitySet="Dashboard" />
           </AssociationSet>
           <AssociationSet Name="FK_Department_Department" Association="Self.FK_Department_Department">
@@ -972,44 +1020,15 @@
             <End Role="TaskStatus" EntitySet="TaskStatus" />
             <End Role="Tasks" EntitySet="Tasks" />
           </AssociationSet>
-          <AssociationSet Name="FK_WidgetDetail_Dashboard" Association="Self.FK_WidgetDetail_Dashboard">
-            <End Role="Dashboard" EntitySet="Dashboard" />
+          <AssociationSet Name="FK_Widgets_WidgetDetail" Association="Self.FK_Widgets_WidgetDetail">
             <End Role="WidgetDetail" EntitySet="WidgetDetail" />
+            <End Role="Widgets" EntitySet="Widgets" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ProjectManagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="Calendar">
-          <Key>
-            <PropertyRef Name="CalendarGUID" />
-          </Key>
-          <Property Name="CalendarGUID" Type="Guid" Nullable="false" />
-          <Property Name="EmployeeGUID" Type="Guid" />
-          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="Start" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="EndDay" Type="DateTime" Precision="3" />
-          <Property Name="ThemeColor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="IsFullDay" Type="Boolean" Nullable="false" />
-          <Property Name="EventID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-        </EntityType>
-        <EntityType Name="Dashboard">
-          <Key>
-            <PropertyRef Name="DashBoardGUID" />
-          </Key>
-          <Property Name="DashBoardGUID" Type="Guid" Nullable="false" />
-          <Property Name="SequenceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PositionTop" Type="Int32" />
-          <Property Name="PositionLeft" Type="Int32" />
-          <Property Name="WidgetWidth" Type="Int32" />
-          <Property Name="WidgetHeight" Type="Int32" />
-          <Property Name="EmployeeGUID" Type="Guid" />
-          <NavigationProperty Name="Employee" Relationship="Self.FK_Dashboard_Employee" FromRole="Dashboard" ToRole="Employee" />
-          <NavigationProperty Name="WidgetDetail" Relationship="Self.FK_WidgetDetail_Dashboard" FromRole="Dashboard" ToRole="WidgetDetail" />
-        </EntityType>
         <EntityType Name="Department">
           <Key>
             <PropertyRef Name="DepartmentGUID" />
@@ -1079,7 +1098,6 @@
           <Property Name="TitleGUID" Type="Guid" />
           <Property Name="Picture" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BytesPicture" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <NavigationProperty Name="Dashboard" Relationship="Self.FK_Dashboard_Employee" FromRole="Employee" ToRole="Dashboard" />
           <NavigationProperty Name="Department" Relationship="Self.FK_Employee_Department" FromRole="Employee" ToRole="Department" />
           <NavigationProperty Name="Document" Relationship="Self.FK_Document_Employee" FromRole="Employee" ToRole="Document" />
           <NavigationProperty Name="DocumentModified" Relationship="Self.FK_DocumentModified_Employee" FromRole="Employee" ToRole="DocumentModified" />
@@ -1094,6 +1112,7 @@
           <NavigationProperty Name="ProjectMembers" Relationship="Self.FK_ProjectMembers_Employee" FromRole="Employee" ToRole="ProjectMembers" />
           <NavigationProperty Name="TaskDetail" Relationship="Self.FK_TaskDetail_Employee" FromRole="Employee" ToRole="TaskDetail" />
           <NavigationProperty Name="Tasks" Relationship="Self.FK_Tasks_Employee" FromRole="Employee" ToRole="Tasks" />
+          <NavigationProperty Name="Dashboard" Relationship="ProjectManagementModel.FK_Dashboard_Employee" FromRole="Employee" ToRole="Dashboard" />
         </EntityType>
         <EntityType Name="JobTitle">
           <Key>
@@ -1142,6 +1161,7 @@
           <Property Name="PermissionsGUID" Type="Guid" />
           <NavigationProperty Name="Employee" Relationship="Self.FK_Members_Employee" FromRole="Members" ToRole="Employee" />
           <NavigationProperty Name="Permissions" Relationship="Self.FK_Members_Permissions" FromRole="Members" ToRole="Permissions" />
+          <NavigationProperty Name="Calendar" Relationship="ProjectManagementModel.FK_Calendar_Members" FromRole="Members" ToRole="Calendar" />
         </EntityType>
         <EntityType Name="Permissions">
           <Key>
@@ -1342,41 +1362,6 @@
           <Property Name="TaskStatusName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Tasks" Relationship="Self.FK_Tasks_TaskStatus" FromRole="TaskStatus" ToRole="Tasks" />
         </EntityType>
-        <EntityType Name="WidgetDetail">
-          <Key>
-            <PropertyRef Name="WidgetGUID" />
-          </Key>
-          <Property Name="WidgetGUID" Type="Guid" Nullable="false" />
-          <Property Name="WidgetName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="WidgetDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="WidgetImagePath" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="DashBoardGUID" Type="Guid" />
-          <NavigationProperty Name="Dashboard" Relationship="Self.FK_WidgetDetail_Dashboard" FromRole="WidgetDetail" ToRole="Dashboard" />
-        </EntityType>
-        <Association Name="FK_Dashboard_Employee">
-          <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
-          <End Role="Dashboard" Type="Self.Dashboard" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Employee">
-              <PropertyRef Name="EmployeeGUID" />
-            </Principal>
-            <Dependent Role="Dashboard">
-              <PropertyRef Name="EmployeeGUID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_WidgetDetail_Dashboard">
-          <End Role="Dashboard" Type="Self.Dashboard" Multiplicity="0..1" />
-          <End Role="WidgetDetail" Type="Self.WidgetDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Dashboard">
-              <PropertyRef Name="DashBoardGUID" />
-            </Principal>
-            <Dependent Role="WidgetDetail">
-              <PropertyRef Name="DashBoardGUID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Department_Department">
           <End Role="Department" Type="Self.Department" Multiplicity="0..1" />
           <End Role="Department1" Type="Self.Department" Multiplicity="*" />
@@ -1814,8 +1799,6 @@
           <End Role="Project" Type="Self.Project" Multiplicity="*" />
         </Association>
         <EntityContainer Name="ProjectManagementEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Calendar" EntityType="Self.Calendar" />
-          <EntitySet Name="Dashboard" EntityType="Self.Dashboard" />
           <EntitySet Name="Department" EntityType="Self.Department" />
           <EntitySet Name="Document" EntityType="Self.Document" />
           <EntitySet Name="DocumentCategory" EntityType="Self.DocumentCategory" />
@@ -1839,15 +1822,6 @@
           <EntitySet Name="TaskResource" EntityType="Self.TaskResource" />
           <EntitySet Name="Tasks" EntityType="Self.Tasks" />
           <EntitySet Name="TaskStatus" EntityType="Self.TaskStatus" />
-          <EntitySet Name="WidgetDetail" EntityType="Self.WidgetDetail" />
-          <AssociationSet Name="FK_Dashboard_Employee" Association="Self.FK_Dashboard_Employee">
-            <End Role="Employee" EntitySet="Employee" />
-            <End Role="Dashboard" EntitySet="Dashboard" />
-          </AssociationSet>
-          <AssociationSet Name="FK_WidgetDetail_Dashboard" Association="Self.FK_WidgetDetail_Dashboard">
-            <End Role="Dashboard" EntitySet="Dashboard" />
-            <End Role="WidgetDetail" EntitySet="WidgetDetail" />
-          </AssociationSet>
           <AssociationSet Name="FK_Department_Department" Association="Self.FK_Department_Department">
             <End Role="Department" EntitySet="Department" />
             <End Role="Department1" EntitySet="Department" />
@@ -1998,41 +1972,138 @@
           </AssociationSet>
           <FunctionImport Name="InsertProjectForDemo" />
           <FunctionImport Name="InsertTasksForDemo" />
+          <EntitySet Name="Calendar" EntityType="ProjectManagementModel.Calendar" />
+          <AssociationSet Name="FK_Calendar_Members" Association="ProjectManagementModel.FK_Calendar_Members">
+            <End Role="Members" EntitySet="Members" />
+            <End Role="Calendar" EntitySet="Calendar" />
+          </AssociationSet>
+          <EntitySet Name="WidgetDetail" EntityType="ProjectManagementModel.WidgetDetail" />
+          <EntitySet Name="Widgets" EntityType="ProjectManagementModel.Widgets" />
+          <AssociationSet Name="FK_Widgets_WidgetDetail" Association="ProjectManagementModel.FK_Widgets_WidgetDetail">
+            <End Role="WidgetDetail" EntitySet="WidgetDetail" />
+            <End Role="Widgets" EntitySet="Widgets" />
+          </AssociationSet>
+          <EntitySet Name="Dashboard" EntityType="ProjectManagementModel.Dashboard" />
+          <AssociationSet Name="FK_Dashboard_Employee" Association="ProjectManagementModel.FK_Dashboard_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="Dashboard" EntitySet="Dashboard" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Dashboard_Widgets" Association="ProjectManagementModel.FK_Dashboard_Widgets">
+            <End Role="Widgets" EntitySet="Widgets" />
+            <End Role="Dashboard" EntitySet="Dashboard" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Calendar">
+          <Key>
+            <PropertyRef Name="CalendarGUID" />
+          </Key>
+          <Property Name="CalendarGUID" Type="Guid" Nullable="false" />
+          <Property Name="MemberGUID" Type="Guid" />
+          <Property Name="Subject" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Start" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDay" Type="DateTime" Precision="3" />
+          <Property Name="ThemeColor" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="IsFullDay" Type="Boolean" Nullable="false" />
+          <Property Name="EventID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Members" Relationship="ProjectManagementModel.FK_Calendar_Members" FromRole="Calendar" ToRole="Members" />
+        </EntityType>
+        <Association Name="FK_Calendar_Members">
+          <End Type="ProjectManagementModel.Members" Role="Members" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Calendar" Role="Calendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Members">
+              <PropertyRef Name="MemberGUID" />
+            </Principal>
+            <Dependent Role="Calendar">
+              <PropertyRef Name="MemberGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="WidgetDetail">
+          <Key>
+            <PropertyRef Name="WidgetDetailGUID" />
+          </Key>
+          <Property Name="WidgetDetailGUID" Type="Guid" Nullable="false" />
+          <Property Name="DashBoardGUID" Type="Guid" />
+          <Property Name="TaskGUID" Type="Guid" />
+          <Property Name="ProjectGuid" Type="Guid" />
+          <NavigationProperty Name="Widgets" Relationship="ProjectManagementModel.FK_Widgets_WidgetDetail" FromRole="WidgetDetail" ToRole="Widgets" />
+        </EntityType>
+        <EntityType Name="Widgets">
+          <Key>
+            <PropertyRef Name="WidgetGUID" />
+          </Key>
+          <Property Name="WidgetGUID" Type="Guid" Nullable="false" />
+          <Property Name="WidgetName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WidgetDesc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="WidgetImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="WidgetDetailGUID" Type="Guid" />
+          <Property Name="AdminPermit" Type="Boolean" />
+          <Property Name="DirectorPermit" Type="Boolean" />
+          <Property Name="MinisterPermit" Type="Boolean" />
+          <Property Name="ProjectManagerPermit" Type="Boolean" />
+          <Property Name="ProgrammerPermit" Type="Boolean" />
+          <Property Name="ActionResultName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="WidgetDetail" Relationship="ProjectManagementModel.FK_Widgets_WidgetDetail" FromRole="Widgets" ToRole="WidgetDetail" />
+          <NavigationProperty Name="Dashboard" Relationship="ProjectManagementModel.FK_Dashboard_Widgets" FromRole="Widgets" ToRole="Dashboard" />
+        </EntityType>
+        <Association Name="FK_Widgets_WidgetDetail">
+          <End Type="ProjectManagementModel.WidgetDetail" Role="WidgetDetail" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Widgets" Role="Widgets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WidgetDetail">
+              <PropertyRef Name="WidgetDetailGUID" />
+            </Principal>
+            <Dependent Role="Widgets">
+              <PropertyRef Name="WidgetDetailGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Dashboard">
+          <Key>
+            <PropertyRef Name="DashBoardGUID" />
+          </Key>
+          <Property Name="DashBoardGUID" Type="Guid" Nullable="false" />
+          <Property Name="WidgetWidth" Type="Int32" />
+          <Property Name="WidgetHeight" Type="Int32" />
+          <Property Name="EmployeeGUID" Type="Guid" />
+          <Property Name="WidgetGUID" Type="Guid" />
+          <Property Name="OrderID" Type="Int32" />
+          <Property Name="ColumnNum" Type="Int32" />
+          <NavigationProperty Name="Employee" Relationship="ProjectManagementModel.FK_Dashboard_Employee" FromRole="Dashboard" ToRole="Employee" />
+          <NavigationProperty Name="Widgets" Relationship="ProjectManagementModel.FK_Dashboard_Widgets" FromRole="Dashboard" ToRole="Widgets" />
+        </EntityType>
+        <Association Name="FK_Dashboard_Employee">
+          <End Type="ProjectManagementModel.Employee" Role="Employee" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Dashboard" Role="Dashboard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Employee">
+              <PropertyRef Name="EmployeeGUID" />
+            </Principal>
+            <Dependent Role="Dashboard">
+              <PropertyRef Name="EmployeeGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Dashboard_Widgets">
+          <End Type="ProjectManagementModel.Widgets" Role="Widgets" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Dashboard" Role="Dashboard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Widgets">
+              <PropertyRef Name="WidgetGUID" />
+            </Principal>
+            <Dependent Role="Dashboard">
+              <PropertyRef Name="WidgetGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ProjectManagementModelStoreContainer" CdmEntityContainer="ProjectManagementEntities">
-          <EntitySetMapping Name="Calendar">
-            <EntityTypeMapping TypeName="ProjectManagementModel.Calendar">
-              <MappingFragment StoreEntitySet="Calendar">
-                <ScalarProperty Name="CalendarGUID" ColumnName="CalendarGUID" />
-                <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Start" ColumnName="Start" />
-                <ScalarProperty Name="EndDay" ColumnName="EndDay" />
-                <ScalarProperty Name="ThemeColor" ColumnName="ThemeColor" />
-                <ScalarProperty Name="IsFullDay" ColumnName="IsFullDay" />
-                <ScalarProperty Name="EventID" ColumnName="EventID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Dashboard">
-            <EntityTypeMapping TypeName="ProjectManagementModel.Dashboard">
-              <MappingFragment StoreEntitySet="Dashboard">
-                <ScalarProperty Name="DashBoardGUID" ColumnName="DashBoardGUID" />
-                <ScalarProperty Name="SequenceID" ColumnName="SequenceID" />
-                <ScalarProperty Name="PositionTop" ColumnName="PositionTop" />
-                <ScalarProperty Name="PositionLeft" ColumnName="PositionLeft" />
-                <ScalarProperty Name="WidgetWidth" ColumnName="WidgetWidth" />
-                <ScalarProperty Name="WidgetHeight" ColumnName="WidgetHeight" />
-                <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Department">
             <EntityTypeMapping TypeName="ProjectManagementModel.Department">
               <MappingFragment StoreEntitySet="Department">
@@ -2312,17 +2383,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="WidgetDetail">
-            <EntityTypeMapping TypeName="ProjectManagementModel.WidgetDetail">
-              <MappingFragment StoreEntitySet="WidgetDetail">
-                <ScalarProperty Name="WidgetGUID" ColumnName="WidgetGUID" />
-                <ScalarProperty Name="WidgetName" ColumnName="WidgetName" />
-                <ScalarProperty Name="WidgetDesc" ColumnName="WidgetDesc" />
-                <ScalarProperty Name="WidgetImagePath" ColumnName="WidgetImagePath" />
-                <ScalarProperty Name="DashBoardGUID" ColumnName="DashBoardGUID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <AssociationSetMapping Name="ProjectRelationDept" TypeName="ProjectManagementModel.ProjectRelationDept" StoreEntitySet="ProjectRelationDept">
             <EndProperty Name="Department">
               <ScalarProperty Name="DepartmentGUID" ColumnName="DepartmentGUID" />
@@ -2333,6 +2393,61 @@
           </AssociationSetMapping>
           <FunctionImportMapping FunctionImportName="InsertProjectForDemo" FunctionName="ProjectManagementModel.Store.InsertProjectForDemo" />
           <FunctionImportMapping FunctionImportName="InsertTasksForDemo" FunctionName="ProjectManagementModel.Store.InsertTasksForDemo" />
+          <EntitySetMapping Name="Calendar">
+            <EntityTypeMapping TypeName="ProjectManagementModel.Calendar">
+              <MappingFragment StoreEntitySet="Calendar">
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="IsFullDay" ColumnName="IsFullDay" />
+                <ScalarProperty Name="ThemeColor" ColumnName="ThemeColor" />
+                <ScalarProperty Name="EndDay" ColumnName="EndDay" />
+                <ScalarProperty Name="Start" ColumnName="Start" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="MemberGUID" ColumnName="MemberGUID" />
+                <ScalarProperty Name="CalendarGUID" ColumnName="CalendarGUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WidgetDetail">
+            <EntityTypeMapping TypeName="ProjectManagementModel.WidgetDetail">
+              <MappingFragment StoreEntitySet="WidgetDetail">
+                <ScalarProperty Name="ProjectGuid" ColumnName="ProjectGuid" />
+                <ScalarProperty Name="TaskGUID" ColumnName="TaskGUID" />
+                <ScalarProperty Name="DashBoardGUID" ColumnName="DashBoardGUID" />
+                <ScalarProperty Name="WidgetDetailGUID" ColumnName="WidgetDetailGUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Widgets">
+            <EntityTypeMapping TypeName="ProjectManagementModel.Widgets">
+              <MappingFragment StoreEntitySet="Widgets">
+                <ScalarProperty Name="ActionResultName" ColumnName="ActionResultName" />
+                <ScalarProperty Name="ProgrammerPermit" ColumnName="ProgrammerPermit" />
+                <ScalarProperty Name="ProjectManagerPermit" ColumnName="ProjectManagerPermit" />
+                <ScalarProperty Name="MinisterPermit" ColumnName="MinisterPermit" />
+                <ScalarProperty Name="DirectorPermit" ColumnName="DirectorPermit" />
+                <ScalarProperty Name="AdminPermit" ColumnName="AdminPermit" />
+                <ScalarProperty Name="WidgetDetailGUID" ColumnName="WidgetDetailGUID" />
+                <ScalarProperty Name="WidgetImage" ColumnName="WidgetImage" />
+                <ScalarProperty Name="WidgetDesc" ColumnName="WidgetDesc" />
+                <ScalarProperty Name="WidgetName" ColumnName="WidgetName" />
+                <ScalarProperty Name="WidgetGUID" ColumnName="WidgetGUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dashboard">
+            <EntityTypeMapping TypeName="ProjectManagementModel.Dashboard">
+              <MappingFragment StoreEntitySet="Dashboard">
+                <ScalarProperty Name="ColumnNum" ColumnName="ColumnNum" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="WidgetGUID" ColumnName="WidgetGUID" />
+                <ScalarProperty Name="EmployeeGUID" ColumnName="EmployeeGUID" />
+                <ScalarProperty Name="WidgetHeight" ColumnName="WidgetHeight" />
+                <ScalarProperty Name="WidgetWidth" ColumnName="WidgetWidth" />
+                <ScalarProperty Name="DashBoardGUID" ColumnName="DashBoardGUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

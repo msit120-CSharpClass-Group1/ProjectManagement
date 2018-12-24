@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ProjectManager.Models;
+using Newtonsoft.Json;
 
 namespace ProjectManager.Controllers
 {
@@ -17,10 +18,11 @@ namespace ProjectManager.Controllers
             return View();
         }
 
-        public JsonResult GetEvents()
+        public ActionResult GetEvents()
         {
-            var events = CalRepo.GetCollections().ToList();
-            return Json(events, JsonRequestBehavior.AllowGet);
+            Guid memberGUID = new Guid(Request.Cookies["MemberGUID"].Value);
+            var events = CalRepo.GetCollections().Where(n => n.MemberGUID == memberGUID).ToList();
+            return Content(JsonConvert.SerializeObject(events), "application/json");
         }
 
         [HttpPost]
@@ -33,9 +35,8 @@ namespace ProjectManager.Controllers
                     //Update the event
                     var v = CalRepo.GetCollections().Where(a => a.EventID == e.EventID).FirstOrDefault();
                     if (v != null)
-                    {
-                    //v.CalendarGUID = Guid.NewGuid();                       
-                        v.CalendarGUID = e.CalendarGUID;
+                    {                                            
+                        //v.CalendarGUID = e.CalendarGUID;
                         v.Subject = e.Subject;
                         v.Start = e.Start;
                         v.EndDay = e.EndDay;
