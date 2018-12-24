@@ -49,7 +49,7 @@
 
     </style>
 }
-
+<button class="btn btn-outline-dark" id="ExportExcel"><i class="fas fa-file-excel"></i>匯出Excel</button>
 <form method="post" action="~/ProjectMember/EditTaskM" class="form-horizontal" style="margin:auto">
     <div class="row">
         <div class="col-3">
@@ -135,7 +135,7 @@
         @section asideRight{
             <!--TaskList Start-->
             <h3 class="asidetitle">工作項目</h3>
-            <div style="margin:20px;overflow-y: hidden;height:300px">
+            <div style="margin:20px;overflow-y: scroll;height:300px">
                 <ul class="list-group" id="taskitem">
                     @foreach (var _task in (IEnumerable<Tasks>)ViewBag.LoadTask)
                     {
@@ -398,6 +398,21 @@
                             ReloadTasksList();
                         }
                     });
+                })
+                $("#ExportExcel").click(function ()
+                {
+                     $.ajax({
+                        url: '@Url.Action("ExportToExcel", "ProjectMember")',
+                        data: {},
+                        success: function (data)
+                        {
+                            alert("匯出成功");
+                        }
+                    });
+                })
+                $("#submitBtn").click(function ()
+                {
+                    $(this).text("分配中");
                 })
             })
     </script>

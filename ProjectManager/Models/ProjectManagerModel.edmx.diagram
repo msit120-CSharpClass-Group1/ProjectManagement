@@ -5,7 +5,6 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="beae7add21f64e49a25047e8ff1d9a5a" Name="Diagram1" ZoomLevel="52">
-        <EntityTypeShape EntityType="ProjectManagementModel.Calendar" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ProjectManagementModel.Dashboard" Width="1.5" PointX="5.25" PointY="17.875" />
         <EntityTypeShape EntityType="ProjectManagementModel.Department" Width="1.5" PointX="0.75" PointY="13.75" />
         <EntityTypeShape EntityType="ProjectManagementModel.Document" Width="1.5" PointX="8.25" PointY="17.375" />
@@ -72,6 +71,8 @@
         <AssociationConnector Association="ProjectManagementModel.FK_Tasks_TaskStatus" />
         <AssociationConnector Association="ProjectManagementModel.FK_Widgets_WidgetDetail" />
         <AssociationConnector Association="ProjectManagementModel.ProjectRelationDept" />
+        <EntityTypeShape EntityType="ProjectManagementModel.Calendar" Width="1.5" PointX="3" PointY="9.625" />
+        <AssociationConnector Association="ProjectManagementModel.FK_Calendar_Members" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -15,7 +15,7 @@ namespace ProjectManager.Models
     public partial class Calendar
     {
         public System.Guid CalendarGUID { get; set; }
-        public Nullable<System.Guid> EmployeeGUID { get; set; }
+        public Nullable<System.Guid> MemberGUID { get; set; }
         public string Subject { get; set; }
         public string Description { get; set; }
         public System.DateTime Start { get; set; }
@@ -23,5 +23,7 @@ namespace ProjectManager.Models
         public string ThemeColor { get; set; }
         public bool IsFullDay { get; set; }
         public int EventID { get; set; }
+    
+        public virtual Members Members { get; set; }
     }
 }
