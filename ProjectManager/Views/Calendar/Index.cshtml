@@ -111,7 +111,7 @@
             var events = [];
             var selectedEvent = null;
 
-            $('#li_Calendar').addClass('active');
+            $('#calendar').addClass('active');
 
             FetchEventAndRenderCalendar();
             function FetchEventAndRenderCalendar()
@@ -131,7 +131,7 @@
                             color: v.ThemeColor,
                             allDay: v.IsFullDay
                         });
-                        CalGUID = v.CalendarGUID;
+                        CalGUID = v.CalendarGUID;   
                     })
 
                     GenerateCalender(events);
@@ -288,6 +288,16 @@
                 $('#myModalSave').modal();
             };
 
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i].trim();
+                    if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+                }
+                return "";
+            }
+
             $('#btnSave').click(function ()
             {
                 //Validation/
@@ -320,6 +330,7 @@
                 var data =
                 {
                     CalendarGUID: $("#calGUID").val(),
+                    MemberGUID: getCookie("MemberGUID"),
                     EventID: $('#hdEventID').val(),
                     Subject: $('#txtSubject').val().trim(),
                     Start: $('#txtStart').val().trim(),
