@@ -126,7 +126,11 @@ namespace ProjectManager.Controllers
 
         public ActionResult GetGantt(Guid id)
         {
-            var tasks = taskRepo.GetCollections().Where(n => n.ProjectGUID == id).GetLeafTasks().Select(n=>new { n.StartDate,n.EndDate,n.TaskName}).ToList();
+            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            var tasks = taskRepo.GetCollections().Where(n => n.ProjectGUID == id).GetLeafTasks().Select(n => 
+            new { actualStart = (n.StartDate.Value.ToUniversalTime()- origin).TotalMilliseconds,
+                actualEnd = (n.EndDate.Value.ToUniversalTime() - origin).TotalMilliseconds,
+                name = n.TaskName}).OrderBy(n=>n.actualStart).ToList();
             return Json(tasks, JsonRequestBehavior.AllowGet);
         }
 
