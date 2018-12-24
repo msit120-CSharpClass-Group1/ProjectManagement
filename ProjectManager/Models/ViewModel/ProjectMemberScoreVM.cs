@@ -7,15 +7,15 @@ namespace ProjectManager.Models
 {
     public class ProjectMemberScoreVM
     {
-        public System.Guid EmployeeGUID { get; set; }
+        public System.Guid? EmployeeGUID { get; set; }
         public IEnumerable<Guid> ProjectGUID { get; set; }
         public Guid? ProjectGUIDShow { get; set; }
         public IEnumerable<string> ProjectName { get; set; }
         public Nullable<byte> PMscore { get; set; }
         public Nullable<byte> Selfscore { get; set; }
         public virtual Project Project { get; set; }
-        public List<Project> InProgressProject { get; set; }
-        public List<Project> ClosedProject { get; set; }
+        public IEnumerable<ProjectMembers> InProgressProject { get; set; }
+        public IEnumerable<ProjectMembers> ClosedProject { get; set; }
         public IEnumerable<Group<string, ProjectMembers>> GroupMembersScore { get; set; }
         public IEnumerable<Group<string, ProjectMemberScoreVM>> GetPMscore { get; set; }
         public IEnumerable<Group<string, ProjectMemberScoreVM>> GetMemberCount { get; set; }
@@ -28,5 +28,6 @@ namespace ProjectManager.Models
         public IEnumerable<Group<string, Tasks>> GroupMemberTaskScore { get; set; }
         public IEnumerable<Group<string, Tasks>> GetTaskAVGScore { get; set; }
         public IEnumerable<ProjectMembers> ProjectMembers { get; set; }
+        public IEnumerable<Members> Members { get; set; }
     }
 }
