@@ -1,0 +1,18 @@
+﻿@using ProjectManager.Models;
+@model IEnumerable<DisplayTaskStatusCountVM>
+<h5 class="ml-4">進行中專案 > 工作項目:</h5>
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-3 col-sm-12">
+                <div class="card shadow-sm">
+                    <div class="card-body ">
+                        <h5 class="card-title">@item.TaskStatusName</h5>
+                        <h1 class="float-right mr-3">@item.Count</h1>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
