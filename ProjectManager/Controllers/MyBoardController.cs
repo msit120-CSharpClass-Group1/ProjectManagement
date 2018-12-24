@@ -21,6 +21,7 @@ namespace ProjectManager.Controllers
         Repository<ProjectManager.Models.Project> p = new Repository<ProjectManager.Models.Project>();
         Repository<ProjectManager.Models.Members> m = new Repository<ProjectManager.Models.Members>();
         Repository<ProjectManager.Models.Employee> e = new Repository<ProjectManager.Models.Employee>();
+        Repository<ProjectManager.Models.ProjectMembers> pm = new Repository<ProjectManager.Models.ProjectMembers>();
 
         public ActionResult Index(Guid id, string EmployeeName)
         {
@@ -35,10 +36,22 @@ namespace ProjectManager.Controllers
             VM.TaskDetail = td.GetCollections();
             ViewBag.UserName = e.Find(id).EmployeeName+ "的看板";
             q.ToList();
+            var _pm = pm.GetCollections().Where(n => n.EmployeeGUID == id && n.ProjectGUID.ToString() == PID).ToList();
+            foreach (var _p in _pm)
+            {
+                if (!(bool)_p.IsRead)
+                {
+                    _p.IsRead = true;
+                    pm.Update(_p);
+                }
+            }
             foreach (var task in VM.Tasks)
             {
-                task.IsRead = true;
-                t.Update(task);
+                if(!(bool)task.IsRead)
+                {
+                    task.IsRead = true;
+                    t.Update(task);
+                }
             }
             return View(VM);
         }
