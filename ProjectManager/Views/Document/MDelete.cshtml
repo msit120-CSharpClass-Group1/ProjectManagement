@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ProjectManager.Models.DocumentModified>
+
+@{
+    var doc = (ProjectManager.Models.Document)ViewBag.doc;
+    ViewBag.Title = doc.DocumentName;
+    ViewBag.Activity = "文件管理";
+
+
+}
+@section style
+{
+    <style>
+        .topnav a {
+            cursor: pointer;
+        }
+
+        .click {
+            background-color: #dddfe2;
+        }
+
+        thead {
+            background-color: darkcyan;
+            color: white;
+            text-align: center;
+        }
+    </style>
+}
+
+<table id="tb_Document" class="table table-bordered">
+    <thead>
+        <tr>
+            <td>版本</td>
+            <td>修改人員</td>
+            <td>修改日期</td>
+            <td>下載</td>
+            <td>刪除</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var docm in Model)
+        {
+
+        <tr>
+            <td data-modifiedguid="@docm.ModifiedGUID"><p>@docm.Version</p></td>
+            <td><p>@docm.Employee.EmployeeName</p></td>
+            <td><p>@docm.ModifiedDate.Value</p></td>
+            <td style="width:75px"><a name="btn_download" class="btn btn-info download" href="~/Document/MDownLoad/@docm.ModifiedGUID">下載</a></td>
+            <td style="width:75px"><a name="btn_delete" class="btn btn-danger" href="~/Document/_MDelete/@docm.ModifiedGUID">刪除</a></td>
+        </tr>
+        }
+    </tbody>
+</table>

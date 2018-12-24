@@ -171,7 +171,8 @@ namespace ProjectManager.Controllers
             _tasks.AssignedDate = null;
             _tasks.TaskStatusID = 1;
             _tasks.IsRead = true;
-            tasks.Update(_tasks);           
+            tasks.Update(_tasks);
+            _tasks.ParentTaskStatusUpdate(tasks, 1);
             return Content("已退回分配工作項目清單");
         }
 

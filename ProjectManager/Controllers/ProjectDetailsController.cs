@@ -18,8 +18,10 @@ namespace ProjectManager.Controllers
         Repository<Tasks> taskRepo = new Repository<Tasks>();
         Repository<Project> projectRepo = new Repository<Project>();   
         Repository<ProjectMembers> projectMembersRepo = new Repository<ProjectMembers>();
+        Repository<TaskStatus> StatusRepo = new Repository<TaskStatus>();
         Repository<Members> memberRepo = new Repository<Members>();
         Repository<JobTitle> jobTitleRepo = new Repository<JobTitle>();
+        Repository<TaskDetail> taskDetailRepo = new Repository<TaskDetail>();
 
         #region Project Report Chart
         public ActionResult ProjectReport(Guid? ProjectGUID)
@@ -86,22 +88,23 @@ namespace ProjectManager.Controllers
             });
             return Json(_data, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult RootTasksResourceSum()
+        public ActionResult TasksByStatus()
         {
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
-            var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
-            var rootTasks = _tasks.GetRootTasks();
-            ChartData<MultiColorChartDataset<int>> _data = new ChartData<MultiColorChartDataset<int>>();
-            _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MultiColorChartDataset<int>()
+
+            ChartData<SingleColorChartDataset<int>> chartData = new ChartData<SingleColorChartDataset<int>>();
+
+            chartData.labels = StatusRepo.GetCollections().Select(s => s.TaskStatusName).ToList();
+
+            chartData.datasets.Add(new SingleColorChartDataset<int>
             {
-                label = "dataset",
-                backgroundColor = colors,
-                borderColor = colors,
-                data = rootTasks.GetRootTasksResourceSum(_tasks).ToList()
+                label = "Count",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = StatusRepo.GetCollections().CountTasksByStatus(_projectGUID),
             });
-            return Json(_data, JsonRequestBehavior.AllowGet);
+
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
         #endregion
@@ -161,7 +164,8 @@ namespace ProjectManager.Controllers
                 return RedirectToAction("Index", "Projects");
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
-                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
+                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();    //.UpdateStatusAndDuration(); 這方法會讓頁面延遲1秒..            
+
             return PartialView(tasks);
         }        
         public ActionResult AsideRightReadOnlyMode(Guid? taskGUID)
@@ -248,6 +252,10 @@ namespace ProjectManager.Controllers
                 {
                     foreach (var child in allTasks.AsQueryable().Reverse())
                     {
+                        foreach (var item in child.TaskDetail.ToList())
+                        {
+                            taskDetailRepo.Delete(taskDetailRepo.Find(item.TaskDetailGUID));
+                        }
                         taskRepo.Delete(taskRepo.Find(child.TaskGUID));
                     }
                 }
@@ -283,7 +291,8 @@ namespace ProjectManager.Controllers
         [HttpPost]
         public ActionResult TaskAcceptance(bool isConfirmed, Guid? taskGuid, int? reviewScore, string reviewDescription)
         {
-            Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
+            Tasks _task = taskRepo.Find(taskGuid);
+            var tasks =taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid);
             if (reviewScore != null && isConfirmed)
             {
                 if (reviewScore > 100)
@@ -291,9 +300,18 @@ namespace ProjectManager.Controllers
                 _task.ReviewScore = byte.Parse(reviewScore.ToString());
                 _task.ReviewDescription = reviewDescription;
             }
-           
-            _task.TaskStatusID = isConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;
-            taskRepo.Update(_task);
+            if (isConfirmed)
+            {
+                _task.TaskStatusID = (int)TasksBL.Task_Status.Completed;
+                taskRepo.Update(_task);
+                _task.ParentTaskStatusUpdate(taskRepo,(int)TasksBL.Task_Status.Completed);                
+            }
+            else
+            {
+                _task.TaskStatusID = (int)TasksBL.Task_Status.InProgress;
+                taskRepo.Update(_task);
+                _task.ParentTaskStatusUpdate(taskRepo, (int)TasksBL.Task_Status.InProgress);
+            }
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -302,6 +320,7 @@ namespace ProjectManager.Controllers
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
             _task.TaskStatusID = (int)TasksBL.Task_Status.InProgress;
             taskRepo.Update(_task);
+            _task.ParentTaskStatusUpdate(taskRepo, (int)TasksBL.Task_Status.InProgress);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -310,6 +329,7 @@ namespace ProjectManager.Controllers
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
             _task.TaskStatusID = (int)TasksBL.Task_Status.Closed;
             taskRepo.Update(_task);
+            _task.ParentTaskStatusUpdate(taskRepo, (int)TasksBL.Task_Status.Closed);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpGet]

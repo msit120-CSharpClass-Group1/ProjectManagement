@@ -15,6 +15,12 @@ namespace ProjectManager.Models
                 case "DateDesc":
                     ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.Date);
                     break;
+                case "ProjectName":
+                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.ProjectName);
+                    break;
+                case "ProjectNameDesc":
+                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.ProjectName);
+                    break;
                 case "TaskName":
                     ProjectResourceList = ProjectResourceList.OrderBy(r => r.TaskName);
                     break;
@@ -121,7 +127,7 @@ namespace ProjectManager.Models
             return result;
         }
 
-        public static IEnumerable<int> GetCostsByProject(this IEnumerable<Project> projects)
+        public static IEnumerable<int> GetCostsByProjects(this IEnumerable<Project> projects)
         {
             List<int> result = new List<int>();
 
@@ -133,6 +139,25 @@ namespace ProjectManager.Models
                 {
                     sum += (int)task.TaskResource.Select(r => r.UnitPrice * r.Quantity).Sum();
                 }
+                result.Add(sum);
+            }
+
+            return result;
+        }
+
+        public static IEnumerable<int> GetCostsByTasks(this IEnumerable<Tasks> rootTasks)
+        {
+            List<int> result = new List<int>();
+
+            foreach (var root in rootTasks)
+            {
+                int sum = 0;
+
+                foreach (var child in root.GetAllChildTasks())
+                {
+                    sum += (int)child.TaskResource.Select(r => r.UnitPrice * r.Quantity).Sum();
+                }
+
                 result.Add(sum);
             }
 
@@ -207,13 +232,13 @@ namespace ProjectManager.Models
             return result;
         }
 
-        public static IEnumerable<int> CountTasksByStatus(this IEnumerable<TaskStatus> statuses)
+        public static IEnumerable<int> CountTasksByStatus(this IEnumerable<TaskStatus> statuses,Guid projectGUID)
         {
             List<int> result = new List<int>();
 
             foreach(var status in statuses)
             {
-                int count = status.Tasks.GetLeafTasks().Count();
+                int count = status.Tasks.Where(t => t.ProjectGUID == projectGUID).GetLeafTasks().Count();
                 result.Add(count);
             }
 

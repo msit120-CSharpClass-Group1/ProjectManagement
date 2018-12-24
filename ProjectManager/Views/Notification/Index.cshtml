@@ -52,7 +52,6 @@
             $('.projectLink').click(RedirectToMyBoard);
 
                     function RedirectToMyBoard() {
-                        console.log('231234')
                         $.post("@Url.Action("SetCookiesForMyBoard", "Home")", { projectGUID: $(this).attr("data-projectGUID") },
                     function (userGUID) {
                         location.href = "/MyBoard/Index/" + userGUID;

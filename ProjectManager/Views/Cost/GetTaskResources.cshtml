@@ -7,6 +7,7 @@
     <thead>
         <tr>
             <td style="min-width:150px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().Date).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByDate })<i class="fas fa-sort"></i></td>
+            <td class="project" style="min-width:155px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().ProjectName).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByProjectName })<i class="fas fa-sort"></i></td>
             <td style="min-width:155px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().TaskName).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByTaskName })<i class="fas fa-sort"></i></td>
             <td style="min-width:155px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().ResourceName).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByResourceName })<i class="fas fa-sort"></i></td>
             <td style="min-width:135px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().CategoryName).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByResourceCat })<i class="fas fa-sort"></i></td>
@@ -14,24 +15,25 @@
             <td style="min-width:105px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().UnitPrice).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByUnitPrice })<i class="fas fa-sort"></i></td>
             <td style="min-width:155px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().SubTotal).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortBySubTotal })<i class="fas fa-sort"></i></td>
             <td style="min-width:60px;width:300px;">@Html.DisplayNameFor(p => p.First().Description)</td>
-            <td colspan="2" style="min-width:60px;">編輯</td>
+            <td class="editor" colspan="2" style="min-width:60px;">編輯</td>
         </tr>
     </thead>
     <tbody>
         @foreach (var resource in Model)
         {
-            <tr>
-                <td><p>@resource.Date.ToShortDateString()</p></td>
-                <td data-taskguid="@resource.TaskGUID"><p>@resource.TaskName</p></td>
-                <td data-resourceguid="@resource.ResourceGUID"><p>@resource.ResourceName</p></td>
-                <td data-categoryid="@resource.CategoryID"><p>@resource.CategoryName</p></td>
-                <td class="text-sm-right"><p>@resource.Quantity</p></td>
-                <td class="text-sm-right" data-unitprice="@resource.UnitPrice"><p>@resource.UnitPrice.ToString("C0")</p></td>
-                <td class="text-sm-right"><p>@resource.SubTotal.ToString("C0")</p></td>
-                <td><p>@resource.Description</p></td>
-                <td class="text-center" style="width:75px"><button name="btn_edit" class="btn btn-info">編輯</button></td>
-                <td class="text-center" style="width:75px"><button name="btn_Del" class="btn btn-danger" data-toggle="modal" data-target="#DeleteExpModal">刪除</button></td>
-            </tr>
+        <tr data-id="@resource.ProjectGUID">
+            <td><p>@resource.Date.ToShortDateString()</p></td>
+            <td class="project"><p>@resource.ProjectName</p></td>
+            <td data-taskguid="@resource.TaskGUID"><p>@resource.TaskName</p></td>
+            <td data-resourceguid="@resource.ResourceGUID"><p>@resource.ResourceName</p></td>
+            <td data-categoryid="@resource.CategoryID"><p>@resource.CategoryName</p></td>
+            <td class="text-sm-right"><p>@resource.Quantity</p></td>
+            <td class="text-sm-right" data-unitprice="@resource.UnitPrice"><p>@resource.UnitPrice.ToString("C0")</p></td>
+            <td class="text-sm-right"><p>@resource.SubTotal.ToString("C0")</p></td>
+            <td><p>@resource.Description</p></td>
+            <td class="text-center editor" style="width:75px"><button name="btn_edit" class="btn btn-info">修改</button></td>
+            <td class="text-center editor" style="width:75px"><button name="btn_Del" class="btn btn-danger" data-toggle="modal" data-target="#DeleteExpModal">刪除</button></td>
+        </tr>
         }
     </tbody>
 </table>
