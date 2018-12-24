@@ -399,17 +399,6 @@
                         }
                     });
                 })
-                @*$("#ExportExcel").click(function ()
-                {
-                     $.ajax({
-                        url: '@Url.Action("ExportToExcel", "ProjectMember")',
-                        data: {},
-                        success: function (data)
-                        {
-                            alert("匯出成功");
-                        }
-                    });
-                })*@
                 $("#submitBtn").click(function ()
                 {
                     $(this).text("分配中");

@@ -193,7 +193,6 @@ namespace ProjectManager.Controllers
             Response.Flush();
             Response.End();
             return View("AssignTask");
-            //return View("AssignTask");
         }
     }
 }
