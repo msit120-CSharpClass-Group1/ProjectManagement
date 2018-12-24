@@ -1,0 +1,26 @@
+﻿@model IEnumerable<ProjectManager.Models.Project>
+@{
+    ViewBag.Title = "團隊成員管理後台";
+}
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>專案名稱</th>
+            <th>承接部門</th>
+            <th>團隊成員數量</th>
+            <th>修改成員</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var _project in Model)
+        {
+        <tr>
+            <td>@_project.ProjectName</td>
+            <td>@_project.Department.DepartmentName</td>
+            <td>@_project.ProjectMembers.Count()</td>
+            <td><a href="~/ProjectMBackside/EditMember?ProjectGUID=@_project.ProjectGUID" class="btn btn-info">修改成員</a></td>
+        </tr>
+        }
+    </tbody>
+</table>
