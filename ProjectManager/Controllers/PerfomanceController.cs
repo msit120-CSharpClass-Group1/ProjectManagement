@@ -82,21 +82,26 @@ namespace ProjectManager.Controllers
             return Content("success");
         }
 
-        public ActionResult ChoseProject()//自評界面(選擇專案)
+        public ActionResult ChoseProject()
         {
             var memberGUID = new Guid(Request.Cookies["MemberGUID"].Value);
             var character = memberRepo.GetCollections().Where(m => m.MemberGUID == memberGUID).Select(m => m.EmployeeGUID).FirstOrDefault();
             ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
             vm.ProjectMembers = ProjectMembersRepo.GetCollections().Where(p => p.EmployeeGUID == character && p.Project.ProjectStatusID ==1);
             vm.EmployeeGUID = character;
-            return View(vm);
+            var test = vm.ProjectMembers.Select(t => t.ProjectGUID).FirstOrDefault();
+            //if ()
+            //{
+                return View(vm);
+            //}
+            //return RedirectToAction("Index", "Projects");
         }
-        public ActionResult ScoreByMySelf(Guid? ProjectGUID) //自評界面(問項)
+        public ActionResult ScoreByMySelf(Guid? ProjectGUID)
         {
             ProjectMemberScoreVM vm = new ProjectMemberScoreVM();            
             return View();
         }
-        public ActionResult EditSelfScore(ProjectMembers _projectMember)//編輯自評
+        public ActionResult EditSelfScore(ProjectMembers _projectMember)
         {
             var pm = ProjectMembersRepo.Find(_projectMember.EmployeeGUID, _projectMember.ProjectGUID);
             pm.Selfscore = _projectMember.Selfscore;

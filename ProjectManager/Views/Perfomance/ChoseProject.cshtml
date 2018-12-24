@@ -57,15 +57,24 @@
 <p hidden id="thisEmpName">@Model.EmployeeGUID</p>
 <div class="container">
     <div class="row">
-        <div class="col-4">
+        <div class="col-4">            
             @foreach (var _project in Model.ProjectMembers)
-            {                
+            {
+
+                var TaskAVG = _project.Project.Tasks.Where(p => p.EmployeeGUID == Model.EmployeeGUID).Average(t => t.ReviewScore);
                 <div style="background-color:darkcyan;width:10px"class="cardA">
                     <div class="card border-info mb-3 shadow p-3 mb-5 bg-white rounded" style="width:300px; height:200px;">
                         <div class="card-header" title="@_project.ProjectGUID">@_project.Project.ProjectName</div>
                         <div class="card-body text-info">
                             <h5 class="card-title">@_project.Project.ProjectStatus.ProjectStatusName<span class="badge badge-pill badge-primary" style="float:right">平均驗收分數</span></h5>
-                            <h1><span class="badge badge-secondary" style="float:right;margin-right:5px"><i class="fas fa-award"></i>@Math.Round((double)@_project.Project.Tasks.Average(t => t.ReviewScore), 0)</span></h1>
+                            @if (TaskAVG == null)
+                            {
+                                <h1><span class="badge badge-secondary" style="float:right;margin-right:5px"><i class="fas fa-award"></i>無</span></h1>
+                            }
+                            else
+                            {
+                                <h1><span class="badge badge-secondary" style="float:right;margin-right:5px"><i class="fas fa-award"></i>@Math.Round((double)@_project.Project.Tasks.Where(p => p.EmployeeGUID == Model.EmployeeGUID).Average(t => t.ReviewScore), 0)</span></h1>
+                            }
                             @if (_project.Selfscore == null)
                             {
                                 <a href="#" class="ScoreBtn" style="margin-top:10px" data-toggle="modal" data-target=".bd-example-modal-lg" id="ScoreBtn">我要評分</a>
