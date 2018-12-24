@@ -1,0 +1,3 @@
+<connectionStrings>
+    <add name="ProjectManagementEntities" connectionString="metadata=res://*/Models.PTSModel.csdl|res://*/Models.PTSModel.ssdl|res://*/Models.PTSModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=(LocalDB)\MSSQLLocalDB;attachdbfilename=|DataDirectory|\ProjectManagement.mdf;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" />
+  </connectionStrings>
