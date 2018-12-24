@@ -105,6 +105,7 @@ namespace ProjectManager.Controllers
                             _tasks.TaskStatusID = 2;
                             _tasks.IsRead = false;
                             tasks.Update(_tasks);
+                            _tasks.ParentTaskStatusUpdate(tasks, 2);
                         }
                     }
                 }
@@ -154,6 +155,7 @@ namespace ProjectManager.Controllers
             _tasks.TaskStatusID = 1;
             _tasks.IsRead = true;
             tasks.Update(_tasks);
+            _tasks.ParentTaskStatusUpdate(tasks, 1);
             return Content("已退回分配工作項目清單");
         }
     }

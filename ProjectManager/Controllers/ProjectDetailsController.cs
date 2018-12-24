@@ -20,6 +20,7 @@ namespace ProjectManager.Controllers
         Repository<ProjectMembers> projectMembersRepo = new Repository<ProjectMembers>();
         Repository<Members> memberRepo = new Repository<Members>();
         Repository<JobTitle> jobTitleRepo = new Repository<JobTitle>();
+        Repository<TaskDetail> taskDetailRepo = new Repository<TaskDetail>();
 
         #region Project Report Chart
         public ActionResult ProjectReport(Guid? ProjectGUID)
@@ -161,7 +162,8 @@ namespace ProjectManager.Controllers
                 return RedirectToAction("Index", "Projects");
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
-                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
+                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();    //.UpdateStatusAndDuration(); 這方法會讓頁面延遲1秒..            
+
             return PartialView(tasks);
         }        
         public ActionResult AsideRightReadOnlyMode(Guid? taskGUID)
@@ -248,6 +250,10 @@ namespace ProjectManager.Controllers
                 {
                     foreach (var child in allTasks.AsQueryable().Reverse())
                     {
+                        foreach (var item in child.TaskDetail.ToList())
+                        {
+                            taskDetailRepo.Delete(taskDetailRepo.Find(item.TaskDetailGUID));
+                        }
                         taskRepo.Delete(taskRepo.Find(child.TaskGUID));
                     }
                 }
@@ -283,7 +289,8 @@ namespace ProjectManager.Controllers
         [HttpPost]
         public ActionResult TaskAcceptance(bool isConfirmed, Guid? taskGuid, int? reviewScore, string reviewDescription)
         {
-            Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
+            Tasks _task = taskRepo.Find(taskGuid);
+            var tasks =taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid);
             if (reviewScore != null && isConfirmed)
             {
                 if (reviewScore > 100)
@@ -291,9 +298,18 @@ namespace ProjectManager.Controllers
                 _task.ReviewScore = byte.Parse(reviewScore.ToString());
                 _task.ReviewDescription = reviewDescription;
             }
-           
-            _task.TaskStatusID = isConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;
-            taskRepo.Update(_task);
+            if (isConfirmed)
+            {
+                _task.TaskStatusID = (int)TasksBL.Task_Status.Completed;
+                taskRepo.Update(_task);
+                _task.ParentTaskStatusUpdate(taskRepo,(int)TasksBL.Task_Status.Completed);                
+            }
+            else
+            {
+                _task.TaskStatusID = (int)TasksBL.Task_Status.InProgress;
+                taskRepo.Update(_task);
+                _task.ParentTaskStatusUpdate(taskRepo, (int)TasksBL.Task_Status.InProgress);
+            }
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -302,6 +318,7 @@ namespace ProjectManager.Controllers
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
             _task.TaskStatusID = (int)TasksBL.Task_Status.InProgress;
             taskRepo.Update(_task);
+            _task.ParentTaskStatusUpdate(taskRepo, (int)TasksBL.Task_Status.InProgress);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -310,6 +327,7 @@ namespace ProjectManager.Controllers
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
             _task.TaskStatusID = (int)TasksBL.Task_Status.Closed;
             taskRepo.Update(_task);
+            _task.ParentTaskStatusUpdate(taskRepo, (int)TasksBL.Task_Status.Closed);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
