@@ -15,6 +15,9 @@ namespace ProjectManager.Controllers
         Repository<Tasks> taskRepo = new Repository<Tasks>();
         Repository<TaskStatus> taskStatusRepo = new Repository<TaskStatus>();
         Repository<Members> memberRepo = new Repository<Members>();
+        Repository<Employee> employeeRepo = new Repository<Employee>();
+        Repository<ProjectMembers> projectMemberRepo = new Repository<ProjectMembers>();
+        Repository<Project> projectRepo = new Repository<Project>();
         Repository<JobTitle> jobTitleRepo = new Repository<JobTitle>();
         Repository<WidgetDetail> widgetDetailRepo = new Repository<WidgetDetail>();
         Repository<Widgets> widgetRepo = new Repository<Widgets>();
@@ -30,7 +33,7 @@ namespace ProjectManager.Controllers
             ViewBag.UserGUID = member.EmployeeGUID;
             ViewBag.UserName = member.Employee.EmployeeName;
             ViewBag.TasksSum = tasksInProgress.Count();
-            
+
             //Dictionary<string, int> taskStatusDic = new Dictionary<string, int>();
             //for (int i = 2; i <=5 ; i++)
             //{
@@ -38,7 +41,7 @@ namespace ProjectManager.Controllers
             //    taskStatusRepo.GetCollections().Where(s => s.TaskStatusID == i).Select(s => s.TaskStatusName).FirstOrDefault(),
             //    tasksInProgress.Where(t => t.TaskStatus.TaskStatusID == i).Count());
             //}
-            
+
             List<DisplayTaskStatusCountVM> statusCounts = new List<DisplayTaskStatusCountVM>() {
                 new DisplayTaskStatusCountVM()
                 {
@@ -66,18 +69,28 @@ namespace ProjectManager.Controllers
             switch ((Emp_Title)Enum.Parse(typeof(Emp_Title), titleID.ToString()))
             {
                 case Emp_Title.Admin:
+                    var _projectlist0 = projectMemberRepo.GetCollections().Where(n => n.EmployeeGUID == member.EmployeeGUID).Select(n => new {n.ProjectGUID,n.Project.ProjectName });
+                    ViewBag.ProjectList = new SelectList(_projectlist0, "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.AdminPermit == true).ToList();
                     break;
                 case Emp_Title.PG:
+                    var _projectlist1 = projectMemberRepo.GetCollections().Where(n => n.EmployeeGUID == member.EmployeeGUID).Select(n => new { n.ProjectGUID, n.Project.ProjectName });
+                    ViewBag.ProjectList = new SelectList(_projectlist1, "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.ProgrammerPermit == true).ToList();
                     break;
                 case Emp_Title.Minister:
+                    var _projectlist3 = projectRepo.GetCollections().Select(n => new { n.ProjectGUID, n.ProjectName });
+                    ViewBag.ProjectList = new SelectList(_projectlist3, "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.MinisterPermit == true).ToList();
                     break;
                 case Emp_Title.PM:
+                    var _projectlist5 = projectRepo.GetCollections().Where(n => n.InChargeDeptPMGUID == member.EmployeeGUID).Select(n => new { n.ProjectGUID, n.ProjectName });
+                    ViewBag.ProjectList = new SelectList(_projectlist5, "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.ProjectManagerPermit == true).ToList();
                     break;
                 case Emp_Title.Director:
+                    var _projectlist4 = projectRepo.GetCollections().Select(n => new { n.ProjectGUID, n.ProjectName });
+                    ViewBag.ProjectList = new SelectList(_projectlist4, "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.DirectorPermit == true).ToList();
                     break;
                 default:
@@ -109,5 +122,13 @@ namespace ProjectManager.Controllers
             Response.Cookies["PID"].Value = projectGUID.ToString();
             return Json(userGUID, JsonRequestBehavior.AllowGet);
         }
+
+
+        public ActionResult GetGantt(Guid id)
+        {
+            var tasks = taskRepo.GetCollections().Where(n => n.ProjectGUID == id).GetLeafTasks().Select(n=>new { n.StartDate,n.EndDate,n.TaskName}).ToList();
+            return Json(tasks, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

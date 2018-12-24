@@ -81,7 +81,7 @@
 
     </div>
     <div class="col-5">
-        <form id="ResourceFilter" class="hide" style="min-width:410px;">
+        <form id="ResourceFilter" class="hide" style="min-width:425px;">
             <div class="form-group row">
                 <lable class="input-group-text" for="filter_StartDate">依日期篩選：</lable>
                 <div>
@@ -315,19 +315,40 @@
 
             LoadProjects();
             LoadResources();
+            InitTasks();
 
             $("#RequiredDeptGUID").change(function ()
             {
                 LoadProjects();
                 LoadResources();
+                InitTasks();
             });
 
             $("#Select_ProjectName").change(function ()
             {
                 LoadResources();
-                LoadTasks();
-                document.getElementById("ResourceFilter").reset();
+                var ProjectGuid = $("#Select_ProjectName>:selected").data('projectguid');
+                LoadTasks(ProjectGuid);
+                InitTasks();
+                //document.getElementById("ResourceFilter").reset();
             });
+
+            function EnableEditor(ProjectGuid)
+            {
+                var editor = $(".editor");
+                var project = $(".project");
+
+                if (ProjectGuid)
+                {
+                    editor.show();
+                    project.hide();
+                }
+                else
+                {
+                    editor.hide();
+                    project.show();
+                }
+            }
 
             $("#ResourceFilter :input").change(LoadResources);
 
@@ -384,23 +405,25 @@
 
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
 
+                        EnableEditor(projectGUID);
                         Binding();
 
                     }).fadeIn();
                     result.fadeIn();
                     pager.fadeIn();
                 filter.fadeIn();
+            }
 
+            function InitTasks()
+            {
                 var optionlabel = $("<option></option>").text("請先選擇專案").val("");
                 var TaskSelector = $("#TaskGUID");
                 TaskSelector.html(optionlabel);
                 $("#filter_TaskGUID").html(TaskSelector.html());
-
             }
 
-            function LoadTasks()
+            function LoadTasks(ProjectGuid)
             {
-                var ProjectGuid = $("#Select_ProjectName>:selected").data('projectguid');
                 $.getJSON("@Url.Action("GetTaskListByProjectGuid", "Cost")", { ProjectGuid: ProjectGuid }, function (tasks)
                 {
                     var optionlabel = $("<option></option>").text("請選擇工作").val("");
@@ -416,6 +439,7 @@
                     TaskGUID.html(docFrag);
                     $("#filter_TaskGUID").html(TaskGUID.html());
                 });
+
             };
 
             $(".rightOpenbtn").click(SetRightAsideToAdd)
@@ -612,13 +636,13 @@
                     $('#myRightsidenav').slideDown();
 
                     var DateArray = $(this).parents("tr").children("td:nth-child(1)").text().split('/');
-                    var TaskGUID = $(this).parents("tr").children("td:nth-child(2)").data('taskguid');
-                    var ResourceGuid = $(this).parents("tr").children("td:nth-child(3)").data('resourceguid');
-                    var ResourceName = $(this).parents("tr").children("td:nth-child(3)").text();
-                    var CatID = $(this).parents("tr").children("td:nth-child(4)").data('categoryid');
-                    var Quantity = $(this).parents("tr").children("td:nth-child(5)").text();
-                    var UnitPrice = $(this).parents("tr").children("td:nth-child(6)").data('unitprice');
-                    var Description = $(this).parents("tr").children("td:nth-child(8)").text();
+                    var TaskGUID = $(this).parents("tr").children("td:nth-child(3)").data('taskguid');
+                    var ResourceGuid = $(this).parents("tr").children("td:nth-child(4)").data('resourceguid');
+                    var ResourceName = $(this).parents("tr").children("td:nth-child(4)").text();
+                    var CatID = $(this).parents("tr").children("td:nth-child(5)").data('categoryid');
+                    var Quantity = $(this).parents("tr").children("td:nth-child(6)").text();
+                    var UnitPrice = $(this).parents("tr").children("td:nth-child(7)").data('unitprice');
+                    var Description = $(this).parents("tr").children("td:nth-child(9)").text();
 
                     $("#ResourceGUID").val(ResourceGuid);
                     $("#ResourceName").val(ResourceName);
@@ -666,11 +690,12 @@
                 $('.pagination a').click(function (e)
                 {
                     e.preventDefault();
+                    var ProjectGUID = $("#Select_ProjectName").val();
 
                     var datas =
                     {
                         DepartmentID: $("#RequiredDeptGUID").val(),
-                        ProjectID: $("#Select_ProjectName").val(),
+                        ProjectID: ProjectGUID,
                         sortBy: getCookie("sortBy"),
                         filter_StartDate: $("#filter_StartDate").val(),
                         filter_EndDate: $("#filter_EndDate").val(),
@@ -682,6 +707,7 @@
                     $("#PartialView").load(Action, datas, function ()
                     {
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+                        EnableEditor(ProjectGUID);
                         Binding();
                     });
                 })
@@ -697,11 +723,11 @@
                 {
                     e.stopPropagation();
                     e.preventDefault();
-
+                    var ProjectGUID = $("#Select_ProjectName").val();
                     var datas =
                     {
                         DepartmentID: $("#RequiredDeptGUID").val(),
-                        ProjectID: $("#Select_ProjectName").val(),
+                        ProjectID: ProjectGUID,
                         filter_StartDate: $("#filter_StartDate").val(),
                         filter_EndDate: $("#filter_EndDate").val(),
                         filter_TaskGUID: $("#filter_TaskGUID").val(),
@@ -712,6 +738,7 @@
                     $("#PartialView").load(Action, datas, function ()
                     {
                         $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+                        EnableEditor(ProjectGUID);
                         Binding();
                     });
                 })

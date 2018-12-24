@@ -5,7 +5,9 @@
     ViewBag.Activity = "儀錶板";
 }
 @section style{
+   
     <style>
+       
         .projectLink {
             color: #007bff;
         }
@@ -41,68 +43,77 @@
             <div class="container-fluid"></div>
         </div>
         <div class="col-lg-6 col-sm-12">
-            <div class="container-fluid"></div>
+            <div class="container-fluid">
+                <div id="projectList">
+                    <lable for="ProjectList">專案列表：</lable>
+                    @Html.DropDownList("ProjectList", (SelectList)ViewBag.ProjectList, null, new { @class = "form-control custom-select", required = true })
+                </div>
+                <div id="container">
+
+                </div>
+            </div>
         </div>
 
         @*<div class="col-lg-6 col-sm-12 bg-white p-4">
-            <h5>分配給@(ViewBag.UserName)的工作(@(ViewBag.TasksSum))</h5>
-            <table id="TasksTable" class="table bg-white ">
-                <thead>
-                    <tr>
-                        <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().TaskName)</th>
-                        <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().TaskStatusID)</th>
-                        <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().Project.ProjectName)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var g in Model)
-                    {
-                        foreach (var task in g.group)
+                <h5>分配給@(ViewBag.UserName)的工作(@(ViewBag.TasksSum))</h5>
+                <table id="TasksTable" class="table bg-white ">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().TaskName)</th>
+                            <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().TaskStatusID)</th>
+                            <th>@Html.DisplayNameFor(m => m.group.FirstOrDefault().Project.ProjectName)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var g in Model)
                         {
-                            <tr data-TaskGUID="@task.TaskGUID">
-                                <td><span name="taskLink">@task.TaskName</span></td>
-                                <td>@task.TaskStatus.TaskStatusName</td>
-                                <td>
-                                    <span name="projectLink" class="projectLink" title="跳轉至我的任務個版" data-projectGUID="@task.ProjectGUID">
-                                        @task.Project.ProjectID-@task.Project.ProjectName
-                                        <sup><i class="fas fa-external-link-alt"></i></sup>
-                                    </span>
-                                </td>
-                            </tr>
+                            foreach (var task in g.group)
+                            {
+                                <tr data-TaskGUID="@task.TaskGUID">
+                                    <td><span name="taskLink">@task.TaskName</span></td>
+                                    <td>@task.TaskStatus.TaskStatusName</td>
+                                    <td>
+                                        <span name="projectLink" class="projectLink" title="跳轉至我的任務個版" data-projectGUID="@task.ProjectGUID">
+                                            @task.Project.ProjectID-@task.Project.ProjectName
+                                            <sup><i class="fas fa-external-link-alt"></i></sup>
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
                         }
-                    }
-                </tbody>
-            </table>
-        </div>*@
+                    </tbody>
+                </table>
+            </div>*@
     </div>
 </div>
 
 @section asideRight{
-<div class="container mt-3">
-    <h3 class="text-light ml-3">工作磚</h3>
-    <div style="margin:20px;overflow-y: scroll;height:450px;">
-        <ul class="list-group " id="taskitem">
-            @foreach (var _widget in (IEnumerable<Widgets>)ViewBag.Widgets)
-            {
-                <li class="list-group-item draggable align-middle" data-widgetGUID="@_widget.WidgetGUID" title="@_widget.WidgetDesc" >
-                    <div class="row">
-                        <div class="col-3"><img src="~/image/notask2.png" width="60px;" /></div>
-                        <div class="col-9 ">
-                            <h5>@_widget.WidgetName</h5>
-                            <p>@_widget.WidgetDesc</p>
+    <div class="container mt-3">
+        <h3 class="text-light ml-3">工作磚</h3>
+        <div style="margin:20px;overflow-y: scroll;height:450px;">
+            <ul class="list-group " id="taskitem">
+                @foreach (var _widget in (IEnumerable<Widgets>)ViewBag.Widgets)
+                {
+                    <li class="list-group-item draggable align-middle" data-widgetGUID="@_widget.WidgetGUID" title="@_widget.WidgetDesc">
+                        <div class="row">
+                            <div class="col-3"><img src="~/image/notask2.png" width="60px;" /></div>
+                            <div class="col-9 ">
+                                <h5>@_widget.WidgetName</h5>
+                                <p>@_widget.WidgetDesc</p>
+                            </div>
                         </div>
-                    </div>
-                </li>
-            }
-        </ul>
-    </div>    
-</div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
 
 }
 
 
 
-@section script{
+@section script{`
+   
     <script>
         $(document).ready(function () {
             $('#TasksTable').on('click', 'span[name="projectLink"]', null, RedirectToMyBoard);
@@ -113,7 +124,17 @@
                         location.href = "/MyBoard/Index/" + userGUID;
                     });
             }
-        });
+            $('#ProjectList').change(
+                function () {
+                    projectGUID = $(this).find(':selected').val();
+                    $.getJSON('@Url.Action("GetGantt", "Home")/' + projectGUID, function (datas) {
+                      
+                    })
+                }
+            )
+        }
+
+        );
     </script>
 
 }
