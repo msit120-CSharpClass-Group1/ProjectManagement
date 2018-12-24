@@ -3,9 +3,12 @@ using Newtonsoft.Json.Linq;
 using ProjectManager.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace ProjectManager.Controllers
 {
@@ -16,6 +19,9 @@ namespace ProjectManager.Controllers
         Repository<Department> dep = new Repository<Department>();
         Repository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
         Repository<Tasks> tasks = new Repository<Tasks>();
+        Repository<Models.Calendar> calRe = new Repository<Models.Calendar>();
+        Repository<Members> member = new Repository<Members>();
+
         // GET: ProjectMember
         public ActionResult Index()
         {
@@ -105,7 +111,16 @@ namespace ProjectManager.Controllers
                             _tasks.TaskStatusID = 2;
                             _tasks.IsRead = false;
                             tasks.Update(_tasks);
-                            _tasks.ParentTaskStatusUpdate(tasks, 2);
+                            Guid memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == EmpGUID).Select(m => m.MemberGUID).Single();
+                            Models.Calendar cal = new Models.Calendar();
+                            cal.MemberGUID = memberGUID;
+                            cal.Subject = _tasks.TaskName;
+                            cal.Start = (DateTime)_tasks.EstStartDate;
+                            cal.EndDay = (DateTime)_tasks.EstEndDate;
+                            cal.Description = _tasks.Description;
+                            cal.CalendarGUID = Guid.NewGuid();
+                            cal.ThemeColor = "Pink";
+                            calRe.Add(cal);
                         }
                     }
                 }
@@ -150,6 +165,8 @@ namespace ProjectManager.Controllers
         public ActionResult CancelTask(Guid TaskGUID)
         {
             Tasks _tasks = tasks.Find(TaskGUID);
+            Guid CalendarGUID = calRe.GetCollections().Where(c=>c.Subject == _tasks.TaskName).Select(c=>c.CalendarGUID).Single();
+            calRe.Delete(calRe.Find(CalendarGUID));
             _tasks.EmployeeGUID = null;
             _tasks.AssignedDate = null;
             _tasks.TaskStatusID = 1;
@@ -157,6 +174,26 @@ namespace ProjectManager.Controllers
             tasks.Update(_tasks);
             _tasks.ParentTaskStatusUpdate(tasks, 1);
             return Content("已退回分配工作項目清單");
+        }
+
+        public ActionResult ExportToExcel()
+        {
+            var gv = new GridView();
+            gv.DataSource = tasks.GetCollections().ToList();
+            gv.DataBind();
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=分配完成表單.xls");
+            Response.ContentType = "application/ms-excel";
+            Response.Charset = "";
+            StringWriter objStringWriter = new StringWriter();
+            HtmlTextWriter objHtmlTextWriter = new HtmlTextWriter(objStringWriter);
+            gv.RenderControl(objHtmlTextWriter);
+            Response.Output.Write(objStringWriter.ToString());
+            Response.Flush();
+            Response.End();
+            return View("AssignTask");
+            //return View("AssignTask");
         }
     }
 }

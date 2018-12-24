@@ -61,14 +61,14 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Owin, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.0\lib\net451\Microsoft.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.2.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.0\lib\net451\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.0.0\lib\net451\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -366,6 +366,7 @@
     <Compile Include="Controllers\ProjectCategoryController.cs" />
     <Compile Include="Controllers\ProjectDetailsController.cs" />
     <Compile Include="Controllers\MyBoardController.cs" />
+    <Compile Include="Controllers\ProjectMBacksideController.cs" />
     <Compile Include="Controllers\ProjectMemberController.cs" />
     <Compile Include="Controllers\ProjectsBacksideController.cs" />
     <Compile Include="Controllers\ProjectStatusController.cs" />
@@ -423,6 +424,7 @@
     <Compile Include="Models\Members.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MetaData\Calendar.cs" />
     <Compile Include="Models\MetaData\Project.cs" />
     <Compile Include="Models\MetaData\Employee.cs" />
     <Compile Include="Models\MetaData\Tasks.cs" />
@@ -612,6 +614,9 @@
     <Content Include="Views\Home\GetMyProjectsPV.cshtml" />
     <Content Include="Views\Home\TaskCardsPV.cshtml" />
     <Content Include="Views\Home\ProjectCardsPV.cshtml" />
+    <Content Include="Views\Home\GetMyTasksWidgetPV.cshtml" />
+    <Content Include="Views\ProjectMBackside\Index.cshtml" />
+    <Content Include="Views\ProjectMBackside\EditMember.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -5,8 +5,11 @@
     ViewBag.Activity = "儀錶板";
 }
 @section style{
-   
+
     <style>
+        .gantt {
+            height:500px;
+        }
         .projectLink {
             color: #007bff;
         }
@@ -52,13 +55,11 @@
                     <lable for="ProjectList">專案列表：</lable>
                     @Html.DropDownList("ProjectList", (SelectList)ViewBag.ProjectList, null, new { @class = "form-control custom-select", required = true })
                 </div>
-                <div id="container">
+                <div id="container" class="gantt">
 
                 </div>
             </div>
         </div>
-
-        
     </div>
 </div>
 
@@ -88,7 +89,8 @@
 
 
 @section script{
-   
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-core.min.js" type="text/javascript"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-gantt.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function () {
             $('#left_div').on('click', 'span[name="projectLink"]', null, RedirectToMyBoard);
@@ -103,9 +105,14 @@
             }
             $('#ProjectList').change(
                 function () {
+                    $('#container').html('');
                     projectGUID = $(this).find(':selected').val();
                     $.getJSON('@Url.Action("GetGantt", "Home")/' + projectGUID, function (datas) {
-                      
+                        console.log(datas);
+                        var treeData = anychart.data.tree(datas, "as-tree");
+                        var chart = anychart.ganttProject();      // chart type
+                        chart.data(treeData);                     // chart data
+                        chart.container('container').draw();      // set container and initiate drawing
                     })
                     if (getCookie("TitleGUID") == "724d4916-0f1b-417b-a927-25d04425146d") {
                         $('#left_div').load("@Url.Action("GetMyProjectsPV", "Home")" + "?projectGUID=" + $('#ProjectList').val());

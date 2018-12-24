@@ -183,6 +183,7 @@
                 var memberGUID = $(this).val();
                 var memberName = $(this).prev().text();
                 var chkboxcheck = $(this);
+                chkboxcheck.parent().removeClass().addClass("alert alert-success");
                 if (this.checked)
                 {
                     $(".panel").html($("<img></img>").attr("src", "/image/loading.gif"))
@@ -190,8 +191,7 @@
                         url: '@Url.Action("AddProjectMember", "ProjectMember")',
                         data: { "memberID": memberGUID},
                         success: function ()
-                        {                          
-                            chkboxcheck.parent().removeClass().addClass("alert alert-success");
+                        {                                                      
                             ReloadTeamCount();
                         }
                         , error: function () { alert(memberName + " 已存在於此專案"); chkboxcheck.prop('checked', false); ReloadTeamCount();}
@@ -199,6 +199,7 @@
                 }
                 else
                 {
+                    chkboxcheck.parent().removeClass().addClass("alert alert-primary");
                     $(".panel").html($("<img></img>").attr("src", "/image/loading.gif"))
                     $.ajax({
                         url: '@Url.Action("DeleteProjectMember", "ProjectMember")',
@@ -206,7 +207,6 @@
                         success: function ()
                         {
                             ReloadTeamCount();
-                            chkboxcheck.parent().removeClass().addClass("alert alert-primary");
                         }
                     });
                 }
@@ -286,12 +286,12 @@
             })
         
             function RemoveMember()
-            {
-                  $.ajax({
+            {                
+                $.ajax({
                              url: '@Url.Action("DeleteProjectMember", "ProjectMember")',
                              data: { "memberID": memberGUID },
                               success: function (){
-                               circleimg.remove();
+                              circleimg.remove();
                             }
                 });
                 var divlength = $("#scrollDiv").children().length;
