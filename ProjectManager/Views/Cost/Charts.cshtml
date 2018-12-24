@@ -52,8 +52,8 @@
             </div>
         </div>
         <div class="col-xl-6 col-lg-12">
-            <div id="TasksByStatusContainer" class="chart-container bg-light p-3">
-                <canvas id="TasksByStatusChart"></canvas>
+            <div id="SumOfResourcesChartContainer" class="chart-container bg-light p-3">
+                <canvas id="SumOfResourcesChart"></canvas>
             </div>
         </div>
     </div>
@@ -63,6 +63,7 @@
 @section script{
     <script src="~/Scripts/Chart.min.js"></script>
     <script>
+
         $(document).ready(function ()
         {
             $("#ul_costManagement").slideDown();
@@ -103,7 +104,7 @@
             Chart.defaults.global.defaultFontSize = 16;
             Chart.defaults.global.tooltips.titleFontStyle = 'normal';
 
-            TasksByStatus(CostsByCatsChart(OverallRatesChart(CostsByDepartmentsChart(function ()
+            SumOfResourcesChart(CostsByCatsChart(OverallRatesChart(CostsByDepartmentsChart(function ()
             {
                 $("#ChartContainer").fadeIn();
             }))));
@@ -112,8 +113,8 @@
             {
                 var data =
                 {
-                    DepartmentID: $("#RequiredDeptGUID").val(),
-                    ProjectID: $("#Select_ProjectName").val()
+                    DepartmentGUID: $("#RequiredDeptGUID").val(),
+                    ProjectGUID: $("#Select_ProjectName").val()
                 }
 
                 $.getJSON("@Url.Action("CostsByDepartments", "Cost")", data, function (datas)
@@ -132,6 +133,12 @@
                 {
                     myCostsByCatsChart.data = datas;
                     myCostsByCatsChart.update();
+                });
+
+                $.getJSON("@Url.Action("SumOfResources", "Cost")", data, function (datas)
+                {
+                    SumOfResourcesChart.data = datas;
+                    SumOfResourcesChart.update();
                 });
 
             }
@@ -268,13 +275,13 @@
 
             }
 
-            function TasksByStatus(callback)
+            function SumOfResourcesChart(callback)
             {
-                $.getJSON("@Url.Action("TasksByStatus", "Cost")", null, function (datas)
+                $.getJSON("@Url.Action("SumOfResources", "Cost")", null, function (datas)
                 {
-                    var myChart = new Chart($('#TasksByStatusChart'),
+                    SumOfResourcesChart = new Chart($('#SumOfResourcesChart'),
                         {
-                            type: 'bar',
+                            type: 'doughnut',
                             data: datas,
                             options:
                             {
@@ -282,12 +289,12 @@
                                 maintainAspectRatio: true,
                                 legend:
                                 {
-                                    position: 'top',
+                                    position: 'right',
                                 },
                                 title:
                                 {
                                     display: true,
-                                    text: '任務狀態統計',
+                                    text: '專案別費用統計',
                                     fontSize: 20,
                                     padding: 10,
                                 },
@@ -305,9 +312,7 @@
                     }
 
                 });
-
             }
-
         });
     </script>
 }
