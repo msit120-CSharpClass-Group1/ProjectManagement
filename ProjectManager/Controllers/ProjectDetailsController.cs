@@ -18,6 +18,8 @@ namespace ProjectManager.Controllers
         Repository<Tasks> taskRepo = new Repository<Tasks>();
         Repository<Project> projectRepo = new Repository<Project>();   
         Repository<ProjectMembers> projectMembersRepo = new Repository<ProjectMembers>();
+        Repository<TaskStatus> StatusRepo = new Repository<TaskStatus>();
+
 
         #region Project Report Chart
         public ActionResult ProjectReport(Guid? ProjectGUID)
@@ -80,22 +82,23 @@ namespace ProjectManager.Controllers
             });
             return Json(_data, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult RootTasksResourceSum()
+        public ActionResult TasksByStatus()
         {
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
-            var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
-            var rootTasks = _tasks.GetRootTasks();
-            ChartData<MultiColorChartDataset<int>> _data = new ChartData<MultiColorChartDataset<int>>();
-            _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MultiColorChartDataset<int>()
+
+            ChartData<SingleColorChartDataset<int>> chartData = new ChartData<SingleColorChartDataset<int>>();
+
+            chartData.labels = StatusRepo.GetCollections().Select(s => s.TaskStatusName).ToList();
+
+            chartData.datasets.Add(new SingleColorChartDataset<int>
             {
-                label = "dataset",
-                backgroundColor = colors,
-                borderColor = colors,
-                data = rootTasks.GetRootTasksResourceSum(_tasks).ToList()
+                label = "Count",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = StatusRepo.GetCollections().CountTasksByStatus(_projectGUID),
             });
-            return Json(_data, JsonRequestBehavior.AllowGet);
+
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
         #endregion
