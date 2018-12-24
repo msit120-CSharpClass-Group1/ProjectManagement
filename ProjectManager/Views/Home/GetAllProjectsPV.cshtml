@@ -1,0 +1,28 @@
+﻿@using ProjectManager.Models;
+@model IEnumerable<Grouped<string, Project>>
+<h5>本年度專案</h5>
+<table id="TasksTable" class="table bg-white ">
+    <thead>
+        @*class="thead-light"*@
+        <tr>
+            <th>負責專案經理</th>
+            <th>專案名稱</th>
+            <th>完成比率</th>
+            <th>節省工期比率</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var g in Model)
+        {
+            foreach (var project in g.group)
+            {
+                <tr>
+                    <td>@g.Key</td>
+                    <td>@project.ProjectName</td>
+                    <td>@(project.CompletedRate)%</td>
+                    <td>@(project.DurationSavedRate)%</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

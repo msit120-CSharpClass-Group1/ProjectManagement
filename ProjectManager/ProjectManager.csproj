@@ -489,6 +489,7 @@
     </Compile>
     <Compile Include="Models\ViewModel\BoardVM.cs" />
     <Compile Include="Models\ViewModel\ChartDataVM.cs" />
+    <Compile Include="Models\ViewModel\DisplayProjectStatusCountVM.cs" />
     <Compile Include="Models\ViewModel\DisplayTaskStatusCountVM.cs" />
     <Compile Include="Models\ViewModel\DisplayWorkloadVM.cs" />
     <Compile Include="Models\ViewModel\EmployeeInfo.cs" />
@@ -497,6 +498,7 @@
     <Compile Include="Models\ViewModel\ProjectMemberScoreVM.cs" />
     <Compile Include="Models\ViewModel\HolidaysVM.cs" />
     <Compile Include="Models\ViewModel\DocumentVM.cs" />
+    <Compile Include="Models\ViewModel\ProjectMemberTaskCompletedRateVM.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\ViewModel\ResourceFilterVM.cs" />
     <Compile Include="Models\ViewModel\TaskVM.cs" />
@@ -605,7 +607,11 @@
     <Content Include="Views\ProjectDetails\AsideRightReadOnlyMode.cshtml" />
     <Content Include="Views\ProjectDetails\AsideRightEditMode.cshtml" />
     <Content Include="Views\ProjectDetails\AsideRightInsertMode.cshtml" />
-    <Content Include="Views\Home\GetMyTasksWidgetPV.cshtml" />
+    <Content Include="Views\Home\GetMyTasksPV.cshtml" />
+    <Content Include="Views\Home\GetAllProjectsPV.cshtml" />
+    <Content Include="Views\Home\GetMyProjectsPV.cshtml" />
+    <Content Include="Views\Home\TaskCardsPV.cshtml" />
+    <Content Include="Views\Home\ProjectCardsPV.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
