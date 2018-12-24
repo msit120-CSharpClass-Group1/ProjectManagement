@@ -135,7 +135,7 @@
         @section asideRight{
             <!--TaskList Start-->
             <h3 class="asidetitle">工作項目</h3>
-            <div style="margin:20px;overflow-y: scroll;height:300px">
+            <div style="margin:20px;overflow-y: hidden;height:300px">
                 <ul class="list-group" id="taskitem">
                     @foreach (var _task in (IEnumerable<Tasks>)ViewBag.LoadTask)
                     {

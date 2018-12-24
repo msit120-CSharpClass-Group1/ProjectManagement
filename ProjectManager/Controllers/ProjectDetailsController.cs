@@ -18,17 +18,23 @@ namespace ProjectManager.Controllers
         Repository<Tasks> taskRepo = new Repository<Tasks>();
         Repository<Project> projectRepo = new Repository<Project>();   
         Repository<ProjectMembers> projectMembersRepo = new Repository<ProjectMembers>();
+        Repository<Members> memberRepo = new Repository<Members>();
+        Repository<JobTitle> jobTitleRepo = new Repository<JobTitle>();
 
         #region Project Report Chart
         public ActionResult ProjectReport(Guid? ProjectGUID)
-        {
+        {           
             if (ProjectGUID != null)
             {
                 Response.Cookies["ProjectGUID"].Value = ProjectGUID.ToString();
                 Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddDays(7);
             }
-
+            ViewBag.titleID = jobTitleRepo.Find(new Guid(Request.Cookies["TitleGUID"].Value)).TitleID;
             return View();
+        }
+        public ActionResult GetProjectDetailNav()
+        {
+            return PartialView("_PartialPageNav", "Shared");
         }
         public ActionResult RootTasksCompletedRate()
         {
@@ -106,6 +112,7 @@ namespace ProjectManager.Controllers
         {
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
+            var member = memberRepo.Find(new Guid(Request.Cookies["MemberGUID"].Value));
 
             ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
@@ -122,6 +129,8 @@ namespace ProjectManager.Controllers
             recentProject.ProjectStatusID = _project.ProjectStatusID;
             recentProject.ProjectCategoryID = _project.ProjectCategoryID;
             recentProject.ProjectSupervisorGUID = _project.ProjectSupervisorGUID;
+            recentProject.RequiredDeptGUID = _project.RequiredDeptGUID;
+            recentProject.RequiredDeptPMGUID = _project.RequiredDeptPMGUID;
             recentProject.EstStartDate = _project.EstStartDate;
             recentProject.EstEndDate = _project.EstEndDate;
             recentProject.StartDate = _project.StartDate;

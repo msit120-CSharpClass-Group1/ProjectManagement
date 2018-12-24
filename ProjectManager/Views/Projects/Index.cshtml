@@ -31,6 +31,31 @@
             float: right;
             margin-right: 0.5rem !important;
         }
+        .ProjectCard {
+            position: relative;
+            display: -ms-flexbox;
+            display: inline-block !important;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            min-width: 10rem;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.3rem;
+            margin-right: 1rem !important;
+            margin-bottom: 0.5rem !important;
+            margin-top: 0.25rem !important;
+        }
+            .ProjectCard .card-footer {
+                padding: 0.75rem 1.25rem;
+                background-color: #343a40 !important;
+                padding-top: 0.5rem !important;
+                padding-bottom: 1rem !important;               
+            }
+        .bg-alarm {
+            background-color: #fab759 !important;
+        }
     </style>
 }
 
@@ -53,7 +78,7 @@
             @foreach (var item in g.group)
             {
                 <a href="~/ProjectDetails/ProjectReport?ProjectGUID=@item.ProjectGUID" data-ProjectGUID="@item.ProjectGUID">
-                    <div class="card d-inline-block mr-3 mb-2 mt-1" style="width:18rem;">
+                    <div class="ProjectCard" style="width:18rem;">
                         @{
                             if ((bool)item.IsGeneralManagerConcerned)
                             {
@@ -66,13 +91,11 @@
                                     <h6 class="mb-0">
                                         @Html.DisplayFor(m => item.ProjectName)
                                     </h6>
-
                                 </div>
-
                             </div>
                         </div>
 
-                        <div class="card-footer bg-dark pt-2 pb-3">
+                        <div class="card-footer">
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().CompletedRate)</span>
                             <div class="progress">
                                 @{
@@ -83,7 +106,12 @@
                             </div>
                             <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().DurationSavedRate)</span>
                             <div class="progress ">
-                                <div class="progress-bar " role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                                @{
+                                    percent = string.Format("{0}%", item.DurationSavedRate);
+                                    value = item.DurationSavedRate.ToString();
+                                    string absPercent = string.Format("{0}%", Math.Abs(item.DurationSavedRate));
+                                }
+                                <div class="progress-bar " role="progressbar" style="width: @absPercent;" aria-valuenow="@value" aria-valuemin="0" aria-valuemax="100">@percent</div>
                             </div>
                         </div>
                     </div>
@@ -227,6 +255,16 @@
             }
 
             $('[data-toggle="tooltip"]').tooltip();
+            SetPrograssBar();
+
+            function SetPrograssBar() {
+                $('.progress-bar').each(function () {
+                    if (parseInt($(this).attr('aria-valuenow')) < 0) {
+                        $(this).addClass('bg-alarm');
+                    }
+                });
+            }
+            
 
             //Demo button
             $('#demoBtn').click(function () {                

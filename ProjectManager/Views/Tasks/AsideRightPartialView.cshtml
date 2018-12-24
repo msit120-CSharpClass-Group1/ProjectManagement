@@ -4,16 +4,27 @@
 <h4 id="ModeTitle">修改工作項目</h4>
 <form id="TaskForm" class="form-horizontal" method="put">
     <input name="TaskGUID" id="TaskGUID" type="text" hidden value="@Model.TaskGUID" />
-    <div class="form-group">
-        @Html.LabelFor(m => m.TaskName)
-        @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:22em;" })
-    </div>
+    @*<div class="form-group">
+            <div class="col-6 form-group">
+                @Html.LabelFor(m => m.TaskName)
+                @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:22em;" })
+            </div>
+        </div>*@
     <div class="row ">
         <div class="col-6 form-group">
-            @Html.LabelFor(m => m.ParentTaskGUID)
-            <br />
-            @Html.DropDownList("ParentTaskGUID", (SelectList)ViewBag.ParentTasks, null, new { @class = "form-control", style = "width:10em;" })
-        </div>        
+            @Html.LabelFor(m => m.TaskName)
+            @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:12em;" })
+        </div>
+        <div class="col-6 form-group">
+            @{ 
+                if (Model.ParentTaskGUID != null)
+                {
+                    @Html.LabelFor(m => m.ParentTaskGUID)
+                    <br />
+                    @Html.DropDownList("ParentTaskGUID", (SelectList)ViewBag.ParentTasks, null, new { @class = "form-control", style = "width:10em;" })
+                }
+            }
+        </div>
     </div>
     <div class="row ">
         <div class="col-6 form-group">
@@ -65,6 +76,17 @@
     </div>
     <div class="row ">
         <div class="col-6 form-group">
+            @Html.LabelFor(m => m.EstWorkTime)
+            @Html.TextBox("EstWorkTime", null, new { @class = "form-control", style = "width:10em;" })
+        </div>
+        <div class="col-6 form-group">
+            @Html.LabelFor(m => m.WorkTime)
+            <br />
+            @Html.TextBox("WorkTime", null, new { @class = "form-control", style = "width:10em;" })
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-6 form-group">
             @Html.LabelFor(m => m.AssignedDate)
             @{
                 strDate = string.Format("{0:yyyy-MM-dd}", Model.AssignedDate);
@@ -74,7 +96,7 @@
         </div>
         <div class="col-6 form-group">
             @Html.LabelFor(m => m.IsRead)<br />
-            @{ 
+            @{
                 if (Model.IsRead == null)
                 {
                     Model.IsRead = false;
