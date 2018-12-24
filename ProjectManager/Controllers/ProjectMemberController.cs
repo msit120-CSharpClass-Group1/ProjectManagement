@@ -178,7 +178,7 @@ namespace ProjectManager.Controllers
         public ActionResult ExportToExcel()
         {
             var gv = new GridView();
-            gv.DataSource = this.tasks.GetCollections().ToList();
+            gv.DataSource = tasks.GetCollections().ToList();
             gv.DataBind();
             Response.ClearContent();
             Response.Buffer = true;
@@ -191,7 +191,7 @@ namespace ProjectManager.Controllers
             Response.Output.Write(objStringWriter.ToString());
             Response.Flush();
             Response.End();
-            return RedirectToAction("AssignTask");
+            return View("AssignTask");
             //return View("AssignTask");
         }
     }
