@@ -33,7 +33,5 @@ namespace ProjectManager.Models
         public virtual ICollection<Calendar> Calendar { get; set; }
         public virtual Employee Employee { get; set; }
         public virtual Permissions Permissions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Calendar> Calendar { get; set; }
     }
 }
