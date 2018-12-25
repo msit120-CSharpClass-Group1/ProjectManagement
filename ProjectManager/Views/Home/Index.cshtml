@@ -32,7 +32,7 @@
 <!--工作項目統計card-->
 <div id="TitleCards"></div>
 
-<div class="m-3 ml-4">
+<div class="m-3 ml-4" id="mainContainer">
     <div class="row">
         <div class="col m-1 p-4 bg-light shadow-sm">
             <div id="projectList" class="">
@@ -79,6 +79,7 @@
     <script src="https://cdn.anychart.com/releases/v8/js/anychart-gantt.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function () {
+            $('#mainContainer').hide();
             $('#left_div').on('click', 'span[name="projectLink"]', null, RedirectToMyBoard);
             $('#TitleCards').load("@Url.Action("GetTitleCardsPV","Home")");
             LoadTableDiv();
@@ -110,7 +111,8 @@
                        $('#left_div').css('text-align', 'center')
                            .html($("<img></img>").attr("src", "/image/ajax-loader.gif").css(style).addClass('img_align_Middle'));
                         LoadTableDiv();                      
-                    }
+                }
+                $('#mainContainer').show();
              }
             function getCookie(cname) {
                 var name = cname + "=";
