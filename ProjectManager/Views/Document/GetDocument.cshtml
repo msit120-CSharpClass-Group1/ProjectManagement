@@ -8,7 +8,7 @@
         <tr>
             <td>@Html.DisplayNameFor(p => p.First().DocumentID)</td>
             <td>@Html.DisplayNameFor(p => p.First().DocumentName)</td>
-            @switch (Model.First().CategoryID)
+            @switch (ViewBag.Category)
             {
                 case 2:
                     <td>@Html.DisplayNameFor(p => p.First().ProjectName)</td>
