@@ -8,6 +8,20 @@
         <tr>
             <td>@Html.DisplayNameFor(p => p.First().DocumentID)</td>
             <td>@Html.DisplayNameFor(p => p.First().DocumentName)</td>
+            @switch (Model.First().CategoryID)
+            {
+                case 2:
+                    <td>@Html.DisplayNameFor(p => p.First().ProjectName)</td>
+                    break;
+                case 3:
+                    <td>@Html.DisplayNameFor(p => p.First().ProjectName)</td>
+                    <td>@Html.DisplayNameFor(p => p.First().TaskName)</td>
+                    break;
+                default:
+                    break;
+
+            }
+
             <td>@Html.DisplayNameFor(p => p.First().Description)</td>
             <td>@Html.DisplayNameFor(p => p.First().CreateDate)</td>
             <td>@Html.DisplayNameFor(p => p.First().CreateEmpName)</td>
@@ -20,13 +34,26 @@
         @foreach (var doc in Model)
         {
             <tr>
-                <td><p>@doc.DocumentID</p></td>
+                <td style="width:75px"><p>@doc.DocumentID</p></td>
                 <td data-docguid="@doc.DocumentGUID"><a href="Modified/@doc.DocumentGUID"><p>@doc.DocumentName</p></a></td>
-                <td><p>@doc.Description</p></td>
+                @switch (doc.CategoryID)
+                {
+                    case 2:
+                        <td><p>@doc.ProjectName</p></td>
+                        break;
+                    case 3:
+                        <td><p>@doc.ProjectName</p></td>
+                        <td><p>@doc.TaskName</p></td>
+                        break;
+                    default:
+                        break;
+
+                }
+                <td style="width:400px"><p>@doc.Description</p></td>
                 <td><p>@doc.CreateDate.Value</p></td>
                 <td data-createempguid="@doc.CreateEmpGUID"><p>@doc.CreateEmpName</p></td>
-                <td ><p>@doc.ModifiedDate.Value</p></td>
-                <td  data-modifiedempguid="@doc.ModifiedEmpGUID"><p>@doc.ModifiedEmpName</p></td>
+                <td><p>@doc.ModifiedDate.Value</p></td>
+                <td data-modifiedempguid="@doc.ModifiedEmpGUID"><p>@doc.ModifiedEmpName</p></td>
                 <td style="width:75px"><a name="btn_download" class="btn btn-info download" href="DownLoad/@doc.DocumentGUID">下載</a></td>
             </tr>
         }
