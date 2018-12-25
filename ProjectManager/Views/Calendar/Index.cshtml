@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<ProjectManager.Models.Project>
 @{
     ViewBag.Title = "行事曆";
     ViewBag.Activity = "行事曆";
@@ -70,6 +70,13 @@
                     <div class="form-group">
                         <div class="checkbox">
                             <label><input type="checkbox" id="chkIsFullDay" checked="checked" />  當天活動</label>
+                            <label><input type="checkbox" id="chkIsAllMBR" /> 成員發送</label>
+                            <select class="custom-select" id="selectProject" disabled>
+                                @foreach (var item in Model)
+                                {
+                                    <option value="@item.ProjectGUID">@item.ProjectName</option>
+                                }
+                            </select>
                         </div>
                     </div>
                     <div class="form-group" id="divEndDate" style="display:none">
@@ -93,6 +100,7 @@
                         </select>
                     </div>
                     <button type="button" id="btnSave" class="btn btn-success">儲存</button>
+                    <button type="button" id="btnSaveToAll" class="btn btn-success" hidden>儲存</button>
                     <input type="hidden" id="calGUID" />
                     <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
                 </form>
@@ -329,6 +337,7 @@
 
                 var data =
                 {
+                    //$("#calGUID").val()
                     CalendarGUID: $("#calGUID").val(),
                     MemberGUID: getCookie("MemberGUID"),
                     EventID: $('#hdEventID').val(),
@@ -366,7 +375,48 @@
             {
                 FetchEventAndRenderCalendar();
             })
+            $("#chkIsAllMBR").click(function ()
+            {
+                if ($(this).is(':checked'))
+                {
+                    $("#btnSave").prop("hidden", true);
+                    $("#btnSaveToAll").prop("hidden", false);
+                    $("#selectProject").prop("disabled", false);
+                }
+                else
+                {
+                    $("#btnSave").prop("hidden", false);
+                    $("#btnSaveToAll").prop("hidden", true)
+                    $("#selectProject").prop("disabled", true);
+                }
+            })
+            
+            $("#btnSaveToAll").click(function ()
+            {
+                var ProjectGUID = $("#selectProject").find(":selected").val();
+                var data =
+                {
+                    CalendarGUID: $("#calGUID").val(),
+                    MemberGUID: getCookie("MemberGUID"),
+                    EventID: $('#hdEventID').val(),
+                    Subject: $('#txtSubject').val().trim(),
+                    Start: $('#txtStart').val().trim(),
+                    EndDay: $('#chkIsFullDay').is(':checked') ? null : $('#txtEnd').val().trim(),
+                    Description: $('#txtDescription').val(),
+                    ThemeColor: $('#ddThemeColor').val(),
+                    IsFullDay: $('#chkIsFullDay').is(':checked'),
+                    ProjectGUID: ProjectGUID
+                }
 
+                $.ajax({
+                    url: '@Url.Action("SaveEventToAll", "Calendar")',
+                    data: data,
+                    success: function (data) {
+                        alert(data)
+                    }
+                });
+                location.reload();
+            })
         });
     </script>
 }
