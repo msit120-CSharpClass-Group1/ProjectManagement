@@ -81,7 +81,7 @@
         $(document).ready(function () {
             $('#left_div').on('click', 'span[name="projectLink"]', null, RedirectToMyBoard);
             $('#TitleCards').load("@Url.Action("GetTitleCardsPV","Home")");
-            LoadLeftDiv();
+            LoadTableDiv();
             LoadGantt();
 
             function RedirectToMyBoard() {
@@ -93,17 +93,8 @@
             $('#ProjectList').change(LoadGantt);
 
         
-            function LoadLeftDiv() {
-                $.getJSON("@Url.Action("GetLeftDivPartialView", "Home")", function (actionName) {
-                    if (actionName != "GetMyProjectsPV") {
-                        var url = "/Home/" + actionName;
-                        $('#left_div').load(url);                        
-                    }
-                    else {
-                        var url = "/Home/" + actionName + "?projectGUID=" + $('#ProjectList').val();
-                        $('#left_div').load(url);                        
-                    }
-                });
+            function LoadTableDiv() {                
+                $('#left_div').load("@Url.Action("GetTableDivPartialView", "Home")?projectGUID=" + $('#ProjectList').val());
             }
             function LoadGantt() {
                     $('#container').html('');
@@ -118,8 +109,7 @@
                     var style = { 'width': '40px', 'position': 'absolute', 'left': 'calc(50% - 20px)', 'top':'calc(50% - 20px)'}
                        $('#left_div').css('text-align', 'center')
                            .html($("<img></img>").attr("src", "/image/ajax-loader.gif").css(style).addClass('img_align_Middle'));
-                       $('#left_div').load("@Url.Action("GetMyProjectsPV", "Home")" + "?projectGUID=" + $('#ProjectList').val());
-                      
+                        LoadTableDiv();                      
                     }
              }
             function getCookie(cname) {

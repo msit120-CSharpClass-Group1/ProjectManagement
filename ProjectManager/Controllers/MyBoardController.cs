@@ -22,7 +22,7 @@ namespace ProjectManager.Controllers
         Repository<ProjectManager.Models.Employee> e = new Repository<ProjectManager.Models.Employee>();
         Repository<ProjectManager.Models.ProjectMembers> pm = new Repository<ProjectManager.Models.ProjectMembers>();
 
-        public ActionResult Index(Guid id, string EmployeeName)
+        public ActionResult Index(Guid id)
         {
             BoardVM VM = new BoardVM();
             var PID = Request.Cookies["PID"].Value;

@@ -10,23 +10,23 @@ using System.Web;
 
 namespace InviteTeamMember.Models
 {
-    [MetadataType(typeof(ProductMetaData))]
-    public partial class Project
-    {
-        public class ProductMetaData
-        {
-            [JsonIgnore]
-            public virtual Department Department { get; set; }
+    //[MetadataType(typeof(ProductMetaData))]
+    //public partial class Project
+    //{
+    //    public class ProductMetaData
+    //    {
+    //        [JsonIgnore]
+    //        public virtual Department Department { get; set; }
 
-            [JsonIgnore]
-            public virtual Department Department1 { get; set; }
+    //        [JsonIgnore]
+    //        public virtual Department Department1 { get; set; }
 
-            [JsonIgnore]
-            public virtual ProjectStatus ProjectStatus { get; set; }
+    //        [JsonIgnore]
+    //        public virtual ProjectStatus ProjectStatus { get; set; }
 
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-            [JsonIgnore]
-            public virtual ICollection<ProjectMembers> ProjectMembers { get; set; }
-        }
-    }
+    //        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    //        [JsonIgnore]
+    //        public virtual ICollection<ProjectMembers> ProjectMembers { get; set; }
+    //    }
+    //}
 }
