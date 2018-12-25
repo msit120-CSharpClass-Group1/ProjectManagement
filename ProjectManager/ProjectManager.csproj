@@ -614,7 +614,6 @@
     <Content Include="Views\Home\GetMyProjectsPV.cshtml" />
     <Content Include="Views\Home\TaskCardsPV.cshtml" />
     <Content Include="Views\Home\ProjectCardsPV.cshtml" />
-    <Content Include="Views\Home\GetMyTasksWidgetPV.cshtml" />
     <Content Include="Views\ProjectMBackside\Index.cshtml" />
     <Content Include="Views\ProjectMBackside\EditMember.cshtml" />
     <None Include="Web.Debug.config">
