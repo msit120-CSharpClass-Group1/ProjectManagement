@@ -151,12 +151,11 @@ namespace ProjectManager.Controllers
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
-                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
+
             ViewBag.Project = projectRepo.Find(_projectGUID);
             ViewBag.TaskStatuses = new SelectList(new Repository<TaskStatus>().GetCollections(), "TaskStatusID", "TaskStatusName");
 
-            return View(tasks);
+            return View();
         }
         public ActionResult TreeGridPartialView()
         {
@@ -164,7 +163,7 @@ namespace ProjectManager.Controllers
                 return RedirectToAction("Index", "Projects");
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
-                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();    //.UpdateStatusAndDuration(); 這方法會讓頁面延遲1秒..            
+                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();    
 
             return PartialView(tasks);
         }        

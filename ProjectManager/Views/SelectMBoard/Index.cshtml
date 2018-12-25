@@ -1,18 +1,10 @@
-﻿@model IEnumerable<ProjectManager.Models.ProjectMembers>
+﻿@model IEnumerable<ProjectManager.Models.SelectMBoardVM>
 @{
     ViewBag.Title = "選擇成員";
 }
 
 @section style{
     <style>
-        .MemberFlex_a {
-            display: flex;
-            flex-wrap: wrap;
-            padding: 0 15%;
-        }
-        .card-footer:last-child {
-            height: 100px;
-        }
         h4:hover {
             text-decoration: none;
             cursor: pointer;
@@ -24,29 +16,58 @@
             float: right;
             margin-right: 0.5rem !important;
         }
-        .rightOpenbtn {
-            display: none;
+
+        .ProjectCard {
+            position: relative;
+            display: -ms-flexbox;
+            display: inline-block !important;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            min-width: 10rem;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.3rem;
+            margin-right: 1rem !important;
+            margin-bottom: 0.5rem !important;
+            margin-top: 0.25rem !important;
+        }
+
+            .ProjectCard .card-header {
+                height: 80px;                
+                background-color: #343a40 !important;
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+            .ProjectCard .card-footer {
+                padding: 0.75rem 1.25rem;                
+                padding-top: 0.5rem !important;
+                padding-bottom: 1rem !important;                
+            }
+
+        .bg-alarm {
+            background-color: #fab759 !important;
         }
     </style>
 }
 @*<h2>選擇成員</h2>*@
-<div class="MemberFlex_a mt-5">
-    @foreach (var p in Model)
+<div class="my-4 container">
+    @foreach (var p in Model.ToList())
     {
-        <a href='@Url.Action("Index", "MyBoard",new { id= p.EmployeeGUID, EmployeeName= p.Employee.EmployeeName})'>
-            <div class="card d-inline-block mr-3 mb-2 mt-1" style="width:18rem;">
-                <div class="card-header text-center text-muted ">
-                    <div class="row align-items-center mx-0">
-                        <div class="col pl-3">
-                            <h6 class="mb-0">
-                                @p.Employee.EmployeeName
-                            </h6>
-
-                        </div>
-                    </div>
+        <a href='@Url.Action("Index", "MyBoard",new { id= p.EmployeeGuid})'>
+            <div class="ProjectCard" style="width:18rem;">
+                <div class="card-header">
+                    <span class="text-light">任務完成比率</span><span class="text-light float-right">@(p.CompletedTaskCount)/@(p.InchargeTaskCount)</span>
+                    <div class="progress cardbar mt-1">
+                        @{
+                              string percent = string.Format("{0}%", p.CompletedRate);
+                              string value = p.CompletedRate.ToString();
+                         }
+                        <div class="progress-bar" role="progressbar" style="width: @percent;" aria-valuenow="@value" aria-valuemin="0" aria-valuemax="100">@percent</div>                    </div>
                 </div>
-                <div class="card-footer bg-dark pt-2 pb-3">
-                   
+                <div class="card-footer text-center text-muted "> 
+                   @p.EmployeeName
                 </div>
             </div>
         </a>
@@ -60,6 +81,6 @@
             var breadProjectLi = $('<li></li>').append(breadProjecta);
             $('.breadcrumb>li').first().after(breadProjectLi);
         })
-       
+
     </script>
 }
