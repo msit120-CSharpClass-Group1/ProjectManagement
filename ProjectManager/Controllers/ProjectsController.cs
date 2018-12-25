@@ -49,7 +49,7 @@ namespace ProjectManager.Controllers
             projects.LoadProjectsCompletedRate(taskRepo.GetCollections());
             projects.LoadProjectSaveTimeRate(taskRepo.GetCollections());
 
-            var datas = projects.GetGroupedProject();
+            var datas = projects.GetProjectsGroupByDept();
             return View(datas);
         }
         public ActionResult Projects()
