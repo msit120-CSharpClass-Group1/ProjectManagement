@@ -1,5 +1,4 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using ProjectManager.Models;
 using System;
 using System.Collections;
@@ -31,7 +30,7 @@ namespace ProjectManager.Controllers
                     join childrenTask in t.GetCollections() on parentTask.TaskGUID equals childrenTask.ParentTaskGUID
                     select childrenTask;
             VM.TaskStatus = s.GetCollections().Where(x => x.TaskStatusID != 1);
-            VM.Tasks = q.Where(x => x.ProjectGUID.ToString() == PID && x.EmployeeGUID == id).ToList();
+            VM.Tasks = q.Where(x => x.ProjectGUID.ToString() == PID && x.EmployeeGUID == id).OrderBy(x=>x.EstEndDate).ToList();
             VM.Project = p.GetCollections().Where(x => x.ProjectGUID.ToString() == PID).ToList();
             VM.TaskDetail = td.GetCollections();
             ViewBag.UserName = e.Find(id).EmployeeName+ "的看板";
@@ -145,16 +144,5 @@ namespace ProjectManager.Controllers
             return Json(td.GetCollections().Where(x => x.TaskGUID == cardID).Count());
         }
 
-        public ActionResult ExpiredTask()
-        {
-            BoardVM VM = new BoardVM();
-            var PID = Request.Cookies["PID"].Value;
-            var members = m.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            var q = from parentTask in t.GetCollections()
-                    join childrenTask in t.GetCollections() on parentTask.TaskGUID equals childrenTask.ParentTaskGUID
-                    select childrenTask;
-            VM.Tasks = q.Where(x=> x.EmployeeGUID == members.EmployeeGUID && x.ProjectGUID.ToString() == PID && x.TaskStatusID==2).ToList();
-            return Json(VM.Tasks.Select(x=>x.EstEndDate));
-        }
     }
 }
