@@ -467,7 +467,24 @@
             <div class="desContent">
                 <textarea readonly></textarea>
             </div>
+            <div class="itemTitle">
+                <span class="cardDetailIcon"><i class="fas fa-tag"></i></span>
+                <div class="">備註</div>
+            </div>
+            <div class="desContent">
+                <label class="messageTag"></label>
+            </div>
         </div>
+        <div class="cardDetailContent">
+            <div class="itemTitle">
+                <span class="cardDetailIcon"><i class="far fa-clock"></i></span>
+                <div class="">到期日</div>
+            </div>
+            <div class="desContent">
+                <label class="dueDateTag"></label>
+            </div>
+        </div>
+
         <div class="cardDetailContent">
             <div class="itemTitle todo">
                 <span class="cardDetailIcon"><i class="far fa-check-square"></i></span>
@@ -478,7 +495,6 @@
                 <div class="checklist-progress-bar">
                     <div class="checklist-progress-bar-current" style="width: 0%;"></div>
                 </div>
-                @*<span class="checklist-completed-text hide quie">待辦清單的所有事項都完成囉！</span>*@
             </div>
             <div class="checkLists"></div>
             <div class="listNewItem">
@@ -524,6 +540,7 @@
 <script>
         var cardID = null;
         var cardGuid;
+        var thisCard;
         var btnInsert = $('.btn-insert');
         var badgeText;
         var completeDT;
@@ -554,7 +571,7 @@
         }
 
         function dragEnd(e) {
-            $(e.target).removeClass('dragging')
+            $(e.target).removeClass('dragging');
         }
 
         function dragoverHandler(e) {
@@ -574,7 +591,7 @@
             $('#alert').html('');
             var id = $('#_TaskGUID').val();        
             var elem = document.getElementById(id);
-            var taskStatusid = dropElem.getAttribute("data-taskStatusid")
+            var taskStatusid = dropElem.getAttribute("data-taskStatusid");
             var workTime = $('input[name="realWorkTime"]').val();
             if ($('input[name="realWorkTime"]').val() == "" || isNaN(workTime)) {
 
@@ -640,6 +657,24 @@
             var breadMemberLi = $('<li></li>').append(breadMembera);
             $('.breadcrumb>li').first().after(breadProjectLi, breadMemberLi);
 
+            $.ajax({
+                type: 'Get',
+                url: '@Url.Action("GetCard", "Myboard")',
+                data: { id: cardID },
+                dataType: 'json'
+            }).done(function (datas) {
+                $(datas.Task).each(function (id, data) {
+                    $('.cardDetailTitle').text(data.TaskName);
+                    $('.desContent>textArea').text(data.Description);
+                    $('.cardDetailContent>.desContent>.dueDateTag').text(new Date(data.EndDate).toLocaleDateString() + " " + new Date(data.EndDate).toLocaleTimeString());
+                    $('.cardDetailContent>.desContent>.messageTag').text(data.Tag);
+                    if (new Date() > new Date(data.EndDate))
+                    {
+                        thisCard.css("border-left", '3px solid red');
+                    }            
+                });
+            });
+
             //判斷看版權限
             var hrefarr = $('@Html.ActionLink("MyBoard","Index")').attr("href").split("/");
             var employeeGuid = hrefarr[3];
@@ -669,6 +704,7 @@
 
             $('.listCard').click(function () {
                 $('.detailsection').show();
+                thisCard = $(this);
                 cardID = $(this).data("tid");
                 $.ajax({
                     type: 'Get',
@@ -679,6 +715,12 @@
                     $(datas.Task).each(function (id, data) {
                         $('.cardDetailTitle').text(data.TaskName);
                         $('.desContent>textArea').text(data.Description);
+                        $('.cardDetailContent>.desContent>.dueDateTag').text(new Date(data.EndDate).toLocaleDateString() + " " + new Date(data.EndDate).toLocaleTimeString());
+                        $('.cardDetailContent>.desContent>.messageTag').text(data.Tag);
+                        if (new Date() > new Date(data.EndDate))
+                        {
+                            thisCard.css("border-left", '3px solid red');
+                        }            
                     });
                 });
                 $.ajax({

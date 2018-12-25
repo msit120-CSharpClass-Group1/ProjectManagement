@@ -131,10 +131,7 @@ namespace ProjectManager.Controllers
             td.Delete(VM.TaskDetails);
             return Json(td.GetCollections().Where(x => x.TaskGUID == cardID).Count());
         }
-        public ActionResult GetTaskStatus(Guid id)
-        {
-            return Json(t.GetCollections().Select(x => x.TaskStatusID));
-        }
+       
 
     }
 }

@@ -43,14 +43,6 @@
     </style>
 }
 
-<nav>
-    <div class="topnav nav nav-tabs nav-fill " id="nav-tab" role="tablist">
-        <a class="nav-item nav-link" id="selectProject" role="tab" aria-controls="nav-home" aria-selected="true">選擇專案</a>
-        <a class="nav-item nav-link" id="allTasks" role="tab" aria-controls="nav-home" aria-selected="true">任務總覽</a>
-    </div>
-</nav>
-<div id="PartialView" class="hide">
-</div>
 <div id="ProjectsOverview" class="ProjectFlex_a container mt-5">
     @{int i = 0; }
     @foreach (var g in Model)
@@ -107,33 +99,33 @@
 @section script{
     <script>
 
-        $(document).ready(function () {
-            $('#nav-tab > a').first().addClass('isActive');
+        //$(document).ready(function () {
+        //    $('#nav-tab > a').first().addClass('isActive');
 
-            $('#nav-tab > #allTasks').click(function () {
-                var PartialView = $("#PartialView");
-                PartialView.load("/SelectProject/AllTasks", {}, function () {
-                }).show();
-                $('.ProjectFlex_a').hide();
-                $(this).addClass('isActive');
-                $('#nav-tab > a').not(this).removeClass('isActive');
+        //    $('#nav-tab > #allTasks').click(function () {
+        //        var PartialView = $("#PartialView");
+        //        PartialView.load("/SelectProject/AllTasks", {}, function () {
+        //        }).show();
+        //        $('.ProjectFlex_a').hide();
+        //        $(this).addClass('isActive');
+        //        $('#nav-tab > a').not(this).removeClass('isActive');
 
-            })
-            $('#nav-tab > #selectProject').click(function () {
-                var PartialView = $("#PartialView");
-                $('.ProjectFlex_a').show();
-                PartialView.hide();
-                $(this).addClass('isActive');
-                $('#nav-tab > a').not(this).removeClass('isActive');
+        //    })
+        //    $('#nav-tab > #selectProject').click(function () {
+        //        var PartialView = $("#PartialView");
+        //        $('.ProjectFlex_a').show();
+        //        PartialView.hide();
+        //        $(this).addClass('isActive');
+        //        $('#nav-tab > a').not(this).removeClass('isActive');
                
-            })
+        //    })
 
-            var Overview = $('#ProjectsOverview');
-            Overview.find('h4').on("click", function () {
-                var _dept = "#" + $(this).attr("data-Dept");
-                $(_dept).toggle("blind", {}, 300);
-                $(this).find("i").toggleClass("fas fa-caret-down").toggleClass("fas fa-caret-right");
-            });
-        })
+        //    var Overview = $('#ProjectsOverview');
+        //    Overview.find('h4').on("click", function () {
+        //        var _dept = "#" + $(this).attr("data-Dept");
+        //        $(_dept).toggle("blind", {}, 300);
+        //        $(this).find("i").toggleClass("fas fa-caret-down").toggleClass("fas fa-caret-right");
+        //    });
+        //})
     </script>
 }
