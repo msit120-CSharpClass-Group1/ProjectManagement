@@ -60,7 +60,7 @@
 }
 @using (Html.BeginForm("ExportToExcel", "ProjectMember", FormMethod.Post,new {hidden="hidden"}))
 {
-   <button class="btn btn-outline-dark" id="ExportExcel"><i class="fas fa-file-excel"></i>匯出分配總表</button>
+   <button class="btn btn-outline-dark" id="ExportExcelDetail"><i class="fas fa-file-excel"></i>匯出分配總表</button>
 }
 <button type="button" class="btn btn-light" id="ExportExcel" onclick="exportExcel()" style="margin:10px"><i class="fas fa-file-excel"></i>匯出簡易分配表</button>
 <button class="btn btn-outline-dark" id="ExportExcelalter"><i class="fas fa-file-excel"></i>匯出分配總表</button>
@@ -417,7 +417,7 @@
                 })
                 $("#ExportExcelalter").click(function ()
                 {
-                    $("#ExportExcel").click();
+                    $("#ExportExcelDetail").click();
                 })
 
                 $(".modal-footer").on("click", 'a', function ()

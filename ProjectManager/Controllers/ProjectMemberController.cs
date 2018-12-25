@@ -208,7 +208,7 @@ namespace ProjectManager.Controllers
             Response.Output.Write(objStringWriter.ToString());
             Response.Flush();
             Response.End();
-            return View("AssignTask");
+            return RedirectToAction("AssignTask");
         }
 
         [HttpPost]
