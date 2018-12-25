@@ -27,57 +27,58 @@
             background-color: white;
             vertical-align: middle;
         }
-    </style>  
-    }
+    </style>
+}
 <p id="groupAvg" hidden="hidden">@memberPMScoreAVG </p>
+<p id="ProjectGUID" hidden="hidden">@Model.ProjectGUIDShow</p>
 <div class="col-md-12">
-<div class="row">
-    <div class="col-sm">
-        <div class="card bg-light mb-3" style="max-width: 18rem;">
-            <div class="card-header" style="cursor:pointer" id="good">表現優秀占比(>90)</div>
-            <div class="card-body">
-                <h5 class="card-title">@Math.Round((double)HightPercent, 1)%</h5>
-                <p class="card-text">@HighestPJmembers 位成員</p>
+    <div class="row">
+        <div class="col-sm">
+            <div class="card bg-light mb-3" style="max-width: 18rem;">
+                <div class="card-header" style="cursor:pointer" id="good">表現優秀占比(>90)</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Math.Round((double)HightPercent, 1)%</h5>
+                    <p class="card-text">@HighestPJmembers 位成員</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card bg-light mb-3" style="max-width: 18rem;">
+                <div class="card-header" style="cursor:pointer" id="above">表現平均之上占比(>@memberPMScoreAVG)</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Math.Round((double)AbovePercent, 1)%</h5>
+                    <p class="card-text">@AboveAvgMembers 位成員</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card bg-light mb-3" style="max-width: 18rem;">
+                <div class="card-header" style="cursor:pointer" id="under">表現平均之下占比(&lt= @memberPMScoreAVG)</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Math.Round((double)UnderPercent, 1)%</h5>
+                    <p class="card-text">@UnderAvgMembers 位成員</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card bg-light mb-3" style="max-width: 18rem;">
+                <div class="card-header" style="cursor:pointer" id="bad">表現差勁占比(&lt20)</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Math.Round((double)LowestPercent, 1)%</h5>
+                    <p class="card-text">@LowestPJmembers 位成員</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="card bg-light mb-3" style="max-width: 18rem;">
+                <div class="card-header" style="cursor:pointer" id="none">尚未評分占比</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Math.Round((double)NoneScorePercent, 1)%</h5>
+                    <p class="card-text">@NoneScoremembers 位成員</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-sm">
-        <div class="card bg-light mb-3" style="max-width: 18rem;">
-            <div class="card-header" style="cursor:pointer" id="above">表現平均之上占比(>@memberPMScoreAVG)</div>
-            <div class="card-body">
-                <h5 class="card-title">@Math.Round((double)AbovePercent, 1)%</h5>
-                <p class="card-text">@AboveAvgMembers 位成員</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm">
-        <div class="card bg-light mb-3" style="max-width: 18rem;">
-            <div class="card-header" style="cursor:pointer" id="under">表現平均之下占比(&lt= @memberPMScoreAVG)</div>
-            <div class="card-body">
-                <h5 class="card-title">@Math.Round((double)UnderPercent, 1)%</h5>
-                <p class="card-text">@UnderAvgMembers 位成員</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm">
-        <div class="card bg-light mb-3" style="max-width: 18rem;">
-            <div class="card-header" style="cursor:pointer" id="bad">表現差勁占比(&lt20)</div>
-            <div class="card-body">
-                <h5 class="card-title">@Math.Round((double)LowestPercent, 1)%</h5>
-                <p class="card-text">@LowestPJmembers 位成員</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm">
-        <div class="card bg-light mb-3" style="max-width: 18rem;">
-            <div class="card-header" style="cursor:pointer" id="none">尚未評分占比</div>
-            <div class="card-body">
-                <h5 class="card-title">@Math.Round((double)NoneScorePercent, 1)%</h5>
-                <p class="card-text">@NoneScoremembers 位成員</p>
-            </div>
-        </div>
-    </div>
-</div>
 </div>
 <div class="col-md-12">
     <table class="table table-bordered" style="margin: 0px auto;" id="mytable">
@@ -94,56 +95,75 @@
             {
                 foreach (var item in _member.value)
                 {
-            <tr>
-                <td>@item.Employee.EmployeeName</td>
-                @*<td>@item.Employee.JobTitle.TitleName</td>*@
-                @if (item.PMscore != null)
-                {
-                    <td>@item.PMscore</td>
-                }
-                else
-                {
-                    <td>尚未評分</td>
-                }
-                @if (item.Selfscore != null)
-                {
-                    <td>@item.Selfscore</td>
-                }
-                else
-                {
-                    <td>尚未評分</td>
-                }
-                @if ((item.PMscore + item.Selfscore)/2 < 60)
-                {
-                    <td>C等級</td>
-                }
-                else if ((item.PMscore + item.Selfscore)/2 < 80 && (item.PMscore + item.Selfscore) / 2 >= 60)
-                {
-                    <td>B等級</td>
-                }
-                else if((item.PMscore + item.Selfscore)/2>90)
-                {
-                    <td>A等級</td>
-                }
-                else
-                {
-                    <td>尚未評級</td>
-                }
-            </tr>
+                    <tr>
+                        <td>@item.Employee.EmployeeName</td>
+                        @*<td>@item.Employee.JobTitle.TitleName</td>*@
+                        @if (item.PMscore != null)
+                        {
+                            <td>@item.PMscore</td>
+                        }
+                        else
+                        {
+                            <td>尚未評分</td>
+                        }
+                        @if (item.Selfscore != null)
+                        {
+                            <td>@item.Selfscore</td>
+                        }
+                        else
+                        {
+                            <td>尚未評分</td>
+                        }
+                        @if ((item.PMscore + item.Selfscore) / 2 < 60)
+                        {
+                            <td>C等級</td>
+                        }
+                        else if ((item.PMscore + item.Selfscore) / 2 < 80 && (item.PMscore + item.Selfscore) / 2 >= 60)
+                        {
+                            <td>B等級</td>
+                        }
+                        else if ((item.PMscore + item.Selfscore) / 2 > 90)
+                        {
+                            <td>A等級</td>
+                        }
+                        else
+                        {
+                            <td>尚未評級</td>
+                        }
+                    </tr>
                 }
             }
         </tbody>
     </table>
 </div>
+<div class="row" style="margin:10px;">
+    <div class="col-md-6">
+        <div id="WatchChartContainer" class="chart-container bg-light p-3">
+            <canvas id="WatchChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div id="WatchSelfChartContainer" class="chart-container bg-light p-3">
+            <canvas id="WatchSelfChart"></canvas>
+        </div>
+    </div>
+</div>
 @section script{
+    <script src="~/Scripts/Chart.min.js"></script>
     <script>
         $(document).ready(function ()
         {
+            Chart.defaults.global.defaultFontFamily = 'Noto Sans CJK TC';
+            Chart.defaults.global.defaultFontSize = 16;
+            Chart.defaults.global.tooltips.titleFontStyle = 'normal';
+            WatchChart();
+            WatchSelfChart();
+
             var tableRow = $("#mytable").find('tr').length;
             $("#good").mouseenter(function ()
             {
                 for (var i = 1; i < tableRow; i++)
-                {                                     
+                {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
                     if (value >= 90)
                     {
@@ -201,6 +221,90 @@
                     }
                 }
             })
+
+            function WatchChart()
+            {
+                $.getJSON("@Url.Action("WatchChart", "Perfomance")", { "ProjectGUID": $("#ProjectGUID").text()}, function (datas)
+                {
+                    var TasksByStatusChart = new Chart($('#WatchChart'),
+                        {
+                            type: 'bar',
+                            data: datas,
+                            options:
+                            {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                legend:
+                                {
+                                    position: 'top',
+                                },
+                                title:
+                                {
+                                    display: true,
+                                    text: '專案經理評分',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                animation:
+                                {
+                                    animateScale: true,
+                                    animateRotate: true
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        display: true,
+                                        ticks: {
+                                            beginAtZero: true,
+                                            max: 100
+                                        }
+                                    }]
+                                }
+                            }                            
+                        });
+                });
+            }
+
+            function WatchSelfChart()
+            {
+                $.getJSON("@Url.Action("WatchChartSelfScore", "Perfomance")", { "ProjectGUID": $("#ProjectGUID").text()}, function (datas)
+                {
+                    var TasksByStatusChart = new Chart($('#WatchSelfChart'),
+                        {
+                            type: 'bar',
+                            data: datas,
+                            options:
+                            {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                legend:
+                                {
+                                    position: 'top',
+                                },
+                                title:
+                                {
+                                    display: true,
+                                    text: '自評分',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                animation:
+                                {
+                                    animateScale: true,
+                                    animateRotate: true
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        display: true,
+                                        ticks: {
+                                            beginAtZero: true,
+                                            max: 100
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                });
+            }
         })
     </script>
 }

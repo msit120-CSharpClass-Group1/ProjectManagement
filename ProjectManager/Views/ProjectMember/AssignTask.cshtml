@@ -138,7 +138,7 @@
                             if (flag)
                             {
                                 <div class="progress">
-                                    <div class="progress-bar progress-bar-striped bg-success" style="width:0%;"><font color="red">目前無承接工作</font></div>
+                                    <div class="progress-bar progress-bar-striped bg-success" style="width:0%;"><font color="red">目前無進行中工作</font></div>
                                 </div>
                             }
                         }
@@ -192,7 +192,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
-                        <button type="submit" class="btn btn-primary">確定留言</button>
+                        <a class="btn btn-primary" id="leaveMessaageBtn">確定留言</a>
                     </div>
                 </form>
             </div>
@@ -418,6 +418,19 @@
                 $("#ExportExcelalter").click(function ()
                 {
                     $("#ExportExcel").click();
+                })
+
+                $(".modal-footer").on("click", 'a', function ()
+                {
+                    var TaskGUID = $(this).parent().siblings("#HideTaskGUID").val();
+                    $.ajax({
+                        url: '@Url.Action("LeaveMessageTag", "ProjectMember")',
+                        data: {"TaskGUID": TaskGUID},
+                        success: function (data)
+                        {
+                            
+                        }
+                    });
                 })
             })
             function exportExcel()

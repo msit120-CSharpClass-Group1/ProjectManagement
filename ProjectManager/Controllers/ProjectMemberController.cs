@@ -169,7 +169,6 @@ namespace ProjectManager.Controllers
             Guid CalendarGUID = calRe.GetCollections().Where(c => c.Subject == _tasks.TaskName).Select(c => c.CalendarGUID).Single();
             calRe.Delete(calRe.Find(CalendarGUID));
             _tasks.EmployeeGUID = null;
-            _tasks.AssignedDate = null;
             _tasks.TaskStatusID = 1;
             _tasks.IsRead = true;
             tasks.Update(_tasks);
