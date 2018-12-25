@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ProjectManagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ProjectManagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Calendar">
           <Key>
             <PropertyRef Name="CalendarGUID" />
@@ -73,6 +73,7 @@
           <Property Name="ModifiedEmpGUID" Type="uniqueidentifier" />
           <Property Name="IsChecked" Type="bit" />
           <Property Name="FileName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Employee">
           <Key>
@@ -1025,8 +1026,7 @@
             <End Role="Widgets" EntitySet="Widgets" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ProjectManagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1115,6 +1115,7 @@
           <Property Name="FileName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Document" Relationship="Self.FK_DocumentModified_Document" FromRole="DocumentModified" ToRole="Document" />
           <NavigationProperty Name="Employee" Relationship="Self.FK_DocumentModified_Employee" FromRole="DocumentModified" ToRole="Employee" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Employee">
           <Key>
@@ -2170,6 +2171,7 @@
           <EntitySetMapping Name="DocumentModified">
             <EntityTypeMapping TypeName="ProjectManagementModel.DocumentModified">
               <MappingFragment StoreEntitySet="DocumentModified">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="DocumentGUID" ColumnName="DocumentGUID" />
                 <ScalarProperty Name="ModifiedGUID" ColumnName="ModifiedGUID" />
                 <ScalarProperty Name="Version" ColumnName="Version" />
