@@ -144,7 +144,17 @@ namespace ProjectManager.Controllers
             td.Delete(VM.TaskDetails);
             return Json(td.GetCollections().Where(x => x.TaskGUID == cardID).Count());
         }
-       
 
+        public ActionResult ExpiredTask()
+        {
+            BoardVM VM = new BoardVM();
+            var PID = Request.Cookies["PID"].Value;
+            var members = m.Find(new Guid(Request.Cookies["MemberGUID"].Value));
+            var q = from parentTask in t.GetCollections()
+                    join childrenTask in t.GetCollections() on parentTask.TaskGUID equals childrenTask.ParentTaskGUID
+                    select childrenTask;
+            VM.Tasks = q.Where(x=> x.EmployeeGUID == members.EmployeeGUID && x.ProjectGUID.ToString() == PID && x.TaskStatusID==2).ToList();
+            return Json(VM.Tasks.Select(x=>x.EstEndDate));
+        }
     }
 }

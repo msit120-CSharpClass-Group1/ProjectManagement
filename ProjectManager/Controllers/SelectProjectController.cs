@@ -21,7 +21,9 @@ namespace ProjectManager.Controllers
         {
             var members = m.Find(new Guid(Request.Cookies["MemberGUID"].Value));
             var q = pm.GetCollections().Where(x => x.EmployeeGUID == members.EmployeeGUID && x.Project.ProjectStatusID == 1).Select(x => x.Project).ToList();
-            var data = q.GetGroupedProject();
+            q.LoadProjectSaveTimeRate(t.GetCollections());
+            q.LoadProjectsCompletedRate(t.GetCollections());
+            var data = q.GetProjectsGroupByDept();
             return View(data);
         }
 
