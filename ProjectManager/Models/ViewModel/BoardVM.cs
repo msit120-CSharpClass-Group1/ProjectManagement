@@ -16,6 +16,7 @@ namespace ProjectManager.Models
         public IEnumerable<TaskDetail> TaskDetail { get; set; }
         public TaskDetail TaskDetails { get; set; }
         public IEnumerable<ProjectMembers> ProjectMember { get; set; }
+        //public IEnumerable<Grouped<string, Project>> GroupProject { get; set; }
 
     }
 }

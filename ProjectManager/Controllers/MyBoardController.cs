@@ -92,7 +92,7 @@ namespace ProjectManager.Controllers
         }
 
 
-        public ActionResult EditTaskStatusID(Guid id, int TaskStatusID)
+        public ActionResult EditTaskStatusID(Guid id, int TaskStatusID, int? WorkTime)
         {
 
             BoardVM VM = new BoardVM();
@@ -101,11 +101,12 @@ namespace ProjectManager.Controllers
             if (TaskStatusID == 3)
             {
                 VM.Task.EndDate = DateTime.Now;
-                VM.Task.WorkTime = t.Find(id).GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+                VM.Task.WorkTime = WorkTime;
             }
             t.Update(VM.Task);
             return Json(true);
         }
+     
         public ActionResult InsertDetailTask(TaskDetail taskDetail)
         {
             if (taskDetail != null)
@@ -143,10 +144,17 @@ namespace ProjectManager.Controllers
             td.Delete(VM.TaskDetails);
             return Json(td.GetCollections().Where(x => x.TaskGUID == cardID).Count());
         }
-        public ActionResult GetTaskStatus(Guid id)
-        {
-            return Json(t.GetCollections().Select(x => x.TaskStatusID));
-        }
 
+        public ActionResult ExpiredTask()
+        {
+            BoardVM VM = new BoardVM();
+            var PID = Request.Cookies["PID"].Value;
+            var members = m.Find(new Guid(Request.Cookies["MemberGUID"].Value));
+            var q = from parentTask in t.GetCollections()
+                    join childrenTask in t.GetCollections() on parentTask.TaskGUID equals childrenTask.ParentTaskGUID
+                    select childrenTask;
+            VM.Tasks = q.Where(x=> x.EmployeeGUID == members.EmployeeGUID && x.ProjectGUID.ToString() == PID && x.TaskStatusID==2).ToList();
+            return Json(VM.Tasks.Select(x=>x.EstEndDate));
+        }
     }
 }

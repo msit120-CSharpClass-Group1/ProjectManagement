@@ -1,122 +1,129 @@
-﻿@model ProjectManager.Models.BoardVM
+﻿@using ProjectManager.Models
+@model IEnumerable<ProjectManager.Models.Grouped<string, Project>>
 @{
     ViewBag.Title = "選擇專案";
 }
 @section style{
-<style>
-    .ProjectFlex_a {
-        display: flex;
-        flex-wrap:wrap;
-    }
-    .projectLink {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-    .progressBar {
-        position: absolute;
-        top: 37.5%;
-        left: 50%;
-        margin-left: -70px;
-        background-color: #fff;
-        width: 140px;
-        height: 20px;
-        margin-top: -10px;
-        border-radius: 5px;
-    }
-    .bar {
-        position: absolute;
-        top: 37.5%;
-        left: 50%;
-        margin-left: -70px;
-        background-color: #ffd800;
-        width: 100px;
-        height: 20px;
-        margin-top: -10px;
-        border-radius: 5px 0 0 5px;
-    }
-    .barNum {
-        position: absolute;
-        top: 37.5%;
-        left:40px;
-        margin-top: -12px;
-    }
-    .project p {
-        width: 100%;
-        color: #000;
-        position: absolute;
-        bottom: 0;
-        text-align: center;
-        line-height: 50px;
-        margin: 0;
-        background-color: #fff;
-        border: 1px solid #808080;
-    }
-</style>
-}
-<div class="ProjectFlex_a container mt-5">
-    @*@foreach (var d in Model.ProjectMember)
-    {
-        <h4 class="text-dark" style="font-size:20px;" data-dept="Dept2">
-            <span class="float-left"><i class="fas fa-caret-down"></i></span>
-            @d.Project.Department.DepartmentName
-        </h4>
-        <div>*@
-            @foreach (var p in Model.ProjectMember)
-            {
-                <a href="@Url.Action("Index", "SelectMBoard",new {id=p.ProjectGUID })">
-                    <div class="card d-inline-block mr-3 mb-2 " style="width:18rem;">
-                        <div class="card-header bg-dark">
-                            <span class="text-light">完成比率</span>
-                            <div class="progress">
+    <style>
+        .ProjectFlex_a {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        h4:hover {
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-                                <div class="progress-bar" role="progressbar" style="width: 58%;" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100">58%</div>
+        .bookMark {
+            position: relative;
+            top: -6px;
+            float: right;
+            margin-right: 0.5rem !important;
+        }
+
+        .ProjectCard {
+            position: relative;
+            display: -ms-flexbox;
+            display: inline-block !important;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            min-width: 10rem;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.3rem;
+            margin-right: 1rem !important;
+            margin-bottom: 0.5rem !important;
+            margin-top: 0.25rem !important;
+        }
+
+            .ProjectCard .card-footer {
+                padding: 0.75rem 1.25rem;
+                background-color: #343a40 !important;
+                padding-top: 0.5rem !important;
+                padding-bottom: 1rem !important;
+            }
+
+        .bg-alarm {
+            background-color: #fab759 !important;
+        }
+
+        .text-dark {
+            width:100%;
+        }
+
+        .rightOpenbtn {
+            display: none;
+        }
+
+    </style>
+}
+
+    <div id="ProjectsOverview" class="ProjectFlex_a container mt-5">
+        @{int i = 0; }
+        @foreach (var g in Model)
+        {
+            i++;
+            <h4 class="text-dark my-4" style="font-size:20px;" data-Dept=Dept@(i)>
+                <span class="float-left"><i class="fas fa-caret-down"></i></span>
+                @g.Key
+            </h4>
+
+            <div class="collapsible my-4 container" id=Dept@(i)>
+                @foreach (var item in g.group)
+                {
+                    <a href='@Url.Action("Index", "SelectMBoard",new { id=item.ProjectGUID })' data-ProjectGUID="@item.ProjectGUID">
+                        <div class="ProjectCard" style="width:18rem;">
+                            @{
+                                if ((bool)item.IsGeneralManagerConcerned)
+                                {
+                                    <span class="bookMark" data-toggle="tooltip" title="總經理關注"><img style="width:28px;" src="~/image/bookmark_icon30.png" /></span>
+                                }
+                            }
+                            <div class="card-header text-center text-muted ">
+                                <div class="row align-items-center mx-0">
+                                    <div class="col pl-3">
+                                        <h6 class="mb-0">
+                                            @Html.DisplayFor(m => item.ProjectName)
+                                        </h6>
+                                    </div>
+                                </div>
                             </div>
-                            <span class="text-light">實際工期節省比率</span>
-                            <div class="progress ">
-                                <div class="progress-bar " role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
-                            </div>
-                        </div>
-                        <div class="card-footer text-center text-muted ">
-                            <div class="row align-items-center">
-                                <div class="col-2"></div>
-                                <div class="col-8 small">@p.Project.ProjectName</div>
-                                <div class="col-2">
-                                    <i class="far fa-check-square" style="color:black" data-toggle="tooltip" title="" data-original-title="總經理關注"></i>
+                            <div class="card-footer">
+                                <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().CompletedRate)</span>
+                                <div class="progress">
+                                    @{
+                                        string percent = string.Format("{0}%", item.CompletedRate);
+                                        string value = item.CompletedRate.ToString();
+                                    }
+                                    <div class="progress-bar" role="progressbar" style="width: @percent;" aria-valuenow="@value" aria-valuemin="0" aria-valuemax="100">@percent</div>
+                                </div>
+                                <span class="text-light">@Html.DisplayNameFor(m => m.group.FirstOrDefault().DurationSavedRate)</span>
+                                <div class="progress ">
+                                    @{
+                                        percent = string.Format("{0}%", item.DurationSavedRate);
+                                        value = item.DurationSavedRate.ToString();
+                                        string absPercent = string.Format("{0}%", Math.Abs(item.DurationSavedRate));
+                                    }
+                                    <div class="progress-bar " role="progressbar" style="width: @absPercent;" aria-valuenow="@value" aria-valuemin="0" aria-valuemax="100">@percent</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            }
-        @*</div>*@
-    @*}*@
-
-
-
-
-
-    @*@foreach (var p in Model.ProjectMember)
-    {
-        <div class="project">
-            <a class="projectLink" href="@Url.Action("Index", "SelectMBoard",new {id=p.ProjectGUID })"></a>
-            <div class="progressBar"></div>
-            <div class="bar"></div>
-            <span class="barNum">50%</span>
-            <p>@p.Project.ProjectName</p>
-        </div>
-    }*@
-</div>
+                    </a>
+                }
+            </div>
+        }
+    </div>
 @section script{
     <script>
-        $(".project").css({
-            "width": "200px",
-            "height": "150px",
-            "background-color": "#000",
-            "margin": "10px",
-            "position": "relative",
-            "border-radius": "15px 15px 0 0"
-        });
+        $(document).ready(function () {
+            var Overview = $('#ProjectsOverview');
+            Overview.find('h4').on("click", function () {
+                var _dept = "#" + $(this).attr("data-Dept");
+                $(_dept).toggle("blind", {}, 300);
+                $(this).find("i").toggleClass("fas fa-caret-down").toggleClass("fas fa-caret-right");
+            });
+        })
     </script>
 }
