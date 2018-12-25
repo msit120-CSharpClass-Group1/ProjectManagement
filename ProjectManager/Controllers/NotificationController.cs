@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ProjectManager.Models;
+using ProjectManager.Models.BLL;
 
 namespace ProjectManager.Controllers
 {
@@ -17,19 +18,14 @@ namespace ProjectManager.Controllers
         public ActionResult Index()
         {
             var _members = members.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            var _tasks = tasks.GetCollections()
-                .Where(n => n.EmployeeGUID == _members.EmployeeGUID)
-                .OrderByDescending(n => n.AssignedDate).Take(5);
-            return View(_tasks);
+            var _notifications = _members.GetNotifications().OrderByDescending(n => n.NotificationDate);
+            return View(_notifications);
         }
         public ActionResult Load()
         {
             var _members =members.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            var _tasks =tasks.GetCollections()
-                .Where(n => n.EmployeeGUID == _members.EmployeeGUID)
-                .Select(n=>new { n.TaskName,n.AssignedDate,n.IsRead,n.EmployeeGUID,n.Project.ProjectName,n.ProjectGUID,n.Project.Employee1.EmployeeName})
-                .OrderByDescending(n=>n.AssignedDate).Take(5);
-            return Json(_tasks);
+            var _notifications = _members.GetNotifications().OrderByDescending(n=>n.NotificationDate).Take(5);
+            return Json(_notifications);
         }
     }
 }

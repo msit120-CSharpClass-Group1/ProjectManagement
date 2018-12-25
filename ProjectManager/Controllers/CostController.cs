@@ -62,13 +62,28 @@ namespace ProjectManager.Controllers
             return Content(JsonConvert.SerializeObject(TaskList), "application/json");
         }
 
-        public ActionResult GetTaskResources(Guid id, int? page, string sortBy, ResourceFilterVM filterBy)
+        public ActionResult GetTaskResources(Guid? DepartmentID, Guid? ProjectID, int? page, string sortBy, ResourceFilterVM filterBy)
         {
-            var q = from p in ProjectRepo.GetCollections()
+            IEnumerable<Project> projects;
+
+            if (DepartmentID == null && ProjectID == null)
+            {
+                projects = ProjectRepo.GetCollections();
+
+            }
+            else if (ProjectID != null)
+            {
+                projects = ProjectRepo.GetCollections().Where(p => p.ProjectGUID == ProjectID);
+            }
+            else
+            {
+                projects = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID);
+            }
+
+            var q = from p in projects
                     join t in TaskRepo.GetCollections() on p.ProjectGUID equals t.ProjectGUID
                     join tr in ResourceRepo.GetCollections() on t.TaskGUID equals tr.TaskGUID
                     join c in ResourceCatRepo.GetCollections() on tr.CategoryID equals c.CategoryID
-                    where p.ProjectGUID == id
                     select new ProjectResourceVM
                     {
                         ProjectGUID = p.ProjectGUID,
@@ -93,6 +108,7 @@ namespace ProjectManager.Controllers
             Response.Cookies["sortBy"].Value = sortBy;
             ViewBag.Count = ProjectResourceList.Count();
             ViewBag.sortByDate = string.IsNullOrEmpty(sortBy) ? "DateDesc" : "";
+            ViewBag.sortByProjectName = sortBy == "ProjectName" ? "ProjectNameDesc" : "ProjectName";
             ViewBag.sortByTaskName = sortBy == "TaskName" ? "TaskNameDesc" : "TaskName";
             ViewBag.sortByResourceName = sortBy == "ResourceName" ? "ResourceNameDesc" : "ResourceName";
             ViewBag.sortByResourceCat = sortBy == "ResourceCat" ? "ResourceCatDesc" : "ResourceCat";
@@ -105,7 +121,7 @@ namespace ProjectManager.Controllers
 
         public ActionResult AddTaskResource(TaskResource resource)
         {
-            if(resource.ResourceName != null)
+            if (resource.ResourceName != null)
             {
                 resource.ResourceGUID = Guid.NewGuid();
                 ResourceRepo.Add(resource);
@@ -113,7 +129,7 @@ namespace ProjectManager.Controllers
 
             return RedirectToAction("ExpList");
         }
-
+        
         public ActionResult UpdateTaskResource(TaskResource resource)
         {
             if (resource.ResourceName != null)
@@ -170,72 +186,252 @@ namespace ProjectManager.Controllers
             return View();
         }
 
-        public ActionResult CostsByDepartments()
+        public ActionResult CostsByDepartments(Guid? DepartmentGUID, Guid? ProjectGUID)
         {
-            List<Department> departments = (from d in DptRepo.GetCollections()
-                                            join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
-                                            select d).Distinct().ToList();
+            ChartData<SingleColorChartDataset<int>> chartData = new ChartData<SingleColorChartDataset<int>>();
 
-            ChartData<SingleColorChartDataset> chartData = new ChartData<SingleColorChartDataset>();
-            chartData.labels = departments.Select(d => d.DepartmentName).ToList();
-
-            chartData.datasets.Add(new SingleColorChartDataset
+            if (DepartmentGUID == null && ProjectGUID == null)
             {
-                label = "Cost",
-                backgroundColor = "rgba(91, 155, 213, 0.5)",
-                borderColor = "rgba(91, 155, 213, 1)",
-                data = departments.GetSubtotalByDepartment()
-            });
+                List<Department> departments = (from d in DptRepo.GetCollections()
+                                                join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
+                                                select d).Distinct().ToList();
+
+                chartData.labels = departments.Select(d => d.DepartmentName).ToList();
+
+                chartData.datasets.Add(new SingleColorChartDataset<int>
+                {
+                    type = "line",
+                    label = "累計費用",
+                    backgroundColor = "#d9006c",
+                    borderColor = "#d9006c",
+                    data = departments.GetCostsByDepartment()
+                });
+
+                chartData.datasets.Add(new SingleColorChartDataset<int>
+                {
+                    label = "總專案預算",
+                    backgroundColor = "rgba(91, 155, 213, 0.5)",
+                    borderColor = "rgba(91, 155, 213, 1)",
+                    data = departments.GetBudgetsByDepartment()
+                });
+            }
+            //else if(ProjectID != null)
+            //{
+            //    //TODO: What should be placed at this situation?
+            //}
+            else
+            {
+                List<Project> projects = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentGUID).ToList();
+
+                chartData.labels = projects.Select(p => p.ProjectName).ToList();
+
+                chartData.datasets.Add(new SingleColorChartDataset<int>
+                {
+                    type = "line",
+                    label = "累計費用",
+                    backgroundColor = "#d9006c",
+                    borderColor = "#d9006c",
+                    data = projects.GetCostsByProjects()
+                });
+
+                chartData.datasets.Add(new SingleColorChartDataset<int>
+                {
+                    label = "專案預算",
+                    backgroundColor = "rgba(91, 155, 213, 0.5)",
+                    borderColor = "rgba(91, 155, 213, 1)",
+                    data = projects.GetBudgetsByProject()
+                });
+
+            }
+
 
             return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
-        public ActionResult OverallRates()
+        public ActionResult OverallRates(Guid? DepartmentGUID, Guid? ProjectGUID)
         {
-            ChartData<SingleColorChartDatasetD> chartData = new ChartData<SingleColorChartDatasetD>();
-            chartData.labels = new List<string>() { "總體專案完成率", "總體預算執行率" };
+            ChartData<SingleColorChartDataset<double>> chartData = new ChartData<SingleColorChartDataset<double>>();
 
-            chartData.datasets.Add(new SingleColorChartDatasetD
+            if (DepartmentGUID == null && ProjectGUID == null)
+            {
+                chartData.labels = new List<string>() { "總體專案完成率", "總體預算執行率" };
+
+            }
+            else if (ProjectGUID != null)
+            {
+                chartData.labels = new List<string>() { "專案完成率", "預算執行率" };
+            }
+            else
+            {
+                chartData.labels = new List<string>() { "部門專案完成率", "部門預算執行率" };
+            }
+
+            chartData.datasets.Add(new SingleColorChartDataset<double>
             {
                 label = "Rate",
                 backgroundColor = "rgba(91, 155, 213, 0.5)",
                 borderColor = "rgba(91, 155, 213, 1)",
-                data = ProjectRepo.GetCollections().GetOverallRates()
+                data = ProjectRepo.GetCollections().GetOverallRates(DepartmentGUID, ProjectGUID)
             });
 
             return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
-        public ActionResult CostsByCategories()
+        public ActionResult CostsByCategories(Guid? DepartmentGUID, Guid? ProjectGUID)
         {
-            ChartData<MultiColorChartDataset> chartData = new ChartData<MultiColorChartDataset>();
-            List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF", "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
-            chartData.labels = ResourceCatRepo.GetCollections().Select(c => c.CategoryName).ToList();
-            chartData.datasets.Add(new MultiColorChartDataset
+            ChartData<MultiColorChartDataset<int>> chartData = new ChartData<MultiColorChartDataset<int>>();
+            List<ResourceCategory> Cats = new List<ResourceCategory>();
+
+            if (DepartmentGUID == null && ProjectGUID == null)
+            {
+                Cats = ResourceCatRepo.GetCollections().ToList();
+            }
+            else if (ProjectGUID != null)
+            {
+                Cats = (from p in ProjectRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID)
+                        join t in TaskRepo.GetCollections() on p.ProjectGUID equals t.ProjectGUID
+                        join r in ResourceRepo.GetCollections() on t.TaskGUID equals r.TaskGUID
+                        join c in ResourceCatRepo.GetCollections() on r.CategoryID equals c.CategoryID
+                        select c).Distinct().ToList();
+            }
+            else
+            {
+                Cats = (from p in ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentGUID)
+                        join t in TaskRepo.GetCollections() on p.ProjectGUID equals t.ProjectGUID
+                        join r in ResourceRepo.GetCollections() on t.TaskGUID equals r.TaskGUID
+                        join c in ResourceCatRepo.GetCollections() on r.CategoryID equals c.CategoryID
+                        select c).Distinct().ToList();
+            }
+
+            List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
+            List<string> CatNames = Cats.Select(c => c.CategoryName).ToList();
+            List<int> Subtotals = Cats.GetSubtotalByCat().ToList();
+
+            Dictionary<string, int> CatPairs = new Dictionary<string, int>();
+
+            for (int i = 0; i <= CatNames.Count - 1; i++)
+            {
+                CatPairs.Add(CatNames[i], Subtotals[i]);
+            }
+
+            List<KeyValuePair<string,int>> SortedCatPairs = CatPairs.OrderByDescending(c => c.Value).ToList();
+
+            List<string> SortedCats = new List<string>();
+            List<int> SortedSubtotals = new List<int>();
+            int sum = 0;
+
+            for (int i = 0; i <= SortedCatPairs.Count() - 1; i++)
+            {
+                if(i < 6)
+                {
+                    SortedCats.Add(SortedCatPairs[i].Key);
+                    SortedSubtotals.Add(SortedCatPairs[i].Value);
+                }
+                else if(i == 6)
+                {
+                    SortedCats.Add("其他");
+                    sum += SortedCatPairs[i].Value;
+                }
+                else
+                {
+                    sum += SortedCatPairs[i].Value;
+                }
+            }
+
+            SortedSubtotals.Add(sum);
+
+            chartData.labels = SortedCats;
+            chartData.datasets.Add(new MultiColorChartDataset<int>
             {
                 backgroundColor = Colors,
                 borderColor = Colors,
-                data = ResourceCatRepo.GetCollections().GetSubtotalByCat(),
+                data = SortedSubtotals,
             });
 
             return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
-        public ActionResult TasksByStatus()
+        public ActionResult SumOfResources(Guid? DepartmentGUID, Guid? ProjectGUID)
         {
-            ChartData<SingleColorChartDataset> chartData = new ChartData<SingleColorChartDataset>();
 
-            chartData.labels = StatusRepo.GetCollections().Select(s => s.TaskStatusName).ToList();
-            chartData.datasets.Add(new SingleColorChartDataset
+            ChartData<MultiColorChartDataset<int>> chartData = new ChartData<MultiColorChartDataset<int>>();
+            List<Project> projects = new List<Project>();
+            List<Tasks> tasks = new List<Tasks>();
+            List<int> subtotals = new List<int>();
+            Dictionary<string, int> Pairs = new Dictionary<string, int>();
+
+            if (DepartmentGUID == null && ProjectGUID == null)
             {
-                label="Count",
-                backgroundColor= "rgba(91, 155, 213, 0.5)",
-                borderColor= "rgba(91, 155, 213, 1)",
-                data= StatusRepo.GetCollections().CountTasksByStatus(),
+                projects = ProjectRepo.GetCollections().ToList();
+                subtotals = projects.GetCostsByProjects().ToList();
+                List<string> ProjectNames = projects.Select(p => p.ProjectName).ToList();
+
+                for (int i = 0; i <= ProjectNames.Count - 1; i++)
+                {
+                    Pairs.Add(ProjectNames[i], subtotals[i]);
+                }
+            }
+            else if (ProjectGUID != null)
+            {
+                tasks = TaskRepo.GetCollections().Where(t => t.ProjectGUID == ProjectGUID).GetRootTasks().ToList();
+                subtotals = tasks.GetCostsByTasks().ToList();
+                List<string> TaskNames = tasks.Select(t => t.TaskName).ToList();
+
+                for (int i = 0; i <= TaskNames.Count - 1; i++)
+                {
+                    Pairs.Add(TaskNames[i], subtotals[i]);
+                }
+            }
+            else
+            {
+                projects = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentGUID).ToList();
+                subtotals = projects.GetCostsByProjects().ToList();
+                List<string> ProjectNames = projects.Select(p => p.ProjectName).ToList();
+
+                for (int i = 0; i <= ProjectNames.Count - 1; i++)
+                {
+                    Pairs.Add(ProjectNames[i], subtotals[i]);
+                }
+            }
+
+            List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
+            List<KeyValuePair<string, int>> SortedPairs = Pairs.OrderByDescending(c => c.Value).ToList();
+
+            List<string> SortedNames = new List<string>();
+            List<int> SortedSubtotals = new List<int>();
+            int sum = 0;
+
+            for (int i = 0; i <= SortedPairs.Count() - 1; i++)
+            {
+                if (i < 6)
+                {
+                    SortedNames.Add(SortedPairs[i].Key);
+                    SortedSubtotals.Add(SortedPairs[i].Value);
+                }
+                else if (i == 6)
+                {
+                    SortedNames.Add("其他");
+                    sum += SortedPairs[i].Value;
+                }
+                else
+                {
+                    sum += SortedPairs[i].Value;
+                }
+            }
+
+            SortedSubtotals.Add(sum);
+
+            chartData.labels = SortedNames;
+            chartData.datasets.Add(new MultiColorChartDataset<int>
+            {
+                backgroundColor = Colors,
+                borderColor = Colors,
+                data = SortedSubtotals,
             });
 
             return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
+
         #endregion
     }
 }

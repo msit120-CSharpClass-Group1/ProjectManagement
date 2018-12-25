@@ -45,6 +45,13 @@ namespace ProjectManager.Models
         {
             return tasks.Where(t => t.ParentTaskGUID == null).ToList();
         }
+        public static IEnumerable<Tasks> GetAllChildTasks(this Tasks task)
+        {
+
+            TreeGridModel model = new TreeGridModel();
+            model.GetChildren(task, new Repository<Tasks>().GetCollections().ToList());
+            return model.ChildTasks;
+        }
 
         #region ProjectRepo Chart
         public static IEnumerable<int> GetRootTasksCompletedRate(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
@@ -112,14 +119,74 @@ namespace ProjectManager.Models
             }
             return rootResourceSum;
         }
-
+        public static IEnumerable<int> GetWorkTimeSumOfProjectMembers(this IEnumerable<ProjectMembers> projectMembers, IEnumerable<Tasks> tasksFromRepo)
+        {
+            List<int> workTimeSums = new List<int>();
+            var leafTasks = tasksFromRepo.GetLeafTasks();
+            foreach (var member in projectMembers)
+            {
+                int _sum = (int)leafTasks.Where(t => t.EmployeeGUID == member.EmployeeGUID).Select(t => t.EstWorkTime).Sum();
+                workTimeSums.Add(_sum);
+            }
+            return workTimeSums;
+        }
         #endregion
 
-        public static IEnumerable<Tasks> GetAllChildTasks(this Tasks task)
-        {            
-            TreeGridModel model = new TreeGridModel();
-            model.GetChildren(task, new Repository<Tasks>().GetCollections().ToList());
-            return model.ChildTasks;
+        public static IEnumerable<Tasks> UpdateStatusAndDuration(this IEnumerable<Tasks> tasks)
+        {   //this function cause 1-2 sec delay of page...
+            tasks = tasks.GetSortedTasks().Reverse();   //turn to post-order
+            foreach (var task in tasks)
+            {
+                var childen = task.GetAllChildTasks();
+                if (childen.Count() > 0)
+                {
+                    if(childen.All(t=>t.TaskStatusID == (int)Task_Status.Discussing || t.TaskStatusID == (int)Task_Status.Closed))
+                    {
+                        task.TaskStatusID = (int)Task_Status.Discussing;
+                    }
+                    else
+                    {
+                        task.TaskStatusID = (int)Task_Status.InProgress;
+                    }
+                    if(childen.All(t=>t.TaskStatusID == (int)Task_Status.Completed || t.TaskStatusID == (int)Task_Status.Closed))
+                    {
+                        task.TaskStatusID = (int)Task_Status.Completed;
+                    }
+
+                }
+            }
+            return tasks.Reverse().ToList();
+        }
+
+        /// <summary>
+        /// 參數StatusID指task變更後的StatusID
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="taskRepo"></param>
+        /// <param name="StatusID"></param>
+        public static void ParentTaskStatusUpdate(this Tasks task, Repository<Tasks> taskRepo, int StatusID)
+        {
+            bool flag = false;
+            if (task.ParentTaskGUID == null)
+                return;
+            var parentTask = taskRepo.Find(task.ParentTaskGUID);
+
+            if (parentTask.GetAllChildTasks().All(t => t.TaskStatusID == (int)Task_Status.Closed))
+            {
+                parentTask.TaskStatusID = (int)Task_Status.Closed;
+                taskRepo.Update(taskRepo.Find(parentTask.TaskGUID));
+                flag = true;
+            }
+            else if (parentTask.GetAllChildTasks()
+                .All(t => t.TaskStatusID == StatusID || t.TaskStatusID == (int)Task_Status.Closed))
+            {
+                parentTask.TaskStatusID = StatusID;
+                taskRepo.Update(taskRepo.Find(parentTask.TaskGUID));
+                flag = true;
+            }
+            if (flag && parentTask.ParentTaskGUID != null)
+                ParentTaskStatusUpdate(taskRepo.Find(task.ParentTaskGUID), taskRepo, StatusID);
+                       
         }
         public static bool IsAnyResource(this IEnumerable<Tasks> tasks)
         {
@@ -138,7 +205,7 @@ namespace ProjectManager.Models
                                            .Select(g => new Group<string, DisplayWorkloadVM> { Key = g.Key, Sum = g.Sum(e => e.EstWorkTime) }).OrderByDescending(g=>g.Sum);
             return workload;
         }
-        public static int GetEstWorkTime(this Tasks task, HolidaysVM holidays)
+        public static int GetAutoEstWorkTime(this Tasks task, HolidaysVM holidays)
         {
             int estWorkDays = 0;
             DateTime estStart = (DateTime)task.EstStartDate;

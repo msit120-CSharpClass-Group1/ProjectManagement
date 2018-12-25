@@ -34,7 +34,7 @@ namespace ProjectManager.Models
         /// </summary>
         /// <param name="projects"></param>
         /// <returns></returns>
-        public static IEnumerable<Grouped<string,Project>> GetGroupedProject(this IEnumerable<Project> projects)
+        public static IEnumerable<Grouped<string,Project>> GetProjectsGroupByDept(this IEnumerable<Project> projects)
         {
             return projects.AsEnumerable()
                 .OrderBy(p => p.ProjectID)
@@ -70,19 +70,34 @@ namespace ProjectManager.Models
                     rate = completedLeafTaskCount * 100 / totalLeafCount;
                 }
                 project.CompletedRate = rate;
-            }
-            
+            }            
         }
-        public static IEnumerable<int> GetWorkTimeSumOfProjectMembers(this IEnumerable<ProjectMembers> projectMembers, IEnumerable<Tasks> tasksFromRepo)
+        public static void LoadProjectSaveTimeRate(this IEnumerable<Project> projects, IEnumerable<Tasks> taskFromRepo)
         {
-            List<int> workTimeSums = new List<int>();
-            var leafTasks = tasksFromRepo.GetLeafTasks();
-            foreach (var member in projectMembers)
+            foreach (var project in projects)
             {
-               int _sum = (int)leafTasks.Where(t => t.EmployeeGUID == member.EmployeeGUID).Select(t => t.EstWorkTime).Sum();
-                workTimeSums.Add(_sum);
+                var completedleafTasks = taskFromRepo.Where(t => t.ProjectGUID == project.ProjectGUID).GetLeafTasks()
+                    .Where(t=>t.TaskStatusID == (int)Task_Status.Completed);
+                int leafTaskEstDurationSum = completedleafTasks.Sum(t => (int)t.EstWorkTime);
+                int leafTaskDurationSum = completedleafTasks.Sum(t => (int)t.WorkTime);
+                var rate = 0;
+                if (leafTaskEstDurationSum != 0)
+                    rate = (leafTaskEstDurationSum - leafTaskDurationSum) * 100 / leafTaskEstDurationSum ;
+
+                project.DurationSavedRate = rate;
             }
-            return workTimeSums;
+
+        }
+        public static IEnumerable<Grouped<string, Project>> GetProjectsGroupedByPM(this IEnumerable<Project> projects,IEnumerable<Tasks> taskFromRepo)
+        {
+            string projectID_thisYear = "P" + DateTime.Now.Year.ToString().Substring(2, 2); 
+            projects.LoadProjectsCompletedRate(taskFromRepo);
+            projects.LoadProjectSaveTimeRate(taskFromRepo);
+            return projects.AsEnumerable()
+                .Where(p=>p.ProjectID.StartsWith(projectID_thisYear))
+                .OrderBy(p => p.ProjectID)
+                .GroupBy(p => p.Employee1.EmployeeName)
+                .Select(g => new Grouped<string, Project>() { Key = g.Key, group = g }).ToList();
         }
     }
 }

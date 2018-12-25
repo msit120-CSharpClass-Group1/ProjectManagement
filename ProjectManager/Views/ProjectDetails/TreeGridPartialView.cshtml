@@ -9,7 +9,7 @@
             <th>@Html.DisplayNameFor(m => m.TaskStatusID)</th>
             <th>@Html.DisplayNameFor(m => m.EmployeeGUID)</th>
             <th>預計區間</th>
-            <th>預計工時</th>
+            <th>@Html.DisplayNameFor(m => m.EstWorkTime)</th>
             <th>@Html.DisplayNameFor(m => m.Description)</th>
             <th>@Html.DisplayNameFor(m => m.Tag)</th>
             <th>專案狀態檢核</th>
@@ -24,7 +24,7 @@
             <tr class="@class1 @class2" data-orderID="@task.orderID" data-taskGUID="@task.TaskGUID">
                 <td>@task.TaskName</td>
                 <td><a href="#"><i class="fas fa-plus"></i></a></td>
-                <td>@task.TaskStatus.TaskStatusName</td>
+                <td data-TaskStatusID="@task.TaskStatusID">@task.TaskStatus.TaskStatusName</td>
                 <td>@Html.DisplayFor(m => task.Employee.EmployeeName)</td>
                 <td>@Html.DisplayFor(m => task.EstStartDate) - @Html.DisplayFor(m => task.EstEndDate)</td>
                 <td>@Html.DisplayFor(m=> task.EstWorkTime)</td>
@@ -33,12 +33,12 @@
                 <td class="p-0 align-middle">
                     @{ 
                         TasksBL.Task_Status status = (TasksBL.Task_Status)Enum.Parse(typeof(TasksBL.Task_Status), task.TaskStatusID.ToString());
-                        if (status == TasksBL.Task_Status.WaitForConfirmed)
+                        if (status == TasksBL.Task_Status.WaitForConfirmed && task.EmployeeGUID !=null)
                         {
                             <button name="rejectAcceptBtn" class="btn btn-dark text-light mr-2 p-2" data-taskGUID="@task.TaskGUID">駁回</button>
                             <button name="confirmAcceptBtn" class="btn btn-primary p-2" data-taskGUID="@task.TaskGUID">驗收</button>
                         }
-                        else if (status == TasksBL.Task_Status.Closed)
+                        else if (status == TasksBL.Task_Status.Closed && task.EmployeeGUID != null)
                         {
                              <button name="reviveBtn" class="btn btn-dark text-light-app p-2" data-taskGUID="@task.TaskGUID">恢復</button>
                         }

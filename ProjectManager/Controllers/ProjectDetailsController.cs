@@ -18,27 +18,34 @@ namespace ProjectManager.Controllers
         Repository<Tasks> taskRepo = new Repository<Tasks>();
         Repository<Project> projectRepo = new Repository<Project>();   
         Repository<ProjectMembers> projectMembersRepo = new Repository<ProjectMembers>();
+        Repository<TaskStatus> StatusRepo = new Repository<TaskStatus>();
+        Repository<Members> memberRepo = new Repository<Members>();
+        Repository<JobTitle> jobTitleRepo = new Repository<JobTitle>();
+        Repository<TaskDetail> taskDetailRepo = new Repository<TaskDetail>();
 
         #region Project Report Chart
         public ActionResult ProjectReport(Guid? ProjectGUID)
-        {
+        {           
             if (ProjectGUID != null)
             {
                 Response.Cookies["ProjectGUID"].Value = ProjectGUID.ToString();
                 Response.Cookies["ProjectGUID"].Expires = DateTime.Now.AddDays(7);
             }
-
+            ViewBag.titleID = jobTitleRepo.Find(new Guid(Request.Cookies["TitleGUID"].Value)).TitleID;
             return View();
+        }
+        public ActionResult GetProjectDetailNav()
+        {
+            return PartialView("_PartialPageNav", "Shared");
         }
         public ActionResult RootTasksCompletedRate()
         {
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
-            var rootTasks = _tasks.GetRootTasks();
-
-            ChartData<SingleColorChartDataset> _data = new ChartData<SingleColorChartDataset>();
+            var rootTasks = _tasks.GetRootTasks();            
+            ChartData<SingleColorChartDataset<int>> _data = new ChartData<SingleColorChartDataset<int>>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new SingleColorChartDataset()
+            _data.datasets.Add(new SingleColorChartDataset<int>()
             {
                 label = "項目完成度",
                 backgroundColor = "#007BFF",
@@ -54,9 +61,9 @@ namespace ProjectManager.Controllers
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
 
-            ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
+            ChartData<MultiColorChartDataset<int>> _data = new ChartData<MultiColorChartDataset<int>>();
             _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MultiColorChartDataset()
+            _data.datasets.Add(new MultiColorChartDataset<int>()
             {
                 label = "dataset",
                 backgroundColor = colors,
@@ -69,9 +76,9 @@ namespace ProjectManager.Controllers
         {
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var members = projectMembersRepo.GetCollections().Where(m => m.ProjectGUID == _projectGUID).Distinct();
-            ChartData<SingleColorChartDataset> _data = new ChartData<SingleColorChartDataset>();
+            ChartData<SingleColorChartDataset<int>> _data = new ChartData<SingleColorChartDataset<int>>();
             _data.labels.AddRange(members.Select(m => m.Employee.EmployeeName));
-            _data.datasets.Add(new SingleColorChartDataset()
+            _data.datasets.Add(new SingleColorChartDataset<int>()
             {
                 label = "工時總和",
                 backgroundColor = "#007BFF",
@@ -81,22 +88,23 @@ namespace ProjectManager.Controllers
             });
             return Json(_data, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult RootTasksResourceSum()
+        public ActionResult TasksByStatus()
         {
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
-            var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
-            var rootTasks = _tasks.GetRootTasks();
-            ChartData<MultiColorChartDataset> _data = new ChartData<MultiColorChartDataset>();
-            _data.labels.AddRange(rootTasks.Select(t => t.TaskName));
-            _data.datasets.Add(new MultiColorChartDataset()
+
+            ChartData<SingleColorChartDataset<int>> chartData = new ChartData<SingleColorChartDataset<int>>();
+
+            chartData.labels = StatusRepo.GetCollections().Select(s => s.TaskStatusName).ToList();
+
+            chartData.datasets.Add(new SingleColorChartDataset<int>
             {
-                label = "dataset",
-                backgroundColor = colors,
-                borderColor = colors,
-                data = rootTasks.GetRootTasksResourceSum(_tasks).ToList()
+                label = "Count",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = StatusRepo.GetCollections().CountTasksByStatus(_projectGUID),
             });
-            return Json(_data, JsonRequestBehavior.AllowGet);
+
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
 
         #endregion
@@ -107,6 +115,7 @@ namespace ProjectManager.Controllers
         {
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
+            var member = memberRepo.Find(new Guid(Request.Cookies["MemberGUID"].Value));
 
             ViewBag.Departments = new SelectList(new Repository<Department>().GetCollections(), "DepartmentGUID", "DepartmentName");
             ViewBag.Employees = new SelectList(new Repository<Employee>().GetCollections(), "EmployeeGUID", "EmployeeName");
@@ -123,6 +132,8 @@ namespace ProjectManager.Controllers
             recentProject.ProjectStatusID = _project.ProjectStatusID;
             recentProject.ProjectCategoryID = _project.ProjectCategoryID;
             recentProject.ProjectSupervisorGUID = _project.ProjectSupervisorGUID;
+            recentProject.RequiredDeptGUID = _project.RequiredDeptGUID;
+            recentProject.RequiredDeptPMGUID = _project.RequiredDeptPMGUID;
             recentProject.EstStartDate = _project.EstStartDate;
             recentProject.EstEndDate = _project.EstEndDate;
             recentProject.StartDate = _project.StartDate;
@@ -153,8 +164,37 @@ namespace ProjectManager.Controllers
                 return RedirectToAction("Index", "Projects");
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var tasks = taskRepo.GetCollections().OrderBy(t => t.TaskID)
-                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();
+                .Where(t => t.ProjectGUID == _projectGUID).GetSortedTasks();    //.UpdateStatusAndDuration(); 這方法會讓頁面延遲1秒..            
+
             return PartialView(tasks);
+        }        
+        public ActionResult AsideRightReadOnlyMode(Guid? taskGUID)
+        {
+            if (Request.Cookies["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            var task = taskRepo.Find(taskGUID);
+            return PartialView(task);
+        }
+        public ActionResult AsideRightEditMode(Guid? taskGUID)
+        {
+            if (Request.Cookies["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            var task = taskRepo.Find(taskGUID);
+            task.AutoWorkTime = task.GetAutoEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+            return PartialView(task);
+        }
+        public ActionResult AsideRightInsertMode(Guid? parentTaskGUID)
+        {
+            if (Request.Cookies["ProjectGUID"] == null)
+                return RedirectToAction("Index", "Projects");
+            var task = new Tasks();
+            task.ParentTaskGUID = parentTaskGUID;
+            task.EstStartDate = DateTime.Now;
+            task.EstEndDate = DateTime.Now;            
+            task.StartDate = DateTime.Now;
+            task.AutoWorkTime = task.GetAutoEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+            task.EstWorkTime = task.AutoWorkTime;
+            return PartialView(task);
         }
         [HttpPost]
         public ActionResult InsertTask(Tasks task)
@@ -164,7 +204,6 @@ namespace ProjectManager.Controllers
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             task.ProjectGUID = _projectGUID;
             task.TaskGUID = Guid.NewGuid();
-            task.EstWorkTime = task.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
             task.StartDate = task.EstStartDate;
             task.EndDate = task.EstEndDate;
             task.TaskStatusID = (int)ProjectManager.Models.TasksBL.Task_Status.Discussing;
@@ -177,27 +216,23 @@ namespace ProjectManager.Controllers
         public ActionResult EditTask(Guid? TaskGUID)
         {
             var task = taskRepo.Find(TaskGUID);
-            task.EstWorkTime = task.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
-            task.WorkTime = task.GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
-            taskRepo.Update(task);
+            task.AutoWorkTime = task.GetAutoEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
             return Content(JsonConvert.SerializeObject(task), "application/json");
         }
         [HttpPost]
         public ActionResult EditTask(Tasks taskModified)
         {
             Tasks recentTask = taskRepo.Find(taskModified.TaskGUID);
-            recentTask.TaskName = taskModified.TaskName;
-            recentTask.Tag = taskModified.Tag;
+            recentTask.TaskName = taskModified.TaskName;            
             recentTask.EstStartDate = taskModified.EstStartDate;
             recentTask.EstEndDate = taskModified.EstEndDate;
+            recentTask.EstWorkTime = taskModified.EstWorkTime;
             recentTask.StartDate = taskModified.EstStartDate;
+            recentTask.Tag = taskModified.Tag;
             recentTask.Description = taskModified.Description;
-            recentTask.EstWorkTime = recentTask.GetEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
-            recentTask.WorkTime = recentTask.GetWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
 
             taskRepo.Update(recentTask);
             return Json("success", JsonRequestBehavior.AllowGet);
-            //return RedirectToAction("ProjectDistribution");
         }
         [HttpPost]
         public ActionResult DeleteTasks(Tasks _task)
@@ -217,6 +252,10 @@ namespace ProjectManager.Controllers
                 {
                     foreach (var child in allTasks.AsQueryable().Reverse())
                     {
+                        foreach (var item in child.TaskDetail.ToList())
+                        {
+                            taskDetailRepo.Delete(taskDetailRepo.Find(item.TaskDetailGUID));
+                        }
                         taskRepo.Delete(taskRepo.Find(child.TaskGUID));
                     }
                 }
@@ -228,25 +267,32 @@ namespace ProjectManager.Controllers
             return Json(errorMsg, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public ActionResult GetChildTaskCount(Tasks _task)
+        public ActionResult GetChildTaskCount(Guid? taskGUID)
         {
-            Tasks recentTask = taskRepo.Find(_task.TaskGUID);
+            Tasks recentTask = taskRepo.Find(taskGUID);
             var childTasks = recentTask.GetAllChildTasks();
             return Json(childTasks.Count(), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult LoadHolidays(HolidaysVM holidays)
         {
-            Response.Cookies["Holidays"].Value = "loaded";
+            Response.Cookies["Holidays"].Value = "loaded";            
             System.Web.HttpContext.Current.Application.Lock();
             System.Web.HttpContext.Current.Application["Holidays"] = holidays;
             System.Web.HttpContext.Current.Application.UnLock();
             return Json("success", JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
+        public ActionResult GetAutoWorkTime(Tasks task)
+        {
+            var autoWorkTime = task.GetAutoEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
+            return Json(autoWorkTime, JsonRequestBehavior.AllowGet);
+        }
         [HttpPost]
         public ActionResult TaskAcceptance(bool isConfirmed, Guid? taskGuid, int? reviewScore, string reviewDescription)
         {
-            Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
+            Tasks _task = taskRepo.Find(taskGuid);
+            var tasks =taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid);
             if (reviewScore != null && isConfirmed)
             {
                 if (reviewScore > 100)
@@ -254,9 +300,18 @@ namespace ProjectManager.Controllers
                 _task.ReviewScore = byte.Parse(reviewScore.ToString());
                 _task.ReviewDescription = reviewDescription;
             }
-           
-            _task.TaskStatusID = isConfirmed ? (int)TasksBL.Task_Status.Completed : (int)TasksBL.Task_Status.InProgress;
-            taskRepo.Update(_task);
+            if (isConfirmed)
+            {
+                _task.TaskStatusID = (int)TasksBL.Task_Status.Completed;
+                taskRepo.Update(_task);
+                _task.ParentTaskStatusUpdate(taskRepo,(int)TasksBL.Task_Status.Completed);                
+            }
+            else
+            {
+                _task.TaskStatusID = (int)TasksBL.Task_Status.InProgress;
+                taskRepo.Update(_task);
+                _task.ParentTaskStatusUpdate(taskRepo, (int)TasksBL.Task_Status.InProgress);
+            }
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -265,6 +320,7 @@ namespace ProjectManager.Controllers
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
             _task.TaskStatusID = (int)TasksBL.Task_Status.InProgress;
             taskRepo.Update(_task);
+            _task.ParentTaskStatusUpdate(taskRepo, (int)TasksBL.Task_Status.InProgress);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -273,6 +329,7 @@ namespace ProjectManager.Controllers
             Tasks _task = taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid).FirstOrDefault();
             _task.TaskStatusID = (int)TasksBL.Task_Status.Closed;
             taskRepo.Update(_task);
+            _task.ParentTaskStatusUpdate(taskRepo, (int)TasksBL.Task_Status.Closed);
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpGet]

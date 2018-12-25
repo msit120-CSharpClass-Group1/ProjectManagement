@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProjectManager.Models.Tasks>
+﻿@model IEnumerable<ProjectManager.Models.ViewModel.NotificationVM>
 
 @{
     ViewBag.Title = "你的通知";
@@ -7,38 +7,52 @@
 {
     <style>
         .projectLink {
-            padding: 20px;
-            background-color:white;
+            padding: 15px;
+            background-color: white;
         }
+        .projectLink span {
+           font-size: 14px;
+        }
+
             .projectLink:hover {
                 background-color: #e6e8eb;
                 text-decoration: underline;
             }
+
         .tasktime {
-           float:right;
+            float: right;
         }
     </style>
 }
-<div class="container mt-5">
+<div class="container mt-2">
     <hr />
-    @foreach (var task in Model)
+    @foreach (var vm in Model)
     {
-        <div class="projectLink" data-projectGUID="@task.ProjectGUID">
-            <span>「@task.Project.Employee1.EmployeeName 」在「 @task.Project.ProjectName 」分配了「@task.TaskName」給你</span>
-            <span class="tasktime">@task.AssignedDate</span>
-        </div>
+    <div class="projectLink" data-projectGUID="@vm.ProjectGUID">
+        @switch (vm.Category)
+        {
+            case "Task":
+                <span>「@vm.MangerName 」在「 @vm.ProjectName 」分配了「@vm.TaskName」給你</span>
+                break;
+            case "InvideProject":
+                <span>「@vm.MangerName 」邀請你加入了「 @vm.ProjectName 」專案</span>
+
+                break;
+        }
+
+        <span class="tasktime">@vm.NotificationDate</span>
+    </div>
     }
 
 </div>
 @section script
-{
+            {
     <script>
         $(document).ready(function () {
             $('.projectLink').click(RedirectToMyBoard);
 
-            function RedirectToMyBoard() {
-                console.log('231234')
-                $.post("@Url.Action("SetCookiesForMyBoard", "Home")", { projectGUID: $(this).attr("data-projectGUID") },
+                    function RedirectToMyBoard() {
+                        $.post("@Url.Action("SetCookiesForMyBoard", "Home")", { projectGUID: $(this).attr("data-projectGUID") },
                     function (userGUID) {
                         location.href = "/MyBoard/Index/" + userGUID;
                     });

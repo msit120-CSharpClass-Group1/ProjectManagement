@@ -1,0 +1,82 @@
+﻿@model IEnumerable<ProjectManager.Models.ProjectMembers>
+@{
+    ViewBag.Title = "修改團隊成員";
+}
+
+<a href="~/ProjectMBackside/InsertMembers" class="btn btn-info">新增專案成員</a>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>成員姓名</th>
+            <th>所屬部門</th>
+            <th>專案評分</th>
+            <th>自評分數</th>
+            <th>編輯</th>
+        </tr>
+    </thead>
+    <tbody id="tbody">
+        @foreach (var _projectmember in Model)
+        {
+            <tr>
+                <td>@_projectmember.Employee.EmployeeName</td>
+                <td>@_projectmember.Employee.Department.DepartmentName</td>
+                <td>@_projectmember.PMscore</td>
+                <td>@_projectmember.Selfscore</td>
+                <td>
+                    <a class="btn btn-info" data-emp="@_projectmember.EmployeeGUID" data-pj="@_projectmember.ProjectGUID">修改</a>
+                    <button type="button" class="btn btn-danger" data-emp="@_projectmember.EmployeeGUID" data-pj="@_projectmember.ProjectGUID">刪除</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section asideRight{
+    <h3 id="empName"></h3>
+
+    
+    }
+    @section script{
+        <script>
+    $(document).ready(function ()
+    {
+        $("#tbody").on("click", 'button', function ()
+        {
+            let thisRow = $(this);
+            let EmployeeGUID = thisRow.data("emp");
+            let ProjectGUID = thisRow.data("pj")
+            $.ajax({
+                url: '@Url.Action("DeleteMembers", "ProjectMBackside")',
+                data: { "EmployeeGUID": EmployeeGUID, "ProjectGUID": ProjectGUID },
+                type: "post",
+                success: function (data)
+                {
+                    thisRow.parent().parent().remove();
+                }
+            });
+        })
+
+        $("#tbody").on("click", 'a', function ()
+        {
+            $("#empName").text()
+            if ($('#myRightsidenav').css('display') == "none")
+            {
+                $('button.rightOpenbtn').click();
+            }
+            @* $.ajax({
+                url: '@Url.Action("UpdateMembers", "ProjectMBackside")',
+                data: { "EmployeeGUID": EmployeeGUID, "ProjectGUID": ProjectGUID },
+                type: "post",
+                success: function (data)
+                {
+
+                }
+            });*@
+        })                        
+    })
+        </script>
+    }
+
+
+
+
+

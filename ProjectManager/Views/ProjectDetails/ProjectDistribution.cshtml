@@ -72,13 +72,17 @@
 }
 @{
     var project = (Project)ViewBag.Project;
-    if (project.ProjectID == "P18006")
+    if (project != null)
     {
-        <h4>@project.ProjectID &nbsp; @project.ProjectName<span><button id="demoBtn" type="button" class="btn btn-default ml-3">Demo</button></span></h4>
-    }
-    else
-    {
-        <h4>@project.ProjectID &nbsp; @project.ProjectName</h4>
+        if (project.ProjectID == "P18006")
+        {
+            <h4>@project.ProjectID &nbsp; @project.ProjectName<span><button id="demoBtn" type="button" class="btn btn-default ml-3">Demo</button></span></h4>
+        }
+        else
+        {
+            <h4>@project.ProjectID &nbsp; @project.ProjectName</h4>
+        }
+
     }
 }
 
@@ -236,145 +240,77 @@
 
 
 @section asideRight{
-    <div class="container text-light mt-3">
-        <h4 id="ModeTitle">新增工作項目</h4>
-        <form id="TaskForm" class="form-horizontal" method="put">
-            <input name="ParentTaskGUID" id="ParentTaskGUID" type="text" hidden />
-            <input name="TaskGUID" id="TaskGUID" type="text" hidden />
-            <input name="TaskStatusID" id="TaskStatusID" type="text" hidden />
-            <div class="form-group">
-                @Html.LabelFor(m => m.FirstOrDefault().TaskName)
-                @Html.TextBox("TaskName", null, new { @class = "form-control", style = "width:18em;" })
-            </div>
-            <div class="row ">
-                <div class="col-12 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().EstStartDate)
-                    @{
-                        string strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-                    }
-                    <br />
-                    <input name="EstStartDate" id="EstStartDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
-                </div>
-            </div>
-            <div class="row ">
-                <div class="col-12 form-group">
-                    @Html.LabelFor(m => m.FirstOrDefault().EstEndDate)
-                    @{
-                        strDate = string.Format("{0:yyyy-MM-dd}", DateTime.Now);
-                    }
-                    <br />
-                    <input name="EstEndDate" id="EstEndDate" type="date" class="form-control d-inline" value="@strDate" style="width:18em;" />
-                </div>
-            </div>
-            <div id="ReviewDiv">
-                <div class="row">
-                    <div class="col-6 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().EstWorkTime)
-                        <br />
-                        @Html.TextBox("EstWorkTime", null, new { @class = "form-control", style = "width:6em;" })
-
-                    </div>
-                    <div class="col-6 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().WorkTime)
-                        <br />
-                        @Html.TextBox("WorkTime", null, new { @class = "form-control", style = "width:6em;" })
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().ReviewScore)
-                        <br />
-                        @Html.TextBox("ReviewScore", null, new { @class = "form-control", style = "width:18em;" })
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().ReviewDescription)
-                        <br />
-                        <textarea name="ReviewDescription" id="ReviewDescription" class="form-control d-inline" style="width:18em;height:6em;"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div id="DescriptionDiv">
-                <div class="row ">
-                    <div class="col-12 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().Tag)
-                        @Html.TextBox("Tag", null, new { @class = "form-control", style = "width:18em;" })
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 form-group">
-                        @Html.LabelFor(m => m.FirstOrDefault().Description)
-                        <br />
-                        <textarea name="Description" id="Description" class="form-control d-inline" style="width:18em;height:8em;"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <div id="formBtns" class="mt-2 mx-auto text-center ">
-                <button id="CancelBtn" type="button" class="btn btn-light py-1 px-5">取消</button>
-                <button id="ConfirmedAddBtn" type="button" class="btn btn-primary py-1 px-5">確認新增</button>
-                <button id="ConfirmedModifyBtn" type="button" class="btn btn-primary py-1 px-5">確認修改</button>
-                <br />
-                <button id="DeleteBtn" type="button" class="btn btn-danger py-1 px-3 mt-3">刪除工作項目</button>
-            </div>
-        </form>
-    </div>
+    <div id="AsideRightContainer" class="container text-light mt-3"></div>
 }
 
 @section script{
     <script src="~/Scripts/jquery.treegrid.min.js"></script>
     <script>
         $(document).ready(function () {
-            //$('.leftOpenbtn').click();
-            $('.rightOpenbtn').html('<i class="fas fa-plus"></i>').mouseup(function () { $(this).delay(500); SetRightAsideToAdd(); });
-            $('#DeleteBtn').hide();
+            
+            $('.rightOpenbtn').html('<i class="fas fa-plus"></i>').mouseup(function () {
+                $(this).delay(500);
+                asideRightContainer
+                        .load("@Url.Action("AsideRightInsertMode", "ProjectDetails")", AsideRightInsertMode);                      
+            });
 
             var tasks_layout = $('#tasks_layout');
             var treeGridContainer = $('#treeGridContainer');
             var ganttContainer = $('#ganttContainer');
-            var taskForm = $('#TaskForm');
             var acceptanceModal = $('#AcceptanceComfirmModal');
             var rejectAcceptModal = $('#RejectAcceptanceModal');
+            var asideRightContainer = $('#AsideRightContainer');
 
-            treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+            LoadTreeGrid();
 
-            function SetTreeGrid() {
-                $(this).find('table').treegrid();
-                $(this).find('tr').each(DoubleClickToModifyTask);
-                $(this).find('tr a').each(ClickPlusIconToAddTask);
-                $(this).find('td button').each(TaskStatusConfirm);
+            function LoadTreeGrid() {
+                treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", function SetTreeGrid() {
+                    $(this).find('table').treegrid();
+                    $(this).find('tr').each(DoubleClickToModifyTask);
+                    $(this).find('tr a').each(ClickPlusIconToAddTask);
+                    $(this).find('td button').each(TaskStatusConfirm);
+                });
             }
-
+            
+            function SetAsideRightReadOnlyMode() {
+                $(this).find('input').prop('disabled', true);
+                $(this).find('textarea').prop('disabled', true);
+                $(this).find('button[name="CancelBtn"]').click(function () {
+                    $('button.rightOpenbtn').click();
+                });
+            }
+            function SetAsideRightEditMode() {
+                var _form = $(this).find('form');
+                _form.find('input[name="AutoWorkTime"]').prop('disabled', true);
+                _form.find('input[type="date"]').on('change', GetAutoWorkTime);
+                _form.find('button[name="CancelBtn"]').click(function () {$('button.rightOpenbtn').click(); });
+                _form.find('button[name="ModifyBtn"]').on('click', SubmitModifiedTask);
+                $(this).find('button[name="DeleteBtn"]').on('click', DeleteTask);
+            }
+            function AsideRightInsertMode() {                
+                var _form = $(this).find('form');
+                _form.find('input[name="AutoWorkTime"]').prop('disabled', true);
+                _form.find('input[type="date"]').on('change', GetAutoWorkTime);
+                _form.find('button[name="CancelBtn"]').click(function () { $('button.rightOpenbtn').click(); });
+                _form.find('button[name="InsertBtn"]').on('click', InsertTask);
+            }
             function DoubleClickToModifyTask() {
-                $(this).on("dblclick", function () {
-                    if ($('#myRightsidenav').css('display') == "none") {
-                            $('button.rightOpenbtn').click();
+                $(this).on("dblclick", function () {                    
+
+                    @{ var completedTask = (int)TasksBL.Task_Status.Completed;}
+                    var _taskGUID = $(this).attr('data-taskGUID');
+                    if ($(this).find('td:nth-child(3)').attr('data-TaskStatusID') == @completedTask)
+                    {
+                        asideRightContainer
+                            .load("@Url.Action("AsideRightReadOnlyMode", "ProjectDetails")?taskGUID=" + _taskGUID, SetAsideRightReadOnlyMode);
                     }
-
-
-                    $.getJSON('@Url.Action("EditTask", "ProjectDetails")', { TaskGUID: $(this).attr('data-taskGUID') }, function (task) {
-                            $('#TaskName').val(task.TaskName);
-                            $('#TaskStatusID').val(task.TaskStatusID);
-                            $('#Tag').val(task.Tag);
-                            $('#EstStartDate').val(ConvertDatetime(task.EstStartDate));
-                            $('#EstEndDate').val(ConvertDatetime(task.EstEndDate));
-                            $('#EstWorkTime').val(task.EstWorkTime);
-                            $('#WorkTime').val(task.WorkTime);
-                            $('#Description').val(task.Description);
-                            $('#ParentTaskGUID').val(task.ParentTaskGUID);
-                            $('#TaskGUID').val(task.TaskGUID);
-                            $('#ReviewScore').val(task.ReviewScore);
-                            $('#ReviewDescription').val(task.ReviewDescription);
-
-                        if (task.TaskStatusID == @((int)TasksBL.Task_Status.Completed)) {
-                            SetRightAsideToReadOnly();
-                        } else {
-                            SetRightAsideToModify();
-                        }
-
-                    });
-
+                    else
+                    {
+                        asideRightContainer
+                            .load("@Url.Action("AsideRightEditMode", "ProjectDetails")?taskGUID=" + _taskGUID, SetAsideRightEditMode);
+                    }
+                    if ($('#myRightsidenav').css('display') == "none")
+                        $('button.rightOpenbtn').click();
                 });
             }
             function ConvertDatetime(_date) {
@@ -383,96 +319,56 @@
             }
             function ClickPlusIconToAddTask() {
                 $(this).on("click", function () {
-                        SetRightAsideToAdd();
-                        if ($('#myRightsidenav').css('display') == "none") {
+                    var _parentGUID = $(this).parents('tr').attr('data-taskGUID');
+                    asideRightContainer
+                        .load("@Url.Action("AsideRightInsertMode", "ProjectDetails")?parentTaskGUID=" + _parentGUID, AsideRightInsertMode);
+                        
+                        if ($('#myRightsidenav').css('display') == "none") 
                             $('button.rightOpenbtn').click();
-                        }
-                        $('#ParentTaskGUID').val($(this).parents('tr').attr('data-taskGUID'));
                 });
             }
 
-            function SetRightAsideToModify() {
-                $('#ModeTitle').text("修改工作項目");
-                $('#ConfirmedAddBtn').hide();
-                $('#ConfirmedModifyBtn').show();
-                $('#DeleteBtn').show();
-                $('#ReviewDiv').hide();
-                $('#DescriptionDiv').show();
-
-                taskForm.find('input[type="text"]').prop("disabled", false);
-                taskForm.find('textarea').prop("disabled", false);
-                taskForm.find('input[type="date"]').prop("disabled", false);
-
-            }
-            function SetRightAsideToReadOnly() {
-                $('#ModeTitle').text("已驗收工作項目");
-                $('#ConfirmedAddBtn').hide();
-                $('#ConfirmedModifyBtn').hide();
-                $('#DeleteBtn').hide();
-                $('#ReviewDiv').show();
-                $('#DescriptionDiv').hide();
-
-                taskForm.find('input[type="text"]').prop('disabled', true);
-                taskForm.find('textarea').prop('disabled', true);
-                taskForm.find('input[type="date"]').prop('disabled', true);
-
-            }
-            function SetRightAsideToAdd() {
-                $('#ModeTitle').text("新增工作項目");
-                $('#ConfirmedAddBtn').show();
-                $('#ConfirmedModifyBtn').hide();
-                $('#DeleteBtn').hide();
-                $('#ReviewDiv').hide();
-                $('#DescriptionDiv').show();
-
-                taskForm.find('input[type="text"]').val("").prop("disabled", false);
-                taskForm.find('textarea').val("").prop("disabled", false);
-                taskForm.find('input[type="date"]').val("@string.Format("{0:yyyy-MM-dd}", DateTime.Now)").prop("disabled", false);
-            }
-
-
-
-            $('#ConfirmedAddBtn').click(function () {
-                var data = taskForm.serialize();
-                $.post("@Url.Action("InsertTask", "ProjectDetails")", data, function () {
-                    $('.rightOpenbtn').click();
-                     treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
-                });
-            });
-            $('#ConfirmedModifyBtn').click(function () {
-                var data = taskForm.serialize();
+            function SubmitModifiedTask() {
+                var data = asideRightContainer.find('form').serialize();
                 $.post("@Url.Action("EditTask", "ProjectDetails")",data, function () {
-                     treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                     LoadTreeGrid();
                 });
                 $('button.rightOpenbtn').click();
-            });
-            $('#CancelBtn').click(function () {
-                $('.rightOpenbtn').click();
-                //SetRightAsideToAdd();
-            });
-            $('#DeleteBtn').click(function () {
-                $.ajax({
-                    url: "@Url.Action("GetChildTaskCount", "ProjectDetails")",
-                    method: "get",
-                    data: taskForm.serialize(),
-                    dataType: "json"
-                }).done(function (data) {
-                    if (parseInt(data) != 0) {
-                        $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + " </em>  有" + data + "個子項目");
-                        $('#btn_ConfirmDelete').text('全部刪除');
-                        $('#DeleteAlarmModal').modal('show');
-                    } else {
-                        $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + "</em>  將被刪除");
-                        $('#btn_ConfirmDelete').text('刪除');
-                        $('#DeleteAlarmModal').modal('show');
-                    }
+            }
+            function GetAutoWorkTime() {
+                var _form = asideRightContainer.find('form');
+                $.getJSON("@Url.Action("GetAutoWorkTime", "ProjectDetails")", _form.serialize(), function (autoWorkTime) {
+                    _form.find('input[name="AutoWorkTime"]').val(autoWorkTime);
                 });
-            });
+            }
+            function InsertTask() {
+                var _form = asideRightContainer.find('form');
+                $.post("@Url.Action("InsertTask", "ProjectDetails")", _form.serialize(), function () {
+                    $('.rightOpenbtn').click();
+                     LoadTreeGrid();
+                });
+            }
+            function DeleteTask() {
+                console.log($(this).text());
+                var _taskGUID = asideRightContainer.find('input[name="TaskGUID"]').val();
+                $.getJSON("@Url.Action("GetChildTaskCount", "ProjectDetails")?taskGUID=" + _taskGUID, null,
+                    function (data) {
+                        if (parseInt(data) != 0) {
+                            $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + " </em>  有" + data + "個子項目");
+                            $('#btn_ConfirmDelete').text('全部刪除');
+                            $('#DeleteAlarmModal').modal('show');
+                        } else {
+                            $('#deleteAlarm').html("工作項目  <em>" + $('#TaskName').val() + "</em>  將被刪除");
+                            $('#btn_ConfirmDelete').text('刪除');
+                            $('#DeleteAlarmModal').modal('show');
+                        }
+                    });
+            }
             $('#btn_ConfirmDelete').click(function () {
                 $.ajax({
                     url: "@Url.Action("DeleteTasks", "ProjectDetails")",
                     method: "post",
-                    data: taskForm.serialize(),
+                    data: asideRightContainer.find('form').serialize(),
                     dataType: "json"
                 }).done(function (data) {
                     $('#DeleteAlarmModal').modal('hide');
@@ -481,11 +377,9 @@
                         $('#DeleteRejectedModal').modal('show');
                     }
                     $('.rightOpenbtn').click();
-                    //SetRightAsideToAdd();
-                    treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                    LoadTreeGrid();
                 });
             });
-
 
             $('#btn_ConfirmAccept').click(function () {
                 var Score = 60;
@@ -519,7 +413,7 @@
 
             $('#btn_EndTask').click(function () {
                 $.post("@Url.Action("EndTask", "ProjectDetails")", { taskGuid: $('#RA_taskGUID').val() }, function (data) {
-                        treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                    LoadTreeGrid();
                 });
                 rejectAcceptModal.modal('hide');
             });
@@ -527,7 +421,7 @@
             function Acceptance(_confirm, _taskGUID, _reviewScore, _reviewDescription) {
                 $.post("@Url.Action("TaskAcceptance", "ProjectDetails")", { isConfirmed: _confirm, taskGuid: _taskGUID, reviewScore: _reviewScore, reviewDescription: _reviewDescription },
                     function (data) {
-                        treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                        LoadTreeGrid();
                     });
             }
 
@@ -560,7 +454,7 @@
                     }
                     else if ($(this).attr('name') == "reviveBtn"){
                         $.post("@Url.Action("TaskRevivedToInProgress", "ProjectDetails")", { taskGuid: $(this).attr('data-taskGUID') }, function (data) {
-                            treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", SetTreeGrid);
+                            LoadTreeGrid();
                         });
                     }
                 });
@@ -593,10 +487,10 @@
                     });
                 });
             }
-            $('#demoBtn').click(function () {                
+            $('#demoBtn').click(function () {
                 $.getJSON("@Url.Action("InsertTasksForDemo", "ProjectDetails")", null, function (data) {   });
                 location.href = "/ProjectDetails/ProjectDistribution";
-                
+
             });
 
 

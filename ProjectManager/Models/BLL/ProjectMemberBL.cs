@@ -53,7 +53,7 @@ namespace ProjectManager.Models
 
         public static IEnumerable<Group<string, ProjectMembers>> GetHighestMember(this IEnumerable<ProjectMembers> projectMembers)
         {
-            var memeberList = projectMembers.Where(p => p.PMscore >= 80 && p.EmployeeGUID != null).GroupBy(g => g.Employee.EmployeeName)
+            var memeberList = projectMembers.Where(p => p.PMscore >= 90 && p.EmployeeGUID != null).GroupBy(g => g.Employee.EmployeeName)
                                          .Select(g => new Group<string, ProjectMembers> { Key = g.Key,value =g,Count=g.Count()});
             return memeberList;
         }
@@ -101,7 +101,7 @@ namespace ProjectManager.Models
             {
                 foreach (var _item in _member.value)
                 {
-                    if (_item.PMscore < memberPMScoreAVG)
+                    if (_item.PMscore <= memberPMScoreAVG)
                     {
                         AvgMemberScore.Add(_item);
                     }
@@ -110,7 +110,7 @@ namespace ProjectManager.Models
             return AvgMemberScore;
         }
 
-        public static IEnumerable<Group<string, Tasks>> GetTaskAVGScore (this IEnumerable<Tasks> tasks)
+        public static IEnumerable<Group<string, Tasks>> GetTaskAVGScore(this IEnumerable<Tasks> tasks)
         {
             var avgTaskScore = tasks.Where(p => p.EmployeeGUID != null && p.ReviewScore != null).GroupBy(g => g.Project.ProjectName)
                                            .Select(g => new Group<string, Tasks> { Key = g.Key, Avg = g.Average(p => p.ReviewScore) });
@@ -122,6 +122,31 @@ namespace ProjectManager.Models
                 avgTasksScore.Add(item);
             }
             return avgTasksScore;
-        }       
+        }
+
+        public static IEnumerable<ProjectMemberTaskCompletedRateVM> GetProjectMemberTaskCompletedRate(this IEnumerable<ProjectMembers> members, IEnumerable<Tasks> tasks)
+        {
+            return members.Select(m => new ProjectMemberTaskCompletedRateVM() {
+                EmployeeName = m.Employee.EmployeeName,
+                CompletedRate = m.GetTeamMemberTaskCompletedRate(tasks),
+                InChargeTaskCount = tasks.Where(t=>t.EmployeeGUID == m.EmployeeGUID).Count(),
+                EstWorkTimeSum = (int)tasks.Where(t=>t.EmployeeGUID == m.EmployeeGUID).Sum(t=>t.EstWorkTime),
+            });
+        }
+
+        public static int GetTeamMemberTaskCompletedRate(this ProjectMembers member, IEnumerable<Tasks> tasks)
+        {
+            int rate = 0;
+            var total = tasks.Where(t => t.EmployeeGUID == member.EmployeeGUID)
+                .Where(t=>t.TaskStatusID != (int)TasksBL.Task_Status.Closed).Count();
+
+            var completed = tasks.Where(t => t.EmployeeGUID == member.EmployeeGUID)
+                .Where(t => t.TaskStatusID == (int)TasksBL.Task_Status.Completed).Count();
+
+            if (total > 0)
+                rate = completed * 100 / total;
+
+            return rate;
+        }
     }
 }

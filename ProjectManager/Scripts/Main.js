@@ -50,8 +50,7 @@
     //通知訊息下拉選單
     window.setInterval(msgcount, 120000);
     msgcount();
-    function msgcount()
-    {
+    function msgcount() {
         $.post('/Notification/Load/', {}, function (datas) {
             var btn = $('#notificationbtn');
             btn.html('');
@@ -63,8 +62,9 @@
             var Fragdoc = $(document.createDocumentFragment());
             var msg = $('#notificationmsg');
             $(datas).each(function (id, data) {
-                var time = new Date(data.AssignedDate.match(/\d+/)[0] * 1);
-                var taskName = $('<P></p>').html('「'+data.EmployeeName+'」在「' + data.ProjectName+'」分配了「' + data.TaskName + '」給你');
+
+                var time = new Date(data.NotificationDate.match(/\d+/)[0] * 1);
+                var taskName;
                 var taskTime = $('<span></span>').html(time.toLocaleDateString());
                 var task = $('<a></a>');
                 task.click(function () {
@@ -77,9 +77,18 @@
                     task.addClass('IsRead');
                     _count++;
                 }
+                switch (data.Category) {
+                    case 'Task':
+                        taskName = $('<p></p>').html('「' + data.MangerName + '」在「' + data.ProjectName + '」分配了「' + data.TaskName + '」給你');
+                        break;
+                    case 'InvideProject':
+                        taskName = $('<p></p>').html('「' + data.MangerName + '」邀請你加入了「' + data.ProjectName + '」專案');
+                        break;
+                }
                 task.append(taskName);
                 task.append(taskTime);
                 Fragdoc.append(task);
+
             });
             var moreTask = $('<a></a>').append('更多訊息');
             moreTask.attr("href", "/Notification/Index/");
@@ -96,5 +105,5 @@
             }
             btn.html(Fragcount);
         });
-    } 
+    }
 });

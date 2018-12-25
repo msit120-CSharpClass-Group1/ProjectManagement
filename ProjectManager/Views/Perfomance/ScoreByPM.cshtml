@@ -11,18 +11,23 @@
 <section id="team" class="pb-5">
     <div class="container">
         <h5 class="section-title h1">專案團隊成員評分介面</h5>
-        <div class="row">
+        <div class="row" id="cardarea">
+            @if(Model.ProjectMembers.Count()==0)
+            {
+                <p>成員都已經評分過了</p>
+            }
             <!-- Team member -->
             @foreach (var member in Model.ProjectMembers)
             {
-                <div class="col-xs-12 col-sm-6 col-md-4">
+                <div class="col-xs-12 col-sm-6 col-md-4" id="cardareaChild">
+                    <p hidden>@member.EmployeeGUID</p>
                     <div class="image-flip">
                         <div class="mainflip">
                             <div class="frontside">
                                 <div class="card">
                                     <div class="card-body text-center">
                                         <p><img class=" img-fluid" src="~/image/leader.png"></p>
-                                        <h4 class="card-title">@member.Employee.EmployeeName</h4>
+                                        <h4 class="card-title" id="empName">@member.Employee.EmployeeName</h4>
                                         <p class="card-text">@member.Employee.JobTitle.TitleName</p>
                                         @if (member.Selfscore != null)
                                         {
@@ -39,8 +44,8 @@
                                 <div class="card">
                                     <div class="card-body text-center mt-4">
                                         <h4 class="card-title" data-guid="@member.EmployeeGUID">@member.Employee.EmployeeName</h4>
-                                        <p class="card-text" style="width:300px">此專案承接工作數:@member.Project.Tasks.Where(p=>p.EmployeeGUID == member.EmployeeGUID).Count()</p>
-                                        <p class="card-text">已完成的工作數:@member.Project.Tasks.Where(p=>p.EmployeeGUID == member.EmployeeGUID && p.TaskStatusID ==4).Count()</p>
+                                        <p class="card-text" style="width:300px">此專案承接工作數:@member.Project.Tasks.Where(p => p.EmployeeGUID == member.EmployeeGUID).Count()</p>
+                                        <p class="card-text">已完成的工作數:@member.Project.Tasks.Where(p => p.EmployeeGUID == member.EmployeeGUID && p.TaskStatusID == 4).Count()</p>
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" data-memberguid="@member.EmployeeGUID" id="scoreBtn">
                                             我要評分
                                         </button>
@@ -50,7 +55,7 @@
                         </div>
                     </div>
                 </div>
-            }
+                }
         </div>
     </div>
 </section>
@@ -106,11 +111,13 @@
 <script>
         $(document).ready(function ()
         {
+            let cardareacount = $("#cardarea").children().length;
+            let EmployeeGUID;
             $(".backside").on("click", 'button', function ()
             {
                 var EmployeeName = $(this).siblings(".card-title").text()
-                var EmployeeGUID = $(this).siblings(".card-title").data("guid");
-                $("#modalEmpName").text(EmployeeName).attr("data-guid", EmployeeGUID)
+                EmployeeGUID = $(this).siblings(".card-title").data("guid");
+                $("#modalEmpName").text("對" + EmployeeName + "進行評分").attr("data-guid", EmployeeGUID);
             })
             $("label").tooltip();
 
@@ -119,7 +126,6 @@
             $("#sendScoreBtn").click(function ()
             {
                 var ChkBoxLength = scoreArea.children().length - 5;
-                var EmployeeGUID = $("#modalEmpName").data("guid");
 
                 for (var i = 0; i <= ChkBoxLength; i++)
                 {
@@ -132,14 +138,24 @@
                     $.ajax({
                         url: '@Url.Action("EditPMScore", "Perfomance")',
                         data: { "EmployeeGUID": EmployeeGUID, "PMScore": score, "ProjectGUID": $("#pjGUID").text()},
-                        type:"POST",
+                        type:"post",
                         success: function (data)
-                        {
-                            score = 0;
+                        {                            
                             scoreArea.children("input").prop("checked", false);
                             $('#exampleModalCenter').modal('hide');
+                            for (var i = 0; i <= cardareacount; i++)
+                            {
+                                let carditem = $("#cardarea").children("#cardareaChild:eq('" + i + "')");
+                                let EmpGUID = carditem.children("p").text();
+                                if (EmpGUID == EmployeeGUID)
+                                {
+                                    carditem.html('<img src="/image/sign-check-icon.png" style="width:300px;"/><h3 style="text-align:center;font-size:200;margin-top:auto"><strong>"'+ score +'"分</strong></h3>');
+                                    //carditem.fadeOut(1800, function () {$(this).remove()});                                  
+                                }
+                            }
+                            score = 0;
                         }
-                });               
+                });                
             })
             $("#cancelscore").click(function () { $(".boxes").children("input").prop("checked", false)})
         })

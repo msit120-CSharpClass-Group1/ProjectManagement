@@ -1,10 +1,10 @@
-﻿
+﻿@using ProjectManager.Models
 @{
     ViewBag.Title = "專案報表";
+    int jobTitleID = ViewBag.titleID;
 }
-
 @section nav{
-    @Html.Partial("_PartialPageNav", "Shared")
+    <div id="ProjectDetail_nav"></div>
 }
 @section style{
     <style>
@@ -13,6 +13,7 @@
             -webkit-user-select: none;
             -ms-user-select: none;
         }
+
         .container {
             display: flex;
             flex-direction: row;
@@ -20,7 +21,7 @@
             justify-content: center;
         }
     </style>
-    
+
 }
 <div class="row mb-3">
     <div class="col-lg-6 col-sm-12">
@@ -41,8 +42,8 @@
         </div>
     </div>
    <div class="col-lg-6 col-sm-12">
-        <div id="RootTasksSumOfResourceContainer" class="chart-container bg-light p-3">
-            <canvas id="RootTasksSumOfResourceChart"></canvas>
+        <div id="TasksByStatusContainer" class="chart-container bg-light p-3">
+            <canvas id="TasksByStatusChart"></canvas>
         </div>
     </div>
 </div>
@@ -59,7 +60,7 @@
             BuildRootTasks_CompletedRateChart();
             BuildRootTasks_SumOfWorkTimeChart();
             BuildMembers_SumOfWorkTimeChart();
-            BuildRootTasks_SumOfResourceChart();
+            TasksByStatus();
 
             function BuildRootTasks_CompletedRateChart() {
                 $.getJSON("@Url.Action("RootTasksCompletedRate", "ProjectDetails")", null, function (datas) {
@@ -189,24 +190,32 @@
                         });
                 });
             }
-            function BuildRootTasks_SumOfResourceChart(){
-                $.getJSON("@Url.Action("RootTasksResourceSum", "ProjectDetails")", null, function (datas) {
-                    var RootTasksSumOfResourceChart = new Chart($('#RootTasksSumOfResourceChart'),
+
+            function TasksByStatus()
+            {
+                $.getJSON("@Url.Action("TasksByStatus", "ProjectDetails")", null, function (datas)
+                {
+                    var TasksByStatusChart = new Chart($('#TasksByStatusChart'),
                         {
-                            type: 'doughnut',
+                            type: 'bar',
                             data: datas,
-                            options: {
+                            options:
+                            {
                                 responsive: true,
-                                legend: {
+                                maintainAspectRatio: true,
+                                legend:
+                                {
                                     position: 'top',
                                 },
-                                title: {
+                                title:
+                                {
                                     display: true,
-                                    text: '根工作項目費用總和',
+                                    text: '任務狀態統計',
                                     fontSize: 20,
                                     padding: 10,
                                 },
-                                animation: {
+                                animation:
+                                {
                                     animateScale: true,
                                     animateRotate: true
                                 },
@@ -215,7 +224,15 @@
                 });
             }
 
+            //Permission
+            if (@jobTitleID == @((int)PermissionBL.Emp_Title.Admin) || @jobTitleID == @((int)PermissionBL.Emp_Title.PM))
+            {
+                 $('#ProjectDetail_nav').load("@Url.Action("GetProjectDetailNav", "ProjectDetails")");
+            }
         });
+
+        
+
     </script>
     <style>
     </style>

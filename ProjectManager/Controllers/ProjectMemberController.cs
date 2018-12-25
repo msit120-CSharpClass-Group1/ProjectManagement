@@ -3,9 +3,12 @@ using Newtonsoft.Json.Linq;
 using ProjectManager.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace ProjectManager.Controllers
 {
@@ -16,6 +19,9 @@ namespace ProjectManager.Controllers
         Repository<Department> dep = new Repository<Department>();
         Repository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
         Repository<Tasks> tasks = new Repository<Tasks>();
+        Repository<Models.Calendar> calRe = new Repository<Models.Calendar>();
+        Repository<Members> member = new Repository<Members>();
+
         // GET: ProjectMember
         public ActionResult Index()
         {
@@ -78,33 +84,48 @@ namespace ProjectManager.Controllers
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            ViewBag.LoadTask = tasks.GetCollections().Where(t => t.TaskStatusID == 1 && t.ProjectGUID == SendprojectGUID).GetLeafTasks();
+            var q = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID).GetLeafTasks();
+            ViewBag.LoadTask = q.Where(p => p.TaskStatusID == 1);
             ViewBag.Workload = tasks.GetCollections().GetLeafTasks().GetTeamWorkLoad();
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
 
         public ActionResult EditTaskM()
         {
-            if (Request.Form["TotalRow"] != "")
+            try
             {
-                var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
-                var LastRow = Convert.ToInt32(Request.Form["LastRow"]);
-
-                for (int i = FirstRow; i <= LastRow; i++)
+                if (Request.Form["TotalRow"] != "")
                 {
-                    if (Request.Form["EmployeeGUID" + i] != null && Request.Form["TaskGUID" + i] != null)
+                    var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
+                    var LastRow = Convert.ToInt32(Request.Form["LastRow"]);
+
+                    for (int i = FirstRow; i <= LastRow; i++)
                     {
-                        var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
-                        var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
-                        Tasks _tasks = tasks.Find(TaskGUID);
-                        _tasks.EmployeeGUID = EmpGUID;
-                        _tasks.AssignedDate = DateTime.Now;
-                        _tasks.TaskStatusID = 2;
-                        _tasks.IsRead = false;
-                        tasks.Update(_tasks);
+                        if (Request.Form["EmployeeGUID" + i] != null && Request.Form["TaskGUID" + i] != null)
+                        {
+                            var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
+                            var TaskGUID = new Guid(Request.Form["TaskGUID" + i]);
+                            Tasks _tasks = tasks.Find(TaskGUID);
+                            _tasks.EmployeeGUID = EmpGUID;
+                            _tasks.AssignedDate = DateTime.Now;
+                            _tasks.TaskStatusID = 2;
+                            _tasks.IsRead = false;
+                            tasks.Update(_tasks);
+                            Guid memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == EmpGUID).Select(m => m.MemberGUID).Single();
+                            Models.Calendar cal = new Models.Calendar();
+                            cal.MemberGUID = memberGUID;
+                            cal.Subject = _tasks.TaskName;
+                            cal.Start = (DateTime)_tasks.EstStartDate;
+                            cal.EndDay = (DateTime)_tasks.EstEndDate;
+                            cal.Description = _tasks.Description;
+                            cal.CalendarGUID = Guid.NewGuid();
+                            cal.ThemeColor = "Pink";
+                            calRe.Add(cal);
+                        }
                     }
                 }
             }
+            catch { }
             return RedirectToAction("AssignTask");
         }
         public ActionResult ReloadTaskList()
@@ -112,7 +133,8 @@ namespace ProjectManager.Controllers
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             Guid SendprojectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            var taskList = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID && t.TaskStatusID == 1).GetLeafTasks().ToList();
+            var q = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID).GetLeafTasks().ToList();
+            var taskList = q.Where(t => t.TaskStatusID == 1);
             return Content(JsonConvert.SerializeObject(taskList), "application/json");
         }
 
@@ -136,19 +158,42 @@ namespace ProjectManager.Controllers
 
         public ActionResult GetProjectMemberTasks(Guid EmployeeGUID)
         {
-            var memberTask = tasks.GetCollections().Where(t => t.EmployeeGUID == EmployeeGUID &&t.TaskStatusID ==2 && t.ProjectGUID == new Guid(Request.Cookies["ProjectGUID"].Value));
+            var memberTask = tasks.GetCollections().Where(t => t.EmployeeGUID == EmployeeGUID && t.TaskStatusID==2 &&  t.ProjectGUID == new Guid(Request.Cookies["ProjectGUID"].Value));
             return Content(JsonConvert.SerializeObject(memberTask), "application/json");
         }
 
         public ActionResult CancelTask(Guid TaskGUID)
         {
             Tasks _tasks = tasks.Find(TaskGUID);
+            Guid CalendarGUID = calRe.GetCollections().Where(c=>c.Subject == _tasks.TaskName).Select(c=>c.CalendarGUID).Single();
+            calRe.Delete(calRe.Find(CalendarGUID));
             _tasks.EmployeeGUID = null;
             _tasks.AssignedDate = null;
             _tasks.TaskStatusID = 1;
             _tasks.IsRead = true;
             tasks.Update(_tasks);
+            _tasks.ParentTaskStatusUpdate(tasks, 1);
             return Content("已退回分配工作項目清單");
+        }
+
+        public ActionResult ExportToExcel()
+        {
+            var gv = new GridView();
+            gv.DataSource = tasks.GetCollections().ToList();
+            gv.DataBind();
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=分配完成表單.xls");
+            Response.ContentType = "application/ms-excel";
+            Response.Charset = "";
+            StringWriter objStringWriter = new StringWriter();
+            HtmlTextWriter objHtmlTextWriter = new HtmlTextWriter(objStringWriter);
+            gv.RenderControl(objHtmlTextWriter);
+            Response.Output.Write(objStringWriter.ToString());
+            Response.Flush();
+            Response.End();
+            return View("AssignTask");
+            //return View("AssignTask");
         }
     }
 }
