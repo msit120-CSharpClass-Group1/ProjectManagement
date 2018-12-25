@@ -12,10 +12,13 @@ namespace ProjectManager.Controllers
     public class CalendarController : Controller
     {
         private Repository<Calendar> CalRepo = new Repository<Calendar>();
+        private Repository<Project> ProjectRepo = new Repository<Project>();
+        private Repository<ProjectMembers> ProjectMemberRepo = new Repository<ProjectMembers>();
+        private Repository<Members> MembersRepo = new Repository<Members>();
         // GET: Calendar
         public ActionResult Index()
         {
-            return View();
+            return View(ProjectRepo.GetCollections());
         }
 
         public ActionResult GetEvents()
@@ -70,5 +73,26 @@ namespace ProjectManager.Controllers
             return new JsonResult { Data = new { status = status } };
         }
 
+        public ActionResult SaveEventToAll(Project _project, Calendar _calendar)
+        {
+            var ProjectMember = ProjectMemberRepo.GetCollections().Where(p => p.ProjectGUID == _project.ProjectGUID);
+            foreach (var item in ProjectMember)
+            {               
+                if(item.Employee.Members.Count()!=0)
+                {
+                    Calendar calendar = new Calendar();
+                    calendar.MemberGUID = item.Employee.Members.Select(p => p.MemberGUID).Single();
+                    calendar.CalendarGUID = Guid.NewGuid();
+                    calendar.Subject = _calendar.Subject;
+                    calendar.Start = _calendar.Start;
+                    calendar.EndDay = _calendar.EndDay;
+                    calendar.Description = _calendar.Description;
+                    calendar.IsFullDay = _calendar.IsFullDay;
+                    calendar.ThemeColor = _calendar.ThemeColor;
+                    CalRepo.Add(calendar);
+                }
+            }                  
+            return Content("活動已新增");
+        }
     }
 }
