@@ -21,6 +21,7 @@ namespace ProjectManager.Controllers
         Repository<Tasks> tasks = new Repository<Tasks>();
         Repository<Models.Calendar> calRe = new Repository<Models.Calendar>();
         Repository<Members> member = new Repository<Members>();
+        Repository<Project> projectRe = new Repository<Project>();
 
         // GET: ProjectMember
         public ActionResult Index()
@@ -71,7 +72,7 @@ namespace ProjectManager.Controllers
         public ActionResult TaskExist(Guid? memberGUID)
         {
             Guid projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID && t.ProjectGUID == projectGUID && t.TaskStatusID == 2).Select(t => t.EmployeeGUID).FirstOrDefault();
+            var q = tasks.GetCollections().Where(t => t.EmployeeGUID == memberGUID && t.ProjectGUID == projectGUID).Select(t => t.TaskName).FirstOrDefault();
             if (q != null)
             {
                 return Content("HasTask");
@@ -165,10 +166,9 @@ namespace ProjectManager.Controllers
         public ActionResult CancelTask(Guid TaskGUID)
         {
             Tasks _tasks = tasks.Find(TaskGUID);
-            Guid CalendarGUID = calRe.GetCollections().Where(c=>c.Subject == _tasks.TaskName).Select(c=>c.CalendarGUID).Single();
+            Guid CalendarGUID = calRe.GetCollections().Where(c => c.Subject == _tasks.TaskName).Select(c => c.CalendarGUID).Single();
             calRe.Delete(calRe.Find(CalendarGUID));
             _tasks.EmployeeGUID = null;
-            _tasks.AssignedDate = null;
             _tasks.TaskStatusID = 1;
             _tasks.IsRead = true;
             tasks.Update(_tasks);
@@ -176,14 +176,30 @@ namespace ProjectManager.Controllers
             return Content("已退回分配工作項目清單");
         }
 
+        #region ExportExcelAction
         public ActionResult ExportToExcel()
         {
+            var ProjectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var gv = new GridView();
-            gv.DataSource = tasks.GetCollections().ToList();
-            gv.DataBind();
+            var ProjectName = projectRe.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).Select(p => p.ProjectName).FirstOrDefault();
+            var ExcelData = from tasks in tasks.GetCollections()
+                            where tasks.ProjectGUID == ProjectGUID && tasks.EmployeeGUID != null
+                            select new
+                            {
+                                作業名稱 = tasks.TaskName,
+                                作業描述 = tasks.Description,
+                                負責員工 = tasks.Employee.EmployeeName,
+                                專案經理備註 = tasks.Tag,
+                                預計工時 = tasks.EstWorkTime,
+                                預計開始時間 = tasks.EstStartDate,
+                                預計結束時間 = tasks.EstEndDate,
+                                分配工作時間 = tasks.AssignedDate,
+                                是否已讀 = tasks.IsRead
+                            };
+            gv.DataSource = ExcelData.ToList();            
             Response.ClearContent();
             Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment; filename=分配完成表單.xls");
+            Response.AddHeader("content-disposition", "attachment; filename="+ ProjectName + "_工作分配總表.xls");
             Response.ContentType = "application/ms-excel";
             Response.Charset = "";
             StringWriter objStringWriter = new StringWriter();
@@ -193,7 +209,17 @@ namespace ProjectManager.Controllers
             Response.Flush();
             Response.End();
             return View("AssignTask");
-            //return View("AssignTask");
         }
+
+        [HttpPost]
+        public ActionResult ExportExcel(FormCollection form)
+        {
+            var ProjectName = projectRe.GetCollections().Where(p => p.ProjectGUID == new Guid(Request.Cookies["ProjectGUID"].Value)).Select(p => p.ProjectName).FirstOrDefault();
+            string strHtml = form["hHtml"];
+            strHtml = HttpUtility.HtmlDecode(strHtml);
+            byte[] b = System.Text.Encoding.Default.GetBytes(strHtml);
+            return File(b, "application/vnd.ms-excel", ProjectName+ "_分配工作簡易表.xls");
+        }
+        #endregion
     }
 }
