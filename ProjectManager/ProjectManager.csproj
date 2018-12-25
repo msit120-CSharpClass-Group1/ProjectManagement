@@ -503,6 +503,7 @@
     <Compile Include="Models\ViewModel\ProjectMemberTaskCompletedRateVM.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\ViewModel\ResourceFilterVM.cs" />
+    <Compile Include="Models\ViewModel\SelectMBoardVM.cs" />
     <Compile Include="Models\ViewModel\TaskVM.cs" />
     <Compile Include="Models\ViewModel\WidgetsVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
@@ -614,7 +615,6 @@
     <Content Include="Views\Home\GetMyProjectsPV.cshtml" />
     <Content Include="Views\Home\TaskCardsPV.cshtml" />
     <Content Include="Views\Home\ProjectCardsPV.cshtml" />
-    <Content Include="Views\Home\GetMyTasksWidgetPV.cshtml" />
     <Content Include="Views\ProjectMBackside\Index.cshtml" />
     <Content Include="Views\ProjectMBackside\EditMember.cshtml" />
     <None Include="Web.Debug.config">

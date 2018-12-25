@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using static ProjectManager.Models.PermissionBL;
+using static ProjectManager.Models.ProjectsBL;
 
 namespace ProjectManager.Controllers
 {
@@ -40,32 +41,37 @@ namespace ProjectManager.Controllers
             //    taskStatusRepo.GetCollections().Where(s => s.TaskStatusID == i).Select(s => s.TaskStatusName).FirstOrDefault(),
             //    tasksInProgress.Where(t => t.TaskStatus.TaskStatusID == i).Count());
             //}
-            
+
 
             switch ((Emp_Title)Enum.Parse(typeof(Emp_Title), titleID.ToString()))
             {
                 case Emp_Title.Admin:
-                    var _projectlist0 = projectMemberRepo.GetCollections().Where(n => n.EmployeeGUID == member.EmployeeGUID).Select(n => new {n.ProjectGUID,n.Project.ProjectName });
+                    var _projectlist0 = projectMemberRepo.GetCollections().Where(n => n.Project.ProjectStatusID != (int)Project_Status.Completed)
+                        .Where(n => n.EmployeeGUID == member.EmployeeGUID).Select(n => new { n.ProjectGUID, n.Project.ProjectName });
                     ViewBag.ProjectList = new SelectList(_projectlist0, "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.AdminPermit == true).ToList();
                     break;
                 case Emp_Title.PG:
-                    var _projectlist1 = projectMemberRepo.GetCollections().Where(n => n.EmployeeGUID == member.EmployeeGUID).Select(n => new { n.ProjectGUID, n.Project.ProjectName });
+                    var _projectlist1 = projectMemberRepo.GetCollections().Where(n => n.Project.ProjectStatusID != (int)Project_Status.Completed)
+                        .Where(n => n.EmployeeGUID == member.EmployeeGUID).Select(n => new { n.ProjectGUID, n.Project.ProjectName });
                     ViewBag.ProjectList = new SelectList(_projectlist1, "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.ProgrammerPermit == true).ToList();
                     break;
                 case Emp_Title.Minister:
-                    var _projectlist3 = projectRepo.GetCollections().Select(n => new { n.ProjectGUID, n.ProjectName });
+                    var _projectlist3 = projectRepo.GetCollections()
+                        .Where(n => n.ProjectStatusID != (int)Project_Status.Completed).Select(n => new { n.ProjectGUID, n.ProjectName });
                     ViewBag.ProjectList = new SelectList(_projectlist3, "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.MinisterPermit == true).ToList();
                     break;
                 case Emp_Title.PM:
-                    var _projectlist5 = projectRepo.GetCollections().Where(n => n.InChargeDeptPMGUID == member.EmployeeGUID).Select(n => new { n.ProjectGUID, n.ProjectName });
+                    var _projectlist5 = projectRepo.GetCollections().Where(n => n.ProjectStatusID != (int)Project_Status.Completed)
+                        .Where(n => n.InChargeDeptPMGUID == member.EmployeeGUID).Select(n => new { n.ProjectGUID, n.ProjectName });
                     ViewBag.ProjectList = new SelectList(_projectlist5, "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.ProjectManagerPermit == true).ToList();
                     break;
                 case Emp_Title.Director:
-                    var _projectlist4 = projectRepo.GetCollections().Select(n => new { n.ProjectGUID, n.ProjectName });
+                    var _projectlist4 = projectRepo.GetCollections()
+                        .Where(n => n.ProjectStatusID != (int)Project_Status.Completed).Select(n => new { n.ProjectGUID, n.ProjectName });
                     ViewBag.ProjectList = new SelectList(_projectlist4, "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.DirectorPermit == true).ToList();
                     break;
@@ -74,62 +80,52 @@ namespace ProjectManager.Controllers
                     break;
             }
 
-
             return View(tasksInProgress.GetTasksGroupByStatus());
         }
-        public ActionResult GetLeftDivPartialView()
+        public ActionResult GetTableDivPartialView(Guid? projectGUID)
         {
             var member = memberRepo.Find(new Guid(Request.Cookies["MemberGUID"].Value));
             var titleID = jobTitleRepo.Find(new Guid(Request.Cookies["TitleGUID"].Value)).TitleID;
-            string actionName = "";
+            
             switch ((Emp_Title)Enum.Parse(typeof(Emp_Title), titleID.ToString()))
             {
                 case Emp_Title.Admin:
-                    actionName ="GetAllProjectsPV";
-                    break;
+                    var tasks_0 = taskRepo.GetCollections().Where(t => t.EmployeeGUID == member.EmployeeGUID)
+                            .Where(t => t.Project.ProjectStatusID == (int)ProjectsBL.Project_Status.InProgress)
+                            .Where(t => t.TaskStatusID != (int)TasksBL.Task_Status.Completed && t.TaskStatusID != (int)TasksBL.Task_Status.Closed)
+                            .OrderBy(t => t.EstEndDate);
+
+                    ViewBag.UserName = member.Employee.EmployeeName;
+                    ViewBag.TasksSum = tasks_0.Count();
+                    return PartialView("GetMyTasksPV", tasks_0.GetTasksGroupByStatus());
+
                 case Emp_Title.PG:
-                    actionName = "GetMyTasksPV"; 
-                    break;
+                    var tasks_1 = taskRepo.GetCollections().Where(t => t.EmployeeGUID == member.EmployeeGUID)
+                            .Where(t => t.Project.ProjectStatusID == (int)ProjectsBL.Project_Status.InProgress)
+                            .Where(t => t.TaskStatusID != (int)TasksBL.Task_Status.Completed && t.TaskStatusID != (int)TasksBL.Task_Status.Closed)
+                            .OrderBy(t => t.EstEndDate);
+
+                    ViewBag.UserName = member.Employee.EmployeeName;
+                    ViewBag.TasksSum = tasks_1.Count();
+                    return PartialView("GetMyTasksPV", tasks_1.GetTasksGroupByStatus());
+                    
                 case Emp_Title.Minister:
-                    actionName = "GetAllProjectsPV";
-                    break;
+                    var datas_3 = projectRepo.GetCollections().GetProjectsGroupedByPM(taskRepo.GetCollections());
+                    return PartialView("GetAllProjectsPV", datas_3.ToList());
+
                 case Emp_Title.PM:
-                    actionName = "GetMyProjectsPV"; 
-                    break;
+                    var tasks_5 = taskRepo.GetCollections().Where(t => t.ProjectGUID == projectGUID);
+                    var datas_5 = projectMemberRepo.GetCollections()
+                        .Where(m => m.ProjectGUID == projectGUID)
+                        .GetProjectMemberTaskCompletedRate(tasks_5);
+                    return PartialView("GetMyProjectsPV",datas_5.ToList());
+                    
                 case Emp_Title.Director:
-                    actionName = "GetAllProjectsPV";
-                    break;
+                    var datas_4 = projectRepo.GetCollections().GetProjectsGroupedByPM(taskRepo.GetCollections());
+                    return PartialView("GetAllProjectsPV", datas_4.ToList());                    
                 default:
-                    actionName = "GetAllProjectsPV";
-                    break;
-            }
-            return Json(actionName, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult GetMyTasksPV()
-        {
-            var member = memberRepo.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            var tasksInProgress = taskRepo.GetCollections().Where(t => t.EmployeeGUID == member.EmployeeGUID)
-                .Where(t => t.Project.ProjectStatusID == (int)ProjectsBL.Project_Status.InProgress);
-            ViewBag.UserName = member.Employee.EmployeeName;
-            ViewBag.TasksSum = tasksInProgress.Count();
-
-            return PartialView(tasksInProgress.GetTasksGroupByStatus());
-        }
-        public ActionResult GetMyProjectsPV(Guid? projectGUID)
-        {
-            var member = memberRepo.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == projectGUID);
-            var datas = projectMemberRepo.GetCollections()
-                .Where(m => m.ProjectGUID == projectGUID)
-                .GetProjectMemberTaskCompletedRate(_tasks);
-
-            return PartialView(datas.ToList());
-        }
-        public ActionResult GetAllProjectsPV()
-        {
-            var member = memberRepo.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            var datas = projectRepo.GetCollections().GetProjectsGroupedByPM(taskRepo.GetCollections());
-            return PartialView(datas.ToList());
+                    return PartialView();
+            }            
         }
 
         public ActionResult GetTitleCardsPV()
@@ -139,13 +135,13 @@ namespace ProjectManager.Controllers
             if (titleID == (int)Emp_Title.Minister || titleID == (int)Emp_Title.Director)
             {
                 string projectID_thisYear = "P" + DateTime.Now.Year.ToString().Substring(2, 2);
-                var projects = projectRepo.GetCollections().Where(p=>p.ProjectID.StartsWith(projectID_thisYear));
+                var projects = projectRepo.GetCollections().Where(p => p.ProjectID.StartsWith(projectID_thisYear));
                 List<DisplayProjectStatusCountVM> statusCounts = new List<DisplayProjectStatusCountVM>() {
                     new DisplayProjectStatusCountVM()
                     {
                         ProjectStatusName = projectStatusRepo.GetCollections().Where(s=>s.ProjectStatusID == (int)ProjectsBL.Project_Status.InProgress).Select(s=>s.ProjectStatusName).First(),
                         Count = projects.Where(p=>p.ProjectStatusID == (int)ProjectsBL.Project_Status.InProgress).Count()
-                    },                    
+                    },
                     new DisplayProjectStatusCountVM()
                     {
                         ProjectStatusName = projectStatusRepo.GetCollections().Where(s=>s.ProjectStatusID == (int)ProjectsBL.Project_Status.WaitForConfirmed).Select(s=>s.ProjectStatusName).First(),
@@ -188,7 +184,6 @@ namespace ProjectManager.Controllers
 
                 return PartialView("TaskCardsPV", statusCounts);
             }
-
         }
         [HttpPost]
         public ActionResult SetCookiesForMyBoard(Guid? projectGUID)
@@ -198,14 +193,16 @@ namespace ProjectManager.Controllers
             return Json(userGUID, JsonRequestBehavior.AllowGet);
         }
 
-
         public ActionResult GetGantt(Guid id)
         {
             DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            var tasks = taskRepo.GetCollections().Where(n => n.ProjectGUID == id).GetLeafTasks().Select(n => 
-            new { actualStart = (n.StartDate.Value.ToUniversalTime()- origin).TotalMilliseconds,
+            var tasks = taskRepo.GetCollections().Where(n => n.ProjectGUID == id).GetLeafTasks().Select(n =>
+            new
+            {
+                actualStart = (n.StartDate.Value.ToUniversalTime() - origin).TotalMilliseconds,
                 actualEnd = (n.EndDate.Value.ToUniversalTime() - origin).TotalMilliseconds,
-                name = n.TaskName}).OrderBy(n=>n.actualStart).ToList();
+                name = n.TaskName
+            }).OrderBy(n => n.actualStart).ToList();
             return Json(tasks, JsonRequestBehavior.AllowGet);
         }
 

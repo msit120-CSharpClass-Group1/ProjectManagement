@@ -18,6 +18,7 @@ namespace ProjectManager.Controllers
         IRepository<DocumentCategory> DocCategory = new Repository<DocumentCategory>();
         IRepository<DocumentModified> DocModified = new Repository<DocumentModified>();
         IRepository<Members> members = new Repository<Members>();
+        IRepository<Project> projects = new Repository<Project>();
         IRepository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
         IRepository<Tasks> tasks = new Repository<Tasks>();
         // GET: Document
@@ -30,7 +31,29 @@ namespace ProjectManager.Controllers
         public ActionResult GetDocument(int id, int? page=1)
         {
             ViewBag.Category = id;
-            var Docs = id.GetDocumentsByCategory();
+            var memberGuid = new Guid(Request.Cookies["MemberGUID"].Value);
+            var employeeGuid = members.Find(memberGuid).EmployeeGUID;
+            List<DocumentVM> Docs =null;
+            switch (id)
+            {
+                case 1:
+                    Docs = id.GetDocumentsByCategory();
+                    break;
+                default:
+                    var _projectEmployee =projectMembers.GetCollections().Where(n => n.EmployeeGUID == employeeGuid).Select(n=>n.ProjectGUID).ToList();
+                    var _projectManger = projects.GetCollections().Where(n => n.InChargeDeptPMGUID == employeeGuid).Select(n => n.ProjectGUID).ToList();
+                    var _project = _projectEmployee.Union(_projectManger).ToList();
+                    List<DocumentVM> _Docs = new List<DocumentVM>();
+                    foreach (var p in _project)
+                    {
+                        var q =id.GetDocumentsByCategory().Where(n => n.ProjectGUID == p).ToList();
+                        _Docs.AddRange(q);
+                    }
+                    Docs = _Docs;
+                    break;
+               
+            }
+            
             return PartialView(Docs.ToPagedList(page ?? 1, 8));
         }
         public ActionResult AddFile(HttpPostedFileBase file, Document _doc)

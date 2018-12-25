@@ -8,7 +8,7 @@
 
     <style>
         .gantt {
-            height:500px;
+            height:460px;
         }
         .projectLink {
             color: #007bff;
@@ -23,42 +23,28 @@
         .rightOpenbtn {
             display: none;
         }
+        .img_align_Middle{
+            display:block;
+            margin:auto;
+        }
     </style>
 }
 <!--工作項目統計card-->
 <div id="TitleCards"></div>
-@*<h5 class="ml-4">進行中專案 > 工作項目:</h5>
-<div class="container">
-    <div class="row">
-        @foreach (var item in (List<DisplayTaskStatusCountVM>)ViewBag.TaskStatusCounts)
-        {
-            <div class="col-lg-3 col-sm-12">
-                <div class="card shadow-sm">
-                    <div class="card-body ">
-                        <h5 class="card-title">@item.TaskStatusName</h5>
-                        <h1 class="float-right mr-3">@item.Count</h1>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-</div>*@
 
-<div class="container-fluid m-3">
+<div class="m-3 ml-4">
     <div class="row">
-        <div class="col-6 bg-light p-4 shadow-sm">
-            <div id="left_div" class="container-fluid"></div>
+        <div class="col m-1 p-4 bg-light shadow-sm">
+            <div id="projectList" class="">
+                <lable for="ProjectList">專案列表：</lable>
+                @Html.DropDownList("ProjectList", (SelectList)ViewBag.ProjectList, null, new { @class = "form-control custom-select", required = true })
+            </div>
+            <div id="container" class="gantt">
+            </div>
         </div>
-        <div class="col-lg-6 col-sm-12">
-            <div class="container-fluid">
-                <div id="projectList">
-                    <lable for="ProjectList">專案列表：</lable>
-                    @Html.DropDownList("ProjectList", (SelectList)ViewBag.ProjectList, null, new { @class = "form-control custom-select", required = true })
-                </div>
-                <div id="container" class="gantt">
 
-                </div>
-            </div>
+        <div class="col m-1 p-4 bg-light shadow-sm">
+            <div id="left_div" class=""></div>
         </div>
     </div>
 </div>
@@ -95,7 +81,8 @@
         $(document).ready(function () {
             $('#left_div').on('click', 'span[name="projectLink"]', null, RedirectToMyBoard);
             $('#TitleCards').load("@Url.Action("GetTitleCardsPV","Home")");
-            LoadLeftDiv();
+            LoadTableDiv();
+            LoadGantt();
 
             function RedirectToMyBoard() {
                 $.post("@Url.Action("SetCookiesForMyBoard", "Home")", { projectGUID: $(this).attr("data-projectGUID") },
@@ -103,35 +90,28 @@
                         location.href = "/MyBoard/Index/" + userGUID;
                     });
             }
-            $('#ProjectList').change(
-                function () {
+            $('#ProjectList').change(LoadGantt);
+
+        
+            function LoadTableDiv() {                
+                $('#left_div').load("@Url.Action("GetTableDivPartialView", "Home")?projectGUID=" + $('#ProjectList').val());
+            }
+            function LoadGantt() {
                     $('#container').html('');
-                    projectGUID = $(this).find(':selected').val();
-                    $.getJSON('@Url.Action("GetGantt", "Home")/' + projectGUID, function (datas) {
-                        console.log(datas);
+                    projectGUID = $('#ProjectList').find(':selected').val();
+                    $.getJSON('@Url.Action("GetGantt", "Home")/' + projectGUID, function (datas) {                        
                         var treeData = anychart.data.tree(datas, "as-tree");
                         var chart = anychart.ganttProject();      // chart type
                         chart.data(treeData);                     // chart data
                         chart.container('container').draw();      // set container and initiate drawing
                     })
-                    if (getCookie("TitleGUID") == "724d4916-0f1b-417b-a927-25d04425146d") {
-                        $('#left_div').load("@Url.Action("GetMyProjectsPV", "Home")" + "?projectGUID=" + $('#ProjectList').val());
+                if (getCookie("TitleGUID") == "724d4916-0f1b-417b-a927-25d04425146d") {
+                    var style = { 'width': '40px', 'position': 'absolute', 'left': 'calc(50% - 20px)', 'top':'calc(50% - 20px)'}
+                       $('#left_div').css('text-align', 'center')
+                           .html($("<img></img>").attr("src", "/image/ajax-loader.gif").css(style).addClass('img_align_Middle'));
+                        LoadTableDiv();                      
                     }
-                }
-            )
-        
-            function LoadLeftDiv() {
-                $.getJSON("@Url.Action("GetLeftDivPartialView", "Home")", function (actionName) {
-                    if (actionName != "GetMyProjectsPV") {
-                        var url = "/Home/" + actionName;
-                        $('#left_div').load(url);                        
-                    }
-                    else {
-                        var url = "/Home/" + actionName + "?projectGUID=" + $('#ProjectList').val();
-                        $('#left_div').load(url);                        
-                    }
-                });
-            }
+             }
             function getCookie(cname) {
                 var name = cname + "=";
                 var ca = document.cookie.split(';');
