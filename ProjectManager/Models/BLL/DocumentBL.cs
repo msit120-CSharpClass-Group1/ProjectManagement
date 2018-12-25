@@ -17,6 +17,18 @@ namespace ProjectManager.Models.BLL
                 vm.DocumentGUID = doc.DocumentGUID;
                 vm.ProjectGUID = doc.ProjectGUID;
                 vm.TaskGUID = doc.TaskGUID;
+                switch (DocCategory)
+                {
+                    case 2:
+                        vm.ProjectName = doc.Project.ProjectName;
+                        break;
+                    case 3:
+                        vm.ProjectName = doc.Project.ProjectName;
+                        vm.TaskName = doc.Tasks.TaskName;
+                        break;
+                    default:
+                        break;
+                }
                 vm.DocumentID = doc.DocumentID;
                 vm.DocumentName = doc.DocumentName;
                 vm.DocumentCategory = doc.DocumentCategory1.CategoryName;

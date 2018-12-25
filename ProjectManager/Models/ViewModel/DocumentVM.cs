@@ -11,7 +11,11 @@ namespace ProjectManager.Models
     {
         public System.Guid DocumentGUID { get; set; }
         public Nullable<System.Guid> ProjectGUID { get; set; }
+        [DisplayName("專案名稱")]
+        public string ProjectName { get; set; }
         public Nullable<System.Guid> TaskGUID { get; set; }
+        [DisplayName("任務名稱")]
+        public string TaskName { get; set; }
         [DisplayName("文件編號")]
         public int DocumentID { get; set; }
         [DisplayName("文件名稱")]

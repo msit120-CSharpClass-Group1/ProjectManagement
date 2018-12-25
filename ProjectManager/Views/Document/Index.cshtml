@@ -9,6 +9,9 @@
 @section style
 {
     <style>
+        td {
+            text-align: center;
+        }
         .topnav a {
             cursor: pointer;
         }
@@ -53,11 +56,15 @@
                     </div>
                 </div>
                 <div class="row col-12">
-                    <div id="projectList" class="form-group  mb-0">
+                    <div id="projectList" class="form-group  mb-0 mt-3">
+                        <lable for="ProjectGUID">專案列表：</lable><br />
+                        <select id="ProjectSelect" name="ProjectGUID" class="form-control custom-select"></select>
                     </div>
                 </div>
                 <div class="row col-12">
-                    <div id="taskList" class="form-group  mb-0">
+                    <div id="taskList" class="form-group  mb-0 mt-3">
+                        <lable for="TaskGUID">任務列表：</lable><br />
+                        <select id="TaskSelect" name="TaskGUID" class="form-control custom-select "></select>
                     </div>
                 </div>
                 <div class="row col-12">
@@ -107,98 +114,85 @@
 
 
             var projectGUID;
-            var projectList = $('#projectList');
-            var taskList = $('#taskList');
+            var projectSelect = $('#ProjectSelect');
+            var taskSelect = $('#TaskSelect');
+            var selectedopt;
+            projectSelect.prop('disabled', true);
+            taskSelect.prop('disabled', true);
             $("#DocumentCategory").change(function ()
             {
-                projectList.html('');
-                projectList.removeClass('mt-3');
-                taskList.html('');
-                taskList.removeClass('mt-3');
-                var selectedopt = $(this).find(":selected").val();
+                projectSelect.html('');
+                taskSelect.html('');
+                selectedopt = $(this).find(":selected").val();
 
                 switch (selectedopt) {
+                    case "1":
+                        projectSelect.prop('disabled', true);
+                        taskSelect.prop('disabled', true);
+                        break;
                     case "2":
+                        projectSelect.prop('disabled', false);
                         $.getJSON('@Url.Action("GetProjectList", "Document")', function (datas) {
                             var fragdoc = $(document.createDocumentFragment());
-                            var _label = $('<lable for="ProjectGUID">專案列表：</lable></br>');
-                            var _select = $('<select name="ProjectGUID" class="form-control custom-select"></select>')
                             $(datas).each(function (id,data) {
                                 var _option = $('<option></option>');
                                 _option.html(data.ProjectName);
                                 _option.val(data.ProjectGUID);
-                                _select.append(_option);
+                                fragdoc.append(_option);
                             })
-                            fragdoc.append(_label);
-                            fragdoc.append(_select);
-                            projectList.addClass('mt-3');
-                            projectList.html(fragdoc);
+                            projectSelect.html(fragdoc);
                         })
                         break;
                     case "3":
+                        projectSelect.prop('disabled', false);
+                        taskSelect.prop('disabled', false);
                         $.getJSON('@Url.Action("GetProjectList", "Document")', function (datas) {
                             var fragdoc = $(document.createDocumentFragment());
-                            var _label = $('<lable for="ProjectGUID">專案列表：</lable></br>');
-                            var _select = $('<select id="ProjectGUID" name="ProjectGUID" class="form-control custom-select"></select>')
                             $(datas).each(function (id,data) {
                                 var _option = $('<option></option>');
                                 _option.html(data.ProjectName);
                                 _option.val(data.ProjectGUID);
-                                _select.append(_option);
+                                fragdoc.append(_option);
                             })
-                            fragdoc.append(_label);
-                            fragdoc.append(_select);
-                            projectList.addClass('mt-3');
-                            projectList.html(fragdoc);
-                            projectGUID = projectList.find(':selected').val();
+                            projectSelect.html(fragdoc);
+                            projectGUID = projectSelect.find(':selected').val();
 
                         }).done(function () {
-                           $.getJSON('@Url.Action("GetTaskList", "Document")/' + projectGUID, function (datas) {
-                                console.log(projectGUID);
+                            $.getJSON('@Url.Action("GetTaskList", "Document")/' + projectGUID, function (datas) {
                             var fragdoc = $(document.createDocumentFragment());
-                            var _label = $('<lable for="TaskGUID">任務列表：</lable></br>');
-                               var _select = $('<select name="TaskGUID" class="form-control custom-select "></select>')
                             $(datas).each(function (id,data) {
                                 var _option = $('<option></option>');
                                 _option.html(data.TaskName);
                                 _option.val(data.TaskGUID);
-                                _select.append(_option);
+                                fragdoc.append(_option);
                             })
-
-                            fragdoc.append(_label);
-                            fragdoc.append(_select);
-                            taskList.addClass('mt-3');
-                                taskList.html(fragdoc);
-
+                               taskSelect.html(fragdoc);
                             })
                             })
                         break;
                     default:
                         break;
                 }
-                $('#projectList').on('change', $('#ProjectGUID'), function () {
-                    projectGUID = projectList.find(':selected').val();
+            })
+             projectSelect.change(function () {
+                    taskSelect.html('');
+                    if (selectedopt == 3) {
+                         projectGUID = projectSelect.find(':selected').val();
                      $.getJSON('@Url.Action("GetTaskList", "Document")/' + projectGUID, function (datas) {
-                         console.log(datas);
                             var fragdoc = $(document.createDocumentFragment());
-                            var _label = $('<lable for="TaskGUID">任務列表：</lable></br>');
-                         var _select = $('<select name="TaskGUID" class="form-control custom-select " ></select>')
                             $(datas).each(function (id,data) {
                                 var _option = $('<option></option>');
                                 _option.html(data.TaskName);
                                 _option.val(data.TaskGUID);
-                                _select.append(_option);
+                                fragdoc.append(_option);
                             })
-
-                            fragdoc.append(_label);
-                            fragdoc.append(_select);
-                            taskList.addClass('mt-3');
-                                taskList.html(fragdoc);
+                         taskSelect.html(fragdoc);
 
                             })
+                    }
+                   
 
                 })
-            })
         })
     </script>
 }
