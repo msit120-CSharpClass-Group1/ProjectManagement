@@ -423,12 +423,14 @@
                 $(".modal-footer").on("click", 'a', function ()
                 {
                     var TaskGUID = $(this).parent().siblings("#HideTaskGUID").val();
+                    var Tag = $("#text").val();
                     $.ajax({
                         url: '@Url.Action("LeaveMessageTag", "ProjectMember")',
-                        data: {"TaskGUID": TaskGUID},
+                        data: {"TaskGUID": TaskGUID,"Tag":Tag},
                         success: function (data)
                         {
-                            
+                            $("#text").val("");
+                            $('#exampleModalCenter').modal('hide');
                         }
                     });
                 })

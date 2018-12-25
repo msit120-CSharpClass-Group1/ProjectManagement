@@ -139,10 +139,10 @@ namespace ProjectManager.Controllers
             return Content(JsonConvert.SerializeObject(taskList), "application/json");
         }
 
-        public ActionResult LeaveMessageTag()
+        public ActionResult LeaveMessageTag(Tasks _task)
         {
-            var message = Request.Form["text"];
-            Guid TaskGUID = new Guid(Request.Form["TaskGUID"].ToString());
+            var message = _task.Tag;
+            Guid TaskGUID = _task.TaskGUID;
             Tasks _tasks = tasks.Find(TaskGUID);
             _tasks.Tag = message;
             tasks.Update(_tasks);
