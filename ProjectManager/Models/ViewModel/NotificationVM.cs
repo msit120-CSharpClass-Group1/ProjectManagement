@@ -7,6 +7,8 @@ namespace ProjectManager.Models.ViewModel
 {
     public class NotificationVM
     {
+        public string CalendarName { get; set; }
+        public DateTime CalendarDate { get; set; }
         public string TaskName { get; set; }
         public string ProjectName { get; set; }
         public string Category { get; set; }

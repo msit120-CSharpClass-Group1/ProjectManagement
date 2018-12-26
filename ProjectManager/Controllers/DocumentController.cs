@@ -77,6 +77,7 @@ namespace ProjectManager.Controllers
                     _doc.CreateDate = DateTime.Now;
                     Doc.Add(_doc);
                     _docm.DocumentGUID = _doc.DocumentGUID;
+                    _docm.Description = _doc.Description;
                     _docm.IsChecked = false;
                     _docm.ModifiedEmpGUID = _members.EmployeeGUID;
                     _docm.ModifiedDate = DateTime.Now;
@@ -122,13 +123,12 @@ namespace ProjectManager.Controllers
             {
                 if (file.ContentLength >= 0)
                 {
-
                     DocumentModified _docm = new DocumentModified();
                     Members _members = members.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-                    var doc = Doc.Find(_doc.DocumentGUID);                   
-                    doc.Description = _doc.Description;
+                    var doc = Doc.Find(_doc.DocumentGUID);
                     Doc.Update(doc);                    
                     _docm.DocumentGUID = _doc.DocumentGUID;
+                    _docm.Description = _doc.Description;
                     _docm.IsChecked = false;
                     _docm.ModifiedEmpGUID = _members.EmployeeGUID;
                     _docm.ModifiedDate = DateTime.Now;
