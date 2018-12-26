@@ -32,6 +32,24 @@
         .invalid {
             border-color: #dc3545 !important;
         }
+
+        .success-tooltip {
+            position: absolute;
+            top: 0;
+            z-index: 5;
+            display: none;
+            width: 100%;
+            padding: 0.25rem 0.5rem;
+            /*margin-top: .1rem;
+            margin-left: .1rem;*/
+            font-size: 0.875rem;
+            line-height: 1.5;
+            text-align:center;
+            color: #fff;
+            background-color: rgba(0, 139, 139, 0.9);
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
     </style>
 }
 <div class="row">
@@ -198,6 +216,9 @@
 </div>
 
 @section asideRight{
+    <div class="success-tooltip">
+        新增成功
+    </div>
     <div class="container text-light mt-3" style="min-width:350px;">
         <form class="needs-validation" id="f_EditResource" novalidate>
             <h4 id="asideTitle" style="display:inline">新增專案費用</h4>
@@ -476,6 +497,14 @@
                 {
                     $.post("@Url.Action("AddTaskResource", "Cost")", data, function ()
                     {
+                        var tooltip = $(".success-tooltip");
+                        tooltip.html("新增成功！")
+                        tooltip.slideDown();
+                        setTimeout(() =>
+                        {
+                            tooltip.slideUp();
+                        },3000)
+
                         LoadResources();
                     });
                 }
@@ -495,9 +524,16 @@
                 {
                     $.post("@Url.Action("UpdateTaskResource", "Cost")", data, function ()
                     {
+                        var tooltip = $(".success-tooltip");
+                        tooltip.html("修改成功！")
+                        tooltip.slideDown();
+                        setTimeout(() =>
+                        {
+                            tooltip.slideUp();
+                        }, 3000)
+
                         LoadResources();
                     });
-                    $('#myRightsidenav').slideUp();
                 }
                 else
                 {
@@ -666,13 +702,13 @@
                 {
                     var Date = $(this).parents("tr").children("td:nth-child(1)").text();
                     var TaskName = $(this).parents("tr").children("td:nth-child(2)").text();
-                    var ResourceGuid = $(this).parents("tr").children("td:nth-child(3)").data('resourceguid');
-                    var ExpName = $(this).parents("tr").children("td:nth-child(3)").text();
-                    var CatName = $(this).parents("tr").children("td:nth-child(4)").text();
-                    var Quantity = $(this).parents("tr").children("td:nth-child(5)").text();
-                    var UnitPrice = $(this).parents("tr").children("td:nth-child(6)").text();
-                    var Subtotal = $(this).parents("tr").children("td:nth-child(7)").text();
-                    var Description = $(this).parents("tr").children("td:nth-child(8)").text();
+                    var ResourceGuid = $(this).parents("tr").children("td:nth-child(4)").data('resourceguid');
+                    var ExpName = $(this).parents("tr").children("td:nth-child(4)").text();
+                    var CatName = $(this).parents("tr").children("td:nth-child(5)").text();
+                    var Quantity = $(this).parents("tr").children("td:nth-child(6)").text();
+                    var UnitPrice = $(this).parents("tr").children("td:nth-child(7)").text();
+                    var Subtotal = $(this).parents("tr").children("td:nth-child(8)").text();
+                    var Description = $(this).parents("tr").children("td:nth-child(9)").text();
 
                     $("#btn_ConfirmDelete").attr("data-resourceguid", ResourceGuid);
 

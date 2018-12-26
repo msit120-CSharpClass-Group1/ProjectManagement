@@ -87,7 +87,8 @@
                 <th>團隊成員</th>
                 <th>PM評分紀錄</th>
                 <th>自評紀錄</th>
-                <th>評級</th>
+                <th>平均</th>
+                <th>專案表現評語</th>
             </tr>
         </thead>
         <tbody>
@@ -95,42 +96,50 @@
             {
                 foreach (var item in _member.value)
                 {
-                    <tr>
-                        <td>@item.Employee.EmployeeName</td>
-                        @*<td>@item.Employee.JobTitle.TitleName</td>*@
-                        @if (item.PMscore != null)
-                        {
-                            <td>@item.PMscore</td>
-                        }
-                        else
-                        {
-                            <td>尚未評分</td>
-                        }
-                        @if (item.Selfscore != null)
-                        {
-                            <td>@item.Selfscore</td>
-                        }
-                        else
-                        {
-                            <td>尚未評分</td>
-                        }
-                        @if ((item.PMscore + item.Selfscore) / 2 < 60)
-                        {
-                            <td>C等級</td>
-                        }
-                        else if ((item.PMscore + item.Selfscore) / 2 < 80 && (item.PMscore + item.Selfscore) / 2 >= 60)
-                        {
-                            <td>B等級</td>
-                        }
-                        else if ((item.PMscore + item.Selfscore) / 2 > 90)
-                        {
-                            <td>A等級</td>
-                        }
-                        else
-                        {
-                            <td>尚未評級</td>
-                        }
-                    </tr>
+            <tr>
+                <td>@item.Employee.EmployeeName</td>
+                @*<td>@item.Employee.JobTitle.TitleName</td>*@
+                @if (item.PMscore != null)
+                {
+                    <td>@item.PMscore</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
+                @if (item.Selfscore != null)
+                {
+                    <td>@item.Selfscore</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
+                @if (item.PMscore != null && item.Selfscore != null)
+                {
+                    <td>@((item.PMscore + item.Selfscore) / 2)</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
+                @if ((item.PMscore + item.Selfscore) / 2 < 60)
+                {
+                    <td>有待加強</td>
+                }
+                else if ((item.PMscore + item.Selfscore) / 2 <= 90 && (item.PMscore + item.Selfscore) / 2 >= 60)
+                {
+                    <td>表現普通</td>
+                }
+                else if ((item.PMscore + item.Selfscore) / 2 > 90)
+                {
+                    <td>表現優秀</td>
+                }
+                else
+                {
+                    <td>無評論</td>
+                }
+            </tr>
                 }
             }
         </tbody>
@@ -181,7 +190,7 @@
                 for (var i = 1; i < tableRow; i++)
                 {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
-                    if (value > parseInt($("#groupAvg").text()) && value!="尚未評分")
+                    if (value > parseInt($("#groupAvg").text()) && value!="-")
                     {
                         $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightseagreen")
                     }
@@ -193,7 +202,7 @@
                 for (var i = 1; i < tableRow; i++)
                 {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
-                    if (value <= parseInt($("#groupAvg").text()) && value !="尚未評分")
+                    if (value <= parseInt($("#groupAvg").text()) && value !="-")
                     {
                         $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightseagreen")
                     }
@@ -205,7 +214,7 @@
                 for (var i = 1; i < tableRow; i++)
                 {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
-                    if (value <= 20 &&value!="尚未評分")
+                    if (value <= 20 &&value!="-")
                     {
                         $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightseagreen")
                     }
@@ -216,7 +225,7 @@
             {
                 for (var i = 1; i < tableRow; i++) {
                     var value = $("#mytable tr:eq('" + i + "')").children("td:eq(1)").text()
-                    if (value=="尚未評分") {
+                    if (value=="-") {
                         $("#mytable tr:eq('" + i + "')").children("td:eq(1)").attr("style", "background-color:lightseagreen")
                     }
                 }

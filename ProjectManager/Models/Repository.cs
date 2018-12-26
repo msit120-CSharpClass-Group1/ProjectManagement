@@ -6,7 +6,7 @@ using System.Web;
 
 namespace ProjectManager.Models
 {
-    public class Repository<T> : IRepository<T> where T:class
+    public class Repository<T> : IRepository<T> where T : class
     {
         protected ProjectManagementEntities db = null;
         protected DbSet<T> dbset = null;
@@ -53,6 +53,36 @@ namespace ProjectManager.Models
         public T Find(Guid? id, Guid? pid)
         {
             return dbset.Find(id, pid);
+        }
+
+        public void AddList(IEnumerable<T> entityList)
+        {
+            foreach (var i in entityList)
+            {
+                dbset.Add(i);
+            }
+
+            db.SaveChanges();
+        }
+
+        public void UpdateList(IEnumerable<T> entityList)
+        {
+            foreach (var i in entityList)
+            {
+                db.Entry(i).State = EntityState.Modified;
+            }
+
+            db.SaveChanges();
+        }
+
+        public void DeleteList(IEnumerable<T> entityList)
+        {
+            foreach (var i in entityList)
+            {
+                dbset.Remove(i);
+            }
+
+            db.SaveChanges();
         }
     }
 }

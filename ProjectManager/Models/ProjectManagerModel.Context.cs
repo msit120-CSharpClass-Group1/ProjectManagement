@@ -45,7 +45,6 @@ namespace ProjectManager.Models
         public virtual DbSet<ProjectDiscuss> ProjectDiscuss { get; set; }
         public virtual DbSet<ProjectMembers> ProjectMembers { get; set; }
         public virtual DbSet<ProjectStatus> ProjectStatus { get; set; }
-        public virtual DbSet<ResourceCategory> ResourceCategory { get; set; }
         public virtual DbSet<TaskDetail> TaskDetail { get; set; }
         public virtual DbSet<TaskDetailStatus> TaskDetailStatus { get; set; }
         public virtual DbSet<TaskModified> TaskModified { get; set; }
@@ -54,6 +53,8 @@ namespace ProjectManager.Models
         public virtual DbSet<TaskStatus> TaskStatus { get; set; }
         public virtual DbSet<WidgetDetail> WidgetDetail { get; set; }
         public virtual DbSet<Widgets> Widgets { get; set; }
+        public virtual DbSet<CalendarCategory> CalendarCategory { get; set; }
+        public virtual DbSet<ResourceCategory> ResourceCategory { get; set; }
     
         public virtual int InsertProjectForDemo()
         {

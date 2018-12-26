@@ -15,5 +15,8 @@ namespace ProjectManager.Models
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
+        void AddList(IEnumerable<T> entityList);
+        void UpdateList(IEnumerable<T> entityList);
+        void DeleteList(IEnumerable<T> entityList);
     }
 }

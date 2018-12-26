@@ -99,6 +99,8 @@ namespace ProjectManager.Controllers
                 {
                     var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
                     var LastRow = Convert.ToInt32(Request.Form["LastRow"]);
+                    List<Tasks> tasklist = new List<Tasks>();
+                    List<Models.Calendar> eventlist = new List<Models.Calendar>();
 
                     for (int i = FirstRow; i <= LastRow; i++)
                     {
@@ -111,7 +113,7 @@ namespace ProjectManager.Controllers
                             _tasks.AssignedDate = DateTime.Now;
                             _tasks.TaskStatusID = 2;
                             _tasks.IsRead = false;
-                            tasks.Update(_tasks);
+                            tasklist.Add(_tasks);
                             Guid memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == EmpGUID).Select(m => m.MemberGUID).Single();
                             Models.Calendar cal = new Models.Calendar();
                             cal.MemberGUID = memberGUID;
@@ -119,11 +121,16 @@ namespace ProjectManager.Controllers
                             cal.Start = (DateTime)_tasks.EstStartDate;
                             cal.EndDay = (DateTime)_tasks.EstEndDate;
                             cal.Description = _tasks.Description;
-                            cal.CalendarGUID = Guid.NewGuid();
+                            cal.CalendarGUID = Guid.NewGuid();                            
                             cal.ThemeColor = "Pink";
-                            calRe.Add(cal);
+                            cal.IsRead = true;
+                            cal.CreateDate = DateTime.Now;
+                            cal.CategoryID = 3;
+                            eventlist.Add(cal);
                         }
                     }
+                    tasks.UpdateList(tasklist);
+                    calRe.AddList(eventlist);
                 }
             }
             catch { }
@@ -139,10 +146,10 @@ namespace ProjectManager.Controllers
             return Content(JsonConvert.SerializeObject(taskList), "application/json");
         }
 
-        public ActionResult LeaveMessageTag()
+        public ActionResult LeaveMessageTag(Tasks _task)
         {
-            var message = Request.Form["text"];
-            Guid TaskGUID = new Guid(Request.Form["TaskGUID"].ToString());
+            var message = _task.Tag;
+            Guid TaskGUID = _task.TaskGUID;
             Tasks _tasks = tasks.Find(TaskGUID);
             _tasks.Tag = message;
             tasks.Update(_tasks);
@@ -166,8 +173,13 @@ namespace ProjectManager.Controllers
         public ActionResult CancelTask(Guid TaskGUID)
         {
             Tasks _tasks = tasks.Find(TaskGUID);
-            Guid CalendarGUID = calRe.GetCollections().Where(c => c.Subject == _tasks.TaskName).Select(c => c.CalendarGUID).Single();
-            calRe.Delete(calRe.Find(CalendarGUID));
+            var GetallCal = calRe.GetCollections();
+            var memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == _tasks.EmployeeGUID).Select(m => m.MemberGUID).Single();
+            if (GetallCal.Where(c => c.Subject == _tasks.TaskName).Count() != 0)
+            {
+                Guid CalendarGUID = GetallCal.Where(c => c.Subject == _tasks.TaskName && c.MemberGUID == memberGUID).Select(c => c.CalendarGUID).Single();
+                calRe.Delete(calRe.Find(CalendarGUID));
+            }
             _tasks.EmployeeGUID = null;
             _tasks.TaskStatusID = 1;
             _tasks.IsRead = true;
@@ -196,7 +208,8 @@ namespace ProjectManager.Controllers
                                 分配工作時間 = tasks.AssignedDate,
                                 是否已讀 = tasks.IsRead
                             };
-            gv.DataSource = ExcelData.ToList();            
+            gv.DataSource = ExcelData.ToList();
+            gv.DataBind();
             Response.ClearContent();
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment; filename="+ ProjectName + "_工作分配總表.xls");
@@ -208,7 +221,7 @@ namespace ProjectManager.Controllers
             Response.Output.Write(objStringWriter.ToString());
             Response.Flush();
             Response.End();
-            return View("AssignTask");
+            return RedirectToAction("AssignTask");
         }
 
         [HttpPost]

@@ -12,20 +12,18 @@ namespace ProjectManager.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class TaskResource
+    public partial class CalendarCategory
     {
-        public System.Guid TaskGUID { get; set; }
-        public System.Guid ResourceGUID { get; set; }
-        public int ResourceID { get; set; }
-        public string ResourceName { get; set; }
-        public int CategoryID { get; set; }
-        public string Unit { get; set; }
-        public decimal UnitPrice { get; set; }
-        public int Quantity { get; set; }
-        public System.DateTime Date { get; set; }
-        public string Description { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public CalendarCategory()
+        {
+            this.Calendar = new HashSet<Calendar>();
+        }
     
-        public virtual Tasks Tasks { get; set; }
-        public virtual ResourceCategory ResourceCategory { get; set; }
+        public int CategoryID { get; set; }
+        public string CategoryName { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Calendar> Calendar { get; set; }
     }
 }

@@ -8,6 +8,9 @@ using System.Windows;
 using System.Web;
 using System.Web.Mvc;
 using static System.Net.Mime.MediaTypeNames;
+using System.IO;
+using LinqToExcel;
+using System.Web.Configuration;
 
 namespace ProjectManager.Controllers
 {
@@ -22,6 +25,7 @@ namespace ProjectManager.Controllers
         Repository<Members> memberRepo = new Repository<Members>();
         Repository<JobTitle> jobTitleRepo = new Repository<JobTitle>();
         Repository<TaskDetail> taskDetailRepo = new Repository<TaskDetail>();
+        Repository<TaskResource> resourceRepo = new Repository<TaskResource>();
 
         #region Project Report Chart
         public ActionResult ProjectReport(Guid? ProjectGUID)
@@ -196,6 +200,47 @@ namespace ProjectManager.Controllers
             return PartialView(task);
         }
         [HttpPost]
+        public ActionResult ImportExcel(HttpPostedFileBase file)
+        {   
+            if (file == null)
+            {
+                return Json("上傳失敗：沒有檔案！", JsonRequestBehavior.AllowGet);
+            }
+            if (file.ContentLength <= 0)
+            {
+                return Json("上傳失敗：檔案沒有內容！", JsonRequestBehavior.AllowGet);
+            }
+            string folderPath = Server.MapPath("/Document/Excel");
+            string filePath = Path.Combine(folderPath, file.FileName);
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            file.SaveAs(filePath);
+
+            return Json(file.FileName.ToString(), JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult InsertExcelToDB(string fileName)
+        {
+            //if (file.ContentLength > 0)
+            //{
+            //    Stream streamfile = file.InputStream; 
+
+            var excelFile = new ExcelQueryFactory(fileName);
+            //excelFile.AddMapping<Tasks>(x => x.TaskID, "工作項目編號");
+            excelFile.AddMapping<Tasks>(x => x.TaskName, "工作項目名稱");
+            excelFile.AddMapping<Tasks>(x => x.Tasks2.TaskName, "父工作項目名稱");
+            excelFile.AddMapping<Tasks>(x => x.EstStartDate, "預計開始時間");
+            excelFile.AddMapping<Tasks>(x => x.EstEndDate, "預計結束時間");
+            excelFile.AddMapping<Tasks>(x => x.EstEndDate, "預計工期");
+            excelFile.AddMapping<Tasks>(x => x.EstEndDate, "說明");
+
+
+            //}
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
         public ActionResult InsertTask(Tasks task)
         {
             if (Request.Cookies["ProjectGUID"] == null)
@@ -291,6 +336,7 @@ namespace ProjectManager.Controllers
         public ActionResult TaskAcceptance(bool isConfirmed, Guid? taskGuid, int? reviewScore, string reviewDescription)
         {
             Tasks _task = taskRepo.Find(taskGuid);
+            TaskResource _resource = new TaskResource();
             var tasks =taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid);
             if (reviewScore != null && isConfirmed)
             {
@@ -303,7 +349,17 @@ namespace ProjectManager.Controllers
             {
                 _task.TaskStatusID = (int)TasksBL.Task_Status.Completed;
                 taskRepo.Update(_task);
-                _task.ParentTaskStatusUpdate(taskRepo,(int)TasksBL.Task_Status.Completed);                
+                _task.ParentTaskStatusUpdate(taskRepo,(int)TasksBL.Task_Status.Completed);
+                //自動產生費用
+                _resource.TaskGUID = _task.TaskGUID;
+                _resource.ResourceGUID = Guid.NewGuid();
+                _resource.ResourceName = "工程師工時投入";
+                _resource.CategoryID = 1;
+                _resource.Quantity = (int)_task.WorkTime;
+                _resource.UnitPrice = 200;
+                _resource.Date = DateTime.Now;
+                _resource.Description = "(任務驗收自動產生)" + _task.Description;
+                resourceRepo.Add(_resource);
             }
             else
             {
