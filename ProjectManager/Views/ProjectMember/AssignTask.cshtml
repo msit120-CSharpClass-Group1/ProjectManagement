@@ -433,16 +433,22 @@
                         }
                     });
                 })
-                //$(".progress").click(function ()
-                //{
-                //    var orginvalue = $(this).children().text();
-                //    orginvalue.substr(2);
-                //    alert(orginvalue);
-                    
-                //    //var orginvalue = $(this).children().width();
-                //    //orginvalue -= 8;
-                //    //$(this).children().attr("width")
-                //})
+
+                let Ovalue;
+                let orginvalue;
+                let withoutpercent;
+                $(".progress").click(function ()
+                {
+                    orginvalue = $(this).children().text();
+                    withoutpercent = orginvalue.substr(0, 3);
+                    Ovalue = parseInt(withoutpercent);
+                    if (Ovalue > 0)
+                    {
+                        Ovalue -= 5;
+                        $(this).children().width(Ovalue + "%");
+                        $(this).children().text(Ovalue + "%");
+                    }
+                })
             })
             function exportExcel()
             {
