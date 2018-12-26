@@ -1,0 +1,24 @@
+﻿@using ProjectManager.Models;
+@model IEnumerable<ProjectMemberTaskCompletedRateVM>
+<h5>專案負責團隊</h5>
+<table id="TasksTable" class="table bg-white ">
+    <thead>       
+        <tr>
+            <th>成員</th>
+            <th>工作完成比例</th>
+            <th>負責工作數量</th>
+            <th>預計工時總數</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.EmployeeName</td>
+                <td>@(item.CompletedRate)%</td>
+                <td>@item.InChargeTaskCount</td>
+                <td>@(item.EstWorkTimeSum)</td>
+            </tr>
+        }        
+    </tbody>
+</table>

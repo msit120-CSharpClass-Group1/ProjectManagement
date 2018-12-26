@@ -21,6 +21,7 @@ namespace ProjectManager.Models
         public Nullable<System.Guid> ModifiedEmpGUID { get; set; }
         public Nullable<bool> IsChecked { get; set; }
         public string FileName { get; set; }
+        public string Description { get; set; }
     
         public virtual Document Document { get; set; }
         public virtual Employee Employee { get; set; }

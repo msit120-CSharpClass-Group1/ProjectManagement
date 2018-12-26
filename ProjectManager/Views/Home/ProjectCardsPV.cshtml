@@ -1,0 +1,19 @@
+﻿@using ProjectManager.Models;
+@model IEnumerable<DisplayProjectStatusCountVM>
+<h5 class="ml-4">本年度專案:</h5>
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-4 col-sm-12">
+                <div class="card shadow-sm">
+                    <div class="card-body ">
+                        <h5 class="card-title">@item.ProjectStatusName</h5>
+                        <h1 class="float-right mr-3">@item.Count</h1>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

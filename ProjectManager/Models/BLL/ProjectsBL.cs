@@ -34,7 +34,7 @@ namespace ProjectManager.Models
         /// </summary>
         /// <param name="projects"></param>
         /// <returns></returns>
-        public static IEnumerable<Grouped<string,Project>> GetGroupedProject(this IEnumerable<Project> projects)
+        public static IEnumerable<Grouped<string,Project>> GetProjectsGroupByDept(this IEnumerable<Project> projects)
         {
             return projects.AsEnumerable()
                 .OrderBy(p => p.ProjectID)
@@ -87,6 +87,17 @@ namespace ProjectManager.Models
                 project.DurationSavedRate = rate;
             }
 
+        }
+        public static IEnumerable<Grouped<string, Project>> GetProjectsGroupedByPM(this IEnumerable<Project> projects,IEnumerable<Tasks> taskFromRepo)
+        {
+            string projectID_thisYear = "P" + DateTime.Now.Year.ToString().Substring(2, 2); 
+            projects.LoadProjectsCompletedRate(taskFromRepo);
+            projects.LoadProjectSaveTimeRate(taskFromRepo);
+            return projects.AsEnumerable()
+                .Where(p=>p.ProjectID.StartsWith(projectID_thisYear))
+                .OrderBy(p => p.ProjectID)
+                .GroupBy(p => p.Employee1.EmployeeName)
+                .Select(g => new Grouped<string, Project>() { Key = g.Key, group = g }).ToList();
         }
     }
 }
