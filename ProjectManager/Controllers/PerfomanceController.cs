@@ -1,4 +1,5 @@
-﻿using ProjectManager.Models;
+﻿using Newtonsoft.Json;
+using ProjectManager.Models;
 using ProjectManager.Models.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ namespace ProjectManager.Controllers
                 vm.GetUnderAVGMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetUnderAVGMember(); 
                 vm.GetLowestMember = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).GetLowestMember();
                 vm.GetNoneScore = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID && p.Employee.JobTitle.TitleName != "專案經理").GetNoneScore();
-
+                vm.ProjectGUIDShow = ProjectGUID;
                 return View(vm);
             }
             return RedirectToAction("Index", "Perfomance");
@@ -114,5 +115,39 @@ namespace ProjectManager.Controllers
         {
             return View();
         }
+
+        #region ScoreChart
+        public ActionResult WatchChart(ProjectMembers _projectMember)
+        {
+            ChartData<SingleColorChartDataset<int>> chartData = new ChartData<SingleColorChartDataset<int>>();
+
+            chartData.labels = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == _projectMember.ProjectGUID && p.Employee.JobTitle.TitleName != "專案經理").Select(p => p.Employee.EmployeeName).ToList();
+
+            chartData.datasets.Add(new SingleColorChartDataset<int>
+            {
+                label = "專案經理評分",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == _projectMember.ProjectGUID && p.Employee.JobTitle.TitleName != "專案經理" && p.PMscore != null).Select(p =>(int)p.PMscore).ToList()
+            });
+            return Content(JsonConvert.SerializeObject(chartData),"application/json");
+        }
+
+        public ActionResult WatchChartSelfScore(ProjectMembers _projectMember)
+        {
+            ChartData<SingleColorChartDataset<int>> chartData = new ChartData<SingleColorChartDataset<int>>();
+
+            chartData.labels = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == _projectMember.ProjectGUID && p.Employee.JobTitle.TitleName != "專案經理").Select(p => p.Employee.EmployeeName).ToList();
+
+            chartData.datasets.Add(new SingleColorChartDataset<int>
+            {
+                label = "自評分",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == _projectMember.ProjectGUID && p.Employee.JobTitle.TitleName != "專案經理" && p.Selfscore != null).Select(p => (int)p.Selfscore).ToList()
+            });
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
+        }
+        #endregion
     }
 }

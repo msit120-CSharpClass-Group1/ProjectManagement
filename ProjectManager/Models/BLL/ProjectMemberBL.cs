@@ -122,6 +122,31 @@ namespace ProjectManager.Models
                 avgTasksScore.Add(item);
             }
             return avgTasksScore;
-        }   
+        }
+
+        public static IEnumerable<ProjectMemberTaskCompletedRateVM> GetProjectMemberTaskCompletedRate(this IEnumerable<ProjectMembers> members, IEnumerable<Tasks> tasks)
+        {
+            return members.Select(m => new ProjectMemberTaskCompletedRateVM() {
+                EmployeeName = m.Employee.EmployeeName,
+                CompletedRate = m.GetTeamMemberTaskCompletedRate(tasks),
+                InChargeTaskCount = tasks.Where(t=>t.EmployeeGUID == m.EmployeeGUID).Count(),
+                EstWorkTimeSum = (int)tasks.Where(t=>t.EmployeeGUID == m.EmployeeGUID).Sum(t=>t.EstWorkTime),
+            });
+        }
+
+        public static int GetTeamMemberTaskCompletedRate(this ProjectMembers member, IEnumerable<Tasks> tasks)
+        {
+            int rate = 0;
+            var total = tasks.Where(t => t.EmployeeGUID == member.EmployeeGUID)
+                .Where(t=>t.TaskStatusID != (int)TasksBL.Task_Status.Closed).Count();
+
+            var completed = tasks.Where(t => t.EmployeeGUID == member.EmployeeGUID)
+                .Where(t => t.TaskStatusID == (int)TasksBL.Task_Status.Completed).Count();
+
+            if (total > 0)
+                rate = completed * 100 / total;
+
+            return rate;
+        }
     }
 }
