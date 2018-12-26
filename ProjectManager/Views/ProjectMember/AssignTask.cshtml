@@ -48,27 +48,25 @@
         }
     </style>
 }
-
-@*@using (Html.BeginForm("ExportToExcel", "ProjectMember", FormMethod.Post))
-       {
-           <button class="btn btn-outline-dark" id="ExportExcel"><i class="fas fa-file-excel"></i>匯出分配總表</button>
-    }*@
-
 @using (Html.BeginForm("ExportExcel", "ProjectMember", FormMethod.Post, new { name = "myForm" }))
 {
     @Html.Hidden("hHtml")
 }
-@using (Html.BeginForm("ExportToExcel", "ProjectMember", FormMethod.Post,new {hidden="hidden"}))
+@using (Html.BeginForm("ExportToExcel", "ProjectMember", FormMethod.Post, new { hidden = "hidden" }))
 {
-   <button class="btn btn-outline-dark" id="ExportExcel"><i class="fas fa-file-excel"></i>匯出分配總表</button>
+    <button class="btn btn-outline-dark" id="ExportExcelDetail"><i class="fas fa-file-excel"></i>匯出分配總表</button>
 }
+<img src="~/image/Excelicon.png" style="width:50px;" />
 <button type="button" class="btn btn-light" id="ExportExcel" onclick="exportExcel()" style="margin:10px"><i class="fas fa-file-excel"></i>匯出簡易分配表</button>
 <button class="btn btn-outline-dark" id="ExportExcelalter"><i class="fas fa-file-excel"></i>匯出分配總表</button>
 <form method="post" action="~/ProjectMember/EditTaskM" class="form-horizontal" style="margin:auto">
     <div class="row">
         <div class="col-3">
             <div class="" style="margin-top:60px">
-                <div class="flip"><font color="aliceblue">查看分配狀態</font></div>
+                <div class="flip" style="border-radius:10px">
+                    <font color="aliceblue"><i class="fas fa-eye"></i>查看分配狀態</font>
+                    
+                </div>
                 <div class="panel">
                     <table class="table table-bordered" id="mappingTable">
                         <thead>
@@ -167,7 +165,7 @@
                 <input type="hidden" id="rowcount" name="TotalRow" />
                 <input type="hidden" id="firstrow" name="FirstRow" />
                 <input type="hidden" id="lastrow" name="LastRow" />
-                <input type="button" class="btn btn-danger" id="reset" value="重新分配">
+                <input type="button" class="btn btn-danger" id="reset" value="重新分配">                
             </div>
         </div>
         }
@@ -418,21 +416,33 @@
                 })
                 $("#ExportExcelalter").click(function ()
                 {
-                    $("#ExportExcel").click();
+                    $("#ExportExcelDetail").click();
                 })
 
                 $(".modal-footer").on("click", 'a', function ()
                 {
                     var TaskGUID = $(this).parent().siblings("#HideTaskGUID").val();
+                    var Tag = $("#text").val();
                     $.ajax({
                         url: '@Url.Action("LeaveMessageTag", "ProjectMember")',
-                        data: {"TaskGUID": TaskGUID},
+                        data: {"TaskGUID": TaskGUID,"Tag":Tag},
                         success: function (data)
                         {
-                            
+                            $("#text").val("");
+                            $('#exampleModalCenter').modal('hide');
                         }
                     });
                 })
+                //$(".progress").click(function ()
+                //{
+                //    var orginvalue = $(this).children().text();
+                //    orginvalue.substr(2);
+                //    alert(orginvalue);
+                    
+                //    //var orginvalue = $(this).children().width();
+                //    //orginvalue -= 8;
+                //    //$(this).children().attr("width")
+                //})
             })
             function exportExcel()
             {

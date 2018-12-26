@@ -60,7 +60,7 @@ namespace ProjectManager.Models
 
         public static IEnumerable<Group<string, ProjectMembers>> GetLowestMember(this IEnumerable<ProjectMembers> projectMembers)
         {
-            var memeberList = projectMembers.Where(p => p.PMscore <= 40 && p.EmployeeGUID != null).GroupBy(g => g.Employee.EmployeeName)
+            var memeberList = projectMembers.Where(p => p.PMscore <= 20 && p.EmployeeGUID != null).GroupBy(g => g.Employee.EmployeeName)
                                          .Select(g => new Group<string, ProjectMembers> { Key = g.Key, value = g, Count = g.Count() });
             return memeberList;
         }

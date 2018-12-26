@@ -146,10 +146,10 @@ namespace ProjectManager.Controllers
             return Content(JsonConvert.SerializeObject(taskList), "application/json");
         }
 
-        public ActionResult LeaveMessageTag()
+        public ActionResult LeaveMessageTag(Tasks _task)
         {
-            var message = Request.Form["text"];
-            Guid TaskGUID = new Guid(Request.Form["TaskGUID"].ToString());
+            var message = _task.Tag;
+            Guid TaskGUID = _task.TaskGUID;
             Tasks _tasks = tasks.Find(TaskGUID);
             _tasks.Tag = message;
             tasks.Update(_tasks);
@@ -173,8 +173,12 @@ namespace ProjectManager.Controllers
         public ActionResult CancelTask(Guid TaskGUID)
         {
             Tasks _tasks = tasks.Find(TaskGUID);
-            Guid CalendarGUID = calRe.GetCollections().Where(c => c.Subject == _tasks.TaskName).Select(c => c.CalendarGUID).Single();
-            calRe.Delete(calRe.Find(CalendarGUID));
+            var GetallCal = calRe.GetCollections();
+            if (GetallCal.Where(c => c.Subject == _tasks.TaskName).Count() != 0)
+            {
+                Guid CalendarGUID = GetallCal.Where(c => c.Subject == _tasks.TaskName).Select(c => c.CalendarGUID).Single();
+                calRe.Delete(calRe.Find(CalendarGUID));
+            }
             _tasks.EmployeeGUID = null;
             _tasks.TaskStatusID = 1;
             _tasks.IsRead = true;
@@ -203,7 +207,8 @@ namespace ProjectManager.Controllers
                                 分配工作時間 = tasks.AssignedDate,
                                 是否已讀 = tasks.IsRead
                             };
-            gv.DataSource = ExcelData.ToList();            
+            gv.DataSource = ExcelData.ToList();
+            gv.DataBind();
             Response.ClearContent();
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment; filename="+ ProjectName + "_工作分配總表.xls");
@@ -215,7 +220,7 @@ namespace ProjectManager.Controllers
             Response.Output.Write(objStringWriter.ToString());
             Response.Flush();
             Response.End();
-            return View("AssignTask");
+            return RedirectToAction("AssignTask");
         }
 
         [HttpPost]
