@@ -54,7 +54,7 @@
         <div class="row">
             <div class="col-sm">
                 <label>選擇部門</label>
-                <select id="sel1">
+                <select id="sel1" class="custom-select">
                     <option>選擇部門</option>
                     @foreach (var _dep in Model)
                     {
@@ -270,7 +270,7 @@
                  {
                      if (data != "NoTask") {
                          $('#myModal').modal('show');
-                         $("#myModalLabel").text(EmpName + " 目前有被分配到工作!要移出團隊嗎?");
+                         $("#myModalLabel").text(EmpName + " 有承接工作的紀錄，要移出團隊嗎?");
                      }
                      else
                      {
