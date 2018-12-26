@@ -25,6 +25,7 @@ namespace ProjectManager.Controllers
         Repository<Members> memberRepo = new Repository<Members>();
         Repository<JobTitle> jobTitleRepo = new Repository<JobTitle>();
         Repository<TaskDetail> taskDetailRepo = new Repository<TaskDetail>();
+        Repository<TaskResource> resourceRepo = new Repository<TaskResource>();
 
         #region Project Report Chart
         public ActionResult ProjectReport(Guid? ProjectGUID)
@@ -209,11 +210,12 @@ namespace ProjectManager.Controllers
             {
                 return Json("上傳失敗：檔案沒有內容！", JsonRequestBehavior.AllowGet);
             }
-            string filePath = Path.Combine(Server.MapPath("/Document/Excel/"), file.FileName);
-            if (!Directory.Exists(filePath))
+            string folderPath = Server.MapPath("/Document/Excel");
+            string filePath = Path.Combine(folderPath, file.FileName);
+            if (!Directory.Exists(folderPath))
             {
-                Directory.CreateDirectory(filePath);
-            }            
+                Directory.CreateDirectory(folderPath);
+            }
             file.SaveAs(filePath);
 
             return Json(file.FileName.ToString(), JsonRequestBehavior.AllowGet);
@@ -334,6 +336,7 @@ namespace ProjectManager.Controllers
         public ActionResult TaskAcceptance(bool isConfirmed, Guid? taskGuid, int? reviewScore, string reviewDescription)
         {
             Tasks _task = taskRepo.Find(taskGuid);
+            TaskResource _resource = new TaskResource();
             var tasks =taskRepo.GetCollections().Where(t => t.TaskGUID == taskGuid);
             if (reviewScore != null && isConfirmed)
             {
@@ -346,7 +349,17 @@ namespace ProjectManager.Controllers
             {
                 _task.TaskStatusID = (int)TasksBL.Task_Status.Completed;
                 taskRepo.Update(_task);
-                _task.ParentTaskStatusUpdate(taskRepo,(int)TasksBL.Task_Status.Completed);                
+                _task.ParentTaskStatusUpdate(taskRepo,(int)TasksBL.Task_Status.Completed);
+                //自動產生費用
+                _resource.TaskGUID = _task.TaskGUID;
+                _resource.ResourceGUID = Guid.NewGuid();
+                _resource.ResourceName = "工程師工時投入";
+                _resource.CategoryID = 1;
+                _resource.Quantity = (int)_task.WorkTime;
+                _resource.UnitPrice = 200;
+                _resource.Date = DateTime.Now;
+                _resource.Description = "(任務驗收自動產生)" + _task.Description;
+                resourceRepo.Add(_resource);
             }
             else
             {

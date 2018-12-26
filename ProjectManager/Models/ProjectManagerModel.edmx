@@ -54,7 +54,7 @@
           <Key>
             <PropertyRef Name="DocumentGUID" />
           </Key>
-          <Property Name="DocumentID" Type="int" Nullable="false" />
+          <Property Name="DocumentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DocumentGUID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="DocumentCategory" Type="int" />
           <Property Name="ProjectGUID" Type="uniqueidentifier" />
