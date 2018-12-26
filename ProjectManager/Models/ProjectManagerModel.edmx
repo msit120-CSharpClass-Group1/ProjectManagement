@@ -227,7 +227,7 @@
           <Key>
             <PropertyRef Name="CategoryID" />
           </Key>
-          <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
           <Property Name="CategoryName" Type="nvarchar" MaxLength="50" />
           <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
@@ -1321,15 +1321,6 @@
           <Property Name="ProjectStatusName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Project" Relationship="Self.FK_Project_ProjectStatus" FromRole="ProjectStatus" ToRole="Project" />
         </EntityType>
-        <EntityType Name="ResourceCategory">
-          <Key>
-            <PropertyRef Name="CategoryID" />
-          </Key>
-          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="TaskResource" Relationship="Self.FK_TaskResource_ResourceCategory" FromRole="ResourceCategory" ToRole="TaskResource" />
-        </EntityType>
         <EntityType Name="TaskDetail">
           <Key>
             <PropertyRef Name="TaskDetailGUID" />
@@ -1378,8 +1369,8 @@
           <Property Name="Quantity" Type="Int32" Nullable="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ResourceCategory" Relationship="Self.FK_TaskResource_ResourceCategory" FromRole="TaskResource" ToRole="ResourceCategory" />
           <NavigationProperty Name="Tasks" Relationship="Self.FK_TaskResource_Tasks" FromRole="TaskResource" ToRole="Tasks" />
+          <NavigationProperty Name="ResourceCategory" Relationship="ProjectManagementModel.FK_TaskResource_ResourceCategory" FromRole="TaskResource" ToRole="ResourceCategory" />
         </EntityType>
         <EntityType Name="Tasks">
           <Key>
@@ -1836,18 +1827,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TaskResource_ResourceCategory">
-          <End Role="ResourceCategory" Type="Self.ResourceCategory" Multiplicity="1" />
-          <End Role="TaskResource" Type="Self.TaskResource" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ResourceCategory">
-              <PropertyRef Name="CategoryID" />
-            </Principal>
-            <Dependent Role="TaskResource">
-              <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_TaskDetail_TaskDetailStatus">
           <End Role="TaskDetailStatus" Type="Self.TaskDetailStatus" Multiplicity="0..1" />
           <End Role="TaskDetail" Type="Self.TaskDetail" Multiplicity="*" />
@@ -1955,7 +1934,6 @@
           <EntitySet Name="ProjectDiscuss" EntityType="Self.ProjectDiscuss" />
           <EntitySet Name="ProjectMembers" EntityType="Self.ProjectMembers" />
           <EntitySet Name="ProjectStatus" EntityType="Self.ProjectStatus" />
-          <EntitySet Name="ResourceCategory" EntityType="Self.ResourceCategory" />
           <EntitySet Name="TaskDetail" EntityType="Self.TaskDetail" />
           <EntitySet Name="TaskDetailStatus" EntityType="Self.TaskDetailStatus" />
           <EntitySet Name="TaskModified" EntityType="Self.TaskModified" />
@@ -2092,10 +2070,6 @@
             <End Role="Project" EntitySet="Project" />
             <End Role="Tasks" EntitySet="Tasks" />
           </AssociationSet>
-          <AssociationSet Name="FK_TaskResource_ResourceCategory" Association="Self.FK_TaskResource_ResourceCategory">
-            <End Role="ResourceCategory" EntitySet="ResourceCategory" />
-            <End Role="TaskResource" EntitySet="TaskResource" />
-          </AssociationSet>
           <AssociationSet Name="FK_TaskDetail_TaskDetailStatus" Association="Self.FK_TaskDetail_TaskDetailStatus">
             <End Role="TaskDetailStatus" EntitySet="TaskDetailStatus" />
             <End Role="TaskDetail" EntitySet="TaskDetail" />
@@ -2135,6 +2109,11 @@
             <End Role="CalendarCategory" EntitySet="CalendarCategory" />
             <End Role="Calendar" EntitySet="Calendar" />
           </AssociationSet>
+          <EntitySet Name="ResourceCategory" EntityType="ProjectManagementModel.ResourceCategory" />
+          <AssociationSet Name="FK_TaskResource_ResourceCategory" Association="ProjectManagementModel.FK_TaskResource_ResourceCategory">
+            <End Role="ResourceCategory" EntitySet="ResourceCategory" />
+            <End Role="TaskResource" EntitySet="TaskResource" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="CalendarCategory">
           <Key>
@@ -2152,6 +2131,27 @@
               <PropertyRef Name="CategoryID" />
             </Principal>
             <Dependent Role="Calendar">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ResourceCategory">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TaskResource" Relationship="ProjectManagementModel.FK_TaskResource_ResourceCategory" FromRole="ResourceCategory" ToRole="TaskResource" />
+        </EntityType>
+        <Association Name="FK_TaskResource_ResourceCategory">
+          <End Type="ProjectManagementModel.ResourceCategory" Role="ResourceCategory" Multiplicity="1" />
+          <End Type="ProjectManagementModel.TaskResource" Role="TaskResource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ResourceCategory">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="TaskResource">
               <PropertyRef Name="CategoryID" />
             </Dependent>
           </ReferentialConstraint>
@@ -2382,15 +2382,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ResourceCategory">
-            <EntityTypeMapping TypeName="ProjectManagementModel.ResourceCategory">
-              <MappingFragment StoreEntitySet="ResourceCategory">
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="TaskDetail">
             <EntityTypeMapping TypeName="ProjectManagementModel.TaskDetail">
               <MappingFragment StoreEntitySet="TaskDetail">
@@ -2513,6 +2504,15 @@
           <EntitySetMapping Name="CalendarCategory">
             <EntityTypeMapping TypeName="ProjectManagementModel.CalendarCategory">
               <MappingFragment StoreEntitySet="CalendarCategory">
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ResourceCategory">
+            <EntityTypeMapping TypeName="ProjectManagementModel.ResourceCategory">
+              <MappingFragment StoreEntitySet="ResourceCategory">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
               </MappingFragment>

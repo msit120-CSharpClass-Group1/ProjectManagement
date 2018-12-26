@@ -159,6 +159,8 @@ namespace ProjectManager.Controllers
 
         public ActionResult AddCat(ResourceCategory cat)
         {
+            cat.CategoryID = ResourceCatRepo.GetCollections().Select(c => c.CategoryID).Max() + 1;
+
             ResourceCatRepo.Add(cat);
             return RedirectToAction("ExpCatMgr");
         }
@@ -171,8 +173,17 @@ namespace ProjectManager.Controllers
 
         public ActionResult DeleteCat(int? id)
         {
-            ResourceCatRepo.Delete(ResourceCatRepo.Find(id));
-            return RedirectToAction("ExpCatMgr");
+            List<TaskResource> resources = ResourceRepo.GetCollections().Where(r => r.CategoryID == id).ToList();
+
+            if(resources.Count > 0)
+            {
+                return Content("failure", "text/plain");
+            }
+            else
+            {
+                ResourceCatRepo.Delete(ResourceCatRepo.Find(id));
+                return RedirectToAction("ExpCatMgr");
+            }
         }
         #endregion
 

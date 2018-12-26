@@ -22,11 +22,17 @@
 
         td > p {
             outline: none;
-            min-height:20px;
+            min-height: 20px;
         }
 
         .rightOpenbtn {
             display: none;
+        }
+
+        .AlarmIcon {
+            font-size: 120%;
+            color: #dc3545;
+            margin-right: 5px;
         }
     </style>
 }
@@ -55,8 +61,8 @@
                 <td class="text-center">@cat.CategoryID</td>
                 <td><p>@cat.CategoryName</p></td>
                 <td><p>@cat.Description</p></td>
-                <td class="text-center" style="width:75px"><button name="btn_edit" class="btn btn-info">Edit</button></td>
-                <td class="text-center" style="width:75px"><button name="btn_Del" class="btn btn-danger" data-toggle="modal" data-target="#DeleteCatModal">Delete</button></td>
+                <td class="text-center" style="width:75px"><button name="btn_edit" class="btn btn-info">修改</button></td>
+                <td class="text-center" style="width:75px"><button name="btn_Del" class="btn btn-danger" data-toggle="modal" data-target="#DeleteCatModal">刪除</button></td>
             </tr>
         }
     </tbody>
@@ -116,6 +122,24 @@
     </div>
 </div>
 
+<div class="modal fade" style="top:150px;" id="DeleteRejectedModal" tabindex="-1" role="dialog" aria-labelledby="DeleteAlarmModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-radius:3px 4px;">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <span class="AlarmIcon"><i class="fas fa-exclamation-circle"></i></span> 不可刪除
+                </h5>
+            </div>
+            <div class="modal-body">
+                <h6>已有相關費用產生，不可刪除！</h6>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section script{
     <script>
         $("#ul_costManagement").slideDown();
@@ -147,7 +171,7 @@
 
                 CatNameCell.unbind();
                 DescriptionCell.unbind();
-                $(this).html('Edit');
+                $(this).html('修改');
                 CatNameCell.children("p").attr("contenteditable", false);
                 DescriptionCell.children("p").attr("contenteditable", false);
                 flag = !flag;
@@ -158,7 +182,7 @@
             }
             else
             {
-                $(this).html('Save');
+                $(this).html('儲存');
                 CatNameCell.focusin(function () { $(this).addClass("border-info"); }).focusout(function () { $(this).removeClass("border-info"); });
                 DescriptionCell.focusin(function () { $(this).addClass("border-info"); }).focusout(function () { $(this).removeClass("border-info"); });
                 CatNameCell.children("p").attr("contenteditable", true);
@@ -182,9 +206,16 @@
             var modal = $("#DeleteCatModal");
             var CatID = modal.data("catid");
             modal.modal("hide");
-            $.post("/Cost/DeleteCat", { id: CatID }, function ()
+            $.post("/Cost/DeleteCat", { id: CatID }, function (result)
             {
-                location.reload();
+                if (result == "failure")
+                {
+                    $("#DeleteRejectedModal").modal("show");
+                }
+                else
+                {
+                    location.reload();
+                }
             });
         });
     </script>
