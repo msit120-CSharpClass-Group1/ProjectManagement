@@ -434,8 +434,10 @@
                     <div class="lists">
                         @foreach (var t in Model.Tasks.Where(x => x.TaskStatusID == s.TaskStatusID))
                         {
-                            <div class="listCards" data-tguid="@t.TaskGUID" data-statusGuid="@t.TaskStatusID" draggable="true" ondragstart="dragstart(event)" ondragend="dragEnd(event)" ondragleave="dragLeave(event)">
-                                <a class="listCard" data-tid="@t.TaskGUID" @*@if (DateTime.Now>t.) { }*@ >
+                        <div class="listCards" data-tguid="@t.TaskGUID" data-statusGuid="@t.TaskStatusID" draggable="true" ondragstart="dragstart(event)" ondragend="dragEnd(event)" ondragleave="dragLeave(event)">
+                            @if (t.TaskStatusID==2 && DateTime.Now.ToLocalTime() > t.EstEndDate )
+                            {
+                                <a class="listCard" style="border-left:3px solid red;" data-tid="@t.TaskGUID">
                                     <span class="listCardTitle">@t.TaskName</span>
                                     <div class="badges">
                                         <div class="badge" title="待辦清單項目">
@@ -445,7 +447,22 @@
                                         </div>
                                     </div>
                                 </a>
-                            </div>
+                            }
+                            else
+                            {
+                                <a class="listCard" data-tid="@t.TaskGUID">
+                                    <span class="listCardTitle">@t.TaskName</span>
+                                    <div class="badges">
+                                        <div class="badge" title="待辦清單項目">
+                                            <span class="completeDT">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID && x.TaskDetailStatusID == 2).Count()</span>
+                                            <span>/</span>
+                                            <span class="badge-text totalDT" id="badge-text">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID).Count()</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+
+                        </div>
                         }
                     </div>
                 </div>
@@ -643,6 +660,7 @@
                     }
                 });
             }
+            console.log($(elem).attr('data - statusGuid'));
         }
 
         $(document).ready(function () {
@@ -657,32 +675,6 @@
             var breadMemberLi = $('<li></li>').append(breadMembera);
             $('.breadcrumb>li').first().after(breadProjectLi, breadMemberLi);
 
-            //function expired(e)
-            //{
-            //    e.target.css("border-left", '3px solid red');
-            //}
-            //function expiredNone(e) {
-            //    e.target.css("border-left", 'none');
-            //}
-            @*$.ajax({
-                type: 'Post',
-                url: '@Url.Action("ExpiredTask", "Myboard")',
-                data: { },
-                dataType: 'json'
-            }).done(function (datas) {
-                $(datas).each(function (id, data) {
-                    var estEndDate = new Date(parseInt(data.replace(/\D/igm, "")))
-                    console.log(id);
-                    if (new Date() > estEndDate)
-                    {
-                        
-                        //thisCard.css("border-left", '3px solid red');
-                    }            
-                });       
-                       
-               
-            });*@
-
             //判斷看版權限
             var hrefarr = $('@Html.ActionLink("MyBoard","Index")').attr("href").split("/");
             var employeeGuid = hrefarr[3];
@@ -695,7 +687,7 @@
                  if (datas === false)
                  {
                      $('.wrapper').find(":button").attr('disabled', 'disabled');
-                     $('.content').find(":input").attr('disabled', 'disabled');
+                     $('.wrapper').find(":input").attr('disabled', 'disabled');
                      $(".checkLists").off("click",".checkListCkeck");
                      $(".checkLists").off('mousedown', '.cardDetailDelete');
                      $('.checkLists').off("click", ".checkListContent");
@@ -723,7 +715,7 @@
                     $(datas.Task).each(function (id, data) {
                         $('.cardDetailTitle').text(data.TaskName);
                         $('.desContent>textArea').text(data.Description);
-                        $('.cardDetailContent>.desContent>.dueDateTag').text(new Date(data.EndDate).toLocaleDateString() + " " + new Date(data.EndDate).toLocaleTimeString());
+                        $('.cardDetailContent>.desContent>.dueDateTag').text(new Date(data.EstEndDate).toLocaleDateString() + " " + new Date(data.EstEndDate).toLocaleTimeString());
                         $('.cardDetailContent>.desContent>.messageTag').text(data.Tag);             
                     });
                 });
