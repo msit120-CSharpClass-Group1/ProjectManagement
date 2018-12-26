@@ -419,6 +419,9 @@
         .breadcrumb a:hover {
             text-decoration: none;
         }
+        .leftBorder {
+            border-left:3px solid red;
+        }
     </style>
 }
 <h2> @Model.Project.First().ProjectName</h2>
@@ -570,7 +573,7 @@
         //拖拉放
         $("#listContent-4").removeAttr("ondrop");
         $("#listContent-5").removeAttr("ondrop");
-        $("#listContent-4").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default"});
+        $("#listContent-4").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default" });
         $("#listContent-5").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default" });
        
         function dragstart(e)
@@ -584,7 +587,6 @@
             cardGuid = e.target.getAttribute("data-tguid");
             $(e.target).addClass('dragging');
             dragCard = $(e.target);
-            
         }
 
         function dragEnd(e) {
@@ -596,8 +598,7 @@
             if ($(e.currentTarget).data('taskstatusid') < 4)
             {
                 $(e.currentTarget).addClass('hover');
-            }
-           
+            } 
         }
 
         function dragLeave(e) {
@@ -625,21 +626,22 @@
                 }).done(function (datas) {
                     if (datas == true) {
                         dragCard.attr('data-statusGuid', taskStatusid);
-                        dropElem.appendChild(elem.parentNode.removeChild(elem));
+                        dropElem.appendChild(elem.parentNode.removeChild(elem));                       
                         modal.modal('hide');
                     }
-                });   
+                });  
             }
+            dragCard.children().removeClass('leftBorder');
             $('input[name="realWorkTime"]').val('');
         })
 
-    
         function dropHandler(e) {
             e.preventDefault();
             var id = e.dataTransfer.getData('id');
             $('#_TaskGUID').val(id);
             var elem = document.getElementById(id);
             dropElem = e.currentTarget;
+            var taskguid = dragCard.attr('data-tguid');
 
             $(e.currentTarget).removeClass("hover");
             var taskStatusid = e.currentTarget.getAttribute("data-taskStatusid");
@@ -659,8 +661,23 @@
                         dropElem.appendChild(elem.parentNode.removeChild(elem));
                     }
                 });
+
+                 $.ajax({
+                    type: 'Post',
+                     url: '@Url.Action("ExpiredTask", "Myboard")',
+                     data: { id: taskguid },
+                    dataType: 'json'
+                 }).done(function (datas) {
+                     var changeJasonDate = datas.replace("/Date(", "").replace(")/", "");
+                     var estEndDate = new Date(parseInt(changeJasonDate));
+                     console.log(new Date() > estEndDate)
+                     if (new Date() > estEndDate == true)
+                     {
+                         dragCard.children().addClass('leftBorder');
+                     }
+                     
+                });
             }
-            console.log($(elem).attr('data - statusGuid'));
         }
 
         $(document).ready(function () {

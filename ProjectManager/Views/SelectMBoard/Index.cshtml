@@ -52,10 +52,13 @@
         .rightOpenbtn {
             display: none;
         }
+        .container {
+            margin-top: 4rem !important;
+        }
     </style>
 }
 @*<h2>選擇成員</h2>*@
-<div class="my-4 container">
+<div class="my-4 container" style="text-align: center;">
     @foreach (var p in Model.ToList())
     {
         <a href='@Url.Action("Index", "MyBoard",new { id= p.EmployeeGuid})'>
