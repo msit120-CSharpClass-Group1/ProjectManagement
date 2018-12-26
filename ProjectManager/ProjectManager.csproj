@@ -390,6 +390,9 @@
     <Compile Include="Models\Calendar.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CalendarCategory.cs">
+      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Dashboard.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>

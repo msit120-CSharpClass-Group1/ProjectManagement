@@ -18,6 +18,16 @@
           <Property Name="ThemeColor" Type="nvarchar" MaxLength="10" />
           <Property Name="IsFullDay" Type="bit" Nullable="false" />
           <Property Name="EventID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsRead" Type="bit" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="CategoryID" Type="int" />
+        </EntityType>
+        <EntityType Name="CalendarCategory">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Dashboard">
           <Key>
@@ -322,6 +332,18 @@
           <Property Name="ProgrammerPermit" Type="bit" />
           <Property Name="ActionResultName" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <Association Name="FK_Calendar_CalendarCategory">
+          <End Role="CalendarCategory" Type="Self.CalendarCategory" Multiplicity="0..1" />
+          <End Role="Calendar" Type="Self.Calendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CalendarCategory">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Calendar">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Calendar_Members">
           <End Role="Members" Type="Self.Members" Multiplicity="0..1" />
           <End Role="Calendar" Type="Self.Calendar" Multiplicity="*" />
@@ -830,6 +852,7 @@
         <Function Name="InsertTasksForDemo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="ProjectManagementModelStoreContainer">
           <EntitySet Name="Calendar" EntityType="Self.Calendar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CalendarCategory" EntityType="Self.CalendarCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Dashboard" EntityType="Self.Dashboard" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document" EntityType="Self.Document" Schema="dbo" store:Type="Tables" />
@@ -857,6 +880,10 @@
           <EntitySet Name="TaskStatus" EntityType="Self.TaskStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WidgetDetail" EntityType="Self.WidgetDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Widgets" EntityType="Self.Widgets" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Calendar_CalendarCategory" Association="Self.FK_Calendar_CalendarCategory">
+            <End Role="CalendarCategory" EntitySet="CalendarCategory" />
+            <End Role="Calendar" EntitySet="Calendar" />
+          </AssociationSet>
           <AssociationSet Name="FK_Calendar_Members" Association="Self.FK_Calendar_Members">
             <End Role="Members" EntitySet="Members" />
             <End Role="Calendar" EntitySet="Calendar" />
@@ -1044,6 +1071,10 @@
           <Property Name="IsFullDay" Type="Boolean" Nullable="false" />
           <Property Name="EventID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Members" Relationship="Self.FK_Calendar_Members" FromRole="Calendar" ToRole="Members" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CategoryID" Type="Int32" />
+          <NavigationProperty Name="CalendarCategory" Relationship="ProjectManagementModel.FK_Calendar_CalendarCategory" FromRole="Calendar" ToRole="CalendarCategory" />
         </EntityType>
         <EntityType Name="Dashboard">
           <Key>
@@ -2099,7 +2130,32 @@
           </AssociationSet>
           <FunctionImport Name="InsertProjectForDemo" />
           <FunctionImport Name="InsertTasksForDemo" />
+          <EntitySet Name="CalendarCategory" EntityType="ProjectManagementModel.CalendarCategory" />
+          <AssociationSet Name="FK_Calendar_CalendarCategory" Association="ProjectManagementModel.FK_Calendar_CalendarCategory">
+            <End Role="CalendarCategory" EntitySet="CalendarCategory" />
+            <End Role="Calendar" EntitySet="Calendar" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="CalendarCategory">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Calendar" Relationship="ProjectManagementModel.FK_Calendar_CalendarCategory" FromRole="CalendarCategory" ToRole="Calendar" />
+        </EntityType>
+        <Association Name="FK_Calendar_CalendarCategory">
+          <End Type="ProjectManagementModel.CalendarCategory" Role="CalendarCategory" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.Calendar" Role="Calendar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CalendarCategory">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Calendar">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2109,6 +2165,9 @@
           <EntitySetMapping Name="Calendar">
             <EntityTypeMapping TypeName="ProjectManagementModel.Calendar">
               <MappingFragment StoreEntitySet="Calendar">
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
                 <ScalarProperty Name="CalendarGUID" ColumnName="CalendarGUID" />
                 <ScalarProperty Name="MemberGUID" ColumnName="MemberGUID" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
@@ -2451,6 +2510,14 @@
           </AssociationSetMapping>
           <FunctionImportMapping FunctionImportName="InsertProjectForDemo" FunctionName="ProjectManagementModel.Store.InsertProjectForDemo" />
           <FunctionImportMapping FunctionImportName="InsertTasksForDemo" FunctionName="ProjectManagementModel.Store.InsertTasksForDemo" />
+          <EntitySetMapping Name="CalendarCategory">
+            <EntityTypeMapping TypeName="ProjectManagementModel.CalendarCategory">
+              <MappingFragment StoreEntitySet="CalendarCategory">
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

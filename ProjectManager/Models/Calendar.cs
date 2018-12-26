@@ -23,7 +23,11 @@ namespace ProjectManager.Models
         public string ThemeColor { get; set; }
         public bool IsFullDay { get; set; }
         public int EventID { get; set; }
+        public Nullable<bool> IsRead { get; set; }
+        public Nullable<System.DateTime> CreateDate { get; set; }
+        public Nullable<int> CategoryID { get; set; }
     
         public virtual Members Members { get; set; }
+        public virtual CalendarCategory CalendarCategory { get; set; }
     }
 }

@@ -15,9 +15,20 @@ namespace ProjectManager.Controllers
         private Repository<Project> ProjectRepo = new Repository<Project>();
         private Repository<ProjectMembers> ProjectMemberRepo = new Repository<ProjectMembers>();
         private Repository<Members> MembersRepo = new Repository<Members>();
+        
         // GET: Calendar
         public ActionResult Index()
         {
+            Guid memberGUID = new Guid(Request.Cookies["MemberGUID"].Value);
+            var events = CalRepo.GetCollections().Where(n => n.MemberGUID == memberGUID).ToList();
+            foreach (var _events in events)
+            {
+                if (!(bool)_events.IsRead)
+                {
+                    _events.IsRead = true;
+                    CalRepo.Update(_events);
+                }
+            }
             return View(ProjectRepo.GetCollections());
         }
 
@@ -89,6 +100,9 @@ namespace ProjectManager.Controllers
                     calendar.Description = _calendar.Description;
                     calendar.IsFullDay = _calendar.IsFullDay;
                     calendar.ThemeColor = _calendar.ThemeColor;
+                    calendar.CreateDate = DateTime.Now;
+                    calendar.IsRead = false;
+                    calendar.CategoryID = 2;
                     CalRepo.Add(calendar);
                 }
             }                  
