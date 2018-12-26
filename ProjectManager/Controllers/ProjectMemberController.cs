@@ -166,7 +166,7 @@ namespace ProjectManager.Controllers
 
         public ActionResult GetProjectMemberTasks(Guid EmployeeGUID)
         {
-            var memberTask = tasks.GetCollections().Where(t => t.EmployeeGUID == EmployeeGUID && t.TaskStatusID==2 &&  t.ProjectGUID == new Guid(Request.Cookies["ProjectGUID"].Value));
+            var memberTask = tasks.GetCollections().Where(t => t.EmployeeGUID == EmployeeGUID && t.TaskStatusID== 2 && t.ProjectGUID == new Guid(Request.Cookies["ProjectGUID"].Value));
             return Content(JsonConvert.SerializeObject(memberTask), "application/json");
         }
 

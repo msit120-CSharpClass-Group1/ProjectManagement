@@ -217,6 +217,7 @@
                         </thead>
                         <tbody></tbody>
                     </table>
+                    <p id="workHours" hidden></p>
                     <div id="notaskpic" hidden="hidden">
                         <img src="~/image/NoTask2.png" style="width:250px" />
                         <p style="display:inline" id="notaskMessage">目前在此專案沒有承接工作</p>
@@ -229,7 +230,7 @@
         </div>
     </div>
     @section script{
-        <script>
+    <script>
             $(document).ready(function () {
                 $('#nav-assignTask-tab').css('background-color', '#dddfe2');
                 var topTable = $("#mappingTable>tbody");
@@ -361,11 +362,17 @@
                         }
                     });
                 })
+
+                let orginvalue;
+                let backTaskBar;
                 $(".mb-3").on("click", 'img', function () //觀看成員目前在此專案承接工作/退回工作
                 {
+                    orginvalue = parseInt($(this).parent().parent().siblings(".card-footer").children().children().text().substr(0, 3));
+                    backTaskBar = $(this).parent().parent().siblings(".card-footer").children().children();
                     var EmployeeGUID = $(this).parent().data("tag");
                     var EmployeeName = $(this).parent().text();
                     var docfrag = $(document.createDocumentFragment());
+                    let TotalEstWorkTime = 0;
                     $("#exampleModalLabel").text(EmployeeName);
                      $.ajax({
                         url: '@Url.Action("GetProjectMemberTasks", "ProjectMember")',
@@ -383,6 +390,8 @@
                                     var cell3 = $("<td></td>").html('<a class="btn alert-warning" title="取消這項工作"><i class="fas fa-undo"></i></a>');
                                     var row = $("<tr></tr>").append([cell1, cell2, cell3]);
                                     docfrag.append(row);
+                                    TotalEstWorkTime += _task.EstWorkTime;
+                                    $("#workHours").text(TotalEstWorkTime);
                                 })
                                 $("#PMemberTable>tbody").html(docfrag);
                             }
@@ -395,11 +404,15 @@
                     });
                     $('#exampleModal').modal('show');
                 })
-
-                $("#exampleModal").on("click", 'a', function ()
+                
+                $("#exampleModal").on("click", 'a', function ()//Change LoadingBar and Cancel Tasks
                 {
+                    var thisWorkHours = parseInt($(this).parent().prev().text());
                     var thisrow = $(this).parents().eq(1);
                     var TaskGUID = $(this).parents().eq(1).children('td:first').data("tag");
+                    var BarValue = orginvalue -= (thisWorkHours*100/40);
+                    backTaskBar.width(BarValue + "%");
+                    backTaskBar.text(BarValue + "%");
                     $.ajax({
                         url: '@Url.Action("CancelTask", "ProjectMember")',
                         data: {"TaskGUID": TaskGUID},
@@ -433,22 +446,6 @@
                         }
                     });
                 })
-
-                let Ovalue;
-                let orginvalue;
-                let withoutpercent;
-                $(".progress").click(function ()
-                {
-                    orginvalue = $(this).children().text();
-                    withoutpercent = orginvalue.substr(0, 3);
-                    Ovalue = parseInt(withoutpercent);
-                    if (Ovalue > 0)
-                    {
-                        Ovalue -= 5;
-                        $(this).children().width(Ovalue + "%");
-                        $(this).children().text(Ovalue + "%");
-                    }
-                })
             })
             function exportExcel()
             {
@@ -460,7 +457,7 @@
             {
                 return $('<div/>').text(value).html();
             }
-        </script>
+    </script>
     }
 
     @section nav{
