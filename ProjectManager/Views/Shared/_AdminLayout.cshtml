@@ -166,16 +166,22 @@
                 <button class="dropupbtn" title="聊天訊息" type="button"><i class="fas fa-comments"></i></button>
                 <div class="dropup-content">
 
-
-                    <div class="chatbox-padding">
-                        <div class="card-header text-white">
-                            <h6>@EmployeeInfo.EmployeeName 專案聊天室</h6>
+                    <div class="chat-box" style="display: block;">
+                        <div class="chat-box-header">
+                            @EmployeeInfo.EmployeeName 專案聊天室
                         </div>
-                        <div class="chatbox-window" id="test">
-
+                        <div class="chat-box-body">
+                            <div class="chat-box-overlay">
+                            </div>
+                            <div class="chat-logs" id="test">
+                            </div>
                         </div>
-                        <input type="text" id="message" placeholder="請輸入文字" class="form-control" />
-                        <button id="sendmessage" class="btn btn-block">傳送訊息</button>
+                        <div class="chat-input">
+                            <form>
+                                <input type="text" id="message" autocomplete="off" class="form-control" placeholder="Send a message...">
+                                <button type="button" class="chat-submit" id="sendmessage"><i class="far fa-paper-plane"></i></button>
+                            </form>
+                        </div>
                     </div>
 
 
