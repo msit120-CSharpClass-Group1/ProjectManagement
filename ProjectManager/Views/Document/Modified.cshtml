@@ -10,6 +10,10 @@
 @section style
 {
     <style>
+        td {
+            text-align: center;
+        }
+
         .topnav a {
             cursor: pointer;
         }
@@ -30,6 +34,7 @@
     <thead>
         <tr>
             <td>版本</td>
+            <td>備註</td>
             <td>修改人員</td>
             <td>修改日期</td>
             <td>下載</td>
@@ -41,6 +46,7 @@
 
             <tr>
                 <td data-modifiedguid="@docm.ModifiedGUID"><p>@docm.Version</p></td>
+                <td style="width:400px"><p>@docm.Description</p></td>
                 <td><p>@docm.Employee.EmployeeName</p></td>
                 <td><p>@docm.ModifiedDate.Value</p></td>
                 <td style="width:75px"><a name="btn_download" class="btn btn-info download" href="~/Document/MDownLoad/@docm.ModifiedGUID">下載</a></td>

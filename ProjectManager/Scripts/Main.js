@@ -67,12 +67,6 @@
                 var taskName;
                 var taskTime = $('<span></span>').html(time.toLocaleDateString());
                 var task = $('<a></a>');
-                task.click(function () {
-                    $.post("/Home/SetCookiesForMyBoard/", { projectGUID: data.ProjectGUID },
-                        function () {
-                            location.href = "/MyBoard/Index/" + data.EmployeeGUID;
-                        });
-                });
                 if (data.IsRead !== true) {
                     task.addClass('IsRead');
                     _count++;
@@ -80,9 +74,26 @@
                 switch (data.Category) {
                     case 'Task':
                         taskName = $('<p></p>').html('「' + data.MangerName + '」在「' + data.ProjectName + '」分配了「' + data.TaskName + '」給你');
+                        task.click(function () {
+                            $.post("/Home/SetCookiesForMyBoard/", { projectGUID: data.ProjectGUID },
+                                function () {
+                                    location.href = "/MyBoard/Index/" + data.EmployeeGUID;
+                                });
+                        });
                         break;
                     case 'InvideProject':
                         taskName = $('<p></p>').html('「' + data.MangerName + '」邀請你加入了「' + data.ProjectName + '」專案');
+                        task.click(function () {
+                            $.post("/Home/SetCookiesForMyBoard/", { projectGUID: data.ProjectGUID },
+                                function () {
+                                    location.href = "/MyBoard/Index/" + data.EmployeeGUID;
+                                });
+                        });
+                        break;
+                    case 'Calendar':
+                        var _calendarDate = new Date(data.CalendarDate.match(/\d+/)[0] * 1);
+                        taskName = $('<p></p>').html('「' + _calendarDate.toLocaleDateString() + '」新增了「' + data.CalendarName + '」活動');
+                        task.attr('href', '/Calendar/Index/');
                         break;
                 }
                 task.append(taskName);

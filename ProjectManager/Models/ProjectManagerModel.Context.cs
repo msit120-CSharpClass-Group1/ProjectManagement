@@ -54,6 +54,7 @@ namespace ProjectManager.Models
         public virtual DbSet<TaskStatus> TaskStatus { get; set; }
         public virtual DbSet<WidgetDetail> WidgetDetail { get; set; }
         public virtual DbSet<Widgets> Widgets { get; set; }
+        public virtual DbSet<CalendarCategory> CalendarCategory { get; set; }
     
         public virtual int InsertProjectForDemo()
         {
