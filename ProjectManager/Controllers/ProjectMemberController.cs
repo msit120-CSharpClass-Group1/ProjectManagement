@@ -196,7 +196,8 @@ namespace ProjectManager.Controllers
                                 分配工作時間 = tasks.AssignedDate,
                                 是否已讀 = tasks.IsRead
                             };
-            gv.DataSource = ExcelData.ToList();            
+            gv.DataSource = ExcelData.ToList();
+            gv.DataBind();
             Response.ClearContent();
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment; filename="+ ProjectName + "_工作分配總表.xls");
