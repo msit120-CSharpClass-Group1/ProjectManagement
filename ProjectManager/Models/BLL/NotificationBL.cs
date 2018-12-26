@@ -12,6 +12,8 @@ namespace ProjectManager.Models.BLL
         {
             IRepository<Tasks> tasks = new Repository<Tasks>();
             IRepository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
+            IRepository<Calendar> calendars = new Repository<Calendar>();
+
 
             List<NotificationVM> _GetNotifications = new List<NotificationVM>();
             var _tasks = tasks.GetCollections()
@@ -20,6 +22,9 @@ namespace ProjectManager.Models.BLL
             var _projectMember = projectMembers.GetCollections()
                 .Where(n => n.EmployeeGUID == _members.EmployeeGUID)
                 .Select(n => new { n.ProjectGUID, n.Project.ProjectName, n.Project.Employee1.EmployeeName, n.IsRead, n.InvideDate });
+            var _calendars = calendars.GetCollections()
+                .Where(n => n.Members.EmployeeGUID == _members.EmployeeGUID&& n.CategoryID ==2)
+                .Select(n => new { n.Subject, n.IsRead, n.Start ,n.CreateDate});
             foreach (var t in _tasks)
             {
                 NotificationVM vm = new NotificationVM();
@@ -45,6 +50,18 @@ namespace ProjectManager.Models.BLL
                 vm.EmployeeName = _members.Employee.EmployeeName;
                 vm.EmployeeGUID = (Guid)_members.EmployeeGUID;
                 vm.IsRead = (bool)pb.IsRead;
+                _GetNotifications.Add(vm);
+            }
+            foreach (var c in _calendars)
+            {
+                NotificationVM vm = new NotificationVM();
+                vm.NotificationDate = (DateTime)c.CreateDate;
+                vm.Category = "Calendar";
+                vm.CalendarDate = c.Start;
+                vm.CalendarName = c.Subject;
+                vm.EmployeeName = _members.Employee.EmployeeName;
+                vm.EmployeeGUID = (Guid)_members.EmployeeGUID;
+                vm.IsRead = (bool)c.IsRead;
                 _GetNotifications.Add(vm);
             }
             return _GetNotifications;
