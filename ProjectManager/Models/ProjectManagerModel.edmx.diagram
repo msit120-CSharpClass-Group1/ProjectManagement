@@ -73,7 +73,7 @@
         <AssociationConnector Association="ProjectManagementModel.FK_Tasks_TaskStatus" ManuallyRouted="false" />
         <AssociationConnector Association="ProjectManagementModel.FK_Widgets_WidgetDetail" ManuallyRouted="false" />
         <AssociationConnector Association="ProjectManagementModel.ProjectRelationDept" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="ProjectManagementModel.CalendarCategory" Width="1.5" PointX="9.625" PointY="12.875" />
+        <EntityTypeShape EntityType="ProjectManagementModel.CalendarCategory" Width="1.875" PointX="9.625" PointY="12.875" />
         <AssociationConnector Association="ProjectManagementModel.FK_Calendar_CalendarCategory" />
       </Diagram>
     </edmx:Diagrams>
