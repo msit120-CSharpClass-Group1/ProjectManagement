@@ -18,6 +18,9 @@
           <Property Name="ThemeColor" Type="nvarchar" MaxLength="10" />
           <Property Name="IsFullDay" Type="bit" Nullable="false" />
           <Property Name="EventID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsRead" Type="bit" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="CategoryID" Type="int" />
         </EntityType>
         <EntityType Name="Dashboard">
           <Key>
@@ -44,7 +47,7 @@
           <Key>
             <PropertyRef Name="DocumentGUID" />
           </Key>
-          <Property Name="DocumentID" Type="int" Nullable="false" />
+          <Property Name="DocumentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DocumentGUID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="DocumentCategory" Type="int" />
           <Property Name="ProjectGUID" Type="uniqueidentifier" />
@@ -1044,6 +1047,9 @@
           <Property Name="IsFullDay" Type="Boolean" Nullable="false" />
           <Property Name="EventID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Members" Relationship="Self.FK_Calendar_Members" FromRole="Calendar" ToRole="Members" />
+          <Property Name="IsRead" Type="Boolean" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CategoryID" Type="Int32" />
         </EntityType>
         <EntityType Name="Dashboard">
           <Key>
@@ -2109,6 +2115,9 @@
           <EntitySetMapping Name="Calendar">
             <EntityTypeMapping TypeName="ProjectManagementModel.Calendar">
               <MappingFragment StoreEntitySet="Calendar">
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
                 <ScalarProperty Name="CalendarGUID" ColumnName="CalendarGUID" />
                 <ScalarProperty Name="MemberGUID" ColumnName="MemberGUID" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />

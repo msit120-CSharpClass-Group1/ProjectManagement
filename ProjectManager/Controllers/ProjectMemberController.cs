@@ -99,6 +99,8 @@ namespace ProjectManager.Controllers
                 {
                     var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
                     var LastRow = Convert.ToInt32(Request.Form["LastRow"]);
+                    List<Tasks> tasklist = new List<Tasks>();
+                    List<Models.Calendar> eventlist = new List<Models.Calendar>();
 
                     for (int i = FirstRow; i <= LastRow; i++)
                     {
@@ -111,7 +113,7 @@ namespace ProjectManager.Controllers
                             _tasks.AssignedDate = DateTime.Now;
                             _tasks.TaskStatusID = 2;
                             _tasks.IsRead = false;
-                            tasks.Update(_tasks);
+                            tasklist.Add(_tasks);
                             Guid memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == EmpGUID).Select(m => m.MemberGUID).Single();
                             Models.Calendar cal = new Models.Calendar();
                             cal.MemberGUID = memberGUID;
@@ -121,9 +123,11 @@ namespace ProjectManager.Controllers
                             cal.Description = _tasks.Description;
                             cal.CalendarGUID = Guid.NewGuid();
                             cal.ThemeColor = "Pink";
-                            calRe.Add(cal);
+                            eventlist.Add(cal);
                         }
                     }
+                    tasks.UpdateList(tasklist);
+                    calRe.AddList(eventlist);
                 }
             }
             catch { }
