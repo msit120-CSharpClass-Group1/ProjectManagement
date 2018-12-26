@@ -210,11 +210,12 @@ namespace ProjectManager.Controllers
             {
                 return Json("上傳失敗：檔案沒有內容！", JsonRequestBehavior.AllowGet);
             }
-            string filePath = Path.Combine(Server.MapPath("/Document/Excel/"), file.FileName);
-            if (!Directory.Exists(filePath))
+            string folderPath = Server.MapPath("/Document/Excel");
+            string filePath = Path.Combine(folderPath, file.FileName);
+            if (!Directory.Exists(folderPath))
             {
-                Directory.CreateDirectory(filePath);
-            }            
+                Directory.CreateDirectory(folderPath);
+            }
             file.SaveAs(filePath);
 
             return Json(file.FileName.ToString(), JsonRequestBehavior.AllowGet);
