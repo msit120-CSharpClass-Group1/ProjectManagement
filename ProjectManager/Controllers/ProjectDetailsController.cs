@@ -8,6 +8,9 @@ using System.Windows;
 using System.Web;
 using System.Web.Mvc;
 using static System.Net.Mime.MediaTypeNames;
+using System.IO;
+using LinqToExcel;
+using System.Web.Configuration;
 
 namespace ProjectManager.Controllers
 {
@@ -195,6 +198,46 @@ namespace ProjectManager.Controllers
             task.AutoWorkTime = task.GetAutoEstWorkTime(System.Web.HttpContext.Current.Application["Holidays"] as HolidaysVM);
             task.EstWorkTime = task.AutoWorkTime;
             return PartialView(task);
+        }
+        [HttpPost]
+        public ActionResult ImportExcel(HttpPostedFileBase file)
+        {   
+            if (file == null)
+            {
+                return Json("上傳失敗：沒有檔案！", JsonRequestBehavior.AllowGet);
+            }
+            if (file.ContentLength <= 0)
+            {
+                return Json("上傳失敗：檔案沒有內容！", JsonRequestBehavior.AllowGet);
+            }
+            string filePath = Path.Combine(Server.MapPath("/Document/Excel/"), file.FileName);
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }            
+            file.SaveAs(filePath);
+
+            return Json(file.FileName.ToString(), JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult InsertExcelToDB(string fileName)
+        {
+            //if (file.ContentLength > 0)
+            //{
+            //    Stream streamfile = file.InputStream; 
+
+            var excelFile = new ExcelQueryFactory(fileName);
+            //excelFile.AddMapping<Tasks>(x => x.TaskID, "工作項目編號");
+            excelFile.AddMapping<Tasks>(x => x.TaskName, "工作項目名稱");
+            excelFile.AddMapping<Tasks>(x => x.Tasks2.TaskName, "父工作項目名稱");
+            excelFile.AddMapping<Tasks>(x => x.EstStartDate, "預計開始時間");
+            excelFile.AddMapping<Tasks>(x => x.EstEndDate, "預計結束時間");
+            excelFile.AddMapping<Tasks>(x => x.EstEndDate, "預計工期");
+            excelFile.AddMapping<Tasks>(x => x.EstEndDate, "說明");
+
+
+            //}
+            return Json("success", JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult InsertTask(Tasks task)
