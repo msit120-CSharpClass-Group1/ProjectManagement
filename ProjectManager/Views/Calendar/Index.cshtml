@@ -204,7 +204,9 @@
                             EndDay: event.end != null ? event.end.format('MM/DD/YYYY HH:mm A') : null,
                             Description: event.description,
                             ThemeColor: event.color,
-                            IsFullDay: event.allDay
+                            IsFullDay: event.allDay,
+                            IsRead: true,
+                            CreateDate: Date.now()
                         };
                         SaveEvent(data);
                     }
@@ -346,7 +348,10 @@
                     EndDay: $('#chkIsFullDay').is(':checked') ? null : $('#txtEnd').val().trim(),
                     Description: $('#txtDescription').val(),
                     ThemeColor: $('#ddThemeColor').val(),
-                    IsFullDay: $('#chkIsFullDay').is(':checked')
+                    IsFullDay: $('#chkIsFullDay').is(':checked'),
+                    IsRead: true,
+                    CategoryID: 1,
+                    CreateDate: Date.now()
                 }
 
                 // call function for submit data to the server
@@ -405,17 +410,20 @@
                     Description: $('#txtDescription').val(),
                     ThemeColor: $('#ddThemeColor').val(),
                     IsFullDay: $('#chkIsFullDay').is(':checked'),
-                    ProjectGUID: ProjectGUID
+                    ProjectGUID: ProjectGUID,
+                    IsRead: true,
+                    CategoryID: 2,
+                    CreateDate: Date.now()
                 }
 
                 $.ajax({
                     url: '@Url.Action("SaveEventToAll", "Calendar")',
                     data: data,
                     success: function (data) {
-                        alert(data)
+                        location.reload();
                     }
                 });
-                location.reload();
+                //location.reload();
             })
         });
     </script>
