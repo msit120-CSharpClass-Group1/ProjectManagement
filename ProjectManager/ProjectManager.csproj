@@ -410,6 +410,7 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DataObject\AllowCrossSiteJsonAttribute.cs" />
+    <Compile Include="Models\DataObject\ExcelTasks.cs" />
     <Compile Include="Models\DataObject\Grouped.cs" />
     <Compile Include="Models\DataObject\StoredProcedureForDemo.cs" />
     <Compile Include="Models\Department.cs">
