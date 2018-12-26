@@ -88,7 +88,7 @@
             function RedirectToMyBoard() {
                 $.post("@Url.Action("SetCookiesForMyBoard", "Home")", { projectGUID: $(this).attr("data-projectGUID") },
                     function (userGUID) {
-                        location.href = "/MyBoard/Index/" + userGUID;
+                        location.href = "@Url.Action("Index", "MyBoard")/?id=" + userGUID;
                     });
             }
             $('#ProjectList').change(LoadGantt);
