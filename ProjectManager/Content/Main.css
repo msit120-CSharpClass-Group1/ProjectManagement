@@ -469,20 +469,6 @@ dropdown-btn > a {
     .content-header > .breadcrumb > li + li:before {
         content: '>\00a0';
     }
-
-.chatbox-padding {
-    padding: 5px;
-    background-color: darkcyan;
-    border-radius:10px;
-}
-
-.chatbox-window {
-    height: 250px;
-    width: 300px;
-    overflow: auto;
-    background-color: whitesmoke;
-}
-
     
 
 @media (max-width: 991px) {
@@ -510,6 +496,7 @@ dropdown-btn > a {
         border-radius: 10px;
         cursor: pointer;
     }
+
     .rightOpenbtn {
         display: block;
         position: fixed;
@@ -529,6 +516,7 @@ dropdown-btn > a {
         line-height: 32px;
         transition: display 5s;
     }
+
     .dropdown-content a {
         color: black;
         padding: 8px 16px;
@@ -544,14 +532,16 @@ dropdown-btn > a {
 
     .dropdown-content span {
         font-size: 12px;
-        margin-top:3px;
+        margin-top: 3px;
     }
+
     .user-image {
         width: 22px;
         height: 22px;
         margin-right: 10px;
         margin-top: -2px;
     }
+
     .label {
         position: absolute;
         top: 5px;
@@ -563,11 +553,12 @@ dropdown-btn > a {
         border-radius: 25%;
         background-color: red;
     }
+
     .navdropbtn {
         padding: 10px;
         font-size: 14px;
-
     }
+
     .right-sidenav {
         height: auto;
     }
@@ -593,12 +584,12 @@ dropdown-btn > a {
         padding: 8px 8px 8px 20px;
         font-size: 14px;
     }
+
     .dropdown-btn {
         padding: 8px 8px 8px 20px;
-        
         font-size: 14px;
-        
     }
+
     body > .left-sidenav span {
         font-size: 14px;
     }
@@ -624,13 +615,12 @@ dropdown-btn > a {
         text-decoration: none;
         font-size: 16px;
     }
+
     .top-navbar {
-        
         max-height: 40px;
-        
     }
+
     .leftOpenbtn {
-        
         height: 40px;
         width: 40px;
         padding: 10px;
@@ -638,3 +628,95 @@ dropdown-btn > a {
         font-size: 14px;
     }
 }
+
+/*-------------聊天室----------------*/
+.chat-box {
+    border-radius: 10px;
+    background: #efefef;
+    width: 300px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26 );
+    position: fixed;
+    bottom: 53px;
+    right: 10px;
+}
+.chat-box-header {
+    background: darkcyan /*#5A5EB9*/;
+    height: 65px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color: white;
+    text-align: center;
+    font-size: 18px;
+    padding-top: 20px;
+}
+.chat-box-toggle {
+    float: right;
+    margin-right: 15px;
+    cursor: pointer;
+}
+.chat-logs {
+    padding: 15px;
+    height: 370px;
+    overflow-y: scroll;
+}
+#message {
+    background: #f4f7f9;
+    width: 100%;
+    position: relative;
+    height: 47px;
+    padding-top: 10px;
+    padding-right: 50px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    border: none;
+    resize: none;
+    outline: none;
+    color: #888;
+    border-top: none;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    overflow: hidden;
+}
+.chat-submit {
+    position: absolute;
+    bottom: 5px;
+    right: 0;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    border-radius: 50%;
+    color: #676780;
+    width: 35px;
+    height: 35px;
+}
+.chat-input > form {
+    margin-bottom: 0;
+}
+#chat-overlay {
+    background: rgba(255,255,255,0.1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: none;
+}
+.chat-msg {
+    display:flex; 
+}
+.cm-msg-text {
+    color: #666;
+    max-width: 75%;
+    margin-left: 10px;
+    word-wrap: break-word;
+    border-radius: 6px;
+    background-color: rgba(204, 217, 230, 0.5);
+    margin-bottom: 8px;
+    padding: 0 5px;
+}
+
+    
+   
