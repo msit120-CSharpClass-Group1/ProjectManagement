@@ -121,26 +121,25 @@
                 {
                     myCostsByDepartmentsChart.data = datas;
                     myCostsByDepartmentsChart.update();
-                });
 
-                $.getJSON("@Url.Action("OverallRates", "Cost")", data, function (datas)
-                {
-                    myOverallRatesChart.data = datas;
-                    myOverallRatesChart.update();
-                });
+                    $.getJSON("@Url.Action("OverallRates", "Cost")", data, function (datas)
+                    {
+                        myOverallRatesChart.data = datas;
+                        myOverallRatesChart.update();
 
-                $.getJSON("@Url.Action("CostsByCategories", "Cost")", data, function (datas)
-                {
-                    myCostsByCatsChart.data = datas;
-                    myCostsByCatsChart.update();
-                });
+                        $.getJSON("@Url.Action("CostsByCategories", "Cost")", data, function (datas)
+                        {
+                            myCostsByCatsChart.data = datas;
+                            myCostsByCatsChart.update();
 
-                $.getJSON("@Url.Action("SumOfResources", "Cost")", data, function (datas)
-                {
-                    SumOfResourcesChart.data = datas;
-                    SumOfResourcesChart.update();
+                            $.getJSON("@Url.Action("SumOfResources", "Cost")", data, function (datas)
+                            {
+                                SumOfResourcesChart.data = datas;
+                                SumOfResourcesChart.update();
+                            });
+                        });
+                    });
                 });
-
             }
 
             function CostsByDepartmentsChart(callback)
