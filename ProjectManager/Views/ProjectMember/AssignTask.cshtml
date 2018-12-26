@@ -9,10 +9,6 @@
 {
     <link href="~/Content/WorkloadBar.css" rel="stylesheet" />
     <style>
-        /*div {
-            border: 0.5px solid pink
-        }*/
-
         #projectMemberDivL2 {
             width: 180px;
             float: left;
@@ -232,7 +228,7 @@
     @section script{
     <script>
             $(document).ready(function () {
-                $('#nav-assignTask-tab').css('background-color', '#dddfe2');
+                $('#nav-taskDistribute-tab').css('background-color', '#dddfe2');
                 var topTable = $("#mappingTable>tbody");
                 var submitCount = 0;
                 var flag = true;
@@ -410,7 +406,13 @@
                     var thisWorkHours = parseInt($(this).parent().prev().text());
                     var thisrow = $(this).parents().eq(1);
                     var TaskGUID = $(this).parents().eq(1).children('td:first').data("tag");
-                    var BarValue = orginvalue -= (thisWorkHours*100/40);
+                    var BarValue = orginvalue -= (thisWorkHours * 100 / 40);
+                    if (BarValue < 100) {
+                        backTaskBar.removeClass().addClass("progress-bar progress-bar-striped bg-success");
+                    }
+                    else if (BarValue >= 100 && BarValue <= 200){
+                        backTaskBar.removeClass().addClass("progress-bar progress-bar-striped bg-warning");
+                    }
                     backTaskBar.width(BarValue + "%");
                     backTaskBar.text(BarValue + "%");
                     $.ajax({
