@@ -48,178 +48,190 @@
         }
     </style>
 }
-@using (Html.BeginForm("ExportToExcel", "ProjectMember", FormMethod.Post))
+
+@*@using (Html.BeginForm("ExportToExcel", "ProjectMember", FormMethod.Post))
+       {
+           <button class="btn btn-outline-dark" id="ExportExcel"><i class="fas fa-file-excel"></i>匯出分配總表</button>
+    }*@
+
+@using (Html.BeginForm("ExportExcel", "ProjectMember", FormMethod.Post, new { name = "myForm" }))
 {
-    <button class="btn btn-outline-dark" id="ExportExcel"><i class="fas fa-file-excel"></i>匯出Excel</button>
+    @Html.Hidden("hHtml")
 }
-    <form method="post" action="~/ProjectMember/EditTaskM" class="form-horizontal" style="margin:auto">
-        <div class="row">
-            <div class="col-3">
-                <div class="" style="margin-top:60px">
-                    <div class="flip"><font color="aliceblue">查看分配狀態</font></div>
-                    <div class="panel">
-                        <table class="table table-bordered" id="mappingTable">
-                            <thead>
-                                <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
-                            </thead>
-                            <tbody>
-                                <!--RunIN-->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-7" id="projectMemberDivL1">
-                @foreach (var _projectMember in Model)
-                {
-                    <div class="card border-primary mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
-                        <div class="card-header bg-transparent border-success" style="width:180px"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px;cursor:pointer" />@_projectMember.Employee.EmployeeName </p></div>
-                        <div class="card-body text-primary droppable" style="height:50px;border-style:dashed;">
-                            <!--TaskArea Start-->
-                            <!--TaskArea End-->
-                        </div>
-                        <div class="card-footer bg-transparent border-success">
-                            <h6>工作負荷</h6>
-                            @{
-                                double rawercent;
-                                bool flag = true;
-                                foreach (var item in ViewBag.Workload as IEnumerable<Group<string, DisplayWorkloadVM>>)
-                                {
-                                    int? valid = item.Sum;
-                                    int total = 40;
-
-                                    rawercent = (double)(valid * 100) / total;
-                                    if (valid > total)
-                                    {
-                                        valid = (int)valid - total;
-                                    }
-
-                                    double percent = (double)(valid * 100) / total;
-
-                                    if (_projectMember.Employee.EmployeeName == item.Key)
-                                    {
-
-                                        if (rawercent >= 100 && rawercent < 200)
-                                        {
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
-                                            </div>
-                                            flag = false;
-                                        }
-                                        else if (rawercent >= 200)
-                                        {
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped bg-danger" style="width:@percent%;">@rawercent %</div>
-                                            </div>
-                                            flag = false;
-                                        }
-                                        else
-                                        {
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
-                                            </div>
-                                            flag = false;
-                                        }
-                                    }
-                                }
-                                if (flag)
-                                {
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-striped bg-success" style="width:0%;"><font color="red">目前無承接工作</font></div>
-                                    </div>
-                                }
-                            }
-                        </div>
-                    </div>
-                }
-            </div>
-            @section asideRight{
-                <!--TaskList Start-->
-                <h3 class="asidetitle">工作項目</h3>
-                <div style="margin:20px;overflow-y: scroll;height:300px">
-                    <ul class="list-group" id="taskitem">
-                        @foreach (var _task in (IEnumerable<Tasks>)ViewBag.LoadTask)
-                        {
-                            <li class="list-group-item draggable" data-tag="@_task.TaskName" data-tag2="@_task.TaskGUID" title="@_task.TaskName">@_task.TaskName</li>
-                        }
-                    </ul>
-                </div>
-                <!--TaskList End-->
-                <h3 class="asidetitle">工作描述</h3>
-                <div class="col-sm">
-                    <div id="taskdescription" style="height:200px;margin:10px; width:230px;background-color:lightcyan">
-
-                    </div>
-                    <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
-                    <input type="hidden" id="rowcount" name="TotalRow" />
-                    <input type="hidden" id="firstrow" name="FirstRow" />
-                    <input type="hidden" id="lastrow" name="LastRow" />
-                    <input type="button" class="btn btn-danger" id="reset" value="重新分配">
-                </div>
-            </div>
-            }
-        </form>
-
-        <!-- Modal LeaveMessage-->
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="exampleModalLongTitle">員工姓名</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form method="post" action="~/ProjectMember/LeaveMessageTag" class="form-horizontal">
-                        <input type="hidden" id="HideTaskGUID" name="TaskGUID" />
-                        <div class="modal-body">
-                            <div class="container">
-                                <textarea placeholder="輸入留言" id="text" name="text" rows="5" style="overflow: hidden; word-wrap: break-word; resize: none; height: 160px; width:400px; "></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
-                            <button type="submit" class="btn btn-primary">確定留言</button>
-                        </div>
-                    </form>
+@using (Html.BeginForm("ExportToExcel", "ProjectMember", FormMethod.Post,new {hidden="hidden"}))
+{
+   <button class="btn btn-outline-dark" id="ExportExcel"><i class="fas fa-file-excel"></i>匯出分配總表</button>
+}
+<button type="button" class="btn btn-light" id="ExportExcel" onclick="exportExcel()" style="margin:10px"><i class="fas fa-file-excel"></i>匯出簡易分配表</button>
+<button class="btn btn-outline-dark" id="ExportExcelalter"><i class="fas fa-file-excel"></i>匯出分配總表</button>
+<form method="post" action="~/ProjectMember/EditTaskM" class="form-horizontal" style="margin:auto">
+    <div class="row">
+        <div class="col-3">
+            <div class="" style="margin-top:60px">
+                <div class="flip"><font color="aliceblue">查看分配狀態</font></div>
+                <div class="panel">
+                    <table class="table table-bordered" id="mappingTable">
+                        <thead>
+                            <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
+                        </thead>
+                        <tbody>
+                            <!--RunIN-->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <!--ProjectMember Detail Modal-->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+
+        <div class="col-7" id="projectMemberDivL1">
+            @foreach (var _projectMember in Model)
+            {
+                <div class="card border-primary mb-3" style="max-width: 18rem;" id="projectMemberDivL2">
+                    <div class="card-header bg-transparent border-success" style="width:180px"><p data-tag=@_projectMember.Employee.EmployeeGUID><img src="~/image/avatar.png" class="rounded-circle img-thumbnail" style="width:50px;cursor:pointer" />@_projectMember.Employee.EmployeeName </p></div>
+                    <div class="card-body text-primary droppable" style="height:50px;border-style:dashed;">
+                        <!--TaskArea Start-->
+                        <!--TaskArea End-->
                     </div>
-                    <div class="modal-body" id="memberModalBody">
-                        <table id="PMemberTable" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>此專案所承接工作</th>
-                                    <th>工作預計工時</th>
-                                    <th>退回工作</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <div id="notaskpic" hidden="hidden">
-                            <img src="~/image/NoTask2.png" style="width:250px" />
-                            <p style="display:inline" id="notaskMessage">目前在此專案沒有承接工作</p>
+                    <div class="card-footer bg-transparent border-success">
+                        <h6>工作負荷</h6>
+                        @{
+                            double rawercent;
+                            bool flag = true;
+                            foreach (var item in ViewBag.Workload as IEnumerable<Group<string, DisplayWorkloadVM>>)
+                            {
+                                int? valid = item.Sum;
+                                int total = 40;
+
+                                rawercent = (double)(valid * 100) / total;
+                                if (valid > total)
+                                {
+                                    valid = (int)valid - total;
+                                }
+
+                                double percent = (double)(valid * 100) / total;
+
+                                if (_projectMember.Employee.EmployeeName == item.Key)
+                                {
+
+                                    if (rawercent >= 100 && rawercent < 200)
+                                    {
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped bg-warning" style="width:@percent%;">@rawercent %</div>
+                                        </div>
+                                        flag = false;
+                                    }
+                                    else if (rawercent >= 200)
+                                    {
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped bg-danger" style="width:@percent%;">@rawercent %</div>
+                                        </div>
+                                        flag = false;
+                                    }
+                                    else
+                                    {
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped bg-success" style="width:@percent%;">@percent %</div>
+                                        </div>
+                                        flag = false;
+                                    }
+                                }
+                            }
+                            if (flag)
+                            {
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped bg-success" style="width:0%;"><font color="red">目前無進行中工作</font></div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        @section asideRight{
+            <!--TaskList Start-->
+            <h3 class="asidetitle">工作項目</h3>
+            <div style="margin:20px;overflow-y: scroll;height:300px">
+                <ul class="list-group" id="taskitem">
+                    @foreach (var _task in (IEnumerable<Tasks>)ViewBag.LoadTask)
+                    {
+                        <li class="list-group-item draggable" data-tag="@_task.TaskName" data-tag2="@_task.TaskGUID" title="@_task.TaskName">@_task.TaskName</li>
+                    }
+                </ul>
+            </div>
+            <!--TaskList End-->
+            <h3 class="asidetitle">工作描述</h3>
+            <div class="col-sm">
+                <div id="taskdescription" style="height:200px;margin:10px; width:230px;background-color:lightcyan">
+
+                </div>
+                <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
+                <input type="hidden" id="rowcount" name="TotalRow" />
+                <input type="hidden" id="firstrow" name="FirstRow" />
+                <input type="hidden" id="lastrow" name="LastRow" />
+                <input type="button" class="btn btn-danger" id="reset" value="重新分配">
+            </div>
+        </div>
+        }
+    </form>
+
+    <!-- Modal LeaveMessage-->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLongTitle">員工姓名</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" action="~/ProjectMember/LeaveMessageTag" class="form-horizontal">
+                    <input type="hidden" id="HideTaskGUID" name="TaskGUID" />
+                    <div class="modal-body">
+                        <div class="container">
+                            <textarea placeholder="輸入留言" id="text" name="text" rows="5" style="overflow: hidden; word-wrap: break-word; resize: none; height: 160px; width:400px; "></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
+                        <a class="btn btn-primary" id="leaveMessaageBtn">確定留言</a>
                     </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--ProjectMember Detail Modal-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="memberModalBody">
+                    <table id="PMemberTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>此專案所承接工作</th>
+                                <th>工作預計工時</th>
+                                <th>退回工作</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <div id="notaskpic" hidden="hidden">
+                        <img src="~/image/NoTask2.png" style="width:250px" />
+                        <p style="display:inline" id="notaskMessage">目前在此專案沒有承接工作</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
                 </div>
             </div>
         </div>
-        @section script{
-            <script>
+    </div>
+    @section script{
+        <script>
             $(document).ready(function () {
                 var topTable = $("#mappingTable>tbody");
                 var submitCount = 0;
@@ -399,25 +411,41 @@
                         }
                     });
                 })
-                @*$("#ExportExcel").click(function ()
-                {
-                     $.ajax({
-                        url: '@Url.Action("ExportToExcel", "ProjectMember")',
-                        data: {},
-                        success: function (data)
-                        {
-                            alert("匯出成功");
-                        }
-                    });
-                })*@
                 $("#submitBtn").click(function ()
                 {
                     $(this).text("分配中");
                 })
-            })
-            </script>
-        }
+                $("#ExportExcelalter").click(function ()
+                {
+                    $("#ExportExcel").click();
+                })
 
-        @section nav{
-            @Html.Partial("_PartialPageNav", "Shared")
-        }
+                $(".modal-footer").on("click", 'a', function ()
+                {
+                    var TaskGUID = $(this).parent().siblings("#HideTaskGUID").val();
+                    $.ajax({
+                        url: '@Url.Action("LeaveMessageTag", "ProjectMember")',
+                        data: {"TaskGUID": TaskGUID},
+                        success: function (data)
+                        {
+                            
+                        }
+                    });
+                })
+            })
+            function exportExcel()
+            {
+                var sHtml = htmlEncode($("#mappingTable")[0].outerHTML);
+                $("input[name='hHtml']").val(sHtml);
+                $("form[name='myForm']").submit();
+            }
+            function htmlEncode(value)
+            {
+                return $('<div/>').text(value).html();
+            }
+        </script>
+    }
+
+    @section nav{
+        @Html.Partial("_PartialPageNav", "Shared")
+    }
