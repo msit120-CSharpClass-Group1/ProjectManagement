@@ -94,23 +94,23 @@
                     <!--runin-->
                     @foreach (var _emp in (List<Employee>)ViewBag.FirstEmpList)
                     {
-                        <div class="alert alert-primary" role="alert" id="empDiv">
-                            @if (_emp.JobTitle.TitleName != "專案經理")
-                            {
-                                <img src="~/image/avatar.png" class="rounded-circle" />
-                            }
-                            else
-                            {
-                                <img src="~/image/leader.png" class="rounded-circle" />
-                            }
-                            <p style="display:inline;margin:45px;">@_emp.EmployeeName</p>
-                            <input type="checkbox" class="ckbox1" style="float:right;" value="@_emp.EmployeeGUID" />
-                            @if (_emp.ProjectMembers.Average(p => p.PMscore) != null)
-                            {
-                                <h4 style="display:inline;float:right"><span class="badge badge-secondary">@_emp.ProjectMembers.Average(p => p.PMscore)</span></h4>
-                            }
-                            @*<h4>@_emp.JobTitle.TitleName</h4>*@
-                        </div>
+                    <div class="alert alert-primary" role="alert" id="empDiv">
+                        @if (_emp.JobTitle.TitleName != "專案經理")
+                        {
+                            <img src="~/image/avatar.png" class="rounded-circle" />
+                        }
+                        else
+                        {
+                            <img src="~/image/leader.png" class="rounded-circle" />
+                        }
+                        <p style="display:inline;margin:45px;">@_emp.EmployeeName</p>
+                        <input type="checkbox" class="ckbox1" style="float:right;" value="@_emp.EmployeeGUID" />
+                        @if (_emp.ProjectMembers.Average(p => p.PMscore) != null)
+                        {
+                            <h4 style="display:inline;float:right"><span class="badge badge-light"> @_emp.ProjectMembers.Average(p => p.PMscore)</span></h4>
+                        }
+                        @*<h6 style="display:inline">@_emp.JobTitle.TitleName</h6>*@
+                    </div>
                     }
                 </div>
             </div>
@@ -142,6 +142,7 @@
 <script>
     $(document).ready(function ()
     {
+        $('#nav-invitemember-tab').css('background-color', '#dddfe2');
         var selecter = $("#sel1");
         var flag = false;
         selecter.change(function () //選擇部門事件
