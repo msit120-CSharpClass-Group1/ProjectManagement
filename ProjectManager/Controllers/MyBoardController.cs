@@ -144,5 +144,12 @@ namespace ProjectManager.Controllers
             return Json(td.GetCollections().Where(x => x.TaskGUID == cardID).Count());
         }
 
+        public ActionResult ExpiredTask(Guid id)
+        {
+            BoardVM VM = new BoardVM();
+            VM.Task = t.Find(id);
+            return Json(VM.Task.EstEndDate);
+        }
+
     }
 }
