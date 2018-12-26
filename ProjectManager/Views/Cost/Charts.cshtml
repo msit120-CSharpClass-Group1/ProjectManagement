@@ -32,28 +32,34 @@
     </form>
 </div>
 
-<div id="ChartContainer" class="hide px-5">
-    <div class="row mt-3 mb-3">
-        <div class="col-xl-6 col-lg-12">
-            <div id="CostsByDepartmentsContainer" class="chart-container bg-light p-3">
-                <canvas id="CostsByDepartmentsChart"></canvas>
-            </div>
-        </div>
-        <div class="col-xl-6 col-lg-12">
-            <div id="OverallRatesContainer" class="chart-container bg-light p-3">
-                <canvas id="OverallRatesChart"></canvas>
-            </div>
-        </div>
+
+<div class="col" style="min-height:500px">
+    <div id="ajaxloader">
+        <img src="~/image/ajax-loader.gif" style="width: 40px; position: absolute; left: calc(50% - 20px); top:calc(50% - 20px);" />
     </div>
-    <div class="row mb-3">
-        <div class="col-xl-6 col-lg-12">
-            <div id="CostsByCatsContainer" class="chart-container bg-light p-3">
-                <canvas id="CostsByCatsChart"></canvas>
+    <div id="ChartContainer" class="hide px-5">
+        <div class="row mt-3 mb-3">
+            <div class="col-xl-6 col-lg-12">
+                <div id="CostsByDepartmentsContainer" class="chart-container bg-light p-3">
+                    <canvas id="CostsByDepartmentsChart"></canvas>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-12">
+                <div id="OverallRatesContainer" class="chart-container bg-light p-3">
+                    <canvas id="OverallRatesChart"></canvas>
+                </div>
             </div>
         </div>
-        <div class="col-xl-6 col-lg-12">
-            <div id="SumOfResourcesChartContainer" class="chart-container bg-light p-3">
-                <canvas id="SumOfResourcesChart"></canvas>
+        <div class="row mb-3">
+            <div class="col-xl-6 col-lg-12">
+                <div id="CostsByCatsContainer" class="chart-container bg-light p-3">
+                    <canvas id="CostsByCatsChart"></canvas>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-12">
+                <div id="SumOfResourcesChartContainer" class="chart-container bg-light p-3">
+                    <canvas id="SumOfResourcesChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -106,6 +112,7 @@
 
             SumOfResourcesChart(CostsByCatsChart(OverallRatesChart(CostsByDepartmentsChart(function ()
             {
+                $("#ajaxloader").hide();
                 $("#ChartContainer").fadeIn();
             }))));
 
@@ -121,18 +128,21 @@
                 {
                     myCostsByDepartmentsChart.data = datas;
                     myCostsByDepartmentsChart.update();
+
                 });
 
                 $.getJSON("@Url.Action("OverallRates", "Cost")", data, function (datas)
                 {
                     myOverallRatesChart.data = datas;
                     myOverallRatesChart.update();
+
                 });
 
                 $.getJSON("@Url.Action("CostsByCategories", "Cost")", data, function (datas)
                 {
                     myCostsByCatsChart.data = datas;
                     myCostsByCatsChart.update();
+
                 });
 
                 $.getJSON("@Url.Action("SumOfResources", "Cost")", data, function (datas)
@@ -140,7 +150,6 @@
                     SumOfResourcesChart.data = datas;
                     SumOfResourcesChart.update();
                 });
-
             }
 
             function CostsByDepartmentsChart(callback)

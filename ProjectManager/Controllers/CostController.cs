@@ -353,48 +353,38 @@ namespace ProjectManager.Controllers
 
         public ActionResult SumOfResources(Guid? DepartmentGUID, Guid? ProjectGUID)
         {
-
             ChartData<MultiColorChartDataset<int>> chartData = new ChartData<MultiColorChartDataset<int>>();
+            List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
             List<Project> projects = new List<Project>();
             List<Tasks> tasks = new List<Tasks>();
+            List<string> targetNames = new List<string>();
             List<int> subtotals = new List<int>();
             Dictionary<string, int> Pairs = new Dictionary<string, int>();
 
-            if (DepartmentGUID == null && ProjectGUID == null)
+            if (ProjectGUID == null && DepartmentGUID == null)
             {
                 projects = ProjectRepo.GetCollections().ToList();
+                targetNames = projects.Select(p => p.ProjectName).ToList();
                 subtotals = projects.GetCostsByProjects().ToList();
-                List<string> ProjectNames = projects.Select(p => p.ProjectName).ToList();
-
-                for (int i = 0; i <= ProjectNames.Count - 1; i++)
-                {
-                    Pairs.Add(ProjectNames[i], subtotals[i]);
-                }
             }
             else if (ProjectGUID != null)
             {
                 tasks = TaskRepo.GetCollections().Where(t => t.ProjectGUID == ProjectGUID).GetRootTasks().ToList();
+                targetNames = tasks.Select(t => t.TaskName).ToList();
                 subtotals = tasks.GetCostsByTasks().ToList();
-                List<string> TaskNames = tasks.Select(t => t.TaskName).ToList();
-
-                for (int i = 0; i <= TaskNames.Count - 1; i++)
-                {
-                    Pairs.Add(TaskNames[i], subtotals[i]);
-                }
             }
             else
             {
                 projects = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentGUID).ToList();
+                targetNames = projects.Select(p => p.ProjectName).ToList();
                 subtotals = projects.GetCostsByProjects().ToList();
-                List<string> ProjectNames = projects.Select(p => p.ProjectName).ToList();
-
-                for (int i = 0; i <= ProjectNames.Count - 1; i++)
-                {
-                    Pairs.Add(ProjectNames[i], subtotals[i]);
-                }
             }
 
-            List<string> Colors = new List<string>() { "#90C3D4", "#C390D4", "#AFDEA0", "#EBB6A4", "#EEF2A5", "#A5F2CF" };
+            for (int i = 0; i <= targetNames.Count - 1; i++)
+            {
+                Pairs.Add(targetNames[i], subtotals[i]);
+            }
+
             List<KeyValuePair<string, int>> SortedPairs = Pairs.OrderByDescending(c => c.Value).ToList();
 
             List<string> SortedNames = new List<string>();

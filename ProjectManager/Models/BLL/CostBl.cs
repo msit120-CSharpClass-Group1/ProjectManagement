@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using ProjectManager.Models;
 
@@ -236,7 +237,7 @@ namespace ProjectManager.Models
         {
             List<int> result = new List<int>();
 
-            foreach(var status in statuses)
+            foreach (var status in statuses)
             {
                 int count = status.Tasks.Where(t => t.ProjectGUID == projectGUID).GetLeafTasks().Count();
                 result.Add(count);
