@@ -14,6 +14,8 @@ namespace ProjectManager.Models
         {
             [JsonIgnore]
             public virtual Members Members { get; set; }
+            [JsonIgnore]
+            public virtual CalendarCategory CalendarCategory { get; set; }
         }
     }
 }

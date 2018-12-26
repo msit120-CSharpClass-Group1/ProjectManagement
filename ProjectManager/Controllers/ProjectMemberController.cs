@@ -121,8 +121,11 @@ namespace ProjectManager.Controllers
                             cal.Start = (DateTime)_tasks.EstStartDate;
                             cal.EndDay = (DateTime)_tasks.EstEndDate;
                             cal.Description = _tasks.Description;
-                            cal.CalendarGUID = Guid.NewGuid();
+                            cal.CalendarGUID = Guid.NewGuid();                            
                             cal.ThemeColor = "Pink";
+                            cal.IsRead = true;
+                            cal.CreateDate = DateTime.Now;
+                            cal.CategoryID = 3;
                             eventlist.Add(cal);
                         }
                     }

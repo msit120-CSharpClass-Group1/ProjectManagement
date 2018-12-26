@@ -28,7 +28,7 @@
     <hr />
     @foreach (var vm in Model)
     {
-    <div class="projectLink" data-projectGUID="@vm.ProjectGUID">
+    <div class="projectLink" data-category="@vm.Category" data-projectGUID="@vm.ProjectGUID">
         @switch (vm.Category)
         {
             case "Task":
@@ -36,7 +36,9 @@
                 break;
             case "InvideProject":
                 <span>「@vm.MangerName 」邀請你加入了「 @vm.ProjectName 」專案</span>
-
+                break;
+            case "Calendar":
+                <span>「@vm.CalendarDate.ToShortDateString()」新增了「@vm.CalendarName」活動</span>
                 break;
         }
 
@@ -49,14 +51,29 @@
             {
     <script>
         $(document).ready(function () {
-            $('.projectLink').click(RedirectToMyBoard);
-
-                    function RedirectToMyBoard() {
-                        $.post("@Url.Action("SetCookiesForMyBoard", "Home")", { projectGUID: $(this).attr("data-projectGUID") },
+            $('.projectLink').click(function () {
+                
+                switch ($(this).data('category')) {
+                    case 'Task':
+                         $.post("@Url.Action("SetCookiesForMyBoard", "Home")", { projectGUID: $(this).attr("data-projectGUID") },
                     function (userGUID) {
                         location.href = "/MyBoard/Index/" + userGUID;
                     });
-            }
+                        break;
+                    case 'InvideProject':
+                         $.post("@Url.Action("SetCookiesForMyBoard", "Home")", { projectGUID: $(this).attr("data-projectGUID") },
+                    function (userGUID) {
+                        location.href = "/MyBoard/Index/" + userGUID;
+                    });
+                        break;
+                    case 'Calendar':
+                        location.href = "/Calendar/Index/";
+                        break;
+                }
+                       
+            });
+
+                    
         });
     </script>
 }
