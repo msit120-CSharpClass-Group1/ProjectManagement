@@ -22,6 +22,9 @@ namespace ProjectManager.Controllers
         Repository<Department> DptRepo = new Repository<Department>();
         Repository<Project> ProjectRepo = new Repository<Project>();
         Repository<Tasks> TaskRepo = new Repository<Tasks>();
+        Repository<CostPool> PoolRepo = new Repository<CostPool>();
+        Repository<CostEstimateSheet> SheetRepo = new Repository<CostEstimateSheet>();
+
 
         #region Action For ExpList
         public ActionResult ExpList()
@@ -505,6 +508,72 @@ namespace ProjectManager.Controllers
 
             return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
+
+        #endregion
+
+        #region Action For CostEstimation
+
+        public ActionResult CostEstimation()
+        {
+            ViewBag.Departments = (from d in DptRepo.GetCollections()
+                                   join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
+                                   select d).Distinct().ToList();
+
+            return View();
+        }
+
+        public ActionResult GetStandardPool()
+        {
+            Guid standardPoolGUID = new Guid("7c070e83-adb8-442f-9026-8287a1bb31d3");
+            var pool = PoolRepo.GetCollections().Where(p => p.PoolGUID == standardPoolGUID).FirstOrDefault();
+
+            return Json(pool, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetCostEstimationSheets(Guid? DepartmentID, Guid? ProjectID)
+        {
+            List<CostEstimateSheet> sheets = new List<CostEstimateSheet>();
+
+            if (DepartmentID == null && ProjectID == null)
+            {
+                sheets = SheetRepo.GetCollections().ToList();
+            }
+            else if (ProjectID != null)
+            {
+                sheets = SheetRepo.GetCollections().Where(s => s.ProjectGUID == ProjectID).ToList();
+            }
+            else
+            {
+                var projects = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID).Select(p => p.ProjectGUID).ToList();
+
+                foreach (var s in SheetRepo.GetCollections().ToList())
+                {
+                    if (projects.Any(pid => s.ProjectGUID == pid))
+                    {
+                        sheets.Add(s);
+                    }
+                }
+            }
+
+            var q = from s in sheets
+                    join p in ProjectRepo.GetCollections() on s.ProjectGUID equals p.ProjectGUID
+                    select new CostEstimateSheetVM
+                    {
+                        SheetGUID = s.SheetGUID,
+                        SheetID = s.SheetID,
+                        SheetName = s.SheetName,
+                        ProjectName = p.ProjectName,
+                        ProjectGUID = s.ProjectGUID,
+                        CreateDate = s.CreateDate,
+                        Description = s.Description,
+                        ModifiedDate = s.ModifiedDate
+                    };
+
+            ViewBag.Count = q.ToList().Count();
+
+            return PartialView(q.ToList());
+        }
+
 
         #endregion
     }
