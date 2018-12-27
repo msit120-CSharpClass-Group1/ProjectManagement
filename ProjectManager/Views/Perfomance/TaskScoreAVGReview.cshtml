@@ -3,31 +3,94 @@
     ViewBag.Title = "第二階段評分";
 }
 
-<div class="container">
-        <div class="card">
-            <h5 class="card-header">細項表單</h5>
-            <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>員工姓名</th>
-                            <th>部門</th>
-                            <th>職稱</th>
-                            <th>工作平均分數</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.GroupMemberTaskScore)
-                        {
+<p id="ProjectGUID" hidden>@Model.GroupMemberTaskScore.FirstOrDefault().value.FirstOrDefault().ProjectGUID</p>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <h5 class="card-header">細項表單</h5>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
                             <tr>
-                                <td>@item.Key</td>
-                                <td>@item.value.Where(p => p.Employee.EmployeeName == item.Key).Select(p => p.Employee.Department.DepartmentName).FirstOrDefault()</td>
-                                <td>@item.value.Where(p => p.Employee.EmployeeName == item.Key).Select(p => p.Employee.JobTitle.TitleName).FirstOrDefault()</td>
-                                <td>@item.Avg</td>
+                                <th>員工姓名</th>
+                                <th>部門</th>
+                                <th>職稱</th>
+                                <th>工作平均分數</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.GroupMemberTaskScore)
+                            {
+                                <tr>
+                                    <td>@item.Key</td>
+                                    <td>@item.value.Where(p => p.Employee.EmployeeName == item.Key).Select(p => p.Employee.Department.DepartmentName).FirstOrDefault()</td>
+                                    <td>@item.value.Where(p => p.Employee.EmployeeName == item.Key).Select(p => p.Employee.JobTitle.TitleName).FirstOrDefault()</td>
+                                    <td>@item.Avg</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-</div>
+        <div class="col-md-6">
+            <div id="Chart" class="chart-container bg-light p-3">
+                <canvas id="ChartC"></canvas>
+            </div>
+        </div>
+    </div>
+
+    @section script{
+        <script src="~/Scripts/Chart.min.js"></script>
+        <script>
+        $(document).ready(function ()
+        {
+            Chart.defaults.global.defaultFontFamily = 'Noto Sans CJK TC';
+            Chart.defaults.global.defaultFontSize = 16;
+            Chart.defaults.global.tooltips.titleFontStyle = 'normal';
+            TaskAvgShowChart();
+            function TaskAvgShowChart()
+            {
+                $.getJSON("@Url.Action("TaskScoreAVGReviewChart", "Perfomance")", { "ProjectGUID": $("#ProjectGUID").text() }, function (datas)
+                {
+                    var TaskAVGChart = new Chart($('#ChartC'),
+                        {
+                            type: 'bar',
+                            data: datas,
+                            options:
+                            {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                legend:
+                                {
+                                    position: 'top',
+                                },
+                                title:
+                                {
+                                    display: true,
+                                    text: '平均任務驗收分數',
+                                    fontSize: 20,
+                                    padding: 10,
+                                },
+                                animation:
+                                {
+                                    animateScale: true,
+                                    animateRotate: true
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        display: true,
+                                        ticks: {
+                                            beginAtZero: true,
+                                            max: 100
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                });
+            }
+        })
+        </script>
+
+    }

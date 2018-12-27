@@ -103,7 +103,7 @@ namespace ProjectManager.Controllers
                     List<Models.Calendar> eventlist = new List<Models.Calendar>();
 
                     for (int i = FirstRow; i <= LastRow; i++)
-                    {
+                    {          
                         if (Request.Form["EmployeeGUID" + i] != null && Request.Form["TaskGUID" + i] != null)
                         {
                             var EmpGUID = new Guid(Request.Form["EmployeeGUID" + i]);
@@ -114,19 +114,23 @@ namespace ProjectManager.Controllers
                             _tasks.TaskStatusID = 2;
                             _tasks.IsRead = false;
                             tasklist.Add(_tasks);
-                            Guid memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == EmpGUID).Select(m => m.MemberGUID).Single();
-                            Models.Calendar cal = new Models.Calendar();
-                            cal.MemberGUID = memberGUID;
-                            cal.Subject = _tasks.TaskName;
-                            cal.Start = (DateTime)_tasks.EstStartDate;
-                            cal.EndDay = (DateTime)_tasks.EstEndDate;
-                            cal.Description = _tasks.Description;
-                            cal.CalendarGUID = Guid.NewGuid();                            
-                            cal.ThemeColor = "Pink";
-                            cal.IsRead = true;
-                            cal.CreateDate = DateTime.Now;
-                            cal.CategoryID = 3;
-                            eventlist.Add(cal);
+                            var memberquery = member.GetCollections().Where(m => m.EmployeeGUID == EmpGUID);
+                            if (memberquery.Count() != 0)
+                            {
+                                Guid memberGUID = memberquery.Select(m => m.MemberGUID).Single();
+                                Models.Calendar cal = new Models.Calendar();
+                                cal.MemberGUID = memberGUID;
+                                cal.Subject = _tasks.TaskName;
+                                cal.Start = (DateTime)_tasks.EstStartDate;
+                                cal.EndDay = (DateTime)_tasks.EstEndDate;
+                                cal.Description = _tasks.Description;
+                                cal.CalendarGUID = Guid.NewGuid();
+                                cal.ThemeColor = "Pink";
+                                cal.IsRead = true;
+                                cal.CreateDate = DateTime.Now;
+                                cal.CategoryID = 3;
+                                eventlist.Add(cal);
+                            }
                         }
                     }
                     tasks.UpdateList(tasklist);
@@ -166,7 +170,7 @@ namespace ProjectManager.Controllers
 
         public ActionResult GetProjectMemberTasks(Guid EmployeeGUID)
         {
-            var memberTask = tasks.GetCollections().Where(t => t.EmployeeGUID == EmployeeGUID && t.TaskStatusID==2 &&  t.ProjectGUID == new Guid(Request.Cookies["ProjectGUID"].Value));
+            var memberTask = tasks.GetCollections().Where(t => t.EmployeeGUID == EmployeeGUID && t.TaskStatusID== 2 && t.ProjectGUID == new Guid(Request.Cookies["ProjectGUID"].Value));
             return Content(JsonConvert.SerializeObject(memberTask), "application/json");
         }
 
@@ -174,10 +178,10 @@ namespace ProjectManager.Controllers
         {
             Tasks _tasks = tasks.Find(TaskGUID);
             var GetallCal = calRe.GetCollections();
-            var memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == _tasks.EmployeeGUID).Select(m => m.MemberGUID).Single();
-            if (GetallCal.Where(c => c.Subject == _tasks.TaskName).Count() != 0)
+            var memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == _tasks.EmployeeGUID).Select(m => m.MemberGUID).FirstOrDefault();
+            if (memberGUID != Guid.Empty)
             {
-                Guid CalendarGUID = GetallCal.Where(c => c.Subject == _tasks.TaskName && c.MemberGUID == memberGUID).Select(c => c.CalendarGUID).Single();
+                Guid CalendarGUID = GetallCal.Where(c => c.Subject == _tasks.TaskName && c.MemberGUID == memberGUID).Select(c => c.CalendarGUID).FirstOrDefault();
                 calRe.Delete(calRe.Find(CalendarGUID));
             }
             _tasks.EmployeeGUID = null;

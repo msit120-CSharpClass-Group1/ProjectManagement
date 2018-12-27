@@ -56,11 +56,15 @@
         .rightOpenbtn {
             display: none;
         }
+        .collapsible {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
 
     </style>
 }
 
-    <div id="ProjectsOverview" class="ProjectFlex_a container mt-5">
+    <div id="ProjectsOverview" class="ProjectFlex_a container mt-3">
         @{int i = 0; }
         @foreach (var g in Model)
         {
