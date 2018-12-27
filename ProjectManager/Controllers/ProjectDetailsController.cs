@@ -9,10 +9,10 @@ using System.Web;
 using System.Web.Mvc;
 using static System.Net.Mime.MediaTypeNames;
 using System.IO;
-using LinqToExcel;
 using System.Web.Configuration;
-using LinqToExcel.Query;
-using Remotion;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.HSSF.UserModel;
 
 namespace ProjectManager.Controllers
 {
@@ -237,20 +237,104 @@ namespace ProjectManager.Controllers
         {
             string path = Server.MapPath("~/Document/Excel/");
             string filePath = Path.Combine(path, fileName);
-            var excelFile = new ExcelQueryFactory(@"C:\inetpub\wwwroot\Document\Excel\Tasks_demo.xls");
-
-            excelFile.StrictMapping = null;
-            excelFile.AddMapping<ExcelTasks>(x => x.ExcelTaskID, "編號");
-            excelFile.AddMapping<ExcelTasks>(x => x.TaskName, "工作項目名稱");
-            excelFile.AddMapping<ExcelTasks>(x => x.ExcelParentTaskID, "父工作編號");
-            excelFile.AddMapping<ExcelTasks>(x => x.EstStartDate, "預計開始時間");
-            excelFile.AddMapping<ExcelTasks>(x => x.EstEndDate, "預計結束時間");
-            excelFile.AddMapping<ExcelTasks>(x => x.EstWorkTime, "預計工期");
-            excelFile.AddMapping<ExcelTasks>(x => x.Description, "說明");
-
-            var excelContent = excelFile.Worksheet<ExcelTasks>("sheet1").ToList();
-
-            //taskRepo.AddList( excelContent.GetSortedExcelTasks((Guid)projectGUID));
+            if (fileName.Contains(".xlsx"))
+            {
+                XSSFWorkbook excel = null;
+                using (FileStream files = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    excel = new XSSFWorkbook(files);
+                }
+                ISheet sheet = excel.GetSheetAt(0);
+                List<ExcelTasks> excelContent = new List<ExcelTasks>();
+                for (int row = 1; row <= sheet.LastRowNum; row++)
+                {
+                    if (sheet.GetRow(row) != null)
+                    {
+                        ExcelTasks exceltask = new ExcelTasks();
+                        for (int c = 0; c <= sheet.GetRow(row).LastCellNum; c++)
+                        {
+                            if (sheet.GetRow(row).GetCell(c) == null) continue;
+                            switch (c)
+                            {
+                                case 0:
+                                    exceltask.ExcelTaskID = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 1:
+                                    exceltask.TaskName = sheet.GetRow(row).GetCell(c).StringCellValue;
+                                    break;
+                                case 2:
+                                    exceltask.ExcelParentTaskID = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 3:
+                                    exceltask.EstStartDate = sheet.GetRow(row).GetCell(c).DateCellValue;
+                                    break;
+                                case 4:
+                                    exceltask.EstEndDate = sheet.GetRow(row).GetCell(c).DateCellValue;
+                                    break;
+                                case 5:
+                                    exceltask.EstWorkTime = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 6:
+                                    exceltask.Description = sheet.GetRow(row).GetCell(c).StringCellValue;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        excelContent.Add(exceltask);
+                    }
+                }
+                taskRepo.AddList(excelContent.GetSortedExcelTasks((Guid)projectGUID));
+            }
+            else
+            {
+                HSSFWorkbook excel = null;
+                using (FileStream files = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    excel = new HSSFWorkbook(files);
+                }
+                ISheet sheet = excel.GetSheetAt(0);
+                List<ExcelTasks> excelContent = new List<ExcelTasks>();
+                for (int row = 1; row <= sheet.LastRowNum; row++)
+                {
+                    if (sheet.GetRow(row) != null)
+                    {
+                        ExcelTasks exceltask = new ExcelTasks();
+                        for (int c = 0; c <= sheet.GetRow(row).LastCellNum; c++)
+                        {
+                            if (sheet.GetRow(row).GetCell(c) == null) continue;
+                            switch (c)
+                            {
+                                case 0:
+                                    exceltask.ExcelTaskID = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 1:
+                                    exceltask.TaskName = sheet.GetRow(row).GetCell(c).StringCellValue;
+                                    break;
+                                case 2:
+                                    exceltask.ExcelParentTaskID = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 3:
+                                    exceltask.EstStartDate = sheet.GetRow(row).GetCell(c).DateCellValue;
+                                    break;
+                                case 4:
+                                    exceltask.EstEndDate = sheet.GetRow(row).GetCell(c).DateCellValue;
+                                    break;
+                                case 5:
+                                    exceltask.EstWorkTime = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 6:
+                                    exceltask.Description = sheet.GetRow(row).GetCell(c).StringCellValue;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        excelContent.Add(exceltask);
+                    }
+                }
+                taskRepo.AddList(excelContent.GetSortedExcelTasks((Guid)projectGUID));
+            }           
 
             return Json(filePath, JsonRequestBehavior.AllowGet);
         }

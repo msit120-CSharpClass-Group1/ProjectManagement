@@ -552,7 +552,7 @@
                     else {
                         var projectGuid = $('#title_project').attr('data-projectGUID');
                         $.post("@Url.Action("InsertExcelToDB", "ProjectDetails")",
-                            { fileName: result, projectGUID: projectGuid }, function (data) { alert(data); LoadTreeGrid(); });
+                            { fileName: result, projectGUID: projectGuid }, function (data) { LoadTreeGrid(); });
                         $('#ExcelImportConfirmModal').modal('hide');                        
                     }                    
                 });                         
