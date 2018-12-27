@@ -137,6 +137,7 @@ namespace ProjectManager.Controllers
                     calRe.AddList(eventlist);
                 }
                 Response.Cookies["MappingTaskDT"].Value = HttpUtility.UrlEncode(Convert.ToString(DateTime.Now), System.Text.Encoding.Default);
+                Response.Cookies["MappingTaskDT"].Expires = DateTime.Now.AddDays(1);
             //}
             //catch { }
             return RedirectToAction("AssignTask");
@@ -204,12 +205,12 @@ namespace ProjectManager.Controllers
         #region ExportExcelAction
         public ActionResult ExportToExcel()
         {
-            var Date = DateTime.Parse(HttpUtility.UrlDecode(Request.Cookies["MappingTaskDT"].Value, System.Text.Encoding.Default));
+            //var Date = DateTime.Parse(HttpUtility.UrlDecode(Request.Cookies["MappingTaskDT"].Value, System.Text.Encoding.Default));
             var ProjectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var gv = new GridView();
-            var ProjectName = projectRe.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).Select(p => p.ProjectName).FirstOrDefault();
+            var ProjectName = projectRe.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).Select(p => p.ProjectName).FirstOrDefault();           
             var ExcelData = from tasks in tasks.GetCollections()
-                            where tasks.ProjectGUID == ProjectGUID && tasks.EmployeeGUID != null && tasks.AssignedDate >= Date
+                            where tasks.ProjectGUID == ProjectGUID && tasks.EmployeeGUID != null && tasks.AssignedDate<DateTime.Now
                             select new
                             {
                                 作業名稱 = tasks.TaskName,
