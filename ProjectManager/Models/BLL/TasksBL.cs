@@ -295,12 +295,12 @@ namespace ProjectManager.Models
                 root.TaskStatusID = task.TaskStatusID = (int)TasksBL.Task_Status.Discussing;
                 root.AssignedDate = task.AssignedDate = DateTime.Now;
                 root.IsRead = task.IsRead = false;
-                root.StartDate = task.StartDate = task.EstStartDate;
-                root.EndDate = task.EndDate = task.EndDate;
 
                 task.TaskName = root.TaskName;
                 task.EstStartDate = root.EstStartDate;
                 task.EstEndDate = root.EstEndDate;
+                root.StartDate = task.StartDate = task.EstStartDate;
+                root.EndDate = task.EndDate = task.EstEndDate;
                 task.EstWorkTime = root.EstWorkTime;
                 task.Description = root.Description;               
                 
@@ -322,12 +322,12 @@ namespace ProjectManager.Models
                 child.TaskStatusID = task.TaskStatusID = (int)TasksBL.Task_Status.Discussing;
                 child.AssignedDate = task.AssignedDate = DateTime.Now;
                 child.IsRead = task.IsRead = false;
-                child.StartDate = task.StartDate = task.EstStartDate;
-                child.EndDate = task.EndDate = task.EndDate;
 
                 task.TaskName = child.TaskName;                
                 task.EstStartDate = child.EstStartDate;
                 task.EstEndDate = child.EstEndDate;
+                child.StartDate = task.StartDate = task.EstStartDate;
+                child.EndDate = task.EndDate = task.EstEndDate;
                 task.EstWorkTime = child.EstWorkTime;
                 task.Description = child.Description;
 

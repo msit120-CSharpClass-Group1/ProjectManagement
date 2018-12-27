@@ -498,7 +498,7 @@
                         $('#RejectAcceptanceModal').modal('show');
                     }
                     else if ($(this).attr('name') == "reviveBtn"){
-                        $.post("@Url.Action("TaskRevivedToInProgress", "ProjectDetails")", { taskGuid: $(this).attr('data-taskGUID') }, function (data) {
+                        $.post("@Url.Action("TaskRevivedToInProgress", "ProjectDetails")", { taskGuid: $(this).attr('data-taskGUID') }, function (data) {                           
                             LoadTreeGrid();
                         });
                     }
@@ -548,11 +548,11 @@
                 }).done(function (result) {
                     if (parseInt(result)) {
                         alert("上傳失敗：沒有檔案");
-                    }                    
+                    }
                     else {
                         var projectGuid = $('#title_project').attr('data-projectGUID');
                         $.post("@Url.Action("InsertExcelToDB", "ProjectDetails")",
-                            { fileName: result, projectGUID: projectGuid }, function (data) { LoadTreeGrid(); });
+                            { fileName: result, projectGUID: projectGuid }, function (data) { alert(data); LoadTreeGrid(); });
                         $('#ExcelImportConfirmModal').modal('hide');                        
                     }                    
                 });                         

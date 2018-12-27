@@ -7,8 +7,8 @@ namespace ProjectManager.Models
 {
     public class ExcelTasks
     {
-        public string ExcelTaskID { get; set; }
-        public string ExcelParentTaskID { get; set; }
+        public Nullable<int> ExcelTaskID { get; set; }
+        public Nullable<int> ExcelParentTaskID { get; set; }
 
         public Guid? TaskGUID { get; set; }
         public Guid? ParentTaskGUID { get; set; }

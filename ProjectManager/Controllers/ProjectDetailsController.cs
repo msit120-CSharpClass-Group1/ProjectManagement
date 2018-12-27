@@ -12,6 +12,7 @@ using System.IO;
 using LinqToExcel;
 using System.Web.Configuration;
 using LinqToExcel.Query;
+using Remotion;
 
 namespace ProjectManager.Controllers
 {
@@ -202,21 +203,41 @@ namespace ProjectManager.Controllers
         }
         [HttpPost]
         public ActionResult ImportExcel(HttpPostedFileBase file)
-        {   
+        {
             if (file == null)
             {
                 return Json(1, JsonRequestBehavior.AllowGet);
-            }            
-            string filePath = Path.Combine(Server.MapPath("/Document/Excel"), file.FileName);
-            
-            file.SaveAs(filePath);
+            }
+            string path = Server.MapPath("~/Document/Excel/");
+            string filePath = Path.Combine(path, file.FileName);
+            if (!Directory.Exists(path))
+            {
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch(Exception e)
+                {
+                    return Json(e, JsonRequestBehavior.AllowGet);
+                }
+            }
 
-            return Json(file.FileName.ToString(), JsonRequestBehavior.AllowGet);
+            try
+            {
+                file.SaveAs(filePath);
+            }
+            catch (Exception e)
+            {
+                return Json(e, JsonRequestBehavior.AllowGet);
+            }
+            return Json(file.FileName, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult InsertExcelToDB(string fileName, Guid? projectGUID)
         {
-            var excelFile = new ExcelQueryFactory(fileName);
+            string path = Server.MapPath("~/Document/Excel/");
+            string filePath = Path.Combine(path, fileName);
+            var excelFile = new ExcelQueryFactory(@"C:\inetpub\wwwroot\Document\Excel\Tasks_demo.xls");
 
             excelFile.StrictMapping = null;
             excelFile.AddMapping<ExcelTasks>(x => x.ExcelTaskID, "編號");
@@ -229,9 +250,9 @@ namespace ProjectManager.Controllers
 
             var excelContent = excelFile.Worksheet<ExcelTasks>("sheet1").ToList();
 
-            taskRepo.AddList( excelContent.GetSortedExcelTasks((Guid)projectGUID));
-            
-            return Json("success", JsonRequestBehavior.AllowGet);
+            //taskRepo.AddList( excelContent.GetSortedExcelTasks((Guid)projectGUID));
+
+            return Json(filePath, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult InsertTask(Tasks task)
