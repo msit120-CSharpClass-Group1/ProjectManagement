@@ -12,19 +12,21 @@ namespace ProjectManager.Controllers
     [Authorize]
     public class NotificationController : Controller
     {
-        IRepository<Tasks> tasks = new Repository<Tasks>();
-        IRepository<Members> members = new Repository<Members>();
+        Repository<Members> members = new Repository<Members>();
+        Repository<Tasks> tasks = new Repository<Tasks>();
+        Repository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
+        Repository<Calendar> calendars = new Repository<Calendar>();
         // GET: Notification
         public ActionResult Index()
         {
             var _members = members.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            var _notifications = _members.GetNotifications().OrderByDescending(n => n.NotificationDate);
+            var _notifications = _members.GetNotifications(tasks.GetCollections().ToList(), projectMembers.GetCollections().ToList(), calendars.GetCollections().ToList()).OrderByDescending(n => n.NotificationDate);
             return View(_notifications);
         }
         public ActionResult Load()
         {
             var _members =members.Find(new Guid(Request.Cookies["MemberGUID"].Value));
-            var _notifications = _members.GetNotifications().OrderByDescending(n=>n.NotificationDate).Take(5);
+            var _notifications = _members.GetNotifications(tasks.GetCollections().ToList(), projectMembers.GetCollections().ToList(), calendars.GetCollections().ToList()).OrderByDescending(n=>n.NotificationDate).ToList().Take(5);
             return Json(_notifications);
         }
     }

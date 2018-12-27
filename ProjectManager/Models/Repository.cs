@@ -41,7 +41,7 @@ namespace ProjectManager.Models
 
         public IEnumerable<T> GetCollections()
         {
-            return dbset;
+            return dbset.ToList();
         }
 
         public void Update(T entity)

@@ -48,31 +48,31 @@ namespace ProjectManager.Controllers
                 case Emp_Title.Admin:
                     var _projectlist0 = projectMemberRepo.GetCollections().Where(n => n.Project.ProjectStatusID != (int)Project_Status.Completed)
                         .Where(n => n.EmployeeGUID == member.EmployeeGUID).Select(n => new { n.ProjectGUID, n.Project.ProjectName });
-                    ViewBag.ProjectList = new SelectList(_projectlist0, "ProjectGUID", "ProjectName");
+                    ViewBag.ProjectList = new SelectList(_projectlist0.ToList(), "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.AdminPermit == true).ToList();
                     break;
                 case Emp_Title.PG:
                     var _projectlist1 = projectMemberRepo.GetCollections().Where(n => n.Project.ProjectStatusID != (int)Project_Status.Completed)
                         .Where(n => n.EmployeeGUID == member.EmployeeGUID).Select(n => new { n.ProjectGUID, n.Project.ProjectName });
-                    ViewBag.ProjectList = new SelectList(_projectlist1, "ProjectGUID", "ProjectName");
+                    ViewBag.ProjectList = new SelectList(_projectlist1.ToList(), "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.ProgrammerPermit == true).ToList();
                     break;
                 case Emp_Title.Minister:
                     var _projectlist3 = projectRepo.GetCollections()
                         .Where(n => n.ProjectStatusID != (int)Project_Status.Completed).Select(n => new { n.ProjectGUID, n.ProjectName });
-                    ViewBag.ProjectList = new SelectList(_projectlist3, "ProjectGUID", "ProjectName");
+                    ViewBag.ProjectList = new SelectList(_projectlist3.ToList(), "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.MinisterPermit == true).ToList();
                     break;
                 case Emp_Title.PM:
                     var _projectlist5 = projectRepo.GetCollections().Where(n => n.ProjectStatusID != (int)Project_Status.Completed)
                         .Where(n => n.InChargeDeptPMGUID == member.EmployeeGUID).Select(n => new { n.ProjectGUID, n.ProjectName });
-                    ViewBag.ProjectList = new SelectList(_projectlist5, "ProjectGUID", "ProjectName");
+                    ViewBag.ProjectList = new SelectList(_projectlist5.ToList(), "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.ProjectManagerPermit == true).ToList();
                     break;
                 case Emp_Title.Director:
                     var _projectlist4 = projectRepo.GetCollections()
                         .Where(n => n.ProjectStatusID != (int)Project_Status.Completed).Select(n => new { n.ProjectGUID, n.ProjectName });
-                    ViewBag.ProjectList = new SelectList(_projectlist4, "ProjectGUID", "ProjectName");
+                    ViewBag.ProjectList = new SelectList(_projectlist4.ToList(), "ProjectGUID", "ProjectName");
                     ViewBag.Widgets = widgetRepo.GetCollections().Where(w => w.DirectorPermit == true).ToList();
                     break;
                 default:
