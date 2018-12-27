@@ -53,20 +53,20 @@
     <button class="btn btn-outline-dark" id="ExportExcelDetail"><i class="fas fa-file-excel"></i>匯出分配總表</button>
 }
 <img src="~/image/Excelicon.png" style="width:50px;" />
-<button type="button" class="btn btn-light" id="ExportExcel" onclick="exportExcel()" style="margin:10px"><i class="fas fa-file-excel"></i>匯出簡易分配表</button>
-<button class="btn btn-outline-dark" id="ExportExcelalter"><i class="fas fa-file-excel"></i>匯出分配總表</button>
+<button type="button" class="btn btn-light" id="ExportExcel" onclick="exportExcel()" style="margin:10px"><i class="fas fa-file-export"></i>匯出簡易分配表</button>
+<button class="btn btn-outline-dark" id="ExportExcelalter"><i class="fas fa-file-export"></i>匯出分配總表</button>
 <form method="post" action="~/ProjectMember/EditTaskM" class="form-horizontal" style="margin:auto">
     <div class="row">
         <div class="col-3">
             <div class="" style="margin-top:60px">
                 <div class="flip" style="border-radius:10px">
-                    <font color="aliceblue"><i class="fas fa-eye"></i>查看分配狀態</font>
+                    <font color="aliceblue">查看分配狀態</font>
                     
                 </div>
                 <div class="panel">
                     <table class="table table-bordered" id="mappingTable">
                         <thead>
-                            <tr><th>員工姓名</th><th>分配工作</th><th>刪除/留言</th></tr>
+                            <tr><th>員工姓名</th><th>分配工作</th><th style="width:130px">刪除/留言</th></tr>
                         </thead>
                         <tbody>
                             <!--RunIN-->
@@ -186,7 +186,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">離開</button>
-                        <a class="btn btn-primary" id="leaveMessaageBtn">確定留言</a>
+                        <a class="btn btn-light" id="leaveMessaageBtn">確定留言</a>
                     </div>
                 </form>
             </div>
@@ -227,14 +227,17 @@
     </div>
     @section script{
     <script>
-            $(document).ready(function () {
-                $('#nav-taskDistribute-tab').css('background-color', '#dddfe2');
+        $(document).ready(function ()
+        {
+            $('#nav-taskDistribute-tab').css('background-color', '#dddfe2');
                 var topTable = $("#mappingTable>tbody");
                 var submitCount = 0;
                 var flag = true;
-                $(".draggable").draggable({ drag: function (e, ui) { }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
+            $(".draggable").draggable({ drag: function (e, ui) { $(".droppable").effect("highlight", {}, 2000); }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
                 $(".droppable").droppable({
-                    drop: function (event, ui) {
+                    drop: function (event, ui)
+                    {
+                        $(".droppable").stop(true, true);                       
                         var empID = $(this).prev().children("p").data("tag");
                         var empName = $(this).prev().text();
                         var taskGUID = ui.draggable.data("tag2");
@@ -278,7 +281,7 @@
                     var taskName = $(this).parent().prev().text();
                     var taskGUID = $(this).parent().next().next().val();
                     if ($(this).attr("title") == "退回清單") {
-                        submitCount -= 1;
+                        //submitCount -= 1;
                         $(this).parent().parent().remove();
                         var backToList = $("<li></li>").attr("class", "list-group-item draggable")
                             .attr("data-tag", taskName).text(taskName)
@@ -465,7 +468,7 @@
             }
     </script>
     }
-
+    
     @section nav{
         @Html.Partial("_PartialPageNav", "Shared")
     }
