@@ -137,6 +137,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="image\Excel-Icon.png" />
     <Content Include="image\Excelicon.png" />
     <Content Include="Content\AdminLTE.css" />
     <Content Include="Content\bootstrap-grid.css" />
@@ -406,6 +407,15 @@
     <Compile Include="Models\CalendarCategory.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CostEstimateSheet.cs">
+      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CostEstimateSheetDetail.cs">
+      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CostPool.cs">
+      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Dashboard.cs">
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
@@ -517,6 +527,7 @@
     <Compile Include="Models\ViewModel\HolidaysVM.cs" />
     <Compile Include="Models\ViewModel\DocumentVM.cs" />
     <Compile Include="Models\ViewModel\ProjectMemberTaskCompletedRateVM.cs" />
+    <Compile Include="Models\ViewModel\CostEstimateSheetVM.cs" />
     <Compile Include="Models\ViewModel\ProjectResourceVM.cs" />
     <Compile Include="Models\ViewModel\ResourceFilterVM.cs" />
     <Compile Include="Models\ViewModel\SelectMBoardVM.cs" />
@@ -633,6 +644,8 @@
     <Content Include="Views\Home\ProjectCardsPV.cshtml" />
     <Content Include="Views\ProjectMBackside\Index.cshtml" />
     <Content Include="Views\ProjectMBackside\EditMember.cshtml" />
+    <Content Include="Views\Cost\CostEstimation.cshtml" />
+    <Content Include="Views\Cost\GetCostEstimationSheets.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

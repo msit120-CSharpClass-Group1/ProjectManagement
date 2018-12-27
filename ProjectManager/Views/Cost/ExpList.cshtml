@@ -44,7 +44,7 @@
             margin-left: .1rem;*/
             font-size: 0.875rem;
             line-height: 1.5;
-            text-align:center;
+            text-align: center;
             color: #fff;
             background-color: rgba(0, 139, 139, 0.9);
             border-top-left-radius: 10px;
@@ -52,6 +52,18 @@
         }
     </style>
 }
+
+@using (Html.BeginForm("ExportAsExcel", "Cost", FormMethod.Post, new { name = "myForm", @class = "hide"}))
+{
+    <input id="pa1" name="DepartmentID" />
+    <input id="pa2" name="ProjectID" />
+    <input id="pa3" name="sortBy" />
+    <input id="pa4" name="filter_StartDate" />
+    <input id="pa5" name="filter_EndDate" />
+    <input id="pa6" name="filter_TaskGUID" />
+    <input id="pa7" name="filter_CategoryID" />
+}
+
 <div class="row">
     <div class="col-7">
         <form class="form-inline">
@@ -93,6 +105,7 @@
             <span>中符合條件的的費用，共有</span>
             <span id="Count_of_Resources"></span>
             <span>筆。</span>
+            <button id="btn_ExportAsExcel" type="button" class="btn btn-success" disabled><img src="~/image/Excel-Icon.png" height="24" />匯出至Excel</button>
         </div>
 
         <div id="PageListPager"></div>
@@ -387,6 +400,8 @@
 
             function LoadResources()
             {
+                $("#btn_ExportAsExcel").prop("disabled", true);
+
                 var DepartmentOpt = $("#RequiredDeptGUID>:selected");
                 var departmentGUID = DepartmentOpt.val();
                 var projectOpt = $("#Select_ProjectName>:selected");
@@ -428,11 +443,13 @@
 
                         EnableEditor(projectGUID);
                         Binding();
+                        result.fadeIn();
+                        pager.fadeIn();
+                        filter.fadeIn();
+
+                        $("#btn_ExportAsExcel").removeAttr("disabled");
 
                     }).fadeIn();
-                    result.fadeIn();
-                    pager.fadeIn();
-                filter.fadeIn();
             }
 
             function InitTasks()
@@ -540,6 +557,30 @@
                     form.classList.add('was-validated');
                 }
             }
+
+            $("#btn_ExportAsExcel").click(() =>
+            {
+                var datas =
+                {
+                    DepartmentID: $("#RequiredDeptGUID").val(),
+                    ProjectID: $("#Select_ProjectName>:selected").data('projectguid'),
+                    sortBy: getCookie("sortBy"),
+                    filter_StartDate: $("#filter_StartDate").val(),
+                    filter_EndDate: $("#filter_EndDate").val(),
+                    filter_TaskGUID: $("#filter_TaskGUID").val(),
+                    filter_CategoryID: $("#filter_CategoryID").val()
+                }
+
+                $("#pa1").val(datas.DepartmentID);
+                $("#pa2").val(datas.ProjectID);
+                $("#pa3").val(datas.sortBy);
+                $("#pa4").val(datas.filter_StartDate);
+                $("#pa5").val(datas.filter_EndDate);
+                $("#pa6").val(datas.filter_TaskGUID);
+                $("#pa7").val(datas.filter_CategoryID);
+
+                $("form[name='myForm']").submit();
+            })
 
             //輸入驗證
             $("#ResourceName").keyup(function ()

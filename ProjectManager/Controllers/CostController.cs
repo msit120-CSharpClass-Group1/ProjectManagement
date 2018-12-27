@@ -7,6 +7,9 @@ using ProjectManager.Models;
 using PagedList;
 using PagedList.Mvc;
 using Newtonsoft.Json;
+using System.Web.UI.WebControls;
+using System.IO;
+using System.Web.UI;
 
 namespace ProjectManager.Controllers
 {
@@ -19,6 +22,9 @@ namespace ProjectManager.Controllers
         Repository<Department> DptRepo = new Repository<Department>();
         Repository<Project> ProjectRepo = new Repository<Project>();
         Repository<Tasks> TaskRepo = new Repository<Tasks>();
+        Repository<CostPool> PoolRepo = new Repository<CostPool>();
+        Repository<CostEstimateSheet> SheetRepo = new Repository<CostEstimateSheet>();
+
 
         #region Action For ExpList
         public ActionResult ExpList()
@@ -148,6 +154,76 @@ namespace ProjectManager.Controllers
             }
 
             return RedirectToAction("ExpList");
+        }
+
+        public ActionResult ExportAsExcel(FormCollection form, Guid? DepartmentID, Guid? ProjectID, string sortBy, ResourceFilterVM filterBy)
+        {
+            IEnumerable<Project> projects;
+
+            if (DepartmentID == null && ProjectID == null)
+            {
+                projects = ProjectRepo.GetCollections();
+
+            }
+            else if (ProjectID != null)
+            {
+                projects = ProjectRepo.GetCollections().Where(p => p.ProjectGUID == ProjectID);
+            }
+            else
+            {
+                projects = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID);
+            }
+
+            var q = from p in projects
+                    join t in TaskRepo.GetCollections() on p.ProjectGUID equals t.ProjectGUID
+                    join tr in ResourceRepo.GetCollections() on t.TaskGUID equals tr.TaskGUID
+                    join c in ResourceCatRepo.GetCollections() on tr.CategoryID equals c.CategoryID
+                    select new ProjectResourceVM
+                    {
+                        ProjectGUID = p.ProjectGUID,
+                        ProjectName = p.ProjectName,
+                        TaskGUID = t.TaskGUID,
+                        TaskName = t.TaskName,
+                        ResourceGUID = tr.ResourceGUID,
+                        ResourceID = tr.ResourceID,
+                        ResourceName = tr.ResourceName,
+                        CategoryID = c.CategoryID,
+                        CategoryName = c.CategoryName,
+                        Quantity = tr.Quantity,
+                        Unit = tr.Unit,
+                        UnitPrice = tr.UnitPrice,
+                        SubTotal = (tr.UnitPrice * tr.Quantity),
+                        Date = tr.Date,
+                        Description = tr.Description
+                    };
+
+            var ProjectResourceList = q.AsQueryable().Sort(sortBy).Filter(filterBy).Select(p => new
+            {
+                費用發生日期 = p.Date.ToShortDateString(),
+                專案名稱 = p.ProjectName,
+                工作名稱 = p.TaskName,
+                費用名稱 = p.ResourceName,
+                類別名稱 = p.CategoryName,
+                數量 = p.Quantity,
+                單價 = p.UnitPrice,
+                小計 = p.SubTotal,
+                備註 = p.Description
+            });
+
+            var gv = new GridView();
+            gv.DataSource = ProjectResourceList.ToList();
+            gv.DataBind();
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename = [" + DateTime.Now.ToShortDateString() + "]費用清單.xls");
+            Response.ContentType = "application/vnd.ms-excel";
+            StringWriter objStringWriter = new StringWriter();
+            HtmlTextWriter objHtmlTextWriter = new HtmlTextWriter(objStringWriter);
+            gv.RenderControl(objHtmlTextWriter);
+            Response.Output.Write(objStringWriter.ToString());
+            Response.Flush();
+            Response.End();
+            return Content("Complete!","text/plain");
         }
         #endregion
 
@@ -432,6 +508,72 @@ namespace ProjectManager.Controllers
 
             return Content(JsonConvert.SerializeObject(chartData), "application/json");
         }
+
+        #endregion
+
+        #region Action For CostEstimation
+
+        public ActionResult CostEstimation()
+        {
+            ViewBag.Departments = (from d in DptRepo.GetCollections()
+                                   join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
+                                   select d).Distinct().ToList();
+
+            return View();
+        }
+
+        public ActionResult GetStandardPool()
+        {
+            Guid standardPoolGUID = new Guid("7c070e83-adb8-442f-9026-8287a1bb31d3");
+            var pool = PoolRepo.GetCollections().Where(p => p.PoolGUID == standardPoolGUID).FirstOrDefault();
+
+            return Json(pool, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetCostEstimationSheets(Guid? DepartmentID, Guid? ProjectID)
+        {
+            List<CostEstimateSheet> sheets = new List<CostEstimateSheet>();
+
+            if (DepartmentID == null && ProjectID == null)
+            {
+                sheets = SheetRepo.GetCollections().ToList();
+            }
+            else if (ProjectID != null)
+            {
+                sheets = SheetRepo.GetCollections().Where(s => s.ProjectGUID == ProjectID).ToList();
+            }
+            else
+            {
+                var projects = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentID).Select(p => p.ProjectGUID).ToList();
+
+                foreach (var s in SheetRepo.GetCollections().ToList())
+                {
+                    if (projects.Any(pid => s.ProjectGUID == pid))
+                    {
+                        sheets.Add(s);
+                    }
+                }
+            }
+
+            var q = from s in sheets
+                    join p in ProjectRepo.GetCollections() on s.ProjectGUID equals p.ProjectGUID
+                    select new CostEstimateSheetVM
+                    {
+                        SheetGUID = s.SheetGUID,
+                        SheetID = s.SheetID,
+                        SheetName = s.SheetName,
+                        ProjectName = p.ProjectName,
+                        ProjectGUID = s.ProjectGUID,
+                        CreateDate = s.CreateDate,
+                        Description = s.Description,
+                        ModifiedDate = s.ModifiedDate
+                    };
+
+            ViewBag.Count = q.ToList().Count();
+
+            return PartialView(q.ToList());
+        }
+
 
         #endregion
     }
