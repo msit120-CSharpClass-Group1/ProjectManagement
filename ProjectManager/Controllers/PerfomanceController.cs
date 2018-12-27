@@ -66,7 +66,7 @@ namespace ProjectManager.Controllers
             if (ProjectGUID != null)
             {
                 ProjectMemberScoreVM vm = new ProjectMemberScoreVM();
-                vm.GroupMemberTaskScore = taskRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID && p.EmployeeGUID != null).GetLeafTasks()
+                vm.GroupMemberTaskScore = taskRepo.GetCollections().Where(p => p.ProjectGUID == ProjectGUID && p.EmployeeGUID != null && p.Employee.JobTitle.TitleName=="工程師").GetLeafTasks()
                     .GroupBy(g => g.Employee.EmployeeName)
                     .Select(g => new Group<string, Tasks> { Key = g.Key, value = g, Avg = g.Average(p => p.ReviewScore) });
                 return View(vm);          
@@ -117,6 +117,22 @@ namespace ProjectManager.Controllers
         }
 
         #region ScoreChart
+        public ActionResult TaskScoreAVGReviewChart(Tasks _task)
+        {
+            ChartData<SingleColorChartDataset<int>> chartData = new ChartData<SingleColorChartDataset<int>>();
+
+            chartData.labels = ProjectMembersRepo.GetCollections().Where(p => p.ProjectGUID == _task.ProjectGUID && p.Employee.JobTitle.TitleName =="工程師" ).Select(p => p.Employee.EmployeeName).ToList();
+
+            chartData.datasets.Add(new SingleColorChartDataset<int>
+            {
+                label = "專案任務平均分數",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 1)",
+                data = taskRepo.GetCollections().Where(t => t.ProjectGUID == _task.ProjectGUID && t.ReviewScore != null).Where(t=> t.Employee.JobTitle.TitleName == "工程師")
+                .GroupBy(t => t.EmployeeGUID).Select(t => (int)t.Average(ta =>ta.ReviewScore)).ToList()
+            });
+            return Content(JsonConvert.SerializeObject(chartData), "application/json");
+        }
         public ActionResult WatchChart(ProjectMembers _projectMember)
         {
             ChartData<SingleColorChartDataset<int>> chartData = new ChartData<SingleColorChartDataset<int>>();
