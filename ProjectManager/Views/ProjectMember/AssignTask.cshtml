@@ -412,9 +412,13 @@
                     }
                     else if (BarValue >= 100 && BarValue <= 200){
                         backTaskBar.removeClass().addClass("progress-bar progress-bar-striped bg-warning");
-                    }
+                    }                   
                     backTaskBar.width(BarValue + "%");
                     backTaskBar.text(BarValue + "%");
+                    if (BarValue<=3)
+                    {
+                        backTaskBar.html("<font color='red'>目前無進行中工作</font>");
+                    }
                     $.ajax({
                         url: '@Url.Action("CancelTask", "ProjectMember")',
                         data: {"TaskGUID": TaskGUID},

@@ -181,7 +181,7 @@ namespace ProjectManager.Controllers
             var memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == _tasks.EmployeeGUID).Select(m => m.MemberGUID).FirstOrDefault();
             if (memberGUID != Guid.Empty)
             {
-                Guid CalendarGUID = GetallCal.Where(c => c.Subject == _tasks.TaskName && c.MemberGUID == memberGUID).Select(c => c.CalendarGUID).Single();
+                Guid CalendarGUID = GetallCal.Where(c => c.Subject == _tasks.TaskName && c.MemberGUID == memberGUID).Select(c => c.CalendarGUID).FirstOrDefault();
                 calRe.Delete(calRe.Find(CalendarGUID));
             }
             _tasks.EmployeeGUID = null;
