@@ -238,8 +238,8 @@
             if (@jobTitleID == @((int)PermissionBL.Emp_Title.Admin) || @jobTitleID == @((int)PermissionBL.Emp_Title.PM))
             {
                 $('#ProjectDetail_nav').load("@Url.Action("GetProjectDetailNav", "ProjectDetails")", function () {
-                    $('#ProjectDetail_nav').find('#nav-repo-tab').css('background-color', '#dddfe2');
-                });
+                    $('#ProjectDetail_nav').find('#nav-repo-tab').css('border-bottom', 'solid');
+                });                
             }
         });
 
