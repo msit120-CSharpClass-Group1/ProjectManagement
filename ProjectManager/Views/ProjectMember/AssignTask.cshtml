@@ -161,7 +161,8 @@
                 <input type="hidden" id="rowcount" name="TotalRow" />
                 <input type="hidden" id="firstrow" name="FirstRow" />
                 <input type="hidden" id="lastrow" name="LastRow" />
-                <input type="button" class="btn btn-danger" id="reset" value="重新分配">                
+                <input type="hidden" id="mappingTime" name="MappingTime" value="@DateTime.Now" />
+                <input type="button" class="btn btn-danger" id="reset" value="重新分配">
             </div>
         </div>
         }
@@ -237,7 +238,7 @@
                 $(".droppable").droppable({
                     drop: function (event, ui)
                     {
-                        $(".droppable").stop(true, true);                       
+                        $(".droppable").stop(true, true);
                         var empID = $(this).prev().children("p").data("tag");
                         var empName = $(this).prev().text();
                         var taskGUID = ui.draggable.data("tag2");
@@ -403,7 +404,7 @@
                     });
                     $('#exampleModal').modal('show');
                 })
-                
+
                 $("#exampleModal").on("click", 'a', function ()//Change LoadingBar and Cancel Tasks
                 {
                     var thisWorkHours = parseInt($(this).parent().prev().text());
@@ -415,7 +416,7 @@
                     }
                     else if (BarValue >= 100 && BarValue <= 200){
                         backTaskBar.removeClass().addClass("progress-bar progress-bar-striped bg-warning");
-                    }                   
+                    }
                     backTaskBar.width(BarValue + "%");
                     backTaskBar.text(BarValue + "%");
                     if (BarValue<=3)

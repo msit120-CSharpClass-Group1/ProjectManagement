@@ -88,6 +88,7 @@ namespace ProjectManager.Controllers
             var q = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID).GetLeafTasks();
             ViewBag.LoadTask = q.Where(p => p.TaskStatusID == 1);
             ViewBag.Workload = tasks.GetCollections().GetLeafTasks().GetTeamWorkLoad();
+
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
 
@@ -136,8 +137,8 @@ namespace ProjectManager.Controllers
                     tasks.UpdateList(tasklist);
                     calRe.AddList(eventlist);
                 }
-                Response.Cookies["MappingTaskDT"].Value = HttpUtility.UrlEncode(Convert.ToString(DateTime.Now), System.Text.Encoding.Default);
-                Response.Cookies["MappingTaskDT"].Expires = DateTime.Now.AddDays(1);
+            Response.Cookies["MappingTaskDT"].Value = HttpUtility.UrlEncode(Request.Form["MappingTime"], System.Text.Encoding.Default);          
+            Response.Cookies["MappingTaskDT"].Expires = DateTime.Now.AddDays(1);
             //}
             //catch { }
             return RedirectToAction("AssignTask");
@@ -182,35 +183,34 @@ namespace ProjectManager.Controllers
 
         public ActionResult CancelTask(Guid TaskGUID)
         {
+            Tasks _tasks = tasks.Find(TaskGUID);
+            var GetallCal = calRe.GetCollections();
+            var memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == _tasks.EmployeeGUID).Select(m => m.MemberGUID).FirstOrDefault();
             try
             {
-                Tasks _tasks = tasks.Find(TaskGUID);
-                var GetallCal = calRe.GetCollections();
-                var memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == _tasks.EmployeeGUID).Select(m => m.MemberGUID).FirstOrDefault();
                 if (memberGUID != Guid.Empty)
                 {
                     Guid CalendarGUID = GetallCal.Where(c => c.Subject == _tasks.TaskName && c.MemberGUID == memberGUID).Select(c => c.CalendarGUID).FirstOrDefault();
                     calRe.Delete(calRe.Find(CalendarGUID));
                 }
-                _tasks.EmployeeGUID = null;
-                _tasks.TaskStatusID = 1;
-                _tasks.IsRead = true;
-                tasks.Update(_tasks);
-                _tasks.ParentTaskStatusUpdate(tasks, 1);
             }
             catch { }
+            _tasks.EmployeeGUID = null;
+            _tasks.TaskStatusID = 1;
+            _tasks.IsRead = true;
+            tasks.Update(_tasks);
+            _tasks.ParentTaskStatusUpdate(tasks, 1);
             return Content("已退回分配工作項目清單");
         }
-
         #region ExportExcelAction
         public ActionResult ExportToExcel()
         {
-            //var Date = DateTime.Parse(HttpUtility.UrlDecode(Request.Cookies["MappingTaskDT"].Value, System.Text.Encoding.Default));
+            var Date = DateTime.Parse(HttpUtility.UrlDecode(Request.Cookies["MappingTaskDT"].Value, System.Text.Encoding.Default));
             var ProjectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var gv = new GridView();
-            var ProjectName = projectRe.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).Select(p => p.ProjectName).FirstOrDefault();           
+            var ProjectName = projectRe.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).Select(p => p.ProjectName).FirstOrDefault();
             var ExcelData = from tasks in tasks.GetCollections()
-                            where tasks.ProjectGUID == ProjectGUID && tasks.EmployeeGUID != null && tasks.AssignedDate<DateTime.Now
+                            where tasks.ProjectGUID == ProjectGUID && tasks.EmployeeGUID != null && tasks.AssignedDate>= Date
                             select new
                             {
                                 作業名稱 = tasks.TaskName,
