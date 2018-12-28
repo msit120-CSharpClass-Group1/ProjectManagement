@@ -74,7 +74,7 @@ namespace ProjectManager.Controllers
                 label = "dataset",
                 backgroundColor = colors,
                 borderColor = colors,
-                data = rootTasks.GetRootTasksWorkTimeSum(_tasks).ToList()
+                data = rootTasks.GetRootTasksEstWorkTimeSum(_tasks).ToList()
             });
             return Json(_data, JsonRequestBehavior.AllowGet);
         }
@@ -83,10 +83,19 @@ namespace ProjectManager.Controllers
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var members = projectMembersRepo.GetCollections().Where(m => m.ProjectGUID == _projectGUID).Distinct();
             ChartData<SingleColorChartDataset<int>> _data = new ChartData<SingleColorChartDataset<int>>();
-            _data.labels.AddRange(members.Select(m => m.Employee.EmployeeName));
+            _data.labels.AddRange(members.Select(m => m.Employee.EmployeeName));           
             _data.datasets.Add(new SingleColorChartDataset<int>()
             {
-                label = "工時總和",
+                label = "預計工時總和",
+                backgroundColor = "#4B0082",
+                borderColor = "#4B0082",
+                data = members.GetEstWorkTimeSumOfProjectMembers(taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID)),
+                fill = false,
+                type = "line"
+            });
+            _data.datasets.Add(new SingleColorChartDataset<int>()
+            {
+                label = "實際工時總和",
                 backgroundColor = "#007BFF",
                 borderColor = "#007BFF",
                 data = members.GetWorkTimeSumOfProjectMembers(taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID)),

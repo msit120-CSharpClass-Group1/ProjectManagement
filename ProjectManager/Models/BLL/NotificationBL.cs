@@ -8,21 +8,16 @@ namespace ProjectManager.Models.BLL
 {
     public static class NotificationBL
     {
-        public static List<NotificationVM> GetNotifications(this Members _members)
+        public static List<NotificationVM> GetNotifications(this Members _members, List<Tasks> tasks, List<ProjectMembers> projectMembers, List<Calendar> calendars)
         {
-            IRepository<Tasks> tasks = new Repository<Tasks>();
-            IRepository<ProjectMembers> projectMembers = new Repository<ProjectMembers>();
-            IRepository<Calendar> calendars = new Repository<Calendar>();
-
-
             List<NotificationVM> _GetNotifications = new List<NotificationVM>();
-            var _tasks = tasks.GetCollections()
+            var _tasks = tasks
                 .Where(n => n.EmployeeGUID == _members.EmployeeGUID)
                 .Select(n => new { n.TaskName, n.AssignedDate, n.IsRead, n.EmployeeGUID, n.Project.ProjectName, n.ProjectGUID, n.Project.Employee1.EmployeeName });
-            var _projectMember = projectMembers.GetCollections()
+            var _projectMember = projectMembers
                 .Where(n => n.EmployeeGUID == _members.EmployeeGUID)
                 .Select(n => new { n.ProjectGUID, n.Project.ProjectName, n.Project.Employee1.EmployeeName, n.IsRead, n.InvideDate });
-            var _calendars = calendars.GetCollections()
+            var _calendars = calendars
                 .Where(n => n.Members.EmployeeGUID == _members.EmployeeGUID&& n.CategoryID ==2)
                 .Select(n => new { n.Subject, n.IsRead, n.Start ,n.CreateDate});
             foreach (var t in _tasks)
