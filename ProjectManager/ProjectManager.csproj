@@ -51,8 +51,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="LinqToExcel, Version=1.11.0.0, Culture=neutral, PublicKeyToken=9c8ea65a58f03f1f, processorArchitecture=MSIL">
-      <HintPath>..\packages\LinqToExcel.1.11.0\lib\LinqToExcel.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.0.0.999, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.0.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -76,6 +76,18 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NPOI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.4.1\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -84,15 +96,6 @@
     </Reference>
     <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
-      <HintPath>..\packages\LinqToExcel.1.11.0\lib\Remotion.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.Data.Linq, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
-      <HintPath>..\packages\LinqToExcel.1.11.0\lib\Remotion.Data.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="Remotion.Interfaces, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
-      <HintPath>..\packages\LinqToExcel.1.11.0\lib\Remotion.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -316,7 +319,6 @@
     <Content Include="Models\ProjectManagerModel.edmx.diagram">
       <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
     </Content>
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
@@ -410,6 +412,7 @@
       <DependentUpon>ProjectManagerModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DataObject\AllowCrossSiteJsonAttribute.cs" />
+    <Compile Include="Models\DataObject\ExcelTasks.cs" />
     <Compile Include="Models\DataObject\Grouped.cs" />
     <Compile Include="Models\DataObject\StoredProcedureForDemo.cs" />
     <Compile Include="Models\Department.cs">

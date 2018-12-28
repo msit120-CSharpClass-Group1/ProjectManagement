@@ -72,31 +72,27 @@
 }
 @{
     var project = (Project)ViewBag.Project;
-    if (project != null)
-    {
-        if (project.ProjectID == "P18006")
-        {
-            <h4>@project.ProjectID &nbsp; @project.ProjectName<span><button id="demoBtn" type="button" class="btn btn-default ml-3">Demo</button></span></h4>
-        }
-        else
-        {
-            <h4>@project.ProjectID &nbsp; @project.ProjectName</h4>
-        }
-
-    }
+    <h4 id="title_project" data-projectGUID="@project.ProjectGUID">
+        @project.ProjectID &nbsp; @project.ProjectName
+        <span>            
+            <button type="button" id="upload_btn" class="btn btn-primary">
+                <span class="mr-2"><i class="fas fa-file-upload"></i></span> 匯入Excel
+            </button>
+        </span>
+    </h4>
+   
 }
 
 
-
-<button type="button" id="upload_btn" class="btn btn-primary">
-    <i class="fas fa-file-upload"></i> 匯入Excel
-</button>
-
+@*<button type="button" id="upload_btn" class="btn btn-primary">
+        <span class="mr-2"><i class="fas fa-file-upload"></i></span> 匯入Excel
+    </button>*@
 
 <div id="tasks_layout">
     <div id="ganttContainer" style="width: 100%; height: 500px" hidden></div>
     <div id="treeGridContainer"></div>
 </div>
+
 <!--Modal For Import Comfirm-->
 <div class="modal" id="ExcelImportConfirmModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -108,10 +104,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="upload_form" action="@Url.Action("ImportExcel")" method="post"  enctype="multipart/form-data">
+                <form id="upload_form" action="@Url.Action("ImportExcel")" method="post" enctype="multipart/form-data">
                     <div class="row ml-3">
                         選擇檔案:&nbsp;
-                        <input id="import_input" type="file" name="file" accept=".xls">
+                        <input id="file" type="file" name="file" accept=".xls">
                     </div>
                 </form>
             </div>
@@ -278,7 +274,7 @@
     <script src="~/Scripts/jquery.treegrid.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#nav-projectDistribute-tab').css('background-color', '#dddfe2');
+            $('#nav-projectDistribute-tab').css('border-bottom', 'solid');
 
             $('.rightOpenbtn').html('<i class="fas fa-plus"></i>').mouseup(function () {
                 $(this).delay(500);
@@ -524,17 +520,28 @@
                 location.reload();
             });
             $('#upload_btn').click(function () { $('#ExcelImportConfirmModal').modal('show'); });
-            $('#confired_import').click(ImportExcel);
-               //$('#upload_form').serialize()
-            function ImportExcel() {
-                //var data = $('#upload_form').serialize();
-                //$('#upload_form').submit();
+            $('#confired_import').click(function () {
+                $.ajax({
+                    url: "@Url.Action("ImportExcel", "ProjectDetails")",
+                    type: 'POST',
+                    cache: false,
+                    data: new FormData($('#upload_form')[0]),
+                    processData: false,
+                    contentType: false
+                }).done(function (result) {
+                    if (parseInt(result)) {
+                        alert("上傳失敗：沒有檔案");
+                    }
+                    else {
+                        var projectGuid = $('#title_project').attr('data-projectGUID');
+                        $.post("@Url.Action("InsertExcelToDB", "ProjectDetails")",
+                            { fileName: result, projectGUID: projectGuid }, function (data) { LoadTreeGrid(); });
+                        $('#ExcelImportConfirmModal').modal('hide');
+                    }
+                });
+            });
 
 
-                @*$.post("@Url.Action("ImportExcel", "ProjectDetails")", { file: $('#import_input').val() }, function (result) {
-                    console.log(result);
-                });*@
-            }
 
         });
     </script>
