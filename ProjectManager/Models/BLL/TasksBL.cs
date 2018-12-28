@@ -91,6 +91,20 @@ namespace ProjectManager.Models
 
             return rootTasksCompletedRate;
         }
+        public static IEnumerable<int> GetRootTasksEstWorkTimeSum(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
+        {
+            List<int> rootTasksWorkTimeSum = new List<int>();
+            TreeGridModel treeGrid = new TreeGridModel(tasksFromRepo.ToList());
+            foreach (var root in rootTasks)
+            {
+                treeGrid.ChildLeafTasks = new List<Tasks>();
+                treeGrid.GetChildLeafTasks(root);
+                int _sum = (int)treeGrid.ChildLeafTasks.ToList().Select(t => t.EstWorkTime).Sum();
+                rootTasksWorkTimeSum.Add(_sum);
+            }
+            return rootTasksWorkTimeSum;
+        }
+
         public static IEnumerable<int> GetRootTasksWorkTimeSum(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
         {
             List<int> rootTasksWorkTimeSum = new List<int>();
@@ -104,6 +118,7 @@ namespace ProjectManager.Models
             }
             return rootTasksWorkTimeSum;
         }
+
         public static IEnumerable<int> GetRootTasksResourceSum(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
         {
             List<int> rootResourceSum = new List<int>();
@@ -119,13 +134,24 @@ namespace ProjectManager.Models
             }
             return rootResourceSum;
         }
-        public static IEnumerable<int> GetWorkTimeSumOfProjectMembers(this IEnumerable<ProjectMembers> projectMembers, IEnumerable<Tasks> tasksFromRepo)
+        public static IEnumerable<int> GetEstWorkTimeSumOfProjectMembers(this IEnumerable<ProjectMembers> projectMembers, IEnumerable<Tasks> tasksFromRepo)
         {
             List<int> workTimeSums = new List<int>();
             var leafTasks = tasksFromRepo.GetLeafTasks();
             foreach (var member in projectMembers)
             {
                 int _sum = (int)leafTasks.Where(t => t.EmployeeGUID == member.EmployeeGUID).Select(t => t.EstWorkTime).Sum();
+                workTimeSums.Add(_sum);
+            }
+            return workTimeSums;
+        }
+        public static IEnumerable<int> GetWorkTimeSumOfProjectMembers(this IEnumerable<ProjectMembers> projectMembers, IEnumerable<Tasks> tasksFromRepo)
+        {
+            List<int> workTimeSums = new List<int>();
+            var leafTasks = tasksFromRepo.GetLeafTasks();
+            foreach (var member in projectMembers)
+            {
+                int _sum = (int)leafTasks.Where(t => t.EmployeeGUID == member.EmployeeGUID).Select(t => t.WorkTime).Sum();
                 workTimeSums.Add(_sum);
             }
             return workTimeSums;
