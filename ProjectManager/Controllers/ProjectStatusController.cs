@@ -53,7 +53,6 @@ namespace ProjectManager.Controllers
             ProjectStatus _projectStatus = ProStatusRepository.Find(id);
             ProStatusRepository.Delete(_projectStatus);
             return RedirectToAction("Index");
-
         }
 
 

@@ -52,7 +52,7 @@
 {
     <button class="btn btn-outline-dark" id="ExportExcelDetail"><i class="fas fa-file-excel"></i>匯出分配總表</button>
 }
-<img src="~/image/Excelicon.png" style="width:50px;" />
+
 <button type="button" class="btn btn-light" id="ExportExcel" onclick="exportExcel()" style="margin:10px"><i class="fas fa-file-export"></i>匯出簡易分配表</button>
 <button class="btn btn-outline-dark" id="ExportExcelalter"><i class="fas fa-file-export"></i>匯出分配總表</button>
 <form method="post" action="~/ProjectMember/EditTaskM" class="form-horizontal" style="margin:auto">
@@ -230,7 +230,7 @@
     <script>
         $(document).ready(function ()
         {
-            $('#nav-taskDistribute-tab').css('background-color', '#dddfe2');
+            $('#nav-taskDistribute-tab').css('background-color', '#dddfe2').css("border-bottom","solid");
                 var topTable = $("#mappingTable>tbody");
                 var submitCount = 0;
                 var flag = true;
