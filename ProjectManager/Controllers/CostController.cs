@@ -574,6 +574,10 @@ namespace ProjectManager.Controllers
             return PartialView(q.ToList());
         }
 
+        public ActionResult CreateEstimationSheet()
+        {
+            return PartialView();
+        }
 
         #endregion
     }

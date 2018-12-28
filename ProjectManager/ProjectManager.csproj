@@ -646,6 +646,7 @@
     <Content Include="Views\ProjectMBackside\EditMember.cshtml" />
     <Content Include="Views\Cost\CostEstimation.cshtml" />
     <Content Include="Views\Cost\GetCostEstimationSheets.cshtml" />
+    <Content Include="Views\Cost\CreateEstimationSheet.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

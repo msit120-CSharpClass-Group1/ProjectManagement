@@ -32,7 +32,7 @@
     </style>
 }
 
-<div class="ml-5">
+<div class="ml-3">
     <form class="form-inline">
         <div class="form-group mr-3">
             <div class="input-group-prepend">
@@ -51,7 +51,7 @@
         </div>
     </form>
 </div>
-
+<button type="button" class="btn btn-primary m-3">新增專案估算單</button>
 
 <div id="PartialView" class="mt-3">
 </div>
@@ -156,6 +156,22 @@
             $("#ul_costManagement").slideDown();
             $("#li_Charts").addClass("active");
 
+            LoadProjects();
+            LoadSheets();
+            
+            $("#RequiredDeptGUID").change(() =>
+            {
+                LoadSheets();
+                LoadProjects();
+            });
+
+            $("#Select_ProjectName").change(() =>
+            {
+                LoadSheets();
+            });
+
+            LoadStanderPool();
+
             function LoadProjects()
             {
                 var optionlabel = $("<option></option>").text("請選擇專案").val("");
@@ -175,19 +191,8 @@
                         $("#Select_ProjectName").html(docFrag);
                     });
                 }
-            };
+            }
 
-            LoadProjects();
-
-            $("#RequiredDeptGUID").change(() =>
-            {
-                LoadProjects();
-            });
-
-            $("#Select_ProjectName").change(() =>
-            {
-                LoadSheets();
-            });            
             function LoadSheets()
             {
                 var DepartmentOpt = $("#RequiredDeptGUID>:selected");
@@ -208,7 +213,6 @@
                 }).fadeIn();
             }
 
-            LoadStanderPool();
             function LoadStanderPool()
             {
                 $.getJSON("@Url.Action("GetStandardPool","Cost")", function (data)
