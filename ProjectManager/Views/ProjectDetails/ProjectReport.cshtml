@@ -20,29 +20,34 @@
             flex-wrap: wrap;
             justify-content: center;
         }
+
+        .chart-layout {
+            height: 370px;
+        }
     </style>
 
 }
+
 <div class="row mb-3">
     <div class="col-lg-6 col-sm-12">
-        <div id="RootTasksCompletedRateContainer" class="chart-container bg-light p-3">
+        <div id="RootTasksCompletedRateContainer" class="chart-container bg-light p-3 chart-layout">
             <canvas id="RootTasksCompletedRateChart"></canvas>
         </div>
     </div>
     <div class="col-lg-6 col-sm-12">
-        <div id="RootTasksSumOfWorkTimeContainer" class="chart-container bg-light p-3">
+        <div id="RootTasksSumOfWorkTimeContainer" class="chart-container bg-light p-3 chart-layout">
             <canvas id="RootTasksSumOfWorkTimeChart"></canvas>
         </div>
     </div>
 </div>
 <div class="row mb-3">
     <div class="col-lg-6 col-sm-12">
-        <div id="MemberWorkTimeContainer" class="chart-container bg-light p-3">
+        <div id="MemberWorkTimeContainer" class="chart-container bg-light p-3 chart-layout">
             <canvas id="MemberWorkTimeSumChart"></canvas>
         </div>
     </div>
-   <div class="col-lg-6 col-sm-12">
-        <div id="TasksByStatusContainer" class="chart-container bg-light p-3">
+    <div class="col-lg-6 col-sm-12">
+        <div id="TasksByStatusContainer" class="chart-container bg-light p-3 chart-layout">
             <canvas id="TasksByStatusChart"></canvas>
         </div>
     </div>
@@ -53,7 +58,7 @@
     <script src="~/Scripts/Chart.min.js"></script>
     <script>
         $(document).ready(function () {
-            
+
 
             Chart.defaults.global.defaultFontFamily = 'Noto Sans CJK TC';
             Chart.defaults.global.defaultFontSize = 16;
@@ -71,6 +76,7 @@
                             type: 'horizontalBar',
                             data: datas,
                             options: {
+                                maintainAspectRatio: false,
                                 elements: {
                                     rectangle: {
                                         borderWidth: 0,
@@ -126,6 +132,7 @@
                             type: 'doughnut',
                             data: datas,
                             options: {
+                                maintainAspectRatio: false,
                                 responsive: true,
                                 legend: {
                                     position: 'top',
@@ -148,9 +155,10 @@
                 $.getJSON("@Url.Action("ProjectMembersEstWorkTimeSum", "ProjectDetails")", null, function (datas) {
                     var MembersSumOfWorkTimeChart = new Chart($('#MemberWorkTimeSumChart'),
                         {
-                            type: 'line',
+                            type: 'bar',
                             data: datas,
                             options: {
+                                maintainAspectRatio: false,
                                 responsive: true,
                                 legend: {
                                     display: false,
@@ -203,8 +211,8 @@
                             data: datas,
                             options:
                             {
+                                maintainAspectRatio: false,
                                 responsive: true,
-                                maintainAspectRatio: true,
                                 legend:
                                 {
                                     position: 'top',
@@ -231,11 +239,11 @@
             {
                 $('#ProjectDetail_nav').load("@Url.Action("GetProjectDetailNav", "ProjectDetails")", function () {
                     $('#ProjectDetail_nav').find('#nav-repo-tab').css('background-color', '#dddfe2');
-                });                
+                });
             }
         });
 
-        
+
 
     </script>
     <style>
