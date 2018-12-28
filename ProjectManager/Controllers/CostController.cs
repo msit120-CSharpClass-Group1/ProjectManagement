@@ -576,6 +576,8 @@ namespace ProjectManager.Controllers
 
         public ActionResult CreateEstimationSheet()
         {
+            ViewBag.ExpCats = new SelectList(ResourceCatRepo.GetCollections(), "CategoryID", "CategoryName");
+
             return PartialView();
         }
 

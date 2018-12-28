@@ -29,12 +29,20 @@
                 padding: 4px 0;
             }
 
+        .bordered {
+            border: 1px solid lightgray;
+            border-radius: 0.25em;
+        }
+
+        .myselect {
+            max-width: 200px;
+        }
     </style>
 }
 
 <div class="ml-3">
     <form class="form-inline">
-        <div class="form-group mr-3">
+        <div class="input-group mr-3">
             <div class="input-group-prepend">
                 <lable class="input-group-text" for="RequiredDeptGUID">需求部門：</lable>
             </div>
@@ -43,15 +51,15 @@
             }
             @Html.DropDownList("RequiredDeptGUID", Departments, "請選擇部門", new { @class = "custom-select" })
         </div>
-        <div class="form-group">
+        <div class="input-group">
             <div class="input-group-prepend">
                 <lable class="input-group-text" for="Select_ProjectName">專案名稱：</lable>
             </div>
             <select id="Select_ProjectName" class="custom-select"></select>
         </div>
+        <button id="btn_CreateSheet" type="button" class="btn btn-primary m-3">新增專案估算單</button>
     </form>
 </div>
-<button type="button" class="btn btn-primary m-3">新增專案估算單</button>
 
 <div id="PartialView" class="mt-3">
 </div>
@@ -158,7 +166,7 @@
 
             LoadProjects();
             LoadSheets();
-            
+
             $("#RequiredDeptGUID").change(() =>
             {
                 LoadSheets();
@@ -171,6 +179,18 @@
             });
 
             LoadStanderPool();
+
+            $("#btn_CreateSheet").click(() =>
+            {
+                var PartialView = $("#PartialView");
+
+                PartialView.load("@Url.Action("CreateEstimationSheet", "Cost")", function ()
+                {
+                    Binding();
+
+                }).fadeIn();
+
+            });
 
             function LoadProjects()
             {
@@ -226,6 +246,33 @@
                     $("#RiskPreparationCost").val(data.RiskPreparationCost);
 
                 })
+            }
+
+            function Binding()
+            {
+                var TaskExpensesForm = $("#f_TaskExpenses");
+                TaskExpensesForm.on("click", ":button[name='btn_DeleteExpense']", DeleteExpense);
+                TaskExpensesForm.on("click", ":button[name='btn_AddExpense']", AddExpense);
+
+                function AddExpense()
+                {
+                    var StandardInputTile = $("#StandardInputTile").html();
+                    var newdiv = document.createElement("div");
+                    newdiv.classList.add("input-group", "mb-4");
+                    newdiv.innerHTML = StandardInputTile;
+                    var formgroup = $(this).parents("div[name='Task']").children(".form-group");
+                    formgroup.append(newdiv);
+                }
+
+                function DeleteExpense()
+                {
+                    var formgroup = $(this).parents("div[name='Task']").children(".form-group");
+                    var lastdiv = formgroup.children("div:last-child");
+                    if (lastdiv.attr("name") != "SalaryExpense")
+                    {
+                        lastdiv.remove();
+                    }
+                }
             }
         })
     </script>
