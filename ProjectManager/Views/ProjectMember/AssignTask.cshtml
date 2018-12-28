@@ -9,10 +9,6 @@
 {
     <link href="~/Content/WorkloadBar.css" rel="stylesheet" />
     <style>
-        /*div {
-            border: 0.5px solid pink
-        }*/
-
         #projectMemberDivL2 {
             width: 180px;
             float: left;
@@ -217,6 +213,7 @@
                         </thead>
                         <tbody></tbody>
                     </table>
+                    <p id="workHours" hidden></p>
                     <div id="notaskpic" hidden="hidden">
                         <img src="~/image/NoTask2.png" style="width:250px" />
                         <p style="display:inline" id="notaskMessage">目前在此專案沒有承接工作</p>
@@ -229,9 +226,9 @@
         </div>
     </div>
     @section script{
-        <script>
+    <script>
             $(document).ready(function () {
-                $('#nav-assignTask-tab').css('background-color', '#dddfe2');
+                $('#nav-taskDistribute-tab').css('border-bottom', 'solid');
                 var topTable = $("#mappingTable>tbody");
                 var submitCount = 0;
                 var flag = true;
@@ -361,11 +358,17 @@
                         }
                     });
                 })
+
+                let orginvalue;
+                let backTaskBar;
                 $(".mb-3").on("click", 'img', function () //觀看成員目前在此專案承接工作/退回工作
                 {
+                    orginvalue = parseInt($(this).parent().parent().siblings(".card-footer").children().children().text().substr(0, 3));
+                    backTaskBar = $(this).parent().parent().siblings(".card-footer").children().children();
                     var EmployeeGUID = $(this).parent().data("tag");
                     var EmployeeName = $(this).parent().text();
                     var docfrag = $(document.createDocumentFragment());
+                    let TotalEstWorkTime = 0;
                     $("#exampleModalLabel").text(EmployeeName);
                      $.ajax({
                         url: '@Url.Action("GetProjectMemberTasks", "ProjectMember")',
@@ -383,6 +386,8 @@
                                     var cell3 = $("<td></td>").html('<a class="btn alert-warning" title="取消這項工作"><i class="fas fa-undo"></i></a>');
                                     var row = $("<tr></tr>").append([cell1, cell2, cell3]);
                                     docfrag.append(row);
+                                    TotalEstWorkTime += _task.EstWorkTime;
+                                    $("#workHours").text(TotalEstWorkTime);
                                 })
                                 $("#PMemberTable>tbody").html(docfrag);
                             }
@@ -395,11 +400,25 @@
                     });
                     $('#exampleModal').modal('show');
                 })
-
-                $("#exampleModal").on("click", 'a', function ()
+                
+                $("#exampleModal").on("click", 'a', function ()//Change LoadingBar and Cancel Tasks
                 {
+                    var thisWorkHours = parseInt($(this).parent().prev().text());
                     var thisrow = $(this).parents().eq(1);
                     var TaskGUID = $(this).parents().eq(1).children('td:first').data("tag");
+                    var BarValue = orginvalue -= (thisWorkHours * 100 / 40);
+                    if (BarValue < 100) {
+                        backTaskBar.removeClass().addClass("progress-bar progress-bar-striped bg-success");
+                    }
+                    else if (BarValue >= 100 && BarValue <= 200){
+                        backTaskBar.removeClass().addClass("progress-bar progress-bar-striped bg-warning");
+                    }                   
+                    backTaskBar.width(BarValue + "%");
+                    backTaskBar.text(BarValue + "%");
+                    if (BarValue<=3)
+                    {
+                        backTaskBar.html("<font color='red'>目前無進行中工作</font>");
+                    }
                     $.ajax({
                         url: '@Url.Action("CancelTask", "ProjectMember")',
                         data: {"TaskGUID": TaskGUID},
@@ -433,16 +452,6 @@
                         }
                     });
                 })
-                //$(".progress").click(function ()
-                //{
-                //    var orginvalue = $(this).children().text();
-                //    orginvalue.substr(2);
-                //    alert(orginvalue);
-                    
-                //    //var orginvalue = $(this).children().width();
-                //    //orginvalue -= 8;
-                //    //$(this).children().attr("width")
-                //})
             })
             function exportExcel()
             {
@@ -454,7 +463,7 @@
             {
                 return $('<div/>').text(value).html();
             }
-        </script>
+    </script>
     }
 
     @section nav{

@@ -9,8 +9,10 @@ using System.Web;
 using System.Web.Mvc;
 using static System.Net.Mime.MediaTypeNames;
 using System.IO;
-using LinqToExcel;
 using System.Web.Configuration;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.HSSF.UserModel;
 
 namespace ProjectManager.Controllers
 {
@@ -72,7 +74,7 @@ namespace ProjectManager.Controllers
                 label = "dataset",
                 backgroundColor = colors,
                 borderColor = colors,
-                data = rootTasks.GetRootTasksWorkTimeSum(_tasks).ToList()
+                data = rootTasks.GetRootTasksEstWorkTimeSum(_tasks).ToList()
             });
             return Json(_data, JsonRequestBehavior.AllowGet);
         }
@@ -81,10 +83,19 @@ namespace ProjectManager.Controllers
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var members = projectMembersRepo.GetCollections().Where(m => m.ProjectGUID == _projectGUID).Distinct();
             ChartData<SingleColorChartDataset<int>> _data = new ChartData<SingleColorChartDataset<int>>();
-            _data.labels.AddRange(members.Select(m => m.Employee.EmployeeName));
+            _data.labels.AddRange(members.Select(m => m.Employee.EmployeeName));           
             _data.datasets.Add(new SingleColorChartDataset<int>()
             {
-                label = "工時總和",
+                label = "預計工時總和",
+                backgroundColor = "#4B0082",
+                borderColor = "#4B0082",
+                data = members.GetEstWorkTimeSumOfProjectMembers(taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID)),
+                fill = false,
+                type = "line"
+            });
+            _data.datasets.Add(new SingleColorChartDataset<int>()
+            {
+                label = "實際工時總和",
                 backgroundColor = "#007BFF",
                 borderColor = "#007BFF",
                 data = members.GetWorkTimeSumOfProjectMembers(taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID)),
@@ -201,44 +212,140 @@ namespace ProjectManager.Controllers
         }
         [HttpPost]
         public ActionResult ImportExcel(HttpPostedFileBase file)
-        {   
+        {
             if (file == null)
             {
-                return Json("上傳失敗：沒有檔案！", JsonRequestBehavior.AllowGet);
+                return Json(1, JsonRequestBehavior.AllowGet);
             }
-            if (file.ContentLength <= 0)
+            string path = Server.MapPath("~/Document/Excel/");
+            string filePath = Path.Combine(path, file.FileName);
+            if (!Directory.Exists(path))
             {
-                return Json("上傳失敗：檔案沒有內容！", JsonRequestBehavior.AllowGet);
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch(Exception e)
+                {
+                    return Json(e, JsonRequestBehavior.AllowGet);
+                }
             }
-            string folderPath = Server.MapPath("/Document/Excel");
-            string filePath = Path.Combine(folderPath, file.FileName);
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-            file.SaveAs(filePath);
 
-            return Json(file.FileName.ToString(), JsonRequestBehavior.AllowGet);
+            try
+            {
+                file.SaveAs(filePath);
+            }
+            catch (Exception e)
+            {
+                return Json(e, JsonRequestBehavior.AllowGet);
+            }
+            return Json(file.FileName, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult InsertExcelToDB(string fileName)
+        public ActionResult InsertExcelToDB(string fileName, Guid? projectGUID)
         {
-            //if (file.ContentLength > 0)
-            //{
-            //    Stream streamfile = file.InputStream; 
+            string path = Server.MapPath("~/Document/Excel/");
+            string filePath = Path.Combine(path, fileName);
+            if (fileName.Contains(".xlsx"))
+            {
+                XSSFWorkbook excel = null;
+                using (FileStream files = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    excel = new XSSFWorkbook(files);
+                }
+                ISheet sheet = excel.GetSheetAt(0);
+                List<ExcelTasks> excelContent = new List<ExcelTasks>();
+                for (int row = 1; row <= sheet.LastRowNum; row++)
+                {
+                    if (sheet.GetRow(row) != null)
+                    {
+                        ExcelTasks exceltask = new ExcelTasks();
+                        for (int c = 0; c <= sheet.GetRow(row).LastCellNum; c++)
+                        {
+                            if (sheet.GetRow(row).GetCell(c) == null) continue;
+                            switch (c)
+                            {
+                                case 0:
+                                    exceltask.ExcelTaskID = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 1:
+                                    exceltask.TaskName = sheet.GetRow(row).GetCell(c).StringCellValue;
+                                    break;
+                                case 2:
+                                    exceltask.ExcelParentTaskID = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 3:
+                                    exceltask.EstStartDate = sheet.GetRow(row).GetCell(c).DateCellValue;
+                                    break;
+                                case 4:
+                                    exceltask.EstEndDate = sheet.GetRow(row).GetCell(c).DateCellValue;
+                                    break;
+                                case 5:
+                                    exceltask.EstWorkTime = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 6:
+                                    exceltask.Description = sheet.GetRow(row).GetCell(c).StringCellValue;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        excelContent.Add(exceltask);
+                    }
+                }
+                taskRepo.AddList(excelContent.GetSortedExcelTasks((Guid)projectGUID));
+            }
+            else
+            {
+                HSSFWorkbook excel = null;
+                using (FileStream files = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    excel = new HSSFWorkbook(files);
+                }
+                ISheet sheet = excel.GetSheetAt(0);
+                List<ExcelTasks> excelContent = new List<ExcelTasks>();
+                for (int row = 1; row <= sheet.LastRowNum; row++)
+                {
+                    if (sheet.GetRow(row) != null)
+                    {
+                        ExcelTasks exceltask = new ExcelTasks();
+                        for (int c = 0; c <= sheet.GetRow(row).LastCellNum; c++)
+                        {
+                            if (sheet.GetRow(row).GetCell(c) == null) continue;
+                            switch (c)
+                            {
+                                case 0:
+                                    exceltask.ExcelTaskID = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 1:
+                                    exceltask.TaskName = sheet.GetRow(row).GetCell(c).StringCellValue;
+                                    break;
+                                case 2:
+                                    exceltask.ExcelParentTaskID = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 3:
+                                    exceltask.EstStartDate = sheet.GetRow(row).GetCell(c).DateCellValue;
+                                    break;
+                                case 4:
+                                    exceltask.EstEndDate = sheet.GetRow(row).GetCell(c).DateCellValue;
+                                    break;
+                                case 5:
+                                    exceltask.EstWorkTime = int.Parse(sheet.GetRow(row).GetCell(c).NumericCellValue.ToString());
+                                    break;
+                                case 6:
+                                    exceltask.Description = sheet.GetRow(row).GetCell(c).StringCellValue;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        excelContent.Add(exceltask);
+                    }
+                }
+                taskRepo.AddList(excelContent.GetSortedExcelTasks((Guid)projectGUID));
+            }           
 
-            var excelFile = new ExcelQueryFactory(fileName);
-            //excelFile.AddMapping<Tasks>(x => x.TaskID, "工作項目編號");
-            excelFile.AddMapping<Tasks>(x => x.TaskName, "工作項目名稱");
-            excelFile.AddMapping<Tasks>(x => x.Tasks2.TaskName, "父工作項目名稱");
-            excelFile.AddMapping<Tasks>(x => x.EstStartDate, "預計開始時間");
-            excelFile.AddMapping<Tasks>(x => x.EstEndDate, "預計結束時間");
-            excelFile.AddMapping<Tasks>(x => x.EstEndDate, "預計工期");
-            excelFile.AddMapping<Tasks>(x => x.EstEndDate, "說明");
-
-
-            //}
-            return Json("success", JsonRequestBehavior.AllowGet);
+            return Json(filePath, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult InsertTask(Tasks task)
