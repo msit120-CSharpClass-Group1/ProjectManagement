@@ -54,8 +54,8 @@ namespace ProjectManager.Controllers
             _data.datasets.Add(new SingleColorChartDataset<int>()
             {
                 label = "項目完成度",
-                backgroundColor = "#007BFF",
-                borderColor = "#007BFF",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 0.5)",
                 data = rootTasks.GetRootTasksCompletedRate(_tasks).ToList()
             });
             return Json(_data, JsonRequestBehavior.AllowGet);
@@ -63,7 +63,7 @@ namespace ProjectManager.Controllers
         public ActionResult RootTasksEstWorkTimeSum()
         {
             Guid _projectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
-            List<string> colors = new List<string>() { "#007BFF", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
+            List<string> colors = new List<string>() { "rgba(91, 155, 213, 0.5)", "#4B0082", "#ADD8E6", "#B0C4DE", "#7744FF", "#CCEEFF" };
             var _tasks = taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID).OrderBy(t => t.TaskID);
             var rootTasks = _tasks.GetRootTasks();
 
@@ -96,8 +96,8 @@ namespace ProjectManager.Controllers
             _data.datasets.Add(new SingleColorChartDataset<int>()
             {
                 label = "實際工時總和",
-                backgroundColor = "#007BFF",
-                borderColor = "#007BFF",
+                backgroundColor = "rgba(91, 155, 213, 0.5)",
+                borderColor = "rgba(91, 155, 213, 0.5)",
                 data = members.GetWorkTimeSumOfProjectMembers(taskRepo.GetCollections().Where(t => t.ProjectGUID == _projectGUID)),
                 fill = false,
             });
@@ -113,9 +113,9 @@ namespace ProjectManager.Controllers
 
             chartData.datasets.Add(new SingleColorChartDataset<int>
             {
-                label = "Count",
+                label = "數量",
                 backgroundColor = "rgba(91, 155, 213, 0.5)",
-                borderColor = "rgba(91, 155, 213, 1)",
+                borderColor = "rgba(91, 155, 213, 0.5)",
                 data = StatusRepo.GetCollections().CountTasksByStatus(_projectGUID),
             });
 
@@ -500,6 +500,14 @@ namespace ProjectManager.Controllers
             StoredProcedureForDemo storedProcedure = new StoredProcedureForDemo("InsertTasksForDemo");
             storedProcedure.Execute();            
             return Content("success", "application/json");
+        }
+        [HttpPost]
+        public ActionResult DragDropTasks(Guid? taskGuid, Guid? parentGuid)
+        {
+            Tasks _task = taskRepo.Find(taskGuid);
+            _task.ParentTaskGUID = parentGuid;
+            taskRepo.Update(_task);
+            return Json("success", JsonRequestBehavior.AllowGet);
         }
         #endregion
     }
