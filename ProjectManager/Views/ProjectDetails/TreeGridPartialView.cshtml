@@ -20,8 +20,8 @@
         @foreach (var task in @Model)
         {
             var class1 = "treegrid-" + task.orderID;
-            var class2 = task.parentOrderID == 0 ? "" : "treegrid-parent-" + task.parentOrderID;
-            <tr class="@class1 @class2" data-orderID="@task.orderID" data-taskGUID="@task.TaskGUID">
+            var class2 = task.parentOrderID == 0 ? "" : "treegrid-parent-" + task.parentOrderID;           
+            <tr class="@class1 @class2"  data-taskGUID="@task.TaskGUID" id="@task.TaskGUID">
                 <td>@task.TaskName</td>
                 <td><a href="#"><i class="fas fa-plus"></i></a></td>
                 <td data-TaskStatusID="@task.TaskStatusID">@task.TaskStatus.TaskStatusName</td>
