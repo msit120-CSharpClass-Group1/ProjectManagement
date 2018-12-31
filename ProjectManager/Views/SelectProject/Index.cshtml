@@ -122,6 +122,7 @@
 @section script{
     <script>
         $(document).ready(function () {
+            $('#li_MyBoard').addClass('active');
             var Overview = $('#ProjectsOverview');
             Overview.find('h4').on("click", function () {
                 var _dept = "#" + $(this).attr("data-Dept");

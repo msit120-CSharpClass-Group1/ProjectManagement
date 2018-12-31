@@ -225,7 +225,7 @@
             Overview.find('h4').on("click", function () {
                 var _dept = "#" + $(this).attr("data-Dept");
                 $(_dept).toggle("blind", {}, 300);
-                $(this).find("i").toggleClass("fas fa-caret-down").toggleClass("fas fa-caret-right");                
+                $(this).find("i").toggleClass("fas fa-caret-down").toggleClass("fas fa-caret-right");
             });
 
             $('#RequiredDeptGUID').change(GetEmployees);
@@ -264,16 +264,17 @@
                     }
                 });
             }
-            
+
 
             //Demo button
-            $('#demoBtn').click(function () {                
-                $.getJSON("@Url.Action("InsertProjectForDemo", "Projects")", null, function (data) {
-                    
+            $('#demoBtn').click(function () {
+                //demo with stored-procedure
+                @*$.getJSON("@Url.Action("InsertProjectForDemo", "Projects")", null, function (data) {
+
                 });
                 location.href = "/Projects/Index?ProjectStatusID=1";
-                @*$('#PGUID').val('5bba4082-1ae8-4898-9f50-25b1881d1236');
-                $('#ProjectName').val('Demo專案');
+                $('#PGUID').val('5bba4082-1ae8-4898-9f50-25b1881d1236');*@
+                $('#ProjectName').val('Demo_專案管理系統');
                 $('#RequiredDeptGUID').find('option[value="c703f18e-df3d-4cc2-b1fe-4f6a8d690bdc"]').prop('selected', true);
                 $.getJSON("@Url.Action("GetEmployeesByDept","Projects")", { DeptGUID:'c703f18e-df3d-4cc2-b1fe-4f6a8d690bdc'}, function (data) {
                     var docFrag = $(document.createDocumentFragment());
@@ -285,10 +286,10 @@
                 });
                 $('#ProjectStatusID').val(1);
                 $('#ProjectCategoryID').val(3);
-                $('#ProjectSupervisorDeptGUID').find('option:nth-child(7)').prop('selected', true);
-                $('#ProjectSupervisorGUID').find('option:nth-child(4)').prop('selected', true);
+                $('#ProjectSupervisorDeptGUID').find('option:nth-child(8)').prop('selected', true);
+                $('#ProjectSupervisorGUID').find('option:nth-child(20)').prop('selected', true);
                 $('#ProjectBudget').val(100000);
-                $('#EstEndDate').val('2019-01-07');*@
+                $('#EstEndDate').val('2019-02-07');
 
             });
         });

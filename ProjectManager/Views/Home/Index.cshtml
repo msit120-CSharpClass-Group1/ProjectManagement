@@ -79,6 +79,7 @@
     <script src="https://cdn.anychart.com/releases/v8/js/anychart-gantt.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function () {
+            $('#li_Dashboard').addClass('active').css('border-top','2px solid black');
             $('#mainContainer').hide();
             $('#left_div').on('click', 'span[name="projectLink"]', null, RedirectToMyBoard);
             $('#TitleCards').load("@Url.Action("GetTitleCardsPV","Home")");
