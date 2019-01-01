@@ -293,7 +293,11 @@ namespace ProjectManager.Controllers
                         excelContent.Add(exceltask);
                     }
                 }
-                taskRepo.AddList(excelContent.GetSortedExcelTasks((Guid)projectGUID));
+                //taskRepo.AddList(excelContent.GetSortedExcelTasks((Guid)projectGUID));
+                foreach (var task in excelContent.GetSortedExcelTasks((Guid)projectGUID))
+                {
+                    taskRepo.Add(task);
+                }
             }
             else
             {
@@ -342,8 +346,15 @@ namespace ProjectManager.Controllers
                         excelContent.Add(exceltask);
                     }
                 }
-                taskRepo.AddList(excelContent.GetSortedExcelTasks((Guid)projectGUID));
-            }           
+                //taskRepo.AddList(excelContent.GetSortedExcelTasks((Guid)projectGUID));
+                foreach (var task in excelContent.GetSortedExcelTasks((Guid)projectGUID))
+                {
+                    taskRepo.Add(task);
+                }
+            }
+
+            //Delete Excel file 
+            System.IO.File.Delete(filePath);           
 
             return Json(filePath, JsonRequestBehavior.AllowGet);
         }

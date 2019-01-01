@@ -130,7 +130,7 @@
                 <form id="upload_form" action="@Url.Action("ImportExcel")" method="post" enctype="multipart/form-data">
                     <div class="row ml-3">
                         選擇檔案:&nbsp;
-                        <input id="file" type="file" name="file" accept=".xls">
+                        <input id="file" type="file" name="file" accept=".xls,.xlsx">
                     </div>
                 </form>
             </div>
@@ -440,6 +440,7 @@
                      LoadTreeGrid();
                 });
                 $('button.rightOpenbtn').click();
+                ajaxLoader.show();
             }
             function GetAutoWorkTime() {
                 var _form = asideRightContainer.find('form');
@@ -471,13 +472,14 @@
                     });
             }
             $('#btn_ConfirmDelete').click(function () {
+                $('#DeleteAlarmModal').modal('hide');
+                ajaxLoader.show();
                 $.ajax({
                     url: "@Url.Action("DeleteTasks", "ProjectDetails")",
                     method: "post",
                     data: asideRightContainer.find('form').serialize(),
                     dataType: "json"
-                }).done(function (data) {
-                    $('#DeleteAlarmModal').modal('hide');
+                }).done(function (data) {                    
                     if (data.length > 0) {
                         $('#deleteRejectedMsg').text(data);
                         $('#DeleteRejectedModal').modal('show');
@@ -611,9 +613,11 @@
                         alert("上傳失敗：沒有檔案");
                     }
                     else {
+                        ajaxLoader.show();
                         var projectGuid = $('#title_project').attr('data-projectGUID');
                         $.post("@Url.Action("InsertExcelToDB", "ProjectDetails")",
                             { fileName: result, projectGUID: projectGuid }, function (data) { LoadTreeGrid(); });
+                        $('#file').val('');
                         $('#ExcelImportConfirmModal').modal('hide');
                     }
                 });
