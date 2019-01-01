@@ -149,7 +149,7 @@
                                 let EmpGUID = carditem.children("p").text();
                                 if (EmpGUID == EmployeeGUID)
                                 {
-                                    carditem.html('<img src="/image/sign-check-icon.png" style="width:300px;"/><h3 style="text-align:center;font-size:200;margin-top:auto"><strong>"'+ score +'"分</strong></h3>');
+                                    carditem.html('<img src="/image/sign-check-icon.png" style="width:250px;"/><h3 style="text-align:center;font-size:200;margin-top:auto"><strong>'+ score +'分</strong></h3>');
                                     carditem.fadeOut(1800, function () {$(this).remove()});                                  
                                 }
                             }
