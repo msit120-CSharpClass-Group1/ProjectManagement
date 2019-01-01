@@ -230,11 +230,11 @@
     <script>
         $(document).ready(function ()
         {
-            $('#nav-taskDistribute-tab').css('background-color', '#dddfe2').css("border-bottom","solid");
+            $('#nav-taskDistribute-tab').css("border-bottom","solid");
                 var topTable = $("#mappingTable>tbody");
                 var submitCount = 0;
                 var flag = true;
-            $(".draggable").draggable({ drag: function (e, ui) { $(".droppable").effect("highlight", {}, 2000); }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
+            $(".draggable").draggable({ drag: function (e, ui) { $(".droppable").effect("highlight", {}, 1500); }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
                 $(".droppable").droppable({
                     drop: function (event, ui)
                     {
@@ -261,7 +261,7 @@
                         {
                             var value = $("#mappingTable tr:eq('" + i + "')").children("td:eq(1)").text()
                             var name = $("#mappingTable tr:eq('" + i + "')").children("td:eq(0)").text()
-                            if (taskName == value && empName!= name)
+                            if (taskName == value && empName != name)
                             {
                                 $("#mappingTable tr:eq('" + i + "')").remove();
                             }
