@@ -10,7 +10,7 @@
         <label class="col-md-2 control-label">舊密碼</label>
         <div class="col-md-2">
             <input type="hidden" name="MemberGUID" value="@ViewBag.id" />
-            <input type="password" name="Password"/>
+            <input type="password" name="Password" />
         </div>
     </div>
     <div class="form-group">
@@ -22,7 +22,7 @@
     <div class="form-group">
         <label class="col-md-2 control-label">確認密碼</label>
         <div class="col-md-2">
-            <input type="password" name="RepeatPassword"/>
+            <input type="password" name="RepeatPassword" />
         </div>
     </div>
     <p>@ViewBag.msg</p>
@@ -33,4 +33,12 @@
         </div>
     </div>
 </form>
+@section script
+{
+    <script>
+        $(document).ready(function () {
+            $('#li_ChangePassword').addClass('active');
+        });
+    </script>
+}
 

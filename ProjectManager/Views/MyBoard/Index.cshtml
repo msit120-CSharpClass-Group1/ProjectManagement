@@ -680,7 +680,8 @@
             }
         }
 
-        $(document).ready(function () {
+    $(document).ready(function () {
+            $('#li_MyBoard').addClass('active');
             var colorarr = ["rgba(255, 167, 47,0.8)", "rgba(34, 185, 252,0.6)", "rgba(252, 222, 69,0.8)", "rgba(0, 228, 151,0.5)"];
             for (i = 2; i <= 5; i++) {
                 $("#listHeader-" + i).css("background-color", colorarr[i - 2]);
