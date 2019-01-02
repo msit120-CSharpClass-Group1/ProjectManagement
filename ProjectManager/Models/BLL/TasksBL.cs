@@ -310,6 +310,7 @@ namespace ProjectManager.Models
         public static IEnumerable<Tasks> GetSortedExcelTasks(this IEnumerable<ExcelTasks> excelTasks, Guid projectGUID)
         {
             List<Tasks> sortedTasks = new List<Tasks>();
+            excelTasks = excelTasks.OrderBy(x => x.ExcelTaskID).ToList();
             var roots = excelTasks.Where(x => x.ExcelParentTaskID == null);
             foreach (var root in roots)
             {
