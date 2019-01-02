@@ -605,36 +605,6 @@
             $(e.currentTarget).removeClass('hover');
         }
 
-        $('#btn_OK').mousedown(function () {
-            $('#alert').html('');
-            var id = $('#_TaskGUID').val();        
-            var elem = document.getElementById(id);
-            var taskStatusid = dropElem.getAttribute("data-taskStatusid");
-            var workTime = $('input[name="realWorkTime"]').val();
-            if ($('input[name="realWorkTime"]').val() == "" || isNaN(workTime)) {
-
-                $('#alert').css('color', 'red');
-                $('#alert').html('請輸入數值');
-               
-            } else
-            {
-                $.ajax({
-                    type: 'Post',
-                    url: '@Url.Action("EditTaskStatusID", "Myboard")',
-                    data: { id: cardGuid, TaskStatusID: taskStatusid, WorkTime: workTime },
-                    dataType: 'json'
-                }).done(function (datas) {
-                    if (datas == true) {
-                        dragCard.attr('data-statusGuid', taskStatusid);
-                        dropElem.appendChild(elem.parentNode.removeChild(elem));                       
-                        modal.modal('hide');
-                    }
-                });  
-            }
-            dragCard.children().removeClass('leftBorder');
-            $('input[name="realWorkTime"]').val('');
-        })
-
         function dropHandler(e) {
             e.preventDefault();
             var id = e.dataTransfer.getData('id');
@@ -679,6 +649,37 @@
                 });
             }
         }
+
+        $('#btn_OK').mousedown(function () {
+                $('#alert').html('');
+                var id = $('#_TaskGUID').val();        
+                var elem = document.getElementById(id);
+                var taskStatusid = dropElem.getAttribute("data-taskStatusid");
+                var workTime = $('input[name="realWorkTime"]').val();
+                if ($('input[name="realWorkTime"]').val() == "" || isNaN(workTime)) {
+
+                    $('#alert').css('color', 'red');
+                    $('#alert').html('請輸入數值');
+               
+                } else
+                {
+                    $.ajax({
+                        type: 'Post',
+                        url: '@Url.Action("EditTaskStatusID", "Myboard")',
+                        data: { id: cardGuid, TaskStatusID: taskStatusid, WorkTime: workTime },
+                        dataType: 'json'
+                    }).done(function (datas) {
+                        if (datas == true) {
+                            dragCard.attr('data-statusGuid', taskStatusid);
+                            dropElem.appendChild(elem.parentNode.removeChild(elem));                       
+                            modal.modal('hide');
+                        }
+                    });  
+                }
+                dragCard.children().removeClass('leftBorder');
+                $('input[name="realWorkTime"]').val('');
+        })
+
 
     $(document).ready(function () {
             $('#li_MyBoard').addClass('active');
@@ -880,8 +881,6 @@
             $(".checkLists").on('mousedown', '.btn-edit', function () {
                 var editinputTxt = $(this).parent().find('.edit-input').val();
                 var taskDetailGUID = taskDetail.attr('data-detailguid');
-
-                console.log(editinputTxt + ',' + taskDetailGUID);
                 $.ajax({
                     type: "Post",
                     url: '@Url.Action("EditTaskDatail", "Myboard")',
