@@ -440,7 +440,7 @@
                         <div class="listCards" data-tguid="@t.TaskGUID" data-statusGuid="@t.TaskStatusID" draggable="true" ondragstart="dragstart(event)" ondragend="dragEnd(event)" ondragleave="dragLeave(event)">
                             @if (t.TaskStatusID==2 && DateTime.Now.ToLocalTime() > t.EstEndDate )
                             {
-                                <a class="listCard" style="border-left:3px solid red;" data-tid="@t.TaskGUID">
+                                <a class="listCard leftBorder" data-tid="@t.TaskGUID">
                                     <span class="listCardTitle">@t.TaskName</span>
                                     <div class="badges">
                                         <div class="badge" title="待辦清單項目">
@@ -675,7 +675,7 @@
                             modal.modal('hide');
                         }
                     });  
-                }
+            }
                 dragCard.children().removeClass('leftBorder');
                 $('input[name="realWorkTime"]').val('');
         })
