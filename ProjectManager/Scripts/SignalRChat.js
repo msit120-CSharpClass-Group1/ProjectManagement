@@ -16,8 +16,9 @@ $(document).ready(function () {
         return $('<div />').text(content).html();
     }
 
-    $.connection.hub.start().done(function () {
-        $("#sendmessage").click(function (evt) {
+    $.connection.hub.start().done(function () {      
+        $("#sendmessage").click(function (evt)
+        {
             var nickname = $("#wantname").text(),
                 $message = $("#message"),
                 message = $message.val();
