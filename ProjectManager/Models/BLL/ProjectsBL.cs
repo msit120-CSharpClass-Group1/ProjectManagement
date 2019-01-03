@@ -21,13 +21,15 @@ namespace ProjectManager.Models
         /// <returns></returns>
         public static int GetLastProjectIntID(this IEnumerable<Project> projects)
         {
-            var q = projects.Select(n => n.ProjectID);
-            List<int> ProjectIntID = new List<int>();
-            foreach (var x in q)
+            var q = projects.Where(p=>p.ProjectID.Substring(1,2)==DateTime.Now.Year.ToString().Substring(2,2));
+            if (q.Count() > 0)
             {
-                ProjectIntID.Add(int.Parse(x.Substring(1, 5)));
+                return q.Select(n => int.Parse(n.ProjectID.Substring(1, 5))).Max();    
             }
-            return ProjectIntID.Max();
+            else
+            {
+                return int.Parse(DateTime.Now.Year.ToString().Substring(2, 2)) * 1000;
+            }
         }
         /// <summary>
         /// 回傳List&lt;GroupedProject>，將傳入值GroupBy(requiredDeptName)
