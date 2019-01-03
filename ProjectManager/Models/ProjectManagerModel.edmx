@@ -227,7 +227,7 @@
           <Key>
             <PropertyRef Name="CategoryID" />
           </Key>
-          <Property Name="CategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="CategoryName" Type="nvarchar" MaxLength="50" />
           <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
@@ -292,7 +292,7 @@
           <Property Name="WorkTime" Type="int" />
           <Property Name="TaskStatusID" Type="int" />
           <Property Name="EmployeeGUID" Type="uniqueidentifier" />
-          <Property Name="Tag" Type="nvarchar" MaxLength="10" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="50" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="TaskStatusIDChanged" Type="int" />
           <Property Name="AssignedDate" Type="datetime" />
@@ -1398,7 +1398,7 @@
           <Property Name="WorkTime" Type="Int32" />
           <Property Name="TaskStatusID" Type="Int32" />
           <Property Name="EmployeeGUID" Type="Guid" />
-          <Property Name="Tag" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Tag" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TaskStatusIDChanged" Type="Int32" />
           <Property Name="AssignedDate" Type="DateTime" Precision="3" />

@@ -107,7 +107,7 @@
                         <input type="checkbox" class="ckbox1" style="float:right;margin:12px 15px" value="@_emp.EmployeeGUID" />
                         @if (_emp.ProjectMembers.Average(p => p.PMscore) != null)
                         {
-                            <h4 style="display:inline;float:right"><span class="badge badge-light"> @_emp.ProjectMembers.Average(p => p.PMscore)</span></h4>
+                            <h4 style="display:inline;float:right"><span class="badge badge-light"> @Math.Round((double)_emp.ProjectMembers.Average(p => p.PMscore), 0)</span></h4>
                         }
                     </div>
                     }
