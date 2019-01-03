@@ -530,6 +530,15 @@ namespace ProjectManager.Controllers
             return Json(pool, JsonRequestBehavior.AllowGet);
         }
 
+        //public ActionResult CreateNewPool(CostPool pool)
+        //{
+        //    pool.PoolGUID = Guid.NewGuid();
+        //    pool.CreatedDate = DateTime.Now;
+        //    pool.ModifiedDate = DateTime.Now;
+        //    pool.
+
+        //}
+
         public ActionResult GetCostEstimationSheets(Guid? DepartmentID, Guid? ProjectID)
         {
             List<CostEstimateSheet> sheets = new List<CostEstimateSheet>();
@@ -574,11 +583,13 @@ namespace ProjectManager.Controllers
             return PartialView(q.ToList());
         }
 
-        public ActionResult CreateEstimationSheet()
+        public ActionResult CreateEstimationSheet(Guid? projectGUID)
         {
             ViewBag.ExpCats = new SelectList(ResourceCatRepo.GetCollections(), "CategoryID", "CategoryName");
+            ViewBag.RootTasks = TaskRepo.GetCollections().Where(t => t.ProjectGUID == projectGUID).GetRootTasks();
+            Project project = ProjectRepo.GetCollections().Where(p => p.ProjectGUID == projectGUID).FirstOrDefault();
 
-            return PartialView();
+            return PartialView(project);
         }
 
         #endregion

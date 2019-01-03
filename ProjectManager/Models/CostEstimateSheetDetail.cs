@@ -16,11 +16,12 @@ namespace ProjectManager.Models
     {
         public System.Guid DetailGUID { get; set; }
         public int DetailID { get; set; }
+        public Nullable<System.Guid> SheetGUID { get; set; }
         public Nullable<System.Guid> TaskGUID { get; set; }
-        public string TaskName { get; set; }
         public Nullable<System.Guid> ResourceGUID { get; set; }
-        public string ResourceName { get; set; }
         public Nullable<int> Quality { get; set; }
         public Nullable<decimal> Amount { get; set; }
+    
+        public virtual CostEstimateSheet CostEstimateSheet { get; set; }
     }
 }

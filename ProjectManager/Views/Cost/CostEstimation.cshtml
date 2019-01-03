@@ -37,6 +37,10 @@
         .myselect {
             max-width: 200px;
         }
+
+        .sp_TaskName {
+            cursor: pointer;
+        }
     </style>
 }
 
@@ -57,7 +61,7 @@
             </div>
             <select id="Select_ProjectName" class="custom-select"></select>
         </div>
-        <button id="btn_CreateSheet" type="button" class="btn btn-primary m-3">新增專案估算單</button>
+        <button id="btn_CreateSheet" type="button" class="btn btn-primary m-3 hide">新增專案估算單</button>
     </form>
 </div>
 
@@ -176,6 +180,7 @@
             $("#Select_ProjectName").change(() =>
             {
                 LoadSheets();
+                ToggleCreateSheet();
             });
 
             LoadStanderPool();
@@ -183,10 +188,15 @@
             $("#btn_CreateSheet").click(() =>
             {
                 var PartialView = $("#PartialView");
+                var datas = {
+                    projectGUID : $("#Select_ProjectName").val(),
+                }
 
-                PartialView.load("@Url.Action("CreateEstimationSheet", "Cost")", function ()
+                PartialView.load("@Url.Action("CreateEstimationSheet", "Cost")", datas, function ()
                 {
                     Binding();
+                    CalcWage();
+                    CalcCosts();
 
                 }).fadeIn();
 
@@ -248,11 +258,35 @@
                 })
             }
 
+            function ToggleCreateSheet()
+            {
+                var projectGUID = $("#Select_ProjectName>:selected").val();
+                if (projectGUID)
+                {
+                    $("#btn_CreateSheet").fadeIn();
+                }
+                else
+                {
+                    $("#btn_CreateSheet").fadeOut();
+                }
+            }
+
+
             function Binding()
             {
                 var TaskExpensesForm = $("#f_TaskExpenses");
+
+                TaskExpensesForm.on("click", ".sp_TaskName", ToggleTaskExp);
                 TaskExpensesForm.on("click", ":button[name='btn_DeleteExpense']", DeleteExpense);
                 TaskExpensesForm.on("click", ":button[name='btn_AddExpense']", AddExpense);
+                TaskExpensesForm.on("keyup", ".worktime", CalcWage);
+
+                function ToggleTaskExp()
+                {
+                    var formgroup = $(this).parents("div[name='Task']").children(".form-group");
+                    formgroup.slideToggle();
+
+                }
 
                 function AddExpense()
                 {
@@ -274,6 +308,50 @@
                     }
                 }
             }
+
+            function CalcWage()
+            {
+                var counter = $(".wage-counter");
+
+                for (var i of counter)
+                {
+                    var worktime = $(i).parent().siblings(".worktime").val();
+                    var WagePerHour = $("#WagePerHour").val();
+                    var wage = worktime * WagePerHour;
+                    var wagestr = "NT$" + (wage).toLocaleString("zh-tw");
+                    $(i).attr("data-amount", wage);
+                    $(i).html(wagestr);
+                }
+            }
+
+            function CalcCosts()
+            {
+                var ProjectMonths = $("#tb_FixedCosts").data("period");
+
+                var Rental = $("#RentalPerMonth").val() * ProjectMonths;
+                var Utility = $("#UtilityPerMonth").val() * ProjectMonths;
+                var OMC = $("#OtherManagementCosts").val() * ProjectMonths;
+                var Interest = $("#InterestExpense").val() * ProjectMonths;
+                var RiskPreparation = $("#RiskPreparationCost").val() * ProjectMonths;
+
+                var RentalString = "NT$ " + (Rental).toLocaleString("zh-tw");
+                var UtilityString = "NT$ " + (Utility).toLocaleString("zh-tw");
+                var OMCString = "NT$ " + (OMC).toLocaleString("zh-tw");
+                var InterestString = "NT$ " + (Interest).toLocaleString("zh-tw");
+                var RiskPreparationString = "NT$ " + (RiskPreparation).toLocaleString("zh-tw");
+
+                $("#Rental").text(RentalString);
+                $("#Utility").text(UtilityString);
+                $("#OMC").text(OMCString);
+                $("#Interest").text(InterestString);
+                $("#RiskPreparation").text(RiskPreparationString);
+
+                var sum = Rental + Utility + OMC + Interest + RiskPreparation;
+                var sumstr = "NT$ " + (sum).toLocaleString("zh-tw");
+
+                $("#result_FixedCost").text(sumstr);
+            }
+
         })
     </script>
 }

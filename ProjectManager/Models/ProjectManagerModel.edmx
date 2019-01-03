@@ -38,6 +38,11 @@
           <Property Name="SheetName" Type="nvarchar" MaxLength="50" />
           <Property Name="ProjectGUID" Type="uniqueidentifier" />
           <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Rental" Type="money" />
+          <Property Name="Utility" Type="money" />
+          <Property Name="OtherManagement" Type="money" />
+          <Property Name="Interest" Type="money" />
+          <Property Name="RiskPreparation" Type="money" />
           <Property Name="CreateDate" Type="date" />
           <Property Name="ModifiedDate" Type="date" />
         </EntityType>
@@ -47,10 +52,9 @@
           </Key>
           <Property Name="DetailGUID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="DetailID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SheetGUID" Type="uniqueidentifier" />
           <Property Name="TaskGUID" Type="uniqueidentifier" />
-          <Property Name="TaskName" Type="nvarchar" MaxLength="50" />
           <Property Name="ResourceGUID" Type="uniqueidentifier" />
-          <Property Name="ResourceName" Type="nvarchar" MaxLength="50" />
           <Property Name="Quality" Type="int" />
           <Property Name="Amount" Type="money" />
         </EntityType>
@@ -60,12 +64,12 @@
           </Key>
           <Property Name="PoolGUID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="PoolID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PoolName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProjectGUID" Type="uniqueidentifier" />
           <Property Name="WagePerHour" Type="money" />
           <Property Name="RentalPerMonth" Type="money" />
           <Property Name="UtilityPerMonth" Type="money" />
           <Property Name="OtherManagementCosts" Type="money" />
-          <Property Name="InterestExpense" Type="nchar" MaxLength="10" />
+          <Property Name="InterestExpense" Type="money" />
           <Property Name="RiskPreparationCost" Type="money" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="ModifiedDate" Type="datetime" />
@@ -333,7 +337,7 @@
           <Property Name="WorkTime" Type="int" />
           <Property Name="TaskStatusID" Type="int" />
           <Property Name="EmployeeGUID" Type="uniqueidentifier" />
-          <Property Name="Tag" Type="nvarchar" MaxLength="10" />
+          <Property Name="Tag" Type="nvarchar" MaxLength="50" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="TaskStatusIDChanged" Type="int" />
           <Property Name="AssignedDate" Type="datetime" />
@@ -394,6 +398,18 @@
             </Principal>
             <Dependent Role="Calendar">
               <PropertyRef Name="MemberGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CostEstimateSheetDetail_CostEstimateSheet">
+          <End Role="CostEstimateSheet" Type="Self.CostEstimateSheet" Multiplicity="0..1" />
+          <End Role="CostEstimateSheetDetail" Type="Self.CostEstimateSheetDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CostEstimateSheet">
+              <PropertyRef Name="SheetGUID" />
+            </Principal>
+            <Dependent Role="CostEstimateSheetDetail">
+              <PropertyRef Name="SheetGUID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -932,6 +948,10 @@
             <End Role="Members" EntitySet="Members" />
             <End Role="Calendar" EntitySet="Calendar" />
           </AssociationSet>
+          <AssociationSet Name="FK_CostEstimateSheetDetail_CostEstimateSheet" Association="Self.FK_CostEstimateSheetDetail_CostEstimateSheet">
+            <End Role="CostEstimateSheet" EntitySet="CostEstimateSheet" />
+            <End Role="CostEstimateSheetDetail" EntitySet="CostEstimateSheetDetail" />
+          </AssociationSet>
           <AssociationSet Name="FK_Dashboard_Employee" Association="Self.FK_Dashboard_Employee">
             <End Role="Employee" EntitySet="Employee" />
             <End Role="Dashboard" EntitySet="Dashboard" />
@@ -1433,7 +1453,7 @@
           <Property Name="WorkTime" Type="Int32" />
           <Property Name="TaskStatusID" Type="Int32" />
           <Property Name="EmployeeGUID" Type="Guid" />
-          <Property Name="Tag" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Tag" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TaskStatusIDChanged" Type="Int32" />
           <Property Name="AssignedDate" Type="DateTime" Precision="3" />
@@ -2161,6 +2181,10 @@
           <EntitySet Name="CostEstimateSheet" EntityType="ProjectManagementModel.CostEstimateSheet" />
           <EntitySet Name="CostEstimateSheetDetail" EntityType="ProjectManagementModel.CostEstimateSheetDetail" />
           <EntitySet Name="CostPool" EntityType="ProjectManagementModel.CostPool" />
+          <AssociationSet Name="FK_CostEstimateSheetDetail_CostEstimateSheet" Association="ProjectManagementModel.FK_CostEstimateSheetDetail_CostEstimateSheet">
+            <End Role="CostEstimateSheet" EntitySet="CostEstimateSheet" />
+            <End Role="CostEstimateSheetDetail" EntitySet="CostEstimateSheetDetail" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="CalendarCategory">
           <Key>
@@ -2212,8 +2236,14 @@
           <Property Name="SheetName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ProjectGUID" Type="Guid" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Rental" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Utility" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="OtherManagement" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Interest" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="RiskPreparation" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="CreateDate" Type="DateTime" Precision="0" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="CostEstimateSheetDetail" Relationship="ProjectManagementModel.FK_CostEstimateSheetDetail_CostEstimateSheet" FromRole="CostEstimateSheet" ToRole="CostEstimateSheetDetail" />
         </EntityType>
         <EntityType Name="CostEstimateSheetDetail">
           <Key>
@@ -2221,12 +2251,12 @@
           </Key>
           <Property Name="DetailGUID" Type="Guid" Nullable="false" />
           <Property Name="DetailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SheetGUID" Type="Guid" />
           <Property Name="TaskGUID" Type="Guid" />
-          <Property Name="TaskName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ResourceGUID" Type="Guid" />
-          <Property Name="ResourceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Quality" Type="Int32" />
           <Property Name="Amount" Type="Decimal" Precision="19" Scale="4" />
+          <NavigationProperty Name="CostEstimateSheet" Relationship="ProjectManagementModel.FK_CostEstimateSheetDetail_CostEstimateSheet" FromRole="CostEstimateSheetDetail" ToRole="CostEstimateSheet" />
         </EntityType>
         <EntityType Name="CostPool">
           <Key>
@@ -2234,16 +2264,28 @@
           </Key>
           <Property Name="PoolGUID" Type="Guid" Nullable="false" />
           <Property Name="PoolID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PoolName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProjectGUID" Type="Guid" />
           <Property Name="WagePerHour" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="RentalPerMonth" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="UtilityPerMonth" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="OtherManagementCosts" Type="Decimal" Precision="19" Scale="4" />
-          <Property Name="InterestExpense" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="InterestExpense" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="RiskPreparationCost" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
         </EntityType>
+        <Association Name="FK_CostEstimateSheetDetail_CostEstimateSheet">
+          <End Type="ProjectManagementModel.CostEstimateSheet" Role="CostEstimateSheet" Multiplicity="0..1" />
+          <End Type="ProjectManagementModel.CostEstimateSheetDetail" Role="CostEstimateSheetDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CostEstimateSheet">
+              <PropertyRef Name="SheetGUID" />
+            </Principal>
+            <Dependent Role="CostEstimateSheetDetail">
+              <PropertyRef Name="SheetGUID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2611,6 +2653,11 @@
               <MappingFragment StoreEntitySet="CostEstimateSheet">
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="RiskPreparation" ColumnName="RiskPreparation" />
+                <ScalarProperty Name="Interest" ColumnName="Interest" />
+                <ScalarProperty Name="OtherManagement" ColumnName="OtherManagement" />
+                <ScalarProperty Name="Utility" ColumnName="Utility" />
+                <ScalarProperty Name="Rental" ColumnName="Rental" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ProjectGUID" ColumnName="ProjectGUID" />
                 <ScalarProperty Name="SheetName" ColumnName="SheetName" />
@@ -2624,10 +2671,9 @@
               <MappingFragment StoreEntitySet="CostEstimateSheetDetail">
                 <ScalarProperty Name="Amount" ColumnName="Amount" />
                 <ScalarProperty Name="Quality" ColumnName="Quality" />
-                <ScalarProperty Name="ResourceName" ColumnName="ResourceName" />
                 <ScalarProperty Name="ResourceGUID" ColumnName="ResourceGUID" />
-                <ScalarProperty Name="TaskName" ColumnName="TaskName" />
                 <ScalarProperty Name="TaskGUID" ColumnName="TaskGUID" />
+                <ScalarProperty Name="SheetGUID" ColumnName="SheetGUID" />
                 <ScalarProperty Name="DetailID" ColumnName="DetailID" />
                 <ScalarProperty Name="DetailGUID" ColumnName="DetailGUID" />
               </MappingFragment>
@@ -2644,13 +2690,13 @@
                 <ScalarProperty Name="UtilityPerMonth" ColumnName="UtilityPerMonth" />
                 <ScalarProperty Name="RentalPerMonth" ColumnName="RentalPerMonth" />
                 <ScalarProperty Name="WagePerHour" ColumnName="WagePerHour" />
-                <ScalarProperty Name="PoolName" ColumnName="PoolName" />
+                <ScalarProperty Name="ProjectGUID" ColumnName="ProjectGUID" />
                 <ScalarProperty Name="PoolID" ColumnName="PoolID" />
                 <ScalarProperty Name="PoolGUID" ColumnName="PoolGUID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

@@ -16,12 +16,12 @@ namespace ProjectManager.Models
     {
         public System.Guid PoolGUID { get; set; }
         public int PoolID { get; set; }
-        public string PoolName { get; set; }
+        public Nullable<System.Guid> ProjectGUID { get; set; }
         public Nullable<decimal> WagePerHour { get; set; }
         public Nullable<decimal> RentalPerMonth { get; set; }
         public Nullable<decimal> UtilityPerMonth { get; set; }
         public Nullable<decimal> OtherManagementCosts { get; set; }
-        public string InterestExpense { get; set; }
+        public Nullable<decimal> InterestExpense { get; set; }
         public Nullable<decimal> RiskPreparationCost { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
