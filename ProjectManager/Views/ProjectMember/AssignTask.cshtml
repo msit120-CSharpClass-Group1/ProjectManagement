@@ -173,7 +173,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="exampleModalLongTitle">員工姓名</h4>
+                    <h4 class="modal-title" id="exampleModalLongTitle">員工姓名</h4><button class="btn btn-default" style="margin-left:20px;" type="button" id="tagDemoBtn">Demo</button>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -454,9 +454,13 @@
                             $("#text").val("");
                             $('#exampleModalCenter').modal('hide');
                         }
-                    });
-                })
+                });
             })
+            $("#tagDemoBtn").click(function ()
+            {
+                $("#text").val("此項目客戶要求高，務必確實執行");
+            })
+        })
             function exportExcel()
             {
                 var sHtml = htmlEncode($("#mappingTable")[0].outerHTML);

@@ -50,7 +50,7 @@ namespace ProjectManager.Controllers
             pm.IsRead = false;
             pm.InvideDate = DateTime.Now;
             projectMembers.Add(pm);
-            return RedirectToAction("Index", "ProjectMember");
+            return RedirectToAction("Index", "ProjectMember");            
         }
 
         public ActionResult DeleteProjectMember()
