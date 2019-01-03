@@ -14,12 +14,6 @@ namespace ProjectManager.Models
     
     public partial class CostEstimateSheet
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public CostEstimateSheet()
-        {
-            this.CostEstimateSheetDetail = new HashSet<CostEstimateSheetDetail>();
-        }
-    
         public System.Guid SheetGUID { get; set; }
         public int SheetID { get; set; }
         public string SheetName { get; set; }
@@ -32,8 +26,5 @@ namespace ProjectManager.Models
         public Nullable<decimal> RiskPreparation { get; set; }
         public Nullable<System.DateTime> CreateDate { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CostEstimateSheetDetail> CostEstimateSheetDetail { get; set; }
     }
 }

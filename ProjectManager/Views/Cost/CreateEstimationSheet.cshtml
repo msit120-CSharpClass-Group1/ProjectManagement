@@ -1,8 +1,8 @@
 ﻿@model ProjectManager.Models.Project
-@{ 
+@{
     var RootTasks = ViewBag.RootTasks as List<ProjectManager.Models.Tasks>;
     var ProjectPeriod = Model.EstEndDate - Model.EstStartDate;
-    var ProjectMonths = Math.Round(((TimeSpan)ProjectPeriod).Days/30D,2,MidpointRounding.AwayFromZero);
+    var ProjectMonths = Math.Round(((TimeSpan)ProjectPeriod).Days / 30D, 2, MidpointRounding.AwayFromZero);
 }
 <div id="StandardInputTile" class="hide">
     @Html.DropDownList("ExpCats", (SelectList)ViewBag.ExpCats, "請選擇類別", new { @class = "custom-select myselect" })
@@ -24,15 +24,15 @@
                         <button name="btn_DeleteExpense" type="button" class="btn btn-danger btn-sm float-right"><i class="fas fa-minus"></i></button>
                         <button name="btn_AddExpense" type="button" class="btn btn-secondary btn-sm float-right mr-1"><i class="fas fa-plus"></i></button>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group task-expenses" data-taskguid="@t.TaskGUID">
                         <div name="SalaryExpense" class="input-group mb-4">
                             <div class="input-group-prepend">
-                                <label class="input-group-text" for="">直接人工</label>
+                                <label class="input-group-text">直接人工</label>
                             </div>
-                            <input class="form-control text-center worktime" style="min-width:30px;" value="@t.EstWorkTime" data-taskguid="@t.TaskGUID" />
+                            <input class="form-control text-center worktime" style="min-width:30px;" value="@t.EstWorkTime" />
                             <div class="input-group-append">
                                 <label class="input-group-text">小時</label>
-                                <label class="input-group-text wage-counter" data-amount=""></label>
+                                <label class="input-group-text wage-counter" data-wage=""></label>
                             </div>
                         </div>
                     </div>
@@ -82,16 +82,22 @@
                 {
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
-                            <span id="@t.TaskGUID">@t.TaskName</span>
+                            <span>@t.TaskName</span>
                         </div>
-                        <span>XX,XXX</span>
+                        <span id="@t.TaskGUID" class="root-expenses" data-amount="">XX,XXX</span>
                     </li>
                 }
                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                     <div>
                         <span>經常性費用</span>
                     </div>
-                    <span id="result_FixedCost">XX,XXX</span>
+                    <span id="result_FixedCost" class="root-expenses" data-amount="">XX,XXX</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <span style="font-weight:bold">專案成本小計</span>
+                    </div>
+                    <span id="Subtotal" data-amount="" style="font-weight:bold;text-decoration:underline">XX,XXX</span>
                 </li>
             </ul>
         </div>

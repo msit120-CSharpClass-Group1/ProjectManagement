@@ -24,7 +24,7 @@ namespace ProjectManager.Controllers
         Repository<Tasks> TaskRepo = new Repository<Tasks>();
         Repository<CostPool> PoolRepo = new Repository<CostPool>();
         Repository<CostEstimateSheet> SheetRepo = new Repository<CostEstimateSheet>();
-
+        Repository<CostEstimateSheetDetail> SheetDetailRepo = new Repository<CostEstimateSheetDetail>();
 
         #region Action For ExpList
         public ActionResult ExpList()
@@ -530,14 +530,41 @@ namespace ProjectManager.Controllers
             return Json(pool, JsonRequestBehavior.AllowGet);
         }
 
-        //public ActionResult CreateNewPool(CostPool pool)
-        //{
-        //    pool.PoolGUID = Guid.NewGuid();
-        //    pool.CreatedDate = DateTime.Now;
-        //    pool.ModifiedDate = DateTime.Now;
-        //    pool.
+        public ActionResult CreatePool(CostPool pool)
+        {
+            var q = PoolRepo.GetCollections().Where(p => p.ProjectGUID == pool.ProjectGUID);
 
-        //}
+            if (q.Count() != 0)
+            {
+                try
+                {
+                    pool.PoolGUID = q.Single().PoolGUID;
+                    pool.CreatedDate = q.Single().CreatedDate;
+                    pool.ModifiedDate = DateTime.Now;
+                    PoolRepo.Update(pool);
+                }
+                catch (Exception e)
+                {
+                    return Json(e, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                try
+                {
+                    pool.PoolGUID = Guid.NewGuid();
+                    pool.CreatedDate = DateTime.Now;
+                    pool.ModifiedDate = DateTime.Now;
+                    PoolRepo.Add(pool);
+                }
+                catch (Exception e)
+                {
+                    return Json(e, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            return Json("New Pool has been created!", JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult GetCostEstimationSheets(Guid? DepartmentID, Guid? ProjectID)
         {
@@ -590,6 +617,38 @@ namespace ProjectManager.Controllers
             Project project = ProjectRepo.GetCollections().Where(p => p.ProjectGUID == projectGUID).FirstOrDefault();
 
             return PartialView(project);
+        }
+
+        public ActionResult AddEstimationSheet(CostEstimateSheet sheet)
+        {
+            sheet.SheetGUID = Guid.NewGuid();
+            sheet.CreateDate = DateTime.Now;
+            sheet.ModifiedDate = DateTime.Now;
+
+            try
+            {
+                SheetRepo.Add(sheet);
+            }
+            catch (Exception e)
+            {
+                return Json(e, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json("New Sheet has been created!", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AddEstimationSheetDetails(IEnumerable<CostEstimateSheetDetail> details)
+        {
+            try
+            {
+                SheetDetailRepo.AddList(details);
+            }
+            catch (Exception e)
+            {
+                return Json(e, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json("Sheet details have been saved!", JsonRequestBehavior.AllowGet);
         }
 
         #endregion

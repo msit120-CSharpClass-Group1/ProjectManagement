@@ -54,8 +54,7 @@
           <Property Name="DetailID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SheetGUID" Type="uniqueidentifier" />
           <Property Name="TaskGUID" Type="uniqueidentifier" />
-          <Property Name="ResourceGUID" Type="uniqueidentifier" />
-          <Property Name="Quality" Type="int" />
+          <Property Name="ResourceCategoryID" Type="int" />
           <Property Name="Amount" Type="money" />
         </EntityType>
         <EntityType Name="CostPool">
@@ -398,18 +397,6 @@
             </Principal>
             <Dependent Role="Calendar">
               <PropertyRef Name="MemberGUID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CostEstimateSheetDetail_CostEstimateSheet">
-          <End Role="CostEstimateSheet" Type="Self.CostEstimateSheet" Multiplicity="0..1" />
-          <End Role="CostEstimateSheetDetail" Type="Self.CostEstimateSheetDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CostEstimateSheet">
-              <PropertyRef Name="SheetGUID" />
-            </Principal>
-            <Dependent Role="CostEstimateSheetDetail">
-              <PropertyRef Name="SheetGUID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -947,10 +934,6 @@
           <AssociationSet Name="FK_Calendar_Members" Association="Self.FK_Calendar_Members">
             <End Role="Members" EntitySet="Members" />
             <End Role="Calendar" EntitySet="Calendar" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CostEstimateSheetDetail_CostEstimateSheet" Association="Self.FK_CostEstimateSheetDetail_CostEstimateSheet">
-            <End Role="CostEstimateSheet" EntitySet="CostEstimateSheet" />
-            <End Role="CostEstimateSheetDetail" EntitySet="CostEstimateSheetDetail" />
           </AssociationSet>
           <AssociationSet Name="FK_Dashboard_Employee" Association="Self.FK_Dashboard_Employee">
             <End Role="Employee" EntitySet="Employee" />
@@ -2181,10 +2164,6 @@
           <EntitySet Name="CostEstimateSheet" EntityType="ProjectManagementModel.CostEstimateSheet" />
           <EntitySet Name="CostEstimateSheetDetail" EntityType="ProjectManagementModel.CostEstimateSheetDetail" />
           <EntitySet Name="CostPool" EntityType="ProjectManagementModel.CostPool" />
-          <AssociationSet Name="FK_CostEstimateSheetDetail_CostEstimateSheet" Association="ProjectManagementModel.FK_CostEstimateSheetDetail_CostEstimateSheet">
-            <End Role="CostEstimateSheet" EntitySet="CostEstimateSheet" />
-            <End Role="CostEstimateSheetDetail" EntitySet="CostEstimateSheetDetail" />
-          </AssociationSet>
         </EntityContainer>
         <EntityType Name="CalendarCategory">
           <Key>
@@ -2243,7 +2222,6 @@
           <Property Name="RiskPreparation" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="CreateDate" Type="DateTime" Precision="0" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="CostEstimateSheetDetail" Relationship="ProjectManagementModel.FK_CostEstimateSheetDetail_CostEstimateSheet" FromRole="CostEstimateSheet" ToRole="CostEstimateSheetDetail" />
         </EntityType>
         <EntityType Name="CostEstimateSheetDetail">
           <Key>
@@ -2253,10 +2231,8 @@
           <Property Name="DetailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="SheetGUID" Type="Guid" />
           <Property Name="TaskGUID" Type="Guid" />
-          <Property Name="ResourceGUID" Type="Guid" />
-          <Property Name="Quality" Type="Int32" />
+          <Property Name="ResourceCategoryID" Type="Int32" />
           <Property Name="Amount" Type="Decimal" Precision="19" Scale="4" />
-          <NavigationProperty Name="CostEstimateSheet" Relationship="ProjectManagementModel.FK_CostEstimateSheetDetail_CostEstimateSheet" FromRole="CostEstimateSheetDetail" ToRole="CostEstimateSheet" />
         </EntityType>
         <EntityType Name="CostPool">
           <Key>
@@ -2274,18 +2250,6 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
         </EntityType>
-        <Association Name="FK_CostEstimateSheetDetail_CostEstimateSheet">
-          <End Type="ProjectManagementModel.CostEstimateSheet" Role="CostEstimateSheet" Multiplicity="0..1" />
-          <End Type="ProjectManagementModel.CostEstimateSheetDetail" Role="CostEstimateSheetDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CostEstimateSheet">
-              <PropertyRef Name="SheetGUID" />
-            </Principal>
-            <Dependent Role="CostEstimateSheetDetail">
-              <PropertyRef Name="SheetGUID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2670,8 +2634,7 @@
             <EntityTypeMapping TypeName="ProjectManagementModel.CostEstimateSheetDetail">
               <MappingFragment StoreEntitySet="CostEstimateSheetDetail">
                 <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="Quality" ColumnName="Quality" />
-                <ScalarProperty Name="ResourceGUID" ColumnName="ResourceGUID" />
+                <ScalarProperty Name="ResourceCategoryID" ColumnName="ResourceCategoryID" />
                 <ScalarProperty Name="TaskGUID" ColumnName="TaskGUID" />
                 <ScalarProperty Name="SheetGUID" ColumnName="SheetGUID" />
                 <ScalarProperty Name="DetailID" ColumnName="DetailID" />

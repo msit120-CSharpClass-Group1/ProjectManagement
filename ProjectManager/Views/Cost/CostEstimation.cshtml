@@ -41,6 +41,17 @@
         .sp_TaskName {
             cursor: pointer;
         }
+
+        .subtotal{
+            text-decoration:underline
+        }
+
+        .wrapper{
+            width:1280px;
+            margin-left:auto;
+            margin-right:auto;
+        }
+
     </style>
 }
 
@@ -62,6 +73,8 @@
             <select id="Select_ProjectName" class="custom-select"></select>
         </div>
         <button id="btn_CreateSheet" type="button" class="btn btn-primary m-3 hide">新增專案估算單</button>
+        <button id="btn_SaveSheet" type="button" class="btn btn-success m-3 hide">儲存專案估算單</button>
+        <button id="btn_CancelSheet" type="button" class="btn btn-primary m-3 hide">取消返回</button>
     </form>
 </div>
 
@@ -153,7 +166,6 @@
             <div class="row col-12 mt-3">
                 <div id="formBtns" class="mt-3 mx-auto text-center">
                     <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
-                    <button id="btn_ConfirmAdd" type="button" class="btn btn-primary py-1 px-3 hide">確認新增</button>
                     <button id="btn_ConfirmModify" type="button" class="btn btn-success py-1 px-3">確認修改</button>
                 </div>
             </div>
@@ -170,20 +182,19 @@
 
             LoadProjects();
             LoadSheets();
+            LoadStanderPool();
 
             $("#RequiredDeptGUID").change(() =>
             {
                 LoadSheets();
                 LoadProjects();
-            });
+            })
 
             $("#Select_ProjectName").change(() =>
             {
                 LoadSheets();
                 ToggleCreateSheet();
-            });
-
-            LoadStanderPool();
+            })
 
             $("#btn_CreateSheet").click(() =>
             {
@@ -194,13 +205,120 @@
 
                 PartialView.load("@Url.Action("CreateEstimationSheet", "Cost")", datas, function ()
                 {
+                    $(this).addClass("wrapper");
                     Binding();
                     CalcWage();
                     CalcCosts();
+                    CalcTaskExpenses();
+                    CalcSubtotal();
+                    $("#btn_CreateSheet").hide();
+                    $("#btn_SaveSheet").show();
+                    $("#btn_CancelSheet").show();
 
                 }).fadeIn();
+            })
+
+            $("#btn_SaveSheet").click(() =>
+            {
+                var GUID = guid();
+                var ProjectGUID = $("#Select_ProjectName").val();
+
+                var sheetdata =
+                {
+                    SheetGUID: GUID,
+                    ProjectGUID: ProjectGUID,
+                    Rental: $("#Rental").val(),
+                    Utility: $("#Utility").val(),
+                    OtherManagement: $("#OMC").val(),
+                    Interest: $("#Interest").val(),
+                    RiskPreparation: $("#RiskPreparation").val()
+                };
+                var pooldata =
+                {
+                    ProjectGUID: ProjectGUID,
+                    WagePerHour: $("#WagePerHour").val(),
+                    RentalPerMonth: $("#RentalPerMonth").val(),
+                    UtilityPerMonth: $("#UtilityPerMonth").val(),
+                    OtherManagementCosts: $("#OtherManagementCosts").val(),
+                    InterestExpense: $("#InterestExpense").val(),
+                    RiskPreparationCost: $("#RiskPreparationCost").val()
+                };
+                var taskdatas = [];
+                var taskGroups = $(".task-expenses")
+
+                //preparing taskdatas
+                for (var exp of taskGroups)
+                {
+                    var expenses = $(exp).find(":input[name='expenses']");
+                    var taskGuid = $(exp).attr("data-taskguid");
+                    var worktime = $(exp).find(".worktime").val();
+                    var laberCost =
+                    {
+                        DetailGUID: guid(),
+                        SheetGUID: GUID,
+                        TaskGUID: taskGuid,
+                        ResourceCategoryID: 0,
+                        Amount: worktime
+                    }
+
+                    taskdatas.push(laberCost);
+
+                    for (var e of expenses)
+                    {
+                        var data =
+                        {
+                            DetailGUID: guid(),
+                            SheetGUID: GUID,
+                            TaskGUID: taskGuid,
+                            ResourceCategoryID: $(e).siblings(":input[name='ExpCats']").val(),
+                            Amount: $(e).val()
+                        }
+
+                        taskdatas.push(data);
+                    }
+                }
+
+                var sheetdetaildata = {
+                    details: taskdatas
+                }
+
+                $.post("@Url.Action("CreatePool","Cost")", pooldata, (result) =>
+                {
+                    console.log(result);
+                });
+
+                $.post("@Url.Action("AddEstimationSheet", "Cost")", sheetdata, (result) =>
+                {
+                    console.log(result);
+                });
+
+                $.post("@Url.Action("AddEstimationSheetDetails", "Cost")", sheetdetaildata, (result) =>
+                {
+                    console.log(result);
+                });
+
+                console.log(sheetdata);
+                console.log(pooldata);
+                console.log(sheetdetaildata);
 
             });
+
+            $("#btn_CancelSheet").click(() =>
+            {
+                LoadSheets();
+                $("#btn_CreateSheet").show();
+                $("#btn_SaveSheet").hide();
+                $("#btn_CancelSheet").hide();
+
+            })
+
+            $("#btn_ConfirmModify").click(() =>
+            {
+                CalcWage();
+                CalcCosts();
+                CalcTaskExpenses();
+                CalcSubtotal();
+            })
 
             function LoadProjects()
             {
@@ -239,6 +357,7 @@
 
                 PartialView.load("@Url.Action("GetCostEstimationSheets", "Cost")", datas, function ()
                 {
+                    $(this).removeClass("wrapper");
 
                 }).fadeIn();
             }
@@ -254,7 +373,6 @@
                     $("#OtherManagementCosts").val(data.OtherManagementCosts);
                     $("#InterestExpense").val(data.InterestExpense);
                     $("#RiskPreparationCost").val(data.RiskPreparationCost);
-
                 })
             }
 
@@ -270,7 +388,6 @@
                     $("#btn_CreateSheet").fadeOut();
                 }
             }
-
 
             function Binding()
             {
@@ -319,8 +436,30 @@
                     var WagePerHour = $("#WagePerHour").val();
                     var wage = worktime * WagePerHour;
                     var wagestr = "NT$" + (wage).toLocaleString("zh-tw");
-                    $(i).attr("data-amount", wage);
+                    $(i).attr("data-wage", wage);
                     $(i).html(wagestr);
+                }
+            }
+
+            function CalcTaskExpenses()
+            {
+                var taskGroups = $(".task-expenses")
+
+                for (var exp of taskGroups)
+                {
+                    var expenses = $(exp).find(":input[name='expenses']");
+                    var taskGuid = $(exp).attr("data-taskguid");
+                    var wage = $(exp).find(".wage-counter").attr("data-wage"); 
+                    var sum = Number(wage);
+
+                    for (var e of expenses)
+                    {
+                        sum += Number($(e).val());
+                    }
+
+                    var sp = $(`#${taskGuid}`);
+                    sp.text(sum.toLocaleString("zh-tw"));
+                    sp.attr("data-amount", sum);
                 }
             }
 
@@ -332,7 +471,7 @@
                 var Utility = $("#UtilityPerMonth").val() * ProjectMonths;
                 var OMC = $("#OtherManagementCosts").val() * ProjectMonths;
                 var Interest = $("#InterestExpense").val() * ProjectMonths;
-                var RiskPreparation = $("#RiskPreparationCost").val() * ProjectMonths;
+                var RiskPreparation = Number($("#RiskPreparationCost").val());
 
                 var RentalString = "NT$ " + (Rental).toLocaleString("zh-tw");
                 var UtilityString = "NT$ " + (Utility).toLocaleString("zh-tw");
@@ -347,11 +486,34 @@
                 $("#RiskPreparation").text(RiskPreparationString);
 
                 var sum = Rental + Utility + OMC + Interest + RiskPreparation;
-                var sumstr = "NT$ " + (sum).toLocaleString("zh-tw");
-
-                $("#result_FixedCost").text(sumstr);
+                var FixedCost = $("#result_FixedCost");
+                FixedCost.text((sum).toLocaleString("zh-tw"));
+                FixedCost.attr("data-amount", sum);
             }
 
+            function CalcSubtotal()
+            {
+                var rootExpenses = $(".root-expenses");
+                var subtotal = 0;
+                var result = $("#Subtotal");
+
+                for (var exp of rootExpenses)
+                {
+                    subtotal += Number($(exp).attr("data-amount"));
+                }
+
+                result.text("NT$ " + subtotal.toLocaleString("zh-tw"));
+                result.attr("data-amount", subtotal);
+            }
+
+            function guid()
+            {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c)
+                {
+                    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
         })
     </script>
 }

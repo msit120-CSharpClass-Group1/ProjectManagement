@@ -18,10 +18,7 @@ namespace ProjectManager.Models
         public int DetailID { get; set; }
         public Nullable<System.Guid> SheetGUID { get; set; }
         public Nullable<System.Guid> TaskGUID { get; set; }
-        public Nullable<System.Guid> ResourceGUID { get; set; }
-        public Nullable<int> Quality { get; set; }
+        public Nullable<int> ResourceCategoryID { get; set; }
         public Nullable<decimal> Amount { get; set; }
-    
-        public virtual CostEstimateSheet CostEstimateSheet { get; set; }
     }
 }
