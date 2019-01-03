@@ -56,8 +56,6 @@ namespace ProjectManager.Controllers
         }
         public ActionResult _Edit(Employee employee)
         {
-            var members = memberRepository.GetCollections().Where(n => n.EmployeeGUID == employee.EmployeeGUID).FirstOrDefault();
-            memberRepository.Update(members);
             employeeRepository.Update(employee);
             return RedirectToAction("Index", "Employees");
         }
