@@ -25,7 +25,7 @@ namespace ProjectManager.Models
         public System.DateTime Date { get; set; }
         public string Description { get; set; }
     
-        public virtual ResourceCategory ResourceCategory { get; set; }
         public virtual Tasks Tasks { get; set; }
+        public virtual ResourceCategory ResourceCategory { get; set; }
     }
 }
