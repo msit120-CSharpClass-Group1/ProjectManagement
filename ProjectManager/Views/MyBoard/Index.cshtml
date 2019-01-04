@@ -285,7 +285,6 @@
 
         .checkListItem {
             border-radius: 3px;
-            /*margin: 0 10px 0 10px;*/
             display: flex;
             -webkit-transform-origin: left bottom;
             transform-origin: left bottom;
@@ -501,7 +500,7 @@
         <div class="cardDetailContent">
             <div class="itemTitle">
                 <span class="cardDetailIcon"><i class="far fa-clock"></i></span>
-                <div class="">時間</div>
+                <div class="">到期時間</div>
             </div>
             <div class="desContent">
                 <label class="dueDateTag"></label>
@@ -644,14 +643,15 @@
                      var changeJasonDate = datas.replace("/Date(", "").replace(")/", "");
                      var estEndDateGMT = new Date(parseInt(changeJasonDate));
                      var estYear = estEndDateGMT.getFullYear();
-                     var estMon = estEndDateGMT.getMonth();
+                     var estMon = estEndDateGMT.getMonth()+1;
                      var estDate = estEndDateGMT.getDate();
                      var estEndDate = `${estYear}/${estMon}/${estDate}`;
                      var todayGMT = new Date();
                      var todayYear = todayGMT.getFullYear();
-                     var todayMon = todayGMT.getMonth();
+                     var todayMon = todayGMT.getMonth()+1;
                      var todayDate = todayGMT.getDate();
                      var today = `${todayYear}/${todayMon}/${todayDate}`;
+                     console.log(estEndDate +" "+ today  );
                      if (today > estEndDate == true)
                      {
                          dragCard.children().addClass('leftBorder');
@@ -744,7 +744,7 @@
                     $(datas.Task).each(function (id, data) {
                         $('.cardDetailTitle').text(data.TaskName);
                         $('.desContent>textArea').text(data.Description);
-                        $('.cardDetailContent>.desContent>.dueDateTag').text(new Date(data.EstEndDate).toLocaleDateString() + " " + new Date(data.EstEndDate).toLocaleTimeString());
+                        $('.cardDetailContent>.desContent>.dueDateTag').text(new Date(data.EstEndDate).toLocaleDateString());
                         $('.cardDetailContent>.desContent>.messageTag').text(data.Tag);
                     });
                 });
@@ -774,7 +774,7 @@
                 var _percent = (parseInt(completeDT.text()) / parseInt(badgeText.text()))* 100 ;
                 var percent = _percent.toFixed() + "%";
                 if (parseInt(badgeText.text()) == 0) {
-                    percent = "0%"
+                    percent = "0%";
                 }
                 $('.checklist-progress-bar-current').css('width', percent);
                 $('.checklist-progress-percentage').text(percent);
