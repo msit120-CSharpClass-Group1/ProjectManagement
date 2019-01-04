@@ -31,7 +31,7 @@ namespace ProjectManager.Models
                 .Select(t => t.ParentTaskGUID).Distinct().ToList();
 
             List<Tasks> leafTasks = new List<Tasks>();
-            foreach (var item in tasks.Where(t => t.ParentTaskGUID != null))
+            foreach (var item in tasks)
             {
                 if (!parentTasks.Where(parentGUID => parentGUID == item.TaskGUID).Any())
                 {
@@ -91,6 +91,26 @@ namespace ProjectManager.Models
 
             return rootTasksCompletedRate;
         }
+        public static IEnumerable<int> GetRootTasksEstWorkTimeSum(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
+        {
+            List<int> rootTasksWorkTimeSum = new List<int>();
+            TreeGridModel treeGrid = new TreeGridModel(tasksFromRepo.ToList());
+            foreach (var root in rootTasks)
+            {
+                treeGrid.ChildLeafTasks = new List<Tasks>();
+                treeGrid.GetChildLeafTasks(root);
+                if(treeGrid.ChildLeafTasks.Count() != 0) {
+                    int _sum = (int)treeGrid.ChildLeafTasks.ToList().Sum(t => t.EstWorkTime);
+                    rootTasksWorkTimeSum.Add(_sum);
+                }
+                else
+                {
+                    rootTasksWorkTimeSum.Add((int)root.EstWorkTime);
+                }
+            }
+            return rootTasksWorkTimeSum;
+        }
+
         public static IEnumerable<int> GetRootTasksWorkTimeSum(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
         {
             List<int> rootTasksWorkTimeSum = new List<int>();
@@ -104,6 +124,7 @@ namespace ProjectManager.Models
             }
             return rootTasksWorkTimeSum;
         }
+
         public static IEnumerable<int> GetRootTasksResourceSum(this IEnumerable<Tasks> rootTasks, IEnumerable<Tasks> tasksFromRepo)
         {
             List<int> rootResourceSum = new List<int>();
@@ -119,13 +140,24 @@ namespace ProjectManager.Models
             }
             return rootResourceSum;
         }
-        public static IEnumerable<int> GetWorkTimeSumOfProjectMembers(this IEnumerable<ProjectMembers> projectMembers, IEnumerable<Tasks> tasksFromRepo)
+        public static IEnumerable<int> GetEstWorkTimeSumOfProjectMembers(this IEnumerable<ProjectMembers> projectMembers, IEnumerable<Tasks> tasksFromRepo)
         {
             List<int> workTimeSums = new List<int>();
             var leafTasks = tasksFromRepo.GetLeafTasks();
             foreach (var member in projectMembers)
             {
                 int _sum = (int)leafTasks.Where(t => t.EmployeeGUID == member.EmployeeGUID).Select(t => t.EstWorkTime).Sum();
+                workTimeSums.Add(_sum);
+            }
+            return workTimeSums;
+        }
+        public static IEnumerable<int> GetWorkTimeSumOfProjectMembers(this IEnumerable<ProjectMembers> projectMembers, IEnumerable<Tasks> tasksFromRepo)
+        {
+            List<int> workTimeSums = new List<int>();
+            var leafTasks = tasksFromRepo.GetLeafTasks();
+            foreach (var member in projectMembers)
+            {
+                int _sum = (int)leafTasks.Where(t => t.EmployeeGUID == member.EmployeeGUID).Select(t => t.WorkTime).Sum();
                 workTimeSums.Add(_sum);
             }
             return workTimeSums;
@@ -163,7 +195,7 @@ namespace ProjectManager.Models
         /// </summary>
         /// <param name="task"></param>
         /// <param name="taskRepo"></param>
-        /// <param name="StatusID"></param>
+        /// <param name="StatusID"></param>a
         public static void ParentTaskStatusUpdate(this Tasks task, Repository<Tasks> taskRepo, int StatusID)
         {
             bool flag = false;
@@ -198,20 +230,13 @@ namespace ProjectManager.Models
             }
             return false;
         }
-        public static IEnumerable<Group<string, DisplayWorkloadVM>>GetTeamWorkLoad (this IEnumerable<Tasks> tasks)
-        {
-            Repository<Tasks> tasksRepo = new Repository<Tasks>();
-            var workload = tasksRepo.GetCollections().Where(t => t.EmployeeGUID != null && t.TaskStatusID ==2).GetLeafTasks().GroupBy(g => g.Employee.EmployeeName)
-                                           .Select(g => new Group<string, DisplayWorkloadVM> { Key = g.Key, Sum = g.Sum(e => e.EstWorkTime) }).OrderByDescending(g=>g.Sum);
-            return workload;
-        }
         public static int GetAutoEstWorkTime(this Tasks task, HolidaysVM holidays)
         {
             int estWorkDays = 0;
             DateTime estStart = (DateTime)task.EstStartDate;
             DateTime estEnd = (DateTime)task.EstEndDate;
             if (holidays != null)
-            {                
+            {
                 var q = holidays.result.results.Select(r => new { date = DateTime.Parse(r.date), r.isHoliday });
                 while (estStart.Date <= estEnd.Date)
                 {
@@ -270,6 +295,14 @@ namespace ProjectManager.Models
             return WorkDays * 8;
         }
 
+        public static IEnumerable<Group<string, DisplayWorkloadVM>>GetTeamWorkLoad (this IEnumerable<Tasks> tasks)
+        {
+            Repository<Tasks> tasksRepo = new Repository<Tasks>();
+            var workload = tasksRepo.GetCollections().Where(t => t.EmployeeGUID != null && t.TaskStatusID ==2).GetLeafTasks().GroupBy(g => g.Employee.EmployeeName)
+                                           .Select(g => new Group<string, DisplayWorkloadVM> { Key = g.Key, Sum = g.Sum(e => e.EstWorkTime) }).OrderByDescending(g=>g.Sum);
+            return workload;
+        }
+
         #region Dashboard
         public static IEnumerable<Grouped<string, Tasks>> GetTasksGroupByStatus(this IEnumerable<Tasks> tasks)
         {
@@ -279,7 +312,62 @@ namespace ProjectManager.Models
                 .Select(g => new Grouped<string, Tasks> { Key = g.Key, group = g });
         }
         #endregion
-        
+        #region Excel Import
+        public static IEnumerable<Tasks> GetSortedExcelTasks(this IEnumerable<ExcelTasks> excelTasks, Guid projectGUID)
+        {
+            List<Tasks> sortedTasks = new List<Tasks>();
+            excelTasks = excelTasks.OrderBy(x => x.ExcelTaskID).ToList();
+            var roots = excelTasks.Where(x => x.ExcelParentTaskID == null);
+            foreach (var root in roots)
+            {
+                Tasks task = new Tasks();
+                root.ProjectGUID = task.ProjectGUID = projectGUID;
+                root.TaskGUID = task.TaskGUID = Guid.NewGuid();                            
+                root.ParentTaskGUID = task.ParentTaskGUID = null;
+                root.TaskStatusID = task.TaskStatusID = (int)TasksBL.Task_Status.Discussing;
+                root.AssignedDate = task.AssignedDate = DateTime.Now;
+                root.IsRead = task.IsRead = false;
+
+                task.TaskName = root.TaskName;
+                task.EstStartDate = root.EstStartDate;
+                task.EstEndDate = root.EstEndDate;
+                root.StartDate = task.StartDate = task.EstStartDate;
+                root.EndDate = task.EndDate = task.EstEndDate;
+                task.EstWorkTime = root.EstWorkTime;
+                task.Description = root.Description;               
+                
+                sortedTasks.Add(task);
+                root.GetChildTasks(excelTasks, sortedTasks);
+            }
+            return sortedTasks;
+            
+        }
+        public static void GetChildTasks(this ExcelTasks parentTask, IEnumerable<ExcelTasks> excelTasks, List<Tasks> sortedTasks)
+        {
+            var children = excelTasks.Where(et => et.ExcelParentTaskID == parentTask.ExcelTaskID).ToList();
+            foreach (var child in children)
+            {
+                Tasks task = new Tasks();
+                child.ProjectGUID = task.ProjectGUID = parentTask.ProjectGUID;
+                child.TaskGUID = task.TaskGUID = Guid.NewGuid();
+                child.ParentTaskGUID = task.ParentTaskGUID = parentTask.TaskGUID;
+                child.TaskStatusID = task.TaskStatusID = (int)TasksBL.Task_Status.Discussing;
+                child.AssignedDate = task.AssignedDate = DateTime.Now;
+                child.IsRead = task.IsRead = false;
+
+                task.TaskName = child.TaskName;                
+                task.EstStartDate = child.EstStartDate;
+                task.EstEndDate = child.EstEndDate;
+                child.StartDate = task.StartDate = task.EstStartDate;
+                child.EndDate = task.EndDate = task.EstEndDate;
+                task.EstWorkTime = child.EstWorkTime;
+                task.Description = child.Description;
+
+                sortedTasks.Add(task);
+                child.GetChildTasks(excelTasks, sortedTasks);
+            }
+        }
+        #endregion
 
     }
 }

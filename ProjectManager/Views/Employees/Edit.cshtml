@@ -17,15 +17,15 @@
             <input type="hidden" id="EmployeeID" name="EmployeeID" value="@editemployee.EmployeeID"  />
             <input type="hidden" name="EmployeeGUID" value="@editemployee.EmployeeGUID" />
             <input type="hidden" name="EmployeeID" value="@editemployee.EmployeeID" />
-            <input type="text" name="EmployeeName" value="@editemployee.EmployeeName" />
+            <input type="text" name="EmployeeName" value="@editemployee.EmployeeName" required/>
         </div>
     </div>
     <div class="form-group">
         <label class="col-md-2 control-label">部門</label>
         <div class="col-md-2">
             <input type="hidden" id="_DepartmentGUID" value="@editemployee.DepartmentGUID" />
-            <select name="DepartmentGUID" id="DepartmentGUID">
-                <option value="0">請選擇</option>
+            <select name="DepartmentGUID" id="DepartmentGUID" required>
+                <option value="" disabled selected>請選擇</option>
                 @foreach (var _departments in departments)
                 {
                     if (@editemployee.DepartmentGUID == _departments.DepartmentGUID)
@@ -44,8 +44,8 @@
         <label class="col-md-2 control-label">直屬主管</label>
         <div class="col-md-2">
             <input type="hidden" id="_ManagerGUID" value="@editemployee.ManagerGUID" />
-            <select name="ManagerGUID" id="ManagerGUID">
-                <option value="0">請選擇</option>
+            <select name="ManagerGUID" id="ManagerGUID" required>
+                <option value="" disabled selected>請選擇</option>
                 @foreach (var _employees in employees)
                 {
                     if (@editemployee.ManagerGUID == _employees.EmployeeGUID)
@@ -65,8 +65,8 @@
         <label class="col-md-2 control-label">職稱</label>
         <div class="col-md-2">
             <input type="hidden" id="_TitleGUID" value="@editemployee.TitleGUID" />
-            <select name="TitleGUID" id="TitleGUID">
-                <option value="0">請選擇</option>
+            <select name="TitleGUID" id="TitleGUID" required>
+                <option value="" disabled selected>請選擇</option>
                 @foreach (var _jobTitle in jobTitle)
                 {
                     if (@editemployee.TitleGUID == _jobTitle.TitleGUID)

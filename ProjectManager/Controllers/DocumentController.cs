@@ -87,8 +87,21 @@ namespace ProjectManager.Controllers
                     _docm.ModifiedGUID = Guid.NewGuid();
                     DocModified.Add(_docm);
                     var fileName = _docm.FileName;
-                    var path = Path.Combine(Server.MapPath("/Document/" + _doc.DocumentCategory), fileName);
-                    file.SaveAs(path);
+                    string path = Server.MapPath("~/Document/" + _doc.DocumentCategory);
+                    string filePath = Path.Combine(path, fileName);
+                    if (!Directory.Exists(path))
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        catch (Exception e)
+                        {
+                            return Json(e, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+
+                    file.SaveAs(filePath);
                 }
             }
             return RedirectToAction("/Index");
@@ -144,8 +157,21 @@ namespace ProjectManager.Controllers
                     _docm.ModifiedGUID = Guid.NewGuid();
                     DocModified.Add(_docm);
                     var fileName = _docm.FileName;
-                    var path = Path.Combine(Server.MapPath("/Document/" + doc.DocumentCategory), fileName);
-                    file.SaveAs(path);
+                    string path = Server.MapPath("~/Document/" + doc.DocumentCategory);
+                    string filePath = Path.Combine(path, fileName);
+                    if (!Directory.Exists(path))
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        catch (Exception e)
+                        {
+                            return Json(e, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+
+                    file.SaveAs(filePath);
                 }
             }
             return RedirectToAction("/Modified/"+ _doc.DocumentGUID);

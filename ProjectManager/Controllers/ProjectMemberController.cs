@@ -38,8 +38,23 @@ namespace ProjectManager.Controllers
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             var emp = employee.GetCollections().Where(e => e.DepartmentGUID == depid)
-                .Select(e=>new { e.DepartmentGUID,e.EmployeeGUID,e.EmployeeName,e.TitleGUID});
+                .Select(e => new
+                {
+                    e.DepartmentGUID,
+                    e.EmployeeGUID,
+                    e.EmployeeName,
+                    e.TitleGUID,
+                    AVGPMScore = projectMembers.GetCollections().Where(p => p.EmployeeGUID == e.EmployeeGUID && p.PMscore != null).Count() == 0 ? 0 : e.ProjectMembers.Average(p => p.PMscore)
+                });
             return Content(JsonConvert.SerializeObject(emp), "application/json");
+        }
+
+        public ActionResult GetEmpInformation(Guid EmployeeGUID)
+        {
+            InviteMemberVM Ivm = new InviteMemberVM();
+            Ivm.PMReviewAVGScore = projectMembers.GetCollections().Where(p => p.EmployeeGUID == EmployeeGUID).Average(p => p.PMscore);
+            Ivm.OwnProjectCount = projectMembers.GetCollections().Where(p => p.EmployeeGUID == EmployeeGUID).GroupBy(p => p.ProjectGUID).Count();
+            return Content(JsonConvert.SerializeObject(Ivm), "application/json");
         }
 
         public ActionResult AddProjectMember(Guid memberID)
@@ -50,7 +65,7 @@ namespace ProjectManager.Controllers
             pm.IsRead = false;
             pm.InvideDate = DateTime.Now;
             projectMembers.Add(pm);
-            return RedirectToAction("Index", "ProjectMember");
+            return RedirectToAction("Index", "ProjectMember");            
         }
 
         public ActionResult DeleteProjectMember()
@@ -65,7 +80,7 @@ namespace ProjectManager.Controllers
         {
             Guid InvitePJGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID)
-                .Select(p => new { p.EmployeeGUID, p.Employee.TitleGUID, p.Employee.EmployeeName });
+                .Select(p => new { p.EmployeeGUID, p.Employee.TitleGUID, p.Employee.EmployeeName});
             return Content(JsonConvert.SerializeObject(pjmb), "application/json");
         }
 
@@ -88,13 +103,14 @@ namespace ProjectManager.Controllers
             var q = tasks.GetCollections().Where(t => t.ProjectGUID == SendprojectGUID).GetLeafTasks();
             ViewBag.LoadTask = q.Where(p => p.TaskStatusID == 1);
             ViewBag.Workload = tasks.GetCollections().GetLeafTasks().GetTeamWorkLoad();
+
             return View(projectMembers.GetCollections().Where(p => p.ProjectGUID == SendprojectGUID));
         }
 
         public ActionResult EditTaskM()
         {
-            try
-            {
+            //try
+            //{
                 if (Request.Form["TotalRow"] != "")
                 {
                     var FirstRow = Convert.ToInt32(Request.Form["FirstRow"]);
@@ -131,13 +147,15 @@ namespace ProjectManager.Controllers
                                 cal.CategoryID = 3;
                                 eventlist.Add(cal);
                             }
-                        }
+                        }                       
                     }
                     tasks.UpdateList(tasklist);
                     calRe.AddList(eventlist);
                 }
-            }
-            catch { }
+            Response.Cookies["MappingTaskDT"].Value = HttpUtility.UrlEncode(Request.Form["MappingTime"], System.Text.Encoding.Default);          
+            Response.Cookies["MappingTaskDT"].Expires = DateTime.Now.AddDays(1);
+            //}
+            //catch { }
             return RedirectToAction("AssignTask");
         }
         public ActionResult ReloadTaskList()
@@ -152,11 +170,15 @@ namespace ProjectManager.Controllers
 
         public ActionResult LeaveMessageTag(Tasks _task)
         {
-            var message = _task.Tag;
-            Guid TaskGUID = _task.TaskGUID;
-            Tasks _tasks = tasks.Find(TaskGUID);
-            _tasks.Tag = message;
-            tasks.Update(_tasks);
+            try
+            {
+                var message = _task.Tag;
+                Guid TaskGUID = _task.TaskGUID;
+                Tasks _tasks = tasks.Find(TaskGUID);
+                _tasks.Tag = message;
+                tasks.Update(_tasks);
+            }
+            catch { }
             return RedirectToAction("AssignTask");
         }
 
@@ -179,11 +201,15 @@ namespace ProjectManager.Controllers
             Tasks _tasks = tasks.Find(TaskGUID);
             var GetallCal = calRe.GetCollections();
             var memberGUID = member.GetCollections().Where(m => m.EmployeeGUID == _tasks.EmployeeGUID).Select(m => m.MemberGUID).FirstOrDefault();
-            if (memberGUID != Guid.Empty)
+            try
             {
-                Guid CalendarGUID = GetallCal.Where(c => c.Subject == _tasks.TaskName && c.MemberGUID == memberGUID).Select(c => c.CalendarGUID).FirstOrDefault();
-                calRe.Delete(calRe.Find(CalendarGUID));
+                if (memberGUID != Guid.Empty)
+                {
+                    Guid CalendarGUID = GetallCal.Where(c => c.Subject == _tasks.TaskName && c.MemberGUID == memberGUID).Select(c => c.CalendarGUID).FirstOrDefault();
+                    calRe.Delete(calRe.Find(CalendarGUID));
+                }
             }
+            catch { }
             _tasks.EmployeeGUID = null;
             _tasks.TaskStatusID = 1;
             _tasks.IsRead = true;
@@ -191,15 +217,15 @@ namespace ProjectManager.Controllers
             _tasks.ParentTaskStatusUpdate(tasks, 1);
             return Content("已退回分配工作項目清單");
         }
-
         #region ExportExcelAction
         public ActionResult ExportToExcel()
         {
+            var Date = DateTime.Parse(HttpUtility.UrlDecode(Request.Cookies["MappingTaskDT"].Value, System.Text.Encoding.Default));
             var ProjectGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var gv = new GridView();
             var ProjectName = projectRe.GetCollections().Where(p => p.ProjectGUID == ProjectGUID).Select(p => p.ProjectName).FirstOrDefault();
             var ExcelData = from tasks in tasks.GetCollections()
-                            where tasks.ProjectGUID == ProjectGUID && tasks.EmployeeGUID != null
+                            where tasks.ProjectGUID == ProjectGUID && tasks.EmployeeGUID != null && tasks.AssignedDate>= Date
                             select new
                             {
                                 作業名稱 = tasks.TaskName,

@@ -65,6 +65,26 @@
             border-radius: 0.25rem;
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
+        
+
+        .dragging {
+            opacity: 0.7;
+        }
+
+        .draggable-item {
+            /*  To prevent user selecting inside the drag source  */
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .loader {
+            width: 40px;
+            position: absolute;
+            left: calc(50% - 20px);
+            top: calc(50% - 20px);
+        }
     </style>
 }
 @section nav{
@@ -72,31 +92,30 @@
 }
 @{
     var project = (Project)ViewBag.Project;
-    if (project != null)
-    {
-        if (project.ProjectID == "P18006")
-        {
-            <h4>@project.ProjectID &nbsp; @project.ProjectName<span><button id="demoBtn" type="button" class="btn btn-default ml-3">Demo</button></span></h4>
-        }
-        else
-        {
-            <h4>@project.ProjectID &nbsp; @project.ProjectName</h4>
-        }
+    <h4 id="title_project" data-projectGUID="@project.ProjectGUID">
+        @project.ProjectID &nbsp; @project.ProjectName
+        <span>
+            <button type="button" id="upload_btn" class="btn btn-primary">
+                <span class="mr-2"><i class="fas fa-file-upload"></i></span> 匯入Excel
+            </button>
+        </span>
+    </h4>
 
-    }
 }
 
 
 
-<button type="button" id="upload_btn" class="btn btn-primary">
-    <i class="fas fa-file-upload"></i> 匯入Excel
-</button>
+<div>
+    <img id="loader" src="~/image/ajax-loader.gif" style="width: 3.2rem; position:fixed; bottom:calc(50% ); right: calc(50% - 125px);" />
+    <div id="tasks_layout">
 
+        <div id="ganttContainer" style="width: 100%; height: 500px" hidden></div>
+        <div id="treeGridContainer">
 
-<div id="tasks_layout">
-    <div id="ganttContainer" style="width: 100%; height: 500px" hidden></div>
-    <div id="treeGridContainer"></div>
+        </div>
+    </div>
 </div>
+
 <!--Modal For Import Comfirm-->
 <div class="modal" id="ExcelImportConfirmModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -108,10 +127,10 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="upload_form" action="@Url.Action("ImportExcel")" method="post"  enctype="multipart/form-data">
+                <form id="upload_form" action="@Url.Action("ImportExcel")" method="post" enctype="multipart/form-data">
                     <div class="row ml-3">
                         選擇檔案:&nbsp;
-                        <input id="import_input" type="file" name="file" accept=".xls">
+                        <input id="file" type="file" name="file" accept=".xls,.xlsx">
                     </div>
                 </form>
             </div>
@@ -278,7 +297,10 @@
     <script src="~/Scripts/jquery.treegrid.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#nav-projectDistribute-tab').css('background-color', '#dddfe2');
+            $('#nav-projectDistribute-tab').css('border-bottom', 'solid');
+
+            //issue with jQuery's drag-drop, $.event has been packaged != windows.event
+            $.event.addProp('dataTransfer');
 
             $('.rightOpenbtn').html('<i class="fas fa-plus"></i>').mouseup(function () {
                 $(this).delay(500);
@@ -292,15 +314,19 @@
             var acceptanceModal = $('#AcceptanceComfirmModal');
             var rejectAcceptModal = $('#RejectAcceptanceModal');
             var asideRightContainer = $('#AsideRightContainer');
+            var ajaxLoader = $('#loader');
 
             LoadTreeGrid();
 
             function LoadTreeGrid() {
+                ajaxLoader.show();
                 treeGridContainer.load("@Url.Action("TreeGridPartialView", "ProjectDetails")", function SetTreeGrid() {
                     $(this).find('table').treegrid();
-                    $(this).find('tr').each(DoubleClickToModifyTask);
+                    $(this).find('tbody tr').each(DoubleClickToModifyTask).each(DragDropHandler);
+                    $(this).find('thead tr').each(tableHeadDropHandler);
                     $(this).find('tr a').each(ClickPlusIconToAddTask);
                     $(this).find('td button').each(TaskStatusConfirm);
+                    ajaxLoader.hide();
                 });
             }
 
@@ -345,6 +371,54 @@
                         $('button.rightOpenbtn').click();
                 });
             }
+            
+            function DragDropHandler() {
+                $(this).addClass('.draggable-item').prop('draggable', true);
+                $(this).on('dragstart', function (e) {
+                    var parentOrderID = $(this).attr('data-orderid');
+                    $(this).treegrid('getChildNodes').each(ForbidDropOnChildTask);                                                            
+                    e.originalEvent.dataTransfer.setData("text/plain", e.target.id);
+                });
+                function dragEnd(e) {
+                    $(e.target).removeClass('dragging');
+                }
+                $(this).on('dragover', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+                $(this).on('drop', function (e) {
+                    e.preventDefault();
+                    var _taskGUID = e.originalEvent.dataTransfer.getData("text/plain");
+                    var _parentGUID = $(this).attr('data-taskGUID');
+                    if (_taskGUID == _parentGUID || _taskGUID == null) return;
+                    ajaxLoader.show();
+                    $.post("@Url.Action("DragDropTasks", "ProjectDetails")", { taskGuid: _taskGUID, parentGuid: _parentGUID }, function (result) {
+                        LoadTreeGrid();
+                    });
+                });
+            }
+            function tableHeadDropHandler() {
+                $(this).on('dragover', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+                $(this).on('drop', function (e) {
+                    e.preventDefault();
+                    var _taskGUID = e.originalEvent.dataTransfer.getData("text/plain");
+                    var _parentGUID = null;
+                    if (_taskGUID == _parentGUID) return;
+                    ajaxLoader.show();
+                    $.post("@Url.Action("DragDropTasks", "ProjectDetails")", { taskGuid: _taskGUID, parentGuid: _parentGUID }, function (result) {
+                        LoadTreeGrid();
+                    });
+                });
+            }
+            function ForbidDropOnChildTask() {
+                $(this).unbind('dragover');
+                if (!$(this).treegrid('isLeaf')) {
+                    $(this).treegrid('getChildNodes').each(ForbidDropOnChildTask); 
+                }
+            }
             function ConvertDatetime(_date) {
                 date = _date.split("T");
                 return date[0];
@@ -366,6 +440,7 @@
                      LoadTreeGrid();
                 });
                 $('button.rightOpenbtn').click();
+                ajaxLoader.show();
             }
             function GetAutoWorkTime() {
                 var _form = asideRightContainer.find('form');
@@ -397,13 +472,14 @@
                     });
             }
             $('#btn_ConfirmDelete').click(function () {
+                $('#DeleteAlarmModal').modal('hide');
+                ajaxLoader.show();
                 $.ajax({
                     url: "@Url.Action("DeleteTasks", "ProjectDetails")",
                     method: "post",
                     data: asideRightContainer.find('form').serialize(),
                     dataType: "json"
-                }).done(function (data) {
-                    $('#DeleteAlarmModal').modal('hide');
+                }).done(function (data) {                    
                     if (data.length > 0) {
                         $('#deleteRejectedMsg').text(data);
                         $('#DeleteRejectedModal').modal('show');
@@ -524,17 +600,30 @@
                 location.reload();
             });
             $('#upload_btn').click(function () { $('#ExcelImportConfirmModal').modal('show'); });
-            $('#confired_import').click(ImportExcel);
-               //$('#upload_form').serialize()
-            function ImportExcel() {
-                //var data = $('#upload_form').serialize();
-                //$('#upload_form').submit();
+            $('#confired_import').click(function () {
+                $.ajax({
+                    url: "@Url.Action("ImportExcel", "ProjectDetails")",
+                    type: 'POST',
+                    cache: false,
+                    data: new FormData($('#upload_form')[0]),
+                    processData: false,
+                    contentType: false
+                }).done(function (result) {
+                    if (parseInt(result)) {
+                        alert("上傳失敗：沒有檔案");
+                    }
+                    else {
+                        ajaxLoader.show();
+                        var projectGuid = $('#title_project').attr('data-projectGUID');
+                        $.post("@Url.Action("InsertExcelToDB", "ProjectDetails")",
+                            { fileName: result, projectGUID: projectGuid }, function (data) { LoadTreeGrid(); });
+                        $('#file').val('');
+                        $('#ExcelImportConfirmModal').modal('hide');
+                    }
+                });
+            });
 
 
-                @*$.post("@Url.Action("ImportExcel", "ProjectDetails")", { file: $('#import_input').val() }, function (result) {
-                    console.log(result);
-                });*@
-            }
 
         });
     </script>
