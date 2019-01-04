@@ -103,13 +103,12 @@
                         {
                             <img src="~/image/leader.png" class="rounded-circle" />
                         }
-                        <p style="display:inline;margin:45px;">@_emp.EmployeeName</p>
-                        <input type="checkbox" class="ckbox1" style="float:right;" value="@_emp.EmployeeGUID" />
+                        <p style="display:inline;margin:10px;">@_emp.EmployeeName</p>
+                        <input type="checkbox" class="ckbox1" style="float:right;margin:12px 15px" value="@_emp.EmployeeGUID" />
                         @if (_emp.ProjectMembers.Average(p => p.PMscore) != null)
                         {
-                            <h4 style="display:inline;float:right"><span class="badge badge-light"> @_emp.ProjectMembers.Average(p => p.PMscore)</span></h4>
+                            <h4 style="display:inline;float:right"><span class="badge badge-light"> @Math.Round((double)_emp.ProjectMembers.Average(p => p.PMscore), 0)</span></h4>
                         }
-                        @*<h6 style="display:inline">@_emp.JobTitle.TitleName</h6>*@
                     </div>
                     }
                 </div>
@@ -156,7 +155,7 @@
                     $.each(datas, function (idx, _emp)
                     {
                         var p = $("<p></p>").text(_emp.EmployeeName);// Find assigned
-                        var input = $("<input/>").attr("type", "checkbox").attr("class", "ckbox1").attr("style", "float:right").val(_emp.EmployeeGUID);
+                        var input = $("<input/>").attr("type", "checkbox").attr("class", "ckbox1").attr("style", "float:right;margin:12px 15px").val(_emp.EmployeeGUID);
                         if (_emp.TitleGUID != "724d4916-0f1b-417b-a927-25d04425146d")
                         {
                             var img = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle");

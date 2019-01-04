@@ -121,7 +121,7 @@
                             </div>
                         </div>
                         <div class="chat-input">
-                            <form>
+                            <form onsubmit="return false">
                                 <input type="text" id="message" autocomplete="off" class="form-control" placeholder="Send a message...">
                                 <button type="button" class="chat-submit" id="sendmessage"><i class="far fa-paper-plane"></i></button>
                             </form>
@@ -182,5 +182,6 @@
     <script type="text/javascript" src="~/signalr/hubs"></script>
     @RenderSection("script", false)
     <script src="~/Scripts/SignalRChat.js"></script>
+    <script src="~/Scripts/BindingEnterSGR.js"></script>
 </body>
 </html>

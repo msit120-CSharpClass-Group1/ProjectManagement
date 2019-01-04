@@ -31,7 +31,7 @@ namespace ProjectManager.Models
                 .Select(t => t.ParentTaskGUID).Distinct().ToList();
 
             List<Tasks> leafTasks = new List<Tasks>();
-            foreach (var item in tasks.Where(t => t.ParentTaskGUID != null))
+            foreach (var item in tasks)
             {
                 if (!parentTasks.Where(parentGUID => parentGUID == item.TaskGUID).Any())
                 {
@@ -99,8 +99,14 @@ namespace ProjectManager.Models
             {
                 treeGrid.ChildLeafTasks = new List<Tasks>();
                 treeGrid.GetChildLeafTasks(root);
-                int _sum = (int)treeGrid.ChildLeafTasks.ToList().Select(t => t.EstWorkTime).Sum();
-                rootTasksWorkTimeSum.Add(_sum);
+                if(treeGrid.ChildLeafTasks.Count() != 0) {
+                    int _sum = (int)treeGrid.ChildLeafTasks.ToList().Sum(t => t.EstWorkTime);
+                    rootTasksWorkTimeSum.Add(_sum);
+                }
+                else
+                {
+                    rootTasksWorkTimeSum.Add((int)root.EstWorkTime);
+                }
             }
             return rootTasksWorkTimeSum;
         }
