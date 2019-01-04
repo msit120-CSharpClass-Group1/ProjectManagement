@@ -75,9 +75,9 @@
         <AssociationConnector Association="ProjectManagementModel.FK_Calendar_CalendarCategory" />
         <EntityTypeShape EntityType="ProjectManagementModel.ResourceCategory" Width="1.5" PointX="15.5" PointY="10.75" />
         <AssociationConnector Association="ProjectManagementModel.FK_TaskResource_ResourceCategory" />
-        <EntityTypeShape EntityType="ProjectManagementModel.CostEstimateSheet" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ProjectManagementModel.CostEstimateSheetDetail" Width="1.5" PointX="2.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ProjectManagementModel.CostPool" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ProjectManagementModel.CostEstimateSheetDetail" Width="2" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ProjectManagementModel.CostPool" Width="2.125" PointX="5.125" PointY="0.75" />
+        <EntityTypeShape EntityType="ProjectManagementModel.CostEstimateSheet" Width="1.875" PointX="0.5" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

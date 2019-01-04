@@ -55,9 +55,9 @@ namespace ProjectManager.Models
         public virtual DbSet<Widgets> Widgets { get; set; }
         public virtual DbSet<CalendarCategory> CalendarCategory { get; set; }
         public virtual DbSet<ResourceCategory> ResourceCategory { get; set; }
-        public virtual DbSet<CostEstimateSheet> CostEstimateSheet { get; set; }
         public virtual DbSet<CostEstimateSheetDetail> CostEstimateSheetDetail { get; set; }
         public virtual DbSet<CostPool> CostPool { get; set; }
+        public virtual DbSet<CostEstimateSheet> CostEstimateSheet { get; set; }
     
         public virtual int InsertProjectForDemo()
         {
