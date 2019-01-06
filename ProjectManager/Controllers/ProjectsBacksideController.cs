@@ -14,6 +14,7 @@ namespace ProjectManager.Controllers
         private Repository<Tasks> taskRepo = new Repository<Tasks>();
         private static Repository<ProjectMembers> projectMemberRepo = new Repository<ProjectMembers>();
         private Repository<Document> documentRepo = new Repository<Document>();
+        private Repository<DocumentModified> mDocumentRepo = new Repository<DocumentModified>();
         private Repository<TaskDetail> taskDetailRepo = new Repository<TaskDetail>();
         private Repository<TaskResource> resourceRepo = new Repository<TaskResource>();
 
@@ -79,7 +80,8 @@ namespace ProjectManager.Controllers
                 .Where(t => t.ProjectGUID == projectGUID)
                 .OrderBy(t => t.TaskID)
                 .GetSortedTasks()
-                .Reverse();
+                .Reverse()
+                .ToList();
             var allMembers = projectMemberRepo.GetCollections().Where(m => m.ProjectGUID == projectGUID);
 
             try
@@ -88,6 +90,10 @@ namespace ProjectManager.Controllers
                 {
                     foreach (var doc in child.Document.ToList())
                     {
+                        foreach (var mDoc in doc.DocumentModified.ToList())
+                        {
+                            mDocumentRepo.Delete(mDocumentRepo.Find(mDoc.ModifiedGUID));
+                        }
                         documentRepo.Delete(documentRepo.Find(doc.DocumentGUID));
                     }
                     foreach (var detail in child.TaskDetail.ToList())
@@ -98,14 +104,23 @@ namespace ProjectManager.Controllers
                     {
                         resourceRepo.Delete(resourceRepo.Find(resource.ResourceGUID));
                     }
+                    taskRepo = new Repository<Tasks>();
                     taskRepo.Delete(taskRepo.Find(child.TaskGUID));
                 }
-
+                
                 foreach (var member in allMembers.ToList())
                 {
                     projectMemberRepo.Delete(projectMemberRepo.Find(member.EmployeeGUID, member.ProjectGUID));
                 }
-
+                foreach (var doc in documentRepo.GetCollections().Where(d=>d.ProjectGUID == project.ProjectGUID).ToList())
+                {
+                    foreach (var mDoc in doc.DocumentModified.ToList())
+                    {
+                        mDocumentRepo.Delete(mDocumentRepo.Find(mDoc.ModifiedGUID));
+                    }
+                    documentRepo = new Repository<Document>();
+                    documentRepo.Delete(documentRepo.Find(doc.DocumentGUID));
+                }
                 projectRepo.Delete(project);
             }
             catch
