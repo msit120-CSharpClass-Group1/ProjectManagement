@@ -35,15 +35,17 @@
           </Key>
           <Property Name="SheetGUID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="SheetID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="SheetName" Type="nvarchar" MaxLength="50" />
           <Property Name="ProjectGUID" Type="uniqueidentifier" />
           <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Wage" Type="money" />
           <Property Name="Rental" Type="money" />
           <Property Name="Utility" Type="money" />
           <Property Name="OtherManagement" Type="money" />
           <Property Name="Interest" Type="money" />
           <Property Name="RiskPreparation" Type="money" />
+          <Property Name="CreatorName" Type="nvarchar" MaxLength="50" />
           <Property Name="CreateDate" Type="datetime" />
+          <Property Name="ModifierName" Type="nvarchar" MaxLength="50" />
           <Property Name="ModifiedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="CostEstimateSheetDetail">
@@ -271,7 +273,7 @@
           <Key>
             <PropertyRef Name="CategoryID" />
           </Key>
-          <Property Name="CategoryID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
           <Property Name="CategoryName" Type="nvarchar" MaxLength="50" />
           <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
@@ -2239,7 +2241,6 @@
           </Key>
           <Property Name="SheetGUID" Type="Guid" Nullable="false" />
           <Property Name="SheetID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SheetName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ProjectGUID" Type="Guid" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Rental" Type="Decimal" Precision="19" Scale="4" />
@@ -2247,8 +2248,11 @@
           <Property Name="OtherManagement" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="Interest" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="RiskPreparation" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="CreatorName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifierName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="Wage" Type="Decimal" Precision="19" Scale="4" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2644,8 +2648,11 @@
           <EntitySetMapping Name="CostEstimateSheet">
             <EntityTypeMapping TypeName="ProjectManagementModel.CostEstimateSheet">
               <MappingFragment StoreEntitySet="CostEstimateSheet">
+                <ScalarProperty Name="Wage" ColumnName="Wage" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifierName" ColumnName="ModifierName" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreatorName" ColumnName="CreatorName" />
                 <ScalarProperty Name="RiskPreparation" ColumnName="RiskPreparation" />
                 <ScalarProperty Name="Interest" ColumnName="Interest" />
                 <ScalarProperty Name="OtherManagement" ColumnName="OtherManagement" />
@@ -2653,7 +2660,6 @@
                 <ScalarProperty Name="Rental" ColumnName="Rental" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ProjectGUID" ColumnName="ProjectGUID" />
-                <ScalarProperty Name="SheetName" ColumnName="SheetName" />
                 <ScalarProperty Name="SheetID" ColumnName="SheetID" />
                 <ScalarProperty Name="SheetGUID" ColumnName="SheetGUID" />
               </MappingFragment>
