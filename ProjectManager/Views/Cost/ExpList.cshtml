@@ -102,7 +102,7 @@
 
         <div id="result" class="mt-3" style="display:none">
             <span id="ResultName"></span>
-            <span>中符合條件的的費用，共有</span>
+            <span>中符合條件的費用，共有</span>
             <span id="Count_of_Resources"></span>
             <span>筆。</span>
             <button id="btn_ExportAsExcel" type="button" class="btn btn-success" disabled><img src="~/image/Excel-Icon.png" height="24" />匯出至Excel</button>
@@ -439,15 +439,23 @@
                             $("#ResultName").text("所有專案");
                         }
 
-                        $("#Count_of_Resources").text($("#tb_TaskResources").data("count"));
+                        var count = $("#tb_TaskResources").data("count");
+                        $("#Count_of_Resources").text(count);
+
+                        if (count == 0)
+                        {
+                            $("#btn_ExportAsExcel").prop("disabled", true);
+                        }
+                        else
+                        {
+                            $("#btn_ExportAsExcel").removeAttr("disabled");
+                        }
 
                         EnableEditor(projectGUID);
                         Binding();
                         result.fadeIn();
                         pager.fadeIn();
                         filter.fadeIn();
-
-                        $("#btn_ExportAsExcel").removeAttr("disabled");
 
                     }).fadeIn();
             }

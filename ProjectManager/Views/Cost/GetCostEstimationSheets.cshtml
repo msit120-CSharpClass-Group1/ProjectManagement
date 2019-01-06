@@ -1,12 +1,17 @@
-﻿@model IEnumerable<ProjectManager.Models.CostEstimateSheetVM>
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<ProjectManager.Models.CostEstimateSheetVM>
 
-<table id="tb_CostEstimateSheets" class="table table-bordered" data-count="@ViewBag.Count">
+@Html.PagedListPager(Model, page => Url.Action("GetCostEstimationSheets", new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+<table id="tb_CostEstimateSheets" class="table table-bordered" style="min-width:1280px;" data-count="@ViewBag.Count">
     <thead>
         <tr>
-            <td style="width:250px">建立日期</td>
-            <td style="min-width:150px">專案名稱</td>
-            <td style="min-width:150px">備註</td>
-            <td style="width:250px">最後修改日期</td>
+            <td style="width:240px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().CreateDate).ToString(), "GetCostEstimationSheets", new { sortBy = ViewBag.sortByDate })<i class="fas fa-sort"></i></td>
+            <td style="width:150px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().CreatorName).ToString(), "GetCostEstimationSheets", new { sortBy = ViewBag.sortByCreatorName })<i class="fas fa-sort"></i></td>
+            <td style="width:120px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().SheetID).ToString(), "GetCostEstimationSheets", new { sortBy = ViewBag.sortBySheetID })<i class="fas fa-sort"></i></td>
+            <td style="min-width:100px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().ProjectName).ToString(), "GetCostEstimationSheets", new { sortBy = ViewBag.sortByProjectName })<i class="fas fa-sort"></i></td>
+            <td style="min-width:150px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().Description).ToString(), "GetCostEstimationSheets", new { sortBy = ViewBag.sortByDescription })<i class="fas fa-sort"></i></td>
+            <td class="editor" colspan="2" style="min-width:60px;">編輯</td>
         </tr>
     </thead>
     <tbody>
@@ -14,9 +19,12 @@
         {
             <tr data-id="@sheet.SheetGUID">
                 <td><p>@sheet.CreateDate</p></td>
+                <td class="text-center"><p>@sheet.CreatorName</p></td>
+                <td class="text-center"><p>@sheet.SheetID</p></td>
                 <td><p>@sheet.ProjectName</p></td>
                 <td><p>@sheet.Description</p></td>
-                <td><p>@sheet.ModifiedDate</p></td>
+                <td class="text-center editor" style="width:75px"><button name="btn_View" class="btn btn-info">檢視</button></td>
+                <td class="text-center editor" style="width:75px"><button name="btn_Del" class="btn btn-danger">刪除</button></td>
             </tr>
         }
     </tbody>
