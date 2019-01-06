@@ -327,8 +327,8 @@ namespace ProjectManager.Controllers
                 chartData.datasets.Add(new SingleColorChartDataset<int>
                 {
                     label = "當月費用",
-                    backgroundColor = "#EBB6A4",
-                    borderColor = "#EBB6A4",
+                    backgroundColor = "#90C3D4",
+                    borderColor = "#90C3D4",
                     data = project.GetCostsByMonths(months)
                 });
             }
