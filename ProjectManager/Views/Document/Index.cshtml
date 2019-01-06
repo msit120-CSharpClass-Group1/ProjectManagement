@@ -96,6 +96,9 @@
 {
     <script>
         $(document).ready(function () {
+            $('#btn_CancelEdit').click(function () {
+                $('#myRightsidenav').slideToggle();
+            })
             $('#li_Document').addClass('active');
             $("#PartialView").load("/Document/GetDocument/1", {}, function () {
                 $('#nav-tab > a').first().addClass('click');
