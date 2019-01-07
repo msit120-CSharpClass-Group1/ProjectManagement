@@ -1,6 +1,8 @@
 ﻿@model ProjectManager.Models.BoardVM
 @{
-    ViewBag.Title = ViewBag.UserName;
+                /**/
+
+                ViewBag.Title = ViewBag.UserName;
 }
 @section style{
     <style>
@@ -69,7 +71,7 @@
 
         .btn-insert {
             padding: 3px 15px;
-            display:none;
+            display: none;
         }
 
         .listContent {
@@ -224,7 +226,6 @@
             color: #000;
             font-size: 16px;
             flex: 0 1 30px;
-
         }
 
         .checklist-progress-bar {
@@ -284,7 +285,6 @@
 
         .checkListItem {
             border-radius: 3px;
-            /*margin: 0 10px 0 10px;*/
             display: flex;
             -webkit-transform-origin: left bottom;
             transform-origin: left bottom;
@@ -386,7 +386,7 @@
             -webkit-user-select: none;
             -ms-user-select: none;
         }
-     
+
         button.rightOpenbtn, button.dropupbtn {
             outline: none;
         }
@@ -394,8 +394,9 @@
         .dropdown button:hover {
             background-color: rgba(225,225,225,0.8);
         }
+
         .rightOpenbtn {
-            display:none;
+            display: none;
         }
         /*------------*/
         .dragging {
@@ -419,8 +420,9 @@
         .breadcrumb a:hover {
             text-decoration: none;
         }
+
         .leftBorder {
-            border-left:3px solid red;
+            border-left: 3px solid red;
         }
     </style>
 }
@@ -430,42 +432,42 @@
         @foreach (var s in Model.TaskStatus)
         {
             <div class="board">
-                <div class="listContent" data-taskStatusid="@s.TaskStatusID" id="listContent-@s.TaskStatusID"  ondragover="dragoverHandler(event)" ondrop="dropHandler(event)" ondragleave="dragLeave(event)">
+                <div class="listContent" data-taskStatusid="@s.TaskStatusID" id="listContent-@s.TaskStatusID" ondragover="dragoverHandler(event)" ondrop="dropHandler(event)" ondragleave="dragLeave(event)">
                     <div class="listHeader" id="listHeader-@s.TaskStatusID" ondragstart="return false">
                         <div class="listHeaderTitle">@s.TaskStatusName</div>
                     </div>
                     <div class="lists">
                         @foreach (var t in Model.Tasks.Where(x => x.TaskStatusID == s.TaskStatusID))
                         {
-                        <div class="listCards" data-tguid="@t.TaskGUID" data-statusGuid="@t.TaskStatusID" draggable="true" ondragstart="dragstart(event)" ondragend="dragEnd(event)" ondragleave="dragLeave(event)">
-                            @if (t.TaskStatusID==2 && DateTime.Now.ToLocalTime() > t.EstEndDate )
-                            {
-                                <a class="listCard leftBorder" data-tid="@t.TaskGUID">
-                                    <span class="listCardTitle">@t.TaskName</span>
-                                    <div class="badges">
-                                        <div class="badge" title="待辦清單項目">
-                                            <span class="completeDT">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID && x.TaskDetailStatusID == 2).Count()</span>
-                                            <span>/</span>
-                                            <span class="badge-text totalDT" id="badge-text">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID).Count()</span>
+                            <div class="listCards" data-tguid="@t.TaskGUID" data-statusGuid="@t.TaskStatusID" draggable="true" ondragstart="dragstart(event)" ondragend="dragEnd(event)" ondragleave="dragLeave(event)">
+                                @if (t.TaskStatusID == 2 && DateTime.Now.ToLocalTime() > t.EstEndDate)
+                                {
+                                    <a class="listCard leftBorder" data-tid="@t.TaskGUID">
+                                        <span class="listCardTitle">@t.TaskName</span>
+                                        <div class="badges">
+                                            <div class="badge" title="待辦清單項目">
+                                                <span class="completeDT">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID && x.TaskDetailStatusID == 2).Count()</span>
+                                                <span>/</span>
+                                                <span class="badge-text totalDT" id="badge-text">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID).Count()</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                            }
-                            else
-                            {
-                                <a class="listCard" data-tid="@t.TaskGUID">
-                                    <span class="listCardTitle">@t.TaskName</span>
-                                    <div class="badges">
-                                        <div class="badge" title="待辦清單項目">
-                                            <span class="completeDT">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID && x.TaskDetailStatusID == 2).Count()</span>
-                                            <span>/</span>
-                                            <span class="badge-text totalDT" id="badge-text">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID).Count()</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="listCard" data-tid="@t.TaskGUID">
+                                        <span class="listCardTitle">@t.TaskName</span>
+                                        <div class="badges">
+                                            <div class="badge" title="待辦清單項目">
+                                                <span class="completeDT">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID && x.TaskDetailStatusID == 2).Count()</span>
+                                                <span>/</span>
+                                                <span class="badge-text totalDT" id="badge-text">@Model.TaskDetail.Where(x => x.TaskGUID == t.TaskGUID).Count()</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                            }
+                                    </a>
+                                }
 
-                        </div>
+                            </div>
                         }
                     </div>
                 </div>
@@ -498,7 +500,7 @@
         <div class="cardDetailContent">
             <div class="itemTitle">
                 <span class="cardDetailIcon"><i class="far fa-clock"></i></span>
-                <div class="">到期日</div>
+                <div class="">到期時間</div>
             </div>
             <div class="desContent">
                 <label class="dueDateTag"></label>
@@ -518,7 +520,7 @@
             </div>
             <div class="checkLists"></div>
             <div class="listNewItem">
-                <textarea name="newItem" id="newItem">新增項目...</textarea>
+                <textarea name="newItem" id="newItem" placeholder="新增項目..."></textarea>
             </div>
             <button type="button" class="slide btn-insert">新增</button>
         </div>
@@ -530,7 +532,7 @@
         <div class="modal-content" style="border-radius:3px 4px;">
             <div class="modal-header">
                 <h5 class="modal-title" id="workTimeModalLabel">工時填報</h5>
-                <input type="hidden" id="_TaskGUID"  />
+                <input type="hidden" id="_TaskGUID" />
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -539,11 +541,11 @@
                 <form id="f_reportWorkT" actions="~/Myboard/workTime" method="post">
                     <div class="form-group">
                         <label for="taskName" class="col-form-label">任務名稱: </label>
-                        <label class="col-form-label" id="taskName" ></label>
+                        <label class="col-form-label" id="taskName"></label>
                     </div>
                     <div class="form-group">
                         <label for="Description" class="col-form-label">實際工時:</label>
-                        <input required type="text" class="form-control" id="realWorkTime" name="realWorkTime">
+                        <input required type="text" class="form-control" id="realWorkTime" name="realWorkTime" autocomplete="off">
                         <span id="alert"></span>
                     </div>
                 </form>
@@ -557,7 +559,7 @@
 </div>
 @section script
 {
-<script>
+    <script>
         var cardID = null;
         var cardGuid;
         var thisCard;
@@ -575,7 +577,7 @@
         $("#listContent-5").removeAttr("ondrop");
         $("#listContent-4").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default" });
         $("#listContent-5").find('.listCards').attr("draggable", false).css({ "-webkit-user-select": "none", "cursor": "default" });
-       
+
         function dragstart(e)
         {
             var moveItem = document.getElementsByClassName('listCards');
@@ -598,7 +600,7 @@
             if ($(e.currentTarget).data('taskstatusid') < 4)
             {
                 $(e.currentTarget).addClass('hover');
-            } 
+            }
         }
 
         function dragLeave(e) {
@@ -618,7 +620,7 @@
             if (dragCard.attr('data-statusGuid') == 2 && $(dropElem).attr('data-taskStatusid') == 3) {
                 $('#taskName').html(dragCard.find('.listCardTitle').text());
                 modal.modal('show');
-                
+
             } else {
                  $.ajax({
                     type: 'Post',
@@ -639,20 +641,28 @@
                     dataType: 'json'
                  }).done(function (datas) {
                      var changeJasonDate = datas.replace("/Date(", "").replace(")/", "");
-                     var estEndDate = new Date(parseInt(changeJasonDate));
-                     console.log(new Date() > estEndDate)
-                     if (new Date() > estEndDate == true)
+                     var estEndDateGMT = new Date(parseInt(changeJasonDate));
+                     var estYear = estEndDateGMT.getFullYear();
+                     var estMon = estEndDateGMT.getMonth()+1;
+                     var estDate = estEndDateGMT.getDate();
+                     var estEndDate = `${estYear}/${estMon}/${estDate}`;
+                     var todayGMT = new Date();
+                     var todayYear = todayGMT.getFullYear();
+                     var todayMon = todayGMT.getMonth()+1;
+                     var todayDate = todayGMT.getDate();
+                     var today = `${todayYear}/${todayMon}/${todayDate}`;
+                     console.log(estEndDate +" "+ today  );
+                     if (today > estEndDate == true)
                      {
                          dragCard.children().addClass('leftBorder');
                      }
-                     
                 });
             }
         }
 
         $('#btn_OK').mousedown(function () {
                 $('#alert').html('');
-                var id = $('#_TaskGUID').val();        
+                var id = $('#_TaskGUID').val();
                 var elem = document.getElementById(id);
                 var taskStatusid = dropElem.getAttribute("data-taskStatusid");
                 var workTime = $('input[name="realWorkTime"]').val();
@@ -660,8 +670,8 @@
 
                     $('#alert').css('color', 'red');
                     $('#alert').html('請輸入數值');
-               
-                } else
+
+                }else
                 {
                     $.ajax({
                         type: 'Post',
@@ -671,11 +681,11 @@
                     }).done(function (datas) {
                         if (datas == true) {
                             dragCard.attr('data-statusGuid', taskStatusid);
-                            dropElem.appendChild(elem.parentNode.removeChild(elem));                       
+                            dropElem.appendChild(elem.parentNode.removeChild(elem));
                             modal.modal('hide');
                         }
-                    });  
-            }
+                    });
+                }
                 dragCard.children().removeClass('leftBorder');
                 $('input[name="realWorkTime"]').val('');
         })
@@ -734,8 +744,8 @@
                     $(datas.Task).each(function (id, data) {
                         $('.cardDetailTitle').text(data.TaskName);
                         $('.desContent>textArea').text(data.Description);
-                        $('.cardDetailContent>.desContent>.dueDateTag').text(new Date(data.EstEndDate).toLocaleDateString() + " " + new Date(data.EstEndDate).toLocaleTimeString());
-                        $('.cardDetailContent>.desContent>.messageTag').text(data.Tag);             
+                        $('.cardDetailContent>.desContent>.dueDateTag').text(new Date(data.EstEndDate).toLocaleDateString());
+                        $('.cardDetailContent>.desContent>.messageTag').text(data.Tag);
                     });
                 });
                 $.ajax({
@@ -764,7 +774,7 @@
                 var _percent = (parseInt(completeDT.text()) / parseInt(badgeText.text()))* 100 ;
                 var percent = _percent.toFixed() + "%";
                 if (parseInt(badgeText.text()) == 0) {
-                    percent = "0%"
+                    percent = "0%";
                 }
                 $('.checklist-progress-bar-current').css('width', percent);
                 $('.checklist-progress-percentage').text(percent);
@@ -925,5 +935,5 @@
 
         });
 
-</script>
+    </script>
 }

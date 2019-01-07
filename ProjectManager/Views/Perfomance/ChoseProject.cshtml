@@ -69,11 +69,11 @@
                             <h5 class="card-title">@_project.Project.ProjectStatus.ProjectStatusName<span class="badge badge-pill badge-primary" style="float:right">平均驗收分數</span></h5>
                             @if (TaskAVG == null)
                             {
-                                <h1><span class="badge badge-secondary" style="float:right;margin-right:5px"><i class="fas fa-award"></i>無</span></h1>
+                                <h1><span class="badge badge-secondary" style="float:right;margin-right:5px"><i class="fas fa-award" style="margin-right:5px"></i>無</span></h1>
                             }
                             else
                             {
-                                <h1><span class="badge badge-secondary" style="float:right;margin-right:5px"><i class="fas fa-award"></i>@Math.Round((double)@_project.Project.Tasks.Where(p => p.EmployeeGUID == Model.EmployeeGUID).Average(t => t.ReviewScore), 0)</span></h1>
+                                <h1><span class="badge badge-secondary" style="float:right;margin-right:5px"><i class="fas fa-award" style="margin-right:5px"></i>@Math.Round((double)@_project.Project.Tasks.Where(p => p.EmployeeGUID == Model.EmployeeGUID).Average(t => t.ReviewScore), 0)</span></h1>
                             }
                             @if (_project.Selfscore == null)
                             {

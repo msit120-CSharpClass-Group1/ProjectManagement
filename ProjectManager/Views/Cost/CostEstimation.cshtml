@@ -1,0 +1,727 @@
+﻿@{
+    ViewBag.Activity = "成本管理";
+    ViewBag.Title = "專案成本估算";
+}
+
+@section style{
+
+    <style>
+
+        thead {
+            background-color: darkcyan;
+            color: white;
+            text-align: center;
+        }
+
+            thead td {
+                cursor: pointer;
+            }
+
+            thead a, thead a:hover {
+                color: white;
+                text-decoration: none;
+            }
+
+            thead i {
+                float: right;
+                height: 24px;
+                padding: 4px 0;
+            }
+
+        .bordered {
+            border: 1px solid lightgray;
+            border-radius: 0.25em;
+        }
+
+        .myselect {
+            max-width: 200px;
+        }
+
+        .sp_TaskName {
+            cursor: pointer;
+        }
+
+        .subtotal {
+            text-decoration: underline
+        }
+
+        .wrapper {
+            width: 1280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+}
+
+<div class="ml-3">
+    <form class="form-inline">
+        <div class="input-group mr-3 my-3">
+            <div class="input-group-prepend">
+                <lable class="input-group-text" for="RequiredDeptGUID">需求部門：</lable>
+            </div>
+            @{
+                SelectList Departments = new SelectList(ViewBag.Departments, "DepartmentGUID", "DepartmentName");
+            }
+            @Html.DropDownList("RequiredDeptGUID", Departments, "請選擇部門", new { @class = "custom-select" })
+        </div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <lable class="input-group-text" for="Select_ProjectName">專案名稱：</lable>
+            </div>
+            <select id="Select_ProjectName" class="custom-select"></select>
+        </div>
+        <button id="btn_CreateSheet" type="button" class="btn btn-primary m-3 hide">新增專案估算單</button>
+        <button id="btn_SaveSheet" type="button" class="btn btn-success m-3 hide">儲存專案估算單</button>
+        <button id="btn_CancelSheet" type="button" class="btn btn-primary m-3 hide">取消返回</button>
+    </form>
+</div>
+
+<div id="PartialView" class="mx-3">
+</div>
+
+@section asideRight{
+    <div class="success-tooltip">
+        新增成功
+    </div>
+    <div class="container text-light mt-3" style="min-width:300px;">
+        <form class="needs-validation" id="f_EditResource" novalidate>
+            <h4 id="asideTitle" style="display:inline">標準成本池</h4>
+            <button id="btn_reset" type="reset" class="btn btn-danger ml-3">清除重填</button>
+            <div class="row col-12 mt-3">
+                <div class="form-group mb-0">
+                    <label for="ResourceName">平均薪資：</label>
+                    <input id="StandardPoolGUID" name="StandardPoolGUID" style="display:none;" />
+                    <input id="PoolGUID" name="PoolGUID" style="display:none;" />
+                    <div class="row" style="padding-left:12px;">
+                        <input id="WagePerHour" name="WagePerHour" class="form-control" style="width:10em;" required />
+                        <label class="input-group-text ml-3"> /小時</label>
+                    </div>
+                    <div class="invalid-tooltip">
+                        欄位不可為空
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12 mt-3">
+                <div class="form-group mb-0">
+                    <label for="ResourceName">每月租金費用：</label>
+                    <div class="row" style="padding-left:12px;">
+                        <input id="RentalPerMonth" name="RentalPerMonth" class="form-control" style="width:10em;" required />
+                        <label class="input-group-text ml-3"> /月</label>
+                    </div>
+                    <div class="invalid-tooltip">
+                        欄位不可為空
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12 mt-3">
+                <div class="form-group mb-0">
+                    <label for="ResourceName">每月水電費用：</label>
+                    <div class="row" style="padding-left:12px;">
+                        <input id="UtilityPerMonth" name="UtilityPerMonth" class="form-control" style="width:10em;" required />
+                        <label class="input-group-text ml-3"> /月</label>
+                    </div>
+                    <div class="invalid-tooltip">
+                        欄位不可為空
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12 mt-3">
+                <div class="form-group mb-0">
+                    <label for="ResourceName">其他管理費用：</label>
+                    <div class="row" style="padding-left:12px;">
+                        <input id="OtherManagementCosts" name="OtherManagementCosts" class="form-control" style="width:10em;" required />
+                        <label class="input-group-text ml-3"> /月</label>
+                    </div>
+                    <div class="invalid-tooltip">
+                        欄位不可為空
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12 mt-3">
+                <div class="form-group mb-0">
+                    <label for="ResourceName">利息費用：</label>
+                    <div class="row" style="padding-left:12px;">
+                        <input id="InterestExpense" name="InterestExpense" class="form-control" style="width:10em;" required />
+                        <label class="input-group-text ml-3"> /月</label>
+                    </div>
+                    <div class="invalid-tooltip">
+                        欄位不可為空
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12 mt-3">
+                <div class="form-group mb-0">
+                    <label for="ResourceName">風險準備成本：</label>
+                    <div class="row" style="padding-left:12px;">
+                        <input id="RiskPreparationCost" name="RiskPreparationCost" class="form-control" style="width:10em;" required />
+                        <label class="input-group-text ml-3"> /專案</label>
+                    </div>
+                    <div class="invalid-tooltip">
+                        欄位不可為空
+                    </div>
+                </div>
+            </div>
+
+            <div class="row col-12 mt-3">
+                <div id="formBtns" class="mt-3 mx-auto text-center">
+                    <button id="btn_CancelEdit" type="button" class="btn btn-default py-1 px-3 mr-3">取消</button>
+                    <button id="btn_ConfirmModify" type="button" class="btn btn-success py-1 px-3">確認修改</button>
+                </div>
+            </div>
+        </form>
+    </div>
+}
+
+@section script{
+    <script>
+        $(document).ready(function ()
+        {
+            $("#ul_costManagement").slideDown();
+            $("#li_CostEstimation").addClass("active");
+
+            LoadProjects();
+            LoadSheets();
+            LoadStandardPool();
+
+            $("#RequiredDeptGUID").change(() =>
+            {
+                LoadProjects();
+                LoadSheets();
+                ToggleCreateSheet();
+            })
+
+            $("#Select_ProjectName").change(() =>
+            {
+                LoadSheets();
+                ToggleCreateSheet();
+            })
+
+            $("#btn_CreateSheet").click(() =>
+            {
+                var PartialView = $("#PartialView");
+                var datas = {
+                    projectGUID : $("#Select_ProjectName").val(),
+                }
+
+                PartialView.load("@Url.Action("CreateEstimationSheet", "Cost")", datas, function ()
+                {
+                    $(this).addClass("wrapper");
+                    $("#asideTitle").text("專案成本池");
+                    LoadPool(CalcAllCosts);
+                    Binding();
+                    ToggleButton();
+                    ToggleSelect();
+
+                }).fadeIn();
+            })
+
+            $("#btn_SaveSheet").click(() =>
+            {
+                var ProjectGUID = $("#Select_ProjectName").val();
+                var sheetdata =
+                {
+                    SheetGUID: guid(),
+                    ProjectGUID: ProjectGUID,
+                    Wage: $("#WagePerHour").val(),
+                    Rental: $("#Rental").attr("data-amount"),
+                    Utility: $("#Utility").attr("data-amount"),
+                    OtherManagement: $("#OMC").attr("data-amount"),
+                    Interest: $("#Interest").attr("data-amount"),
+                    RiskPreparation: $("#RiskPreparation").attr("data-amount"),
+                    CreatorName: $("#wantname").text(),
+                    ModifierName: $("#wantname").text(),
+                    Description: $("#Description").val()
+                };
+                var taskdatas = [];
+                var roottaskdatas = [];
+                var taskGroups = $(".task-expenses")
+                //preparing taskdatas
+                for (var exp of taskGroups)
+                {
+                    var expenses = $(exp).find(":input[name='expenses']");
+                    var taskGuid = $(exp).attr("data-taskguid");
+                    var worktime = $(exp).find(".worktime").val();
+                    var laberCost =
+                    {
+                        DetailGUID: guid(),
+                        SheetGUID: sheetdata.SheetGUID,
+                        TaskGUID: taskGuid,
+                        ResourceCategoryID: 0,
+                        Amount: worktime
+                    }
+                    var rootTaskData =
+                    {
+                        TaskGUID: taskGuid,
+                        EstWorkTime: worktime
+                    }
+
+                    taskdatas.push(laberCost);
+                    roottaskdatas.push(rootTaskData);
+
+                    for (var e of expenses)
+                    {
+                        var data =
+                        {
+                            DetailGUID: guid(),
+                            SheetGUID: sheetdata.SheetGUID,
+                            TaskGUID: taskGuid,
+                            ResourceCategoryID: $(e).siblings(":input[name='ExpCats']").val(),
+                            Amount: $(e).val()
+                        }
+                        taskdatas.push(data);
+                    }
+                }
+                var sheetdetaildata = {
+                    details: taskdatas
+                }
+                var rootTaskData = { rootTasks: roottaskdatas };
+                var projectData = { projectGUID: ProjectGUID, budget: $("#Subtotal").attr("data-amount") };
+
+                $.post("@Url.Action("AddEstimationSheet", "Cost")", sheetdata, (result) =>
+                {
+                    console.log(result);
+                });
+
+                $.post("@Url.Action("AddEstimationSheetDetails", "Cost")", sheetdetaildata, (result) =>
+                {
+                    console.log(result);
+                });
+
+                $.post("@Url.Action("UpdateTask", "Cost")", rootTaskData, (result) =>
+                {
+                    console.log(result);
+                });
+
+                $.post("@Url.Action("UpdateProjectBudget", "Cost")", projectData, (result) =>
+                {
+                    console.log(result);
+                    $("#asideTitle").text("標準成本池");
+                    LoadStandardPool();
+                    LoadSheets();
+                    ToggleButton(1);
+                    ToggleSelect(1);
+                });
+
+            });
+
+            $("#btn_CancelSheet").click(() =>
+            {
+                LoadSheets();
+                $("#asideTitle").text("標準成本池");
+                LoadStandardPool();
+                ToggleButton(1);
+                ToggleSelect(1);
+            })
+
+            $("#btn_CancelEdit").click(() =>
+            {
+                var standard = $("#StandardPoolGUID").val();
+                var current = $("#PoolGUID").val();
+
+                if (standard == current)
+                {
+                    LoadStandardPool();
+                }
+                else
+                {
+                    LoadPool();
+                }
+
+                $("#myRightsidenav").slideUp();
+            })
+
+            $("#btn_ConfirmModify").click(() =>
+            {
+                CalcAllCosts();
+                UpdatePool();
+            })
+
+            function LoadProjects()
+            {
+                var optionlabel = $("<option></option>").text("請選擇專案").val("");
+                $("#Select_ProjectName").html(optionlabel);
+
+                if ($("#RequiredDeptGUID").val())
+                {
+                    $.getJSON("@Url.Action("GetProjectListByDptID", "Cost")", { DepartmentID: $("#RequiredDeptGUID").val() }, function (projects)
+                    {
+                        var docFrag = $(document.createDocumentFragment());
+                        docFrag.append(optionlabel);
+                        $.each(projects, function (index, project)
+                        {
+                            var opt = $("<option></option>").text(project.ProjectName).val(project.ProjectGUID);
+                            docFrag.append(opt);
+                        });
+                        $("#Select_ProjectName").html(docFrag);
+                    });
+                }
+            }
+
+            function LoadSheets()
+            {
+                var DepartmentOpt = $("#RequiredDeptGUID>:selected");
+                var departmentGUID = DepartmentOpt.val();
+                var projectOpt = $("#Select_ProjectName>:selected");
+                var projectGUID = projectOpt.val();
+                var PartialView = $("#PartialView");
+
+                var datas =
+                {
+                    DepartmentID: departmentGUID,
+                    ProjectID: projectGUID,
+                    sortby: getCookie("sortBy")
+                }
+
+                PartialView.load("@Url.Action("GetCostEstimationSheets", "Cost")", datas, function ()
+                {
+                    $(this).removeClass("wrapper");
+                    losingMind();
+
+                }).fadeIn();
+            }
+
+            function losingMind()
+            {
+                $(":button[name='btn_Del']").click(DeleteSheet);
+                $(":button[name='btn_View']").click(ViewSheet);
+
+                //點td也可排序
+                $('#tb_CostEstimateSheets > thead td').click(function ()
+                {
+                    $(this).children('a').click();
+                })
+
+                //欄位排序
+                $('#tb_CostEstimateSheets > thead a').click(function (e)
+                {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    var ProjectGUID = $("#Select_ProjectName").val();
+                    var datas =
+                    {
+                        DepartmentID: $("#RequiredDeptGUID").val(),
+                        ProjectID: ProjectGUID,
+                    }
+
+                    var Action = $(this).attr("href");
+                    $("#PartialView").load(Action, datas, function ()
+                    {
+                        losingMind();
+                    });
+                })
+            }
+
+            function ViewSheet()
+            {
+                data = { SheetGUID: $(this).parents("tr").attr("data-id") };
+                var PartialView = $("#PartialView");
+
+                PartialView.load("@Url.Action("ViewSheet", "Cost")", data, function ()
+                {
+                    CalcTaskExpenses();
+                    CalcSubtotal();
+                    NumberFormatting();
+                    $("#btn_CancelSheet").show();
+
+                }).fadeIn();
+            }
+
+            function DeleteSheet()
+            {
+                data = { SheetGUID: $(this).parents("tr").attr("data-id") };
+                $.post("@Url.Action("DeleteSheet","Cost")", data, (result) =>
+                {
+                    console.log(result);
+                    LoadSheets();
+                })
+            }
+
+            function LoadStandardPool()
+            {
+                $.getJSON("@Url.Action("GetCostPool", "Cost")", function (data)
+                {
+                    $("#StandardPoolGUID").val(data.PoolGUID);
+                    $("#PoolGUID").val(data.PoolGUID);
+                    $("#WagePerHour").val(data.WagePerHour);
+                    $("#RentalPerMonth").val(data.RentalPerMonth);
+                    $("#UtilityPerMonth").val(data.UtilityPerMonth);
+                    $("#OtherManagementCosts").val(data.OtherManagementCosts);
+                    $("#InterestExpense").val(data.InterestExpense);
+                    $("#RiskPreparationCost").val(data.RiskPreparationCost);
+                });
+            }
+
+            function LoadPool(callback)
+            {
+                id = { projectGUID: $("#Select_ProjectName").val() };
+
+                $.getJSON("@Url.Action("GetCostPool", "Cost")", id, function (data)
+                {
+                    $("#PoolGUID").val(data.PoolGUID);
+                    $("#WagePerHour").val(data.WagePerHour);
+                    $("#RentalPerMonth").val(data.RentalPerMonth);
+                    $("#UtilityPerMonth").val(data.UtilityPerMonth);
+                    $("#OtherManagementCosts").val(data.OtherManagementCosts);
+                    $("#InterestExpense").val(data.InterestExpense);
+                    $("#RiskPreparationCost").val(data.RiskPreparationCost);
+
+                    if (typeof (callback) == "function")
+                    {
+                        callback();
+                    }
+                })
+            }
+
+            function UpdatePool()
+            {
+                var pooldata =
+                {
+                    PoolGUID: $("#PoolGUID").val(),
+                    ProjectGUID: $("#Select_ProjectName>:selected").val(),
+                    WagePerHour: $("#WagePerHour").val(),
+                    RentalPerMonth: $("#RentalPerMonth").val(),
+                    UtilityPerMonth: $("#UtilityPerMonth").val(),
+                    OtherManagementCosts: $("#OtherManagementCosts").val(),
+                    InterestExpense: $("#InterestExpense").val(),
+                    RiskPreparationCost: $("#RiskPreparationCost").val()
+                };
+
+                $.post("@Url.Action("EditPool", "Cost")", pooldata, (result) =>
+                {
+                    console.log(result);
+                });
+            }
+
+            function Binding()
+            {
+                var TaskExpensesForm = $("#f_TaskExpenses");
+
+                TaskExpensesForm.on("click", ".sp_TaskName", ToggleTaskExp);
+                TaskExpensesForm.on("keyup", ".worktime", CalcAllCosts);
+                TaskExpensesForm.on("keyup", ":input[name='expenses']", CalcAllCosts);
+                TaskExpensesForm.on("click", ":button[name='btn_AddExpense']", AddExpense);
+                TaskExpensesForm.on("click", ":button[name='btn_DeleteExpense']", DeleteExpense);
+                TaskExpensesForm.on("click", ":button[name='btn_DeleteExpense']", CalcAllCosts);
+            }
+
+            function ToggleTaskExp()
+            {
+                var formgroup = $(this).parents("div[name='Task']").children(".form-group");
+                formgroup.slideToggle();
+
+            }
+
+            function AddExpense()
+            {
+                var StandardInputTile = $("#StandardInputTile").html();
+                var newdiv = document.createElement("div");
+                newdiv.classList.add("input-group", "mb-4");
+                newdiv.innerHTML = StandardInputTile;
+                var formgroup = $(this).parents("div[name='Task']").children(".form-group");
+                formgroup.append(newdiv);
+            }
+
+            function DeleteExpense()
+            {
+                var formgroup = $(this).parents("div[name='Task']").children(".form-group");
+                var lastdiv = formgroup.children("div:last-child");
+                if (lastdiv.attr("name") != "SalaryExpense")
+                {
+                    lastdiv.remove();
+                }
+            }
+
+            function CalcAllCosts()
+            {
+                CalcWage();
+                CalcRegularCosts();
+                CalcTaskExpenses();
+                CalcSubtotal();
+            }
+
+            function CalcWage()
+            {
+                var counter = $(".wage-counter");
+
+                for (var i of counter)
+                {
+                    var worktime = $(i).parent().siblings(".worktime").val();
+                    var WagePerHour = $("#WagePerHour").val();
+                    var wage = worktime * WagePerHour;
+                    var wagestr = "NT$" + (wage).toLocaleString("zh-tw");
+                    $(i).attr("data-wage", wage);
+                    $(i).html(wagestr);
+                }
+            }
+
+            function CalcTaskExpenses()
+            {
+                var taskGroups = $(".task-expenses")
+
+                for (var exp of taskGroups)
+                {
+                    var expenses = $(exp).find(":input[name='expenses']");
+                    var taskGuid = $(exp).attr("data-taskguid");
+                    var wage = $(exp).find(".wage-counter").attr("data-wage");
+                    var sum = Number(wage);
+
+                    for (var e of expenses)
+                    {
+                        sum += Number($(e).val());
+                    }
+
+                    var sp = $(`#${taskGuid}`);
+                    sp.text(sum.toLocaleString("zh-tw"));
+                    sp.attr("data-amount", sum);
+                }
+            }
+
+            function CalcRegularCosts()
+            {
+                var ProjectMonths = $("#tb_FixedCosts").data("period");
+
+                var Rental = $("#RentalPerMonth").val() * ProjectMonths;
+                var Utility = $("#UtilityPerMonth").val() * ProjectMonths;
+                var OMC = $("#OtherManagementCosts").val() * ProjectMonths;
+                var Interest = $("#InterestExpense").val() * ProjectMonths;
+                var RiskPreparation = Number($("#RiskPreparationCost").val());
+
+                var RentalString = "NT$ " + (Rental).toLocaleString("zh-tw");
+                var UtilityString = "NT$ " + (Utility).toLocaleString("zh-tw");
+                var OMCString = "NT$ " + (OMC).toLocaleString("zh-tw");
+                var InterestString = "NT$ " + (Interest).toLocaleString("zh-tw");
+                var RiskPreparationString = "NT$ " + (RiskPreparation).toLocaleString("zh-tw");
+
+                $("#Rental").attr("data-amount", Rental);
+                $("#Utility").attr("data-amount", Utility);
+                $("#OMC").attr("data-amount", OMC);
+                $("#Interest").attr("data-amount", Interest);
+                $("#RiskPreparation").attr("data-amount", RiskPreparation);
+
+                $("#Rental").text(RentalString);
+                $("#Utility").text(UtilityString);
+                $("#OMC").text(OMCString);
+                $("#Interest").text(InterestString);
+                $("#RiskPreparation").text(RiskPreparationString);
+
+                var sum = Rental + Utility + OMC + Interest + RiskPreparation;
+                var FixedCost = $("#result_FixedCost");
+                FixedCost.text((sum).toLocaleString("zh-tw"));
+                FixedCost.attr("data-amount", sum);
+            }
+
+            function CalcSubtotal()
+            {
+                var rootExpenses = $(".root-expenses");
+                var subtotal = 0;
+                var result = $("#Subtotal");
+
+                for (var exp of rootExpenses)
+                {
+                    subtotal += Number($(exp).attr("data-amount"));
+                }
+
+                result.text("NT$ " + subtotal.toLocaleString("zh-tw"));
+                result.attr("data-amount", subtotal);
+            }
+
+            function ToggleCreateSheet()
+            {
+                var projectGUID = $("#Select_ProjectName>:selected").val();
+                if (projectGUID)
+                {
+                    $("#btn_CreateSheet").fadeIn();
+                }
+                else
+                {
+                    $("#btn_CreateSheet").fadeOut();
+                }
+            }
+
+            function ToggleButton(status)
+            {
+                var projectGUID = $("#Select_ProjectName").val();
+
+                if (status == 1 && projectGUID)
+                {
+                    $("#btn_CreateSheet").show();
+                    $("#btn_SaveSheet").hide();
+                    $("#btn_CancelSheet").hide();
+                }
+                else if (status == 1)
+                {
+                    $("#btn_CreateSheet").hide();
+                    $("#btn_SaveSheet").hide();
+                    $("#btn_CancelSheet").hide();
+                }
+                else
+                {
+                    $("#btn_CreateSheet").hide();
+                    $("#btn_SaveSheet").show();
+                    $("#btn_CancelSheet").show();
+                }
+            }
+
+            function ToggleSelect(status)
+            {
+                if (status == 1)
+                {
+                    $("#RequiredDeptGUID").removeAttr("disabled");
+                    $("#Select_ProjectName").removeAttr("disabled");
+                }
+                else
+                {
+                    $("#RequiredDeptGUID").prop("disabled", true);
+                    $("#Select_ProjectName").prop("disabled", true);
+                }
+            }
+
+            function NumberFormatting()
+            {
+                var wageCounters = $(".wage-counter");
+                var fixedCosts = $(".RegularCost");
+                var FixedCost = $("#result_FixedCost");
+
+                var cost = FixedCost.attr("data-amount");
+                var coststr = Number(cost).toLocaleString("zh-tw");
+                FixedCost.text(coststr);
+
+                for (var c of wageCounters)
+                {
+                    var wage = $(c).text();
+                    var wagestr = "NT$ " + Number(wage).toLocaleString("zh-tw");
+                    $(c).text(wagestr)
+                }
+
+                for (var c of fixedCosts)
+                {
+                    var wage = $(c).text();
+                    var wagestr = "NT$ " + Number(wage).toLocaleString("zh-tw");
+                    $(c).text(wagestr)
+                }
+
+            }
+
+            function getCookie(cname)
+            {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++)
+                {
+                    var c = ca[i].trim();
+                    if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+                }
+                return "";
+            }
+
+            function guid()
+            {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c)
+                {
+                    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+        })
+    </script>
+}

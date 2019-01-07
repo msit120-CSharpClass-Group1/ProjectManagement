@@ -68,11 +68,14 @@
                     <li id="li_ExpList">
                         <a href="~/@Link.ExpList">費用管理</a>
                     </li>
-                    <li id="li_ExpCatMgr">
-                        <a href="~/@Link.ExpCatMgr">費用類別管理</a>
-                    </li>
                     <li id="li_Charts">
                         <a href="~/@Link.ExpChart">統計與圖表</a>
+                    </li>
+                    <li id="li_CostEstimation">
+                        <a href="~/@Link.CostEstimation">專案成本估算</a>
+                    </li>
+                    <li id="li_ExpCatMgr">
+                        <a href="~/@Link.ExpCatMgr">費用類別管理</a>
                     </li>
                 </ul>
             </li>
@@ -236,6 +239,7 @@
     <script type="text/javascript" src="~/signalr/hubs"></script>
     @RenderSection("script", false)
     <script src="~/Scripts/SignalRChat.js"></script>
+    <script src="~/Scripts/BindingEnterSGR.js"></script>
 </body>
 </html>
 

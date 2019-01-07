@@ -23,11 +23,6 @@
             display: inline;
             margin: 15px;
         }
-
-        #scrollDiv {
-            height: 700px;
-        }
-
         .alert alert-primary {
             margin: 5px;
         }
@@ -50,51 +45,42 @@
     </style>
 }
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <label>選擇部門</label>
-                <select id="sel1" class="custom-select">
-                    <option>選擇部門</option>
-                    @foreach (var _dep in Model)
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <label>選擇部門</label>
+            <select id="sel1" class="custom-select">
+                <option>選擇部門</option>
+                @foreach (var _dep in Model)
+                {
+                    <option value="@_dep.DepartmentGUID">@_dep.DepartmentName</option>
+                }
+            </select>
+            <div id="teamcount" style="float:right">
+                <div class="flip"><i class="fas fa-users"></i>目前團隊成員</div>
+                <div class="panel" id="teamPanel">
+                    @foreach (var _ProjectMemeber in (List<ProjectMembers>)ViewBag.ThisProjectMember)
                     {
-                        <option value="@_dep.DepartmentGUID">@_dep.DepartmentName</option>
-                    }
-                </select>
-                <div id="teamcount" style="float:right">
-                    <div class="flip"><i class="fas fa-users"></i>目前團隊成員</div>
-                    <div class="panel" id="teamPanel">
-                        @foreach (var _ProjectMemeber in (List<ProjectMembers>)ViewBag.ThisProjectMember)
+                        if (_ProjectMemeber.Employee.TitleGUID != new Guid("724d4916-0f1b-417b-a927-25d04425146d"))
                         {
-                            if (_ProjectMemeber.Employee.TitleGUID != new Guid("724d4916-0f1b-417b-a927-25d04425146d"))
-                            {
-                                <img src="~/image/avatar.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" data-title="@_ProjectMemeber.Employee.TitleGUID" />
-                            }
-                            else
-                            {
-                                <img src="~/image/leader.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" data-title="@_ProjectMemeber.Employee.TitleGUID" />
-                            }
+                            <img src="~/image/avatar.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" data-title="@_ProjectMemeber.Employee.TitleGUID" />
                         }
-                    </div>
+                        else
+                        {
+                            <img src="~/image/leader.png" title="@_ProjectMemeber.Employee.EmployeeName" class="rounded-circle" data-guid="@_ProjectMemeber.EmployeeGUID" data-title="@_ProjectMemeber.Employee.TitleGUID" />
+                        }
+                    }
                 </div>
             </div>
         </div>
-        @*<table class="table table-bordered"> 
-            <thead>
-                <tr>
-                    <th style="width:90px;">識別頭貼</th>
-                    <th style="width:200px">員工姓名</th>
-                    <th>平均專案得分</th>
-                </tr>
-            </thead>
-        </table>*@
-        <div class="row" style="margin-top:20px">
-            <div class="col-sm">
-                <div id="scrollDiv">
-                    <!--runin-->
-                    @foreach (var _emp in (List<Employee>)ViewBag.FirstEmpList)
-                    {
-                    <div class="alert alert-primary" role="alert" id="empDiv">
+    </div>
+    <div class="row" style="margin-top:20px">
+        <div class="col-sm">
+            <div id="scrollDiv" class="row">
+                <!--runin-->
+                @foreach (var _emp in (List<Employee>)ViewBag.FirstEmpList)
+                {
+                    <div class="alert alert-primary" role="alert" id="empDiv" style="margin:8px;width:23%">
                         @if (_emp.JobTitle.TitleName != "專案經理")
                         {
                             <img src="~/image/avatar.png" class="rounded-circle" />
@@ -103,19 +89,18 @@
                         {
                             <img src="~/image/leader.png" class="rounded-circle" />
                         }
-                        <p style="display:inline;margin:45px;">@_emp.EmployeeName</p>
-                        <input type="checkbox" class="ckbox1" style="float:right;" value="@_emp.EmployeeGUID" />
+                        <p style="display:inline;margin:10px;">@_emp.EmployeeName</p>
+                        <input type="checkbox" class="ckbox1" style="float:right;margin:12px 15px" value="@_emp.EmployeeGUID" hidden />
                         @if (_emp.ProjectMembers.Average(p => p.PMscore) != null)
-                        {
-                            <h4 style="display:inline;float:right"><span class="badge badge-light"> @_emp.ProjectMembers.Average(p => p.PMscore)</span></h4>
-                        }
-                        @*<h6 style="display:inline">@_emp.JobTitle.TitleName</h6>*@
-                    </div>
-                    }
+            {
+                <h4 style="display:inline;float:right"><span class="badge badge-light"> @Math.Round((double)_emp.ProjectMembers.Average(p => p.PMscore), 0)</span></h4>
+            }
                 </div>
+                }
             </div>
         </div>
     </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -127,7 +112,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">     
+            <div class="modal-body">
                 <a class="btn btn-danger" href="@Url.Action("AssignTask","ProjectMember")">點我查看成員目前承接工作</a>
             </div>
             <div class="modal-footer">
@@ -152,11 +137,12 @@
                 {
                     var sel = $('#scrollDiv');
                     var docFrag = $(document.createDocumentFragment());
+
                     sel.html($("<img></img>").attr("src", "/image/loading.gif"));
                     $.each(datas, function (idx, _emp)
                     {
                         var p = $("<p></p>").text(_emp.EmployeeName);// Find assigned
-                        var input = $("<input/>").attr("type", "checkbox").attr("class", "ckbox1").attr("style", "float:right").val(_emp.EmployeeGUID);
+                        var input = $("<input hidden/>").attr("type", "checkbox").attr("class", "ckbox1").attr("style", "float:right;margin:12px 15px").val(_emp.EmployeeGUID);
                         if (_emp.TitleGUID != "724d4916-0f1b-417b-a927-25d04425146d")
                         {
                             var img = $("<img/>").attr("src", "/image/avatar.png").attr("class", "rounded-circle");
@@ -165,8 +151,12 @@
                         {
                             var img = $("<img/>").attr("src", "/image/leader.png").attr("class", "rounded-circle");
                         }
-                        var empdiv = $("<div></div>").attr("class", "alert alert-primary");
-                        empdiv.append([img, p, input]);
+                        var empdiv = $("<div style='margin: 8px; width:23%;height:71px;'></div>").attr("class", "alert alert-primary");
+                        if (_emp.AVGPMScore.toFixed() != 0)
+                        {
+                            var scoreLavel = $("<h4 style='display:inline;float:right'><span class='badge badge-light'>" + _emp.AVGPMScore.toFixed() + "</span></h4>")
+                        }
+                        empdiv.append([img, p, input, scoreLavel]);
                         docFrag.append(empdiv);
                     })
                     sel.html(docFrag);
@@ -177,8 +167,12 @@
         })
 
         SendIDToTeamTable();
-        function SendIDToTeamTable()//勾選成員、取消勾選事件
+        $("#scrollDiv").on("click", "div", function ()
         {
+            $(this).children("input").click();
+        })
+        function SendIDToTeamTable()//勾選成員、取消勾選事件
+        {        
             $('.ckbox1').on('change', function ()
             {
                 var memberGUID = $(this).val();
@@ -192,7 +186,7 @@
                         url: '@Url.Action("AddProjectMember", "ProjectMember")',
                         data: { "memberID": memberGUID},
                         success: function ()
-                        {                                                      
+                        {
                             ReloadTeamCount();
                         }
                         , error: function () { alert(memberName + " 已存在於此專案"); chkboxcheck.prop('checked', false); ReloadTeamCount();}
@@ -232,7 +226,7 @@
                         var empImg = $("<img/>").attr("src", "/image/leader.png").attr("class", "rounded-circle").attr("title", _emp.EmployeeName)
                             .attr("data-guid", _emp.EmployeeGUID).attr("data-title", _emp.TitleGUID).tooltip();
                     }
-                    docFrag.append(empImg);           
+                    docFrag.append(empImg);
                 })
                 panel.html(docFrag);
             })
@@ -285,9 +279,9 @@
                 RemoveMember();
                 $('#myModal').modal('hide');
             })
-        
+
             function RemoveMember()
-            {                
+            {
                 $.ajax({
                              url: '@Url.Action("DeleteProjectMember", "ProjectMember")',
                              data: { "memberID": memberGUID },

@@ -38,8 +38,23 @@ namespace ProjectManager.Controllers
             if (Request.Cookies["ProjectGUID"] == null)
                 return RedirectToAction("Index", "Projects");
             var emp = employee.GetCollections().Where(e => e.DepartmentGUID == depid)
-                .Select(e=>new { e.DepartmentGUID,e.EmployeeGUID,e.EmployeeName,e.TitleGUID});
+                .Select(e => new
+                {
+                    e.DepartmentGUID,
+                    e.EmployeeGUID,
+                    e.EmployeeName,
+                    e.TitleGUID,
+                    AVGPMScore = projectMembers.GetCollections().Where(p => p.EmployeeGUID == e.EmployeeGUID && p.PMscore != null).Count() == 0 ? 0 : e.ProjectMembers.Average(p => p.PMscore)
+                });
             return Content(JsonConvert.SerializeObject(emp), "application/json");
+        }
+
+        public ActionResult GetEmpInformation(Guid EmployeeGUID)
+        {
+            InviteMemberVM Ivm = new InviteMemberVM();
+            Ivm.PMReviewAVGScore = projectMembers.GetCollections().Where(p => p.EmployeeGUID == EmployeeGUID).Average(p => p.PMscore);
+            Ivm.OwnProjectCount = projectMembers.GetCollections().Where(p => p.EmployeeGUID == EmployeeGUID).GroupBy(p => p.ProjectGUID).Count();
+            return Content(JsonConvert.SerializeObject(Ivm), "application/json");
         }
 
         public ActionResult AddProjectMember(Guid memberID)
@@ -50,7 +65,7 @@ namespace ProjectManager.Controllers
             pm.IsRead = false;
             pm.InvideDate = DateTime.Now;
             projectMembers.Add(pm);
-            return RedirectToAction("Index", "ProjectMember");
+            return RedirectToAction("Index", "ProjectMember");            
         }
 
         public ActionResult DeleteProjectMember()
@@ -65,7 +80,7 @@ namespace ProjectManager.Controllers
         {
             Guid InvitePJGUID = new Guid(Request.Cookies["ProjectGUID"].Value);
             var pjmb = projectMembers.GetCollections().Where(p => p.ProjectGUID == InvitePJGUID)
-                .Select(p => new { p.EmployeeGUID, p.Employee.TitleGUID, p.Employee.EmployeeName });
+                .Select(p => new { p.EmployeeGUID, p.Employee.TitleGUID, p.Employee.EmployeeName});
             return Content(JsonConvert.SerializeObject(pjmb), "application/json");
         }
 

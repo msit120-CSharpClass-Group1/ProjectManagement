@@ -14,7 +14,7 @@
             <td style="min-width:75px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().Quantity).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByQuantity })<i class="fas fa-sort"></i></td>
             <td style="min-width:105px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().UnitPrice).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByUnitPrice })<i class="fas fa-sort"></i></td>
             <td style="min-width:155px">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().SubTotal).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortBySubTotal })<i class="fas fa-sort"></i></td>
-            <td style="min-width:60px;width:300px;">@Html.DisplayNameFor(p => p.First().Description)</td>
+            <td style="min-width:60px;width:300px;">@Html.ActionLink(@Html.DisplayNameFor(p => p.First().Description).ToString(), "GetTaskResources", new { sortBy = ViewBag.sortByDescription })<i class="fas fa-sort"></i></td>
             <td class="editor" colspan="2" style="min-width:60px;">編輯</td>
         </tr>
     </thead>

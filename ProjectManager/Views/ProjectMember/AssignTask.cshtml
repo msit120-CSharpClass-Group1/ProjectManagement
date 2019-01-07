@@ -143,7 +143,7 @@
         @section asideRight{
             <!--TaskList Start-->
             <h3 class="asidetitle">工作項目</h3>
-            <div style="margin:20px;overflow-y: scroll;height:300px">
+            <div style="margin:20px;overflow-y:auto;height:300px">
                 <ul class="list-group" id="taskitem">
                     @foreach (var _task in (IEnumerable<Tasks>)ViewBag.LoadTask)
                     {
@@ -154,15 +154,15 @@
             <!--TaskList End-->
             <h3 class="asidetitle">工作描述</h3>
             <div class="col-sm">
-                <div id="taskdescription" style="height:200px;margin:10px; width:230px;background-color:lightcyan">
+                <div id="taskdescription" style="height:200px;margin:10px; width:230px;background-color:white;border-radius:.25rem">
 
                 </div>
-                <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:5px;">分配完成</button>
+                <button type="submit" class="btn btn alert-light" id="submitBtn" style="margin-left:35px;margin-top:3px">分配完成</button>
                 <input type="hidden" id="rowcount" name="TotalRow" />
                 <input type="hidden" id="firstrow" name="FirstRow" />
                 <input type="hidden" id="lastrow" name="LastRow" />
                 <input type="hidden" id="mappingTime" name="MappingTime" value="@DateTime.Now" />
-                <input type="button" class="btn btn-danger" id="reset" value="重新分配">
+                <input type="button" class="btn btn-danger" id="reset" value="重新分配" style="margin-top:3px">
             </div>
         </div>
         }
@@ -173,7 +173,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="exampleModalLongTitle">員工姓名</h4>
+                    <h4 class="modal-title" id="exampleModalLongTitle">員工姓名</h4><button class="btn btn-default" style="margin-left:20px;" type="button" id="tagDemoBtn">Demo</button>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -234,7 +234,7 @@
                 var topTable = $("#mappingTable>tbody");
                 var submitCount = 0;
                 var flag = true;
-            $(".draggable").draggable({ drag: function (e, ui) { $(".droppable").effect("highlight", {}, 1000); }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
+            $(".draggable").draggable({ drag: function (e, ui) { $(".droppable").effect("highlight", {}, 1500); }, helper: 'clone', appendTo: 'body', zIndex: 5, /*containment: '.row no-gutters'}*/ });
                 $(".droppable").droppable({
                     drop: function (event, ui)
                     {
@@ -261,7 +261,7 @@
                         {
                             var value = $("#mappingTable tr:eq('" + i + "')").children("td:eq(1)").text()
                             var name = $("#mappingTable tr:eq('" + i + "')").children("td:eq(0)").text()
-                            if (taskName == value && empName!= name)
+                            if (taskName == value && empName != name)
                             {
                                 $("#mappingTable tr:eq('" + i + "')").remove();
                             }
@@ -454,9 +454,13 @@
                             $("#text").val("");
                             $('#exampleModalCenter').modal('hide');
                         }
-                    });
-                })
+                });
             })
+            $("#tagDemoBtn").click(function ()
+            {
+                $("#text").val("此項目客戶要求高，務必確實執行");
+            })
+        })
             function exportExcel()
             {
                 var sHtml = htmlEncode($("#mappingTable")[0].outerHTML);
@@ -466,7 +470,7 @@
             function htmlEncode(value)
             {
                 return $('<div/>').text(value).html();
-            }
+        }
     </script>
     }
     

@@ -28,6 +28,7 @@ namespace ProjectManager.Controllers
         Repository<JobTitle> jobTitleRepo = new Repository<JobTitle>();
         Repository<TaskDetail> taskDetailRepo = new Repository<TaskDetail>();
         Repository<TaskResource> resourceRepo = new Repository<TaskResource>();
+        Repository<CostPool> poolRepo = new Repository<CostPool>();
 
         #region Project Report Chart
         public ActionResult ProjectReport(Guid? ProjectGUID)
@@ -474,7 +475,7 @@ namespace ProjectManager.Controllers
                 _resource.ResourceName = "工程師工時投入";
                 _resource.CategoryID = 1;
                 _resource.Quantity = (int)_task.WorkTime;
-                _resource.UnitPrice = 200;
+                _resource.UnitPrice = (decimal)poolRepo.GetCollections().Where(p => p.ProjectGUID == _task.ProjectGUID).FirstOrDefault().WagePerHour;
                 _resource.Date = DateTime.Now;
                 _resource.Description = "(任務驗收自動產生)" + _task.Description;
                 resourceRepo.Add(_resource);
