@@ -167,12 +167,12 @@
                         selectedEvent = calEvent;
                         $('#myModal #eventTitle').text(calEvent.title);
                         var $description = $('<div/>');
-                        $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("MM/DD/YYYY HH:mm A")));
+                        $description.append($('<p/>').html('<b>起始時間 : </b>' + calEvent.start.format("MM/DD/YYYY HH:mm A")));
                         if (calEvent.end != null)
                         {
-                            $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("MM/DD/YYYY HH:mm A")));
+                            $description.append($('<p/>').html('<b>結束時間 : </b>' + calEvent.end.format("MM/DD/YYYY HH:mm A")));
                         }
-                        $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
+                        $description.append($('<p/>').html('<b>描述 : </b>' + calEvent.description));
                         $("#calGUID").val(calEvent.CalendarGUID)
 
                         $('#myModal #pDetails').empty().html($description);
