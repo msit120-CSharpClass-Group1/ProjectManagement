@@ -50,6 +50,12 @@
             margin-left: auto;
             margin-right: auto;
         }
+
+        .rotated {
+            transform: rotate(-90deg);
+            padding-left: 4px;
+            padding-right: 0px;
+        }
     </style>
 }
 
@@ -508,7 +514,7 @@
             {
                 var formgroup = $(this).parents("div[name='Task']").children(".form-group");
                 formgroup.slideToggle();
-
+                $(this).siblings("i").toggleClass("rotated");
             }
 
             function AddExpense()
