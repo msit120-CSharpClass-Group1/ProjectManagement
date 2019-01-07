@@ -345,10 +345,10 @@ namespace ProjectManager.Models
         {
             List<int> result = new List<int>();
 
-            int sum = 0;
-
             foreach (var m in months)
             {
+                int sum = 0;
+
                 foreach (var task in project.Tasks.GetLeafTasks())
                 {
                     sum += (int)task.TaskResource.Where(r => r.Date.Month == m).Select(r => r.UnitPrice * r.Quantity).Sum();
