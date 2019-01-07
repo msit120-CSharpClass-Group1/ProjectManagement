@@ -5,7 +5,7 @@
     var ProjectMonths = Math.Round(((TimeSpan)ProjectPeriod).Days / 30D, 2, MidpointRounding.AwayFromZero);
 }
 <div id="StandardInputTile" class="hide">
-    @Html.DropDownList("ExpCats", (SelectList)ViewBag.ExpCats, "請選擇類別", new { @class = "custom-select myselect" })
+    @Html.DropDownList("ExpCats", (SelectList)ViewBag.ExpCats, "請選擇類別", new { @class = "custom-select myselect", required = "required" })
     <div class="input-group-append">
         <label class="input-group-text">NT$</label>
     </div>
@@ -20,6 +20,7 @@
             {
                 <div name="Task" class="bordered bg-light p-3 mb-4">
                     <div class="mb-4">
+                        <i class="fas fa-caret-down" style="float:left;font-size:30px;width:30px;"></i>
                         <span class="sp_TaskName" style="font-size:20px">@t.TaskName</span>
                         <button name="btn_DeleteExpense" type="button" class="btn btn-danger btn-sm float-right"><i class="fas fa-minus"></i></button>
                         <button name="btn_AddExpense" type="button" class="btn btn-secondary btn-sm float-right mr-1"><i class="fas fa-plus"></i></button>
@@ -53,26 +54,30 @@
             <tbody>
                 <tr>
                     <td><p>租金費用</p></td>
-                    <td id="Rental"><p></p></td>
+                    <td id="Rental" data-amount=""><p></p></td>
                 </tr>
                 <tr>
                     <td><p>水電費用</p></td>
-                    <td id="Utility"><p></p></td>
+                    <td id="Utility" data-amount=""><p></p></td>
                 </tr>
                 <tr>
                     <td><p>其他管理費用</p></td>
-                    <td id="OMC"><p></p></td>
+                    <td id="OMC" data-amount=""><p></p></td>
                 </tr>
                 <tr>
                     <td><p>利息費用</p></td>
-                    <td id="Interest"><p></p></td>
+                    <td id="Interest" data-amount=""><p></p></td>
                 </tr>
                 <tr>
                     <td><p>風險準備成本</p></td>
-                    <td id="RiskPreparation"><p></p></td>
+                    <td id="RiskPreparation" data-amount=""><p></p></td>
                 </tr>
             </tbody>
         </table>
+        <div class="mt-3">
+            <h4 class="mb-3">備註</h4>
+            <textarea id="Description" name="Description" class="form-control" style="height:200px;resize:none"></textarea>
+        </div>
     </div>
     <div class="col-4" style="min-width:calc(1280px/3)">
         <div class="p-3">

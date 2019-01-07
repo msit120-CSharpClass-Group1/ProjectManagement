@@ -58,12 +58,57 @@ namespace ProjectManager.Models
                 case "SubTotalDesc":
                     ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.SubTotal);
                     break;
+                case "Description":
+                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.Description);
+                    break;
+                case "DescriptionDesc":
+                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.Description);
+                    break;
                 default:
                     ProjectResourceList = ProjectResourceList.OrderBy(r => r.Date);
                     break;
             }
 
             return ProjectResourceList;
+        }
+
+        public static IQueryable<CostEstimateSheetVM> Sort(this IQueryable<CostEstimateSheetVM> SheetList, string sortBy)
+        {
+            switch (sortBy)
+            {
+                case "DateDesc":
+                    SheetList = SheetList.OrderByDescending(r => r.CreateDate);
+                    break;
+                case "ProjectName":
+                    SheetList = SheetList.OrderBy(r => r.ProjectName);
+                    break;
+                case "ProjectNameDesc":
+                    SheetList = SheetList.OrderByDescending(r => r.ProjectName);
+                    break;
+                case "CreatorName":
+                    SheetList = SheetList.OrderBy(r => r.CreatorName);
+                    break;
+                case "CreatorNameDesc":
+                    SheetList = SheetList.OrderByDescending(r => r.CreatorName);
+                    break;
+                case "SheetID":
+                    SheetList = SheetList.OrderBy(r => r.SheetID);
+                    break;
+                case "SheetIDDesc":
+                    SheetList = SheetList.OrderByDescending(r => r.SheetID);
+                    break;
+                case "Description":
+                    SheetList = SheetList.OrderBy(r => r.Description);
+                    break;
+                case "DescriptionDesc":
+                    SheetList = SheetList.OrderByDescending(r => r.Description);
+                    break;
+                default:
+                    SheetList = SheetList.OrderBy(r => r.CreateDate);
+                    break;
+            }
+
+            return SheetList;
         }
 
         public static IQueryable<ProjectResourceVM> Filter(this IQueryable<ProjectResourceVM> ProjectResourceList, ResourceFilterVM filter)
@@ -241,6 +286,74 @@ namespace ProjectManager.Models
             {
                 int count = status.Tasks.Where(t => t.ProjectGUID == projectGUID).GetLeafTasks().Count();
                 result.Add(count);
+            }
+
+            return result;
+        }
+
+        public static IEnumerable<string> GetChineseMonths(this IEnumerable<int> months)
+        {
+            List<string> result = new List<string>();
+
+            foreach (var m in months)
+            {
+                switch (m)
+                {
+                    case 1:
+                        result.Add("一月");
+                        break;
+                    case 2:
+                        result.Add("二月");
+                        break;
+                    case 3:
+                        result.Add("三月");
+                        break;
+                    case 4:
+                        result.Add("四月");
+                        break;
+                    case 5:
+                        result.Add("五月");
+                        break;
+                    case 6:
+                        result.Add("六月");
+                        break;
+                    case 7:
+                        result.Add("七月");
+                        break;
+                    case 8:
+                        result.Add("八月");
+                        break;
+                    case 9:
+                        result.Add("九月");
+                        break;
+                    case 10:
+                        result.Add("十月");
+                        break;
+                    case 11:
+                        result.Add("十一月");
+                        break;
+                    case 12:
+                        result.Add("十二月");
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        public static IEnumerable<int> GetCostsByMonths(this Project project, IEnumerable<int> months)
+        {
+            List<int> result = new List<int>();
+
+            foreach (var m in months)
+            {
+                int sum = 0;
+
+                foreach (var task in project.Tasks.GetLeafTasks())
+                {
+                    sum += (int)task.TaskResource.Where(r => r.Date.Month == m).Select(r => r.UnitPrice * r.Quantity).Sum();
+                }
+                result.Add(sum);
             }
 
             return result;

@@ -121,6 +121,7 @@ namespace ProjectManager.Controllers
             ViewBag.sortByQuantity = sortBy == "Quantity" ? "QuantityDesc" : "Quantity";
             ViewBag.sortByUnitPrice = sortBy == "UnitPrice" ? "UnitPriceDesc" : "UnitPrice";
             ViewBag.sortBySubtotal = sortBy == "SubTotal" ? "SubTotalDesc" : "SubTotal";
+            ViewBag.sortByDescription = sortBy == "Description" ? "DescriptionDesc" : "Description";
 
             return PartialView(ProjectResourceList.ToPagedList(page ?? 1, 8));
         }
@@ -302,10 +303,35 @@ namespace ProjectManager.Controllers
                     data = departments.GetBudgetsByDepartment()
                 });
             }
-            //else if(ProjectID != null)
-            //{
-            //    //TODO: What should be placed at this situation?
-            //}
+            else if (ProjectGUID != null)
+            {
+                Project project = ProjectRepo.Find(ProjectGUID);
+                List<int> months = new List<int>();
+
+                for (int i = 2; i >= 0; i--) 
+                {
+                    if(DateTime.Now.Month - i <= 0)
+                    {
+                        months.Add(DateTime.Now.Month + 12 - i);
+                    }
+                    else
+                    {
+                        months.Add(DateTime.Now.Month - i);
+                    }
+                }
+
+                List<string> chtmonths = months.GetChineseMonths().ToList();
+
+                chartData.labels = chtmonths;
+
+                chartData.datasets.Add(new SingleColorChartDataset<int>
+                {
+                    label = "當月費用",
+                    backgroundColor = "#90C3D4",
+                    borderColor = "#90C3D4",
+                    data = project.GetCostsByMonths(months)
+                });
+            }
             else
             {
                 List<Project> projects = ProjectRepo.GetCollections().Where(p => p.RequiredDeptGUID == DepartmentGUID).ToList();
@@ -519,54 +545,128 @@ namespace ProjectManager.Controllers
                                    join p in ProjectRepo.GetCollections() on d.DepartmentGUID equals p.RequiredDeptGUID
                                    select d).Distinct().ToList();
 
+            Response.Cookies["sortBy"].Value = "";
+
             return View();
         }
 
-        public ActionResult GetStandardPool()
+        public ActionResult GetCostPool(Guid? projectGUID)
         {
-            Guid standardPoolGUID = new Guid("7c070e83-adb8-442f-9026-8287a1bb31d3");
-            var pool = PoolRepo.GetCollections().Where(p => p.PoolGUID == standardPoolGUID).FirstOrDefault();
+            CostPool pool = new CostPool();
 
-            return Json(pool, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult CreatePool(CostPool pool)
-        {
-            var q = PoolRepo.GetCollections().Where(p => p.ProjectGUID == pool.ProjectGUID);
-
-            if (q.Count() != 0)
+            if (projectGUID == null)
             {
-                try
+                var q = PoolRepo.GetCollections().Where(p => p.ProjectGUID == null);
+
+                if (q.Count() != 0)
                 {
-                    pool.PoolGUID = q.Single().PoolGUID;
-                    pool.CreatedDate = q.Single().CreatedDate;
-                    pool.ModifiedDate = DateTime.Now;
-                    PoolRepo.Update(pool);
+                    pool = q.FirstOrDefault();
                 }
-                catch (Exception e)
-                {
-                    return Json(e, JsonRequestBehavior.AllowGet);
-                }
-            }
-            else
-            {
-                try
+                else
                 {
                     pool.PoolGUID = Guid.NewGuid();
                     pool.CreatedDate = DateTime.Now;
                     pool.ModifiedDate = DateTime.Now;
                     PoolRepo.Add(pool);
                 }
+            }
+            else
+            {
+                var q = PoolRepo.GetCollections().Where(p => p.ProjectGUID == projectGUID);
+
+                if (q.Count() != 0)
+                {
+                    pool = q.FirstOrDefault();
+                }
+                else
+                {
+                    CostPool standardPool = PoolRepo.GetCollections().Where(p => p.ProjectGUID == null).FirstOrDefault();
+                    pool.PoolGUID = Guid.NewGuid();
+                    pool.InterestExpense = standardPool.InterestExpense;
+                    pool.ModifiedDate = DateTime.Now;
+                    pool.OtherManagementCosts = standardPool.OtherManagementCosts;
+                    pool.RentalPerMonth = standardPool.RentalPerMonth;
+                    pool.RiskPreparationCost = standardPool.RiskPreparationCost;
+                    pool.UtilityPerMonth = standardPool.UtilityPerMonth;
+                    pool.WagePerHour = standardPool.WagePerHour;
+                    pool.ProjectGUID = projectGUID;
+                    pool.CreatedDate = DateTime.Now;
+                    pool.ModifiedDate = DateTime.Now;
+                    PoolRepo.Add(pool);
+                }
+            }
+
+            return Json(pool, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult EditPool(CostPool pool)
+        {
+            CostPool standardPool = PoolRepo.GetCollections().Where(p => p.ProjectGUID == null).FirstOrDefault();
+
+            if(pool.PoolGUID == standardPool.PoolGUID)
+            {
+                try
+                {
+                    standardPool.InterestExpense = pool.InterestExpense;
+                    standardPool.ModifiedDate = DateTime.Now;
+                    standardPool.OtherManagementCosts = pool.OtherManagementCosts;
+                    standardPool.RentalPerMonth = pool.RentalPerMonth;
+                    standardPool.RiskPreparationCost = pool.RiskPreparationCost;
+                    standardPool.UtilityPerMonth = pool.UtilityPerMonth;
+                    standardPool.WagePerHour = pool.WagePerHour;
+
+                    PoolRepo.Update(standardPool);
+                }
                 catch (Exception e)
                 {
-                    return Json(e, JsonRequestBehavior.AllowGet);
+                    return Json(e.ToString(), JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                var q = PoolRepo.GetCollections().Where(p => p.ProjectGUID == pool.ProjectGUID);
+
+                if (q.Count() != 0)
+                {
+                    try
+                    {
+                        var projectPool = q.FirstOrDefault();
+
+                        projectPool.InterestExpense = pool.InterestExpense;
+                        projectPool.ModifiedDate = DateTime.Now;
+                        projectPool.OtherManagementCosts = pool.OtherManagementCosts;
+                        projectPool.RentalPerMonth = pool.RentalPerMonth;
+                        projectPool.RiskPreparationCost = pool.RiskPreparationCost;
+                        projectPool.UtilityPerMonth = pool.UtilityPerMonth;
+                        projectPool.WagePerHour = pool.WagePerHour;
+
+                        PoolRepo.Update(projectPool);
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(e.ToString(), JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        pool.PoolGUID = Guid.NewGuid();
+                        pool.CreatedDate = DateTime.Now;
+                        pool.ModifiedDate = DateTime.Now;
+                        PoolRepo.Add(pool);
+                    }
+                    catch (Exception e)
+                    {
+                        return Json(e.ToString(), JsonRequestBehavior.AllowGet);
+                    }
                 }
             }
 
             return Json("New Pool has been created!", JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetCostEstimationSheets(Guid? DepartmentID, Guid? ProjectID)
+        public ActionResult GetCostEstimationSheets(Guid? DepartmentID, Guid? ProjectID, int? page, string sortBy)
         {
             List<CostEstimateSheet> sheets = new List<CostEstimateSheet>();
 
@@ -597,31 +697,40 @@ namespace ProjectManager.Controllers
                     {
                         SheetGUID = s.SheetGUID,
                         SheetID = s.SheetID,
-                        SheetName = s.SheetName,
                         ProjectName = p.ProjectName,
                         ProjectGUID = s.ProjectGUID,
+                        CreatorName = s.CreatorName,
                         CreateDate = s.CreateDate,
                         Description = s.Description,
+                        ModifierName = s.ModifierName,
                         ModifiedDate = s.ModifiedDate
                     };
 
+            var SheetList = q.ToList().AsQueryable().Sort(sortBy);
+
+            Response.Cookies["sortBy"].Value = sortBy;
+            ViewBag.sortByDate = string.IsNullOrEmpty(sortBy) ? "DateDesc" : "";
+            ViewBag.sortByProjectName = sortBy == "ProjectName" ? "ProjectNameDesc" : "ProjectName";
+            ViewBag.sortByCreatorName = sortBy == "CreatorName" ? "CreatorNameDesc" : "CreatorName";
+            ViewBag.sortBySheetID = sortBy == "SheetID" ? "SheetIDDesc" : "SheetID";
+            ViewBag.sortByDescription = sortBy == "Description" ? "DescriptionDesc" : "Description";
+
             ViewBag.Count = q.ToList().Count();
 
-            return PartialView(q.ToList());
+            return PartialView(SheetList.ToPagedList(page ?? 1, 10));
         }
 
-        public ActionResult CreateEstimationSheet(Guid? projectGUID)
+        public ActionResult CreateEstimationSheet(Guid projectGUID)
         {
             ViewBag.ExpCats = new SelectList(ResourceCatRepo.GetCollections(), "CategoryID", "CategoryName");
             ViewBag.RootTasks = TaskRepo.GetCollections().Where(t => t.ProjectGUID == projectGUID).GetRootTasks();
-            Project project = ProjectRepo.GetCollections().Where(p => p.ProjectGUID == projectGUID).FirstOrDefault();
+            Project project = ProjectRepo.Find(projectGUID);
 
             return PartialView(project);
         }
 
         public ActionResult AddEstimationSheet(CostEstimateSheet sheet)
         {
-            sheet.SheetGUID = Guid.NewGuid();
             sheet.CreateDate = DateTime.Now;
             sheet.ModifiedDate = DateTime.Now;
 
@@ -631,7 +740,7 @@ namespace ProjectManager.Controllers
             }
             catch (Exception e)
             {
-                return Json(e, JsonRequestBehavior.AllowGet);
+                return Json(e.ToString(), JsonRequestBehavior.AllowGet);
             }
 
             return Json("New Sheet has been created!", JsonRequestBehavior.AllowGet);
@@ -645,12 +754,97 @@ namespace ProjectManager.Controllers
             }
             catch (Exception e)
             {
-                return Json(e, JsonRequestBehavior.AllowGet);
+                return Json(e.ToString(), JsonRequestBehavior.AllowGet);
             }
 
             return Json("Sheet details have been saved!", JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult UpdateTask(IEnumerable<Tasks> rootTasks)
+        {
+            List<Tasks> TaskList = new List<Tasks>();
+
+            foreach(var rt in rootTasks)
+            {
+                var task = TaskRepo.GetCollections().Where(t => t.TaskGUID == rt.TaskGUID).Single();
+                task.EstWorkTime = rt.EstWorkTime;
+                TaskList.Add(task);
+            }
+
+            try
+            {
+                TaskRepo.UpdateList(TaskList);
+            }
+            catch (Exception e)
+            {
+                return Json(e.ToString(), JsonRequestBehavior.AllowGet);
+            }
+
+            return Json("Task worktime have been updated!", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult UpdateProjectBudget(Guid projectGUID,int budget)
+        {
+            Project p = ProjectRepo.Find(projectGUID);
+            p.ProjectBudget = budget;
+
+            try
+            {
+                ProjectRepo.Update(p);
+            }
+            catch (Exception e)
+            {
+                return Json(e.ToString(), JsonRequestBehavior.AllowGet);
+            }
+
+            return Json("Project Budget has been updated!", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult DeleteSheet(Guid SheetGUID)
+        {
+            try
+            {
+                SheetRepo.Delete(SheetRepo.Find(SheetGUID));
+                List<CostEstimateSheetDetail> SheetDetails = SheetDetailRepo.GetCollections().Where(d => d.SheetGUID == SheetGUID).ToList();
+                SheetDetailRepo.DeleteList(SheetDetails);
+            }
+            catch (Exception e)
+            {
+                return Json(e.ToString(), JsonRequestBehavior.AllowGet);
+            }
+
+            return Json("Deletion Complete!", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ViewSheet(Guid SheetGUID)
+        {
+            ViewBag.Sheet = SheetRepo.Find(SheetGUID);
+
+            var SheetDetails = SheetDetailRepo.GetCollections().Where(d => d.SheetGUID == SheetGUID);
+
+            var detailList = (from s in SheetDetails
+                                  join t in TaskRepo.GetCollections() on s.TaskGUID equals t.TaskGUID
+                                  orderby s.ResourceCategoryID
+                                  select new CostEstimateSheetDetailVM
+                                  {
+                                      ResourceCategoryID = s.ResourceCategoryID,
+                                      TaskGUID = t.TaskGUID,
+                                      TaskName = t.TaskName,
+                                      Amount = s.Amount
+                                  }).ToList();
+
+            foreach(var d in detailList)
+            {
+                var cat = ResourceCatRepo.Find(d.ResourceCategoryID);
+                d.ResourceCategoryName = cat == null? "直接人工" : cat.CategoryName;
+            }
+
+            var q = detailList.GroupBy(d => d.TaskGUID).Select(g => new CostEstimateSheetDetailVM{ TaskGUID = g.Key,TaskName = g.Select(t => t.TaskName).First(), group = g });
+
+            var result = q.ToList();
+
+            return PartialView(result);
+        }
         #endregion
     }
 }
