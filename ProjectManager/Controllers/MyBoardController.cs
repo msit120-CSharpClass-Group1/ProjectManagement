@@ -26,9 +26,10 @@ namespace ProjectManager.Controllers
         {
             BoardVM VM = new BoardVM();
             var PID = Request.Cookies["PID"].Value;
-            var q = from parentTask in t.GetCollections()
-                    join childrenTask in t.GetCollections() on parentTask.TaskGUID equals childrenTask.ParentTaskGUID
-                    select childrenTask;
+            var q = t.GetCollections().GetLeafTasks();
+            //var q = from parentTask in t.GetCollections()
+            //        join childrenTask in t.GetCollections() on parentTask.TaskGUID equals childrenTask.ParentTaskGUID
+            //        select childrenTask;
             VM.TaskStatus = s.GetCollections().Where(x => x.TaskStatusID != 1);
             VM.Tasks = q.Where(x => x.ProjectGUID.ToString() == PID && x.EmployeeGUID == id).OrderBy(x=>x.EstEndDate).ToList();
             VM.Project = p.GetCollections().Where(x => x.ProjectGUID.ToString() == PID).ToList();
