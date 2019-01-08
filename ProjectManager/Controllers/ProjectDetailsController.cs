@@ -469,16 +469,18 @@ namespace ProjectManager.Controllers
                 _task.TaskStatusID = (int)TasksBL.Task_Status.Completed;
                 taskRepo.Update(_task);
                 _task.ParentTaskStatusUpdate(taskRepo,(int)TasksBL.Task_Status.Completed);
-                //自動產生費用
-                _resource.TaskGUID = _task.TaskGUID;
-                _resource.ResourceGUID = Guid.NewGuid();
-                _resource.ResourceName = "工程師工時投入";
-                _resource.CategoryID = 1;
-                _resource.Quantity = (int)_task.WorkTime;
-                _resource.UnitPrice = (decimal)poolRepo.GetCollections().Where(p => p.ProjectGUID == _task.ProjectGUID).FirstOrDefault().WagePerHour;
-                _resource.Date = DateTime.Now;
-                _resource.Description = "(任務驗收自動產生)" + _task.Description;
-                resourceRepo.Add(_resource);
+                if (poolRepo.GetCollections().Any(p => p.ProjectGUID == _task.ProjectGUID)) {
+                    //自動產生費用
+                    _resource.TaskGUID = _task.TaskGUID;
+                    _resource.ResourceGUID = Guid.NewGuid();
+                    _resource.ResourceName = "工程師工時投入";
+                    _resource.CategoryID = 1;
+                    _resource.Quantity = (int)_task.WorkTime;
+                    _resource.UnitPrice = (decimal)poolRepo.GetCollections().Where(p => p.ProjectGUID == _task.ProjectGUID).FirstOrDefault().WagePerHour;
+                    _resource.Date = DateTime.Now;
+                    _resource.Description = "(任務驗收自動產生)" + _task.Description;
+                    resourceRepo.Add(_resource);
+                }
             }
             else
             {
