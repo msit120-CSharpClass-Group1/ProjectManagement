@@ -52,7 +52,7 @@
         <div class="modal-content">
             <div class="m-2">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">儲存事件</h4>
+                <h4 class="modal-title">儲存事件 <button class="btn btn-primary" id="demo" style="display:inline">Demo</button></h4>
             </div>
             <div class="modal-body">
                 <form class="col-md-12 form-horizontal">
@@ -167,12 +167,12 @@
                         selectedEvent = calEvent;
                         $('#myModal #eventTitle').text(calEvent.title);
                         var $description = $('<div/>');
-                        $description.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("MM/DD/YYYY HH:mm A")));
+                        $description.append($('<p/>').html('<b>起始時間 : </b>' + calEvent.start.format("MM/DD/YYYY HH:mm A")));
                         if (calEvent.end != null)
                         {
-                            $description.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("MM/DD/YYYY HH:mm A")));
+                            $description.append($('<p/>').html('<b>結束時間 : </b>' + calEvent.end.format("MM/DD/YYYY HH:mm A")));
                         }
-                        $description.append($('<p/>').html('<b>Description:</b>' + calEvent.description));
+                        $description.append($('<p/>').html('<b>描述 : </b>' + calEvent.description));
                         $("#calGUID").val(calEvent.CalendarGUID)
 
                         $('#myModal #pDetails').empty().html($description);
@@ -425,6 +425,10 @@
                     }
                 });
                 //location.reload();
+            })
+            $("#demo").click(function() {
+                $("#txtSubject").val("參與通訊軟體開發的夥伴，下午2點開會! ")
+                $("#txtDescription").val("開會地點三樓會議室，請提早5分鐘入場。 ")
             })
         });
     </script>
