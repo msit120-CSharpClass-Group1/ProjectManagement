@@ -13,8 +13,8 @@ namespace ProjectManager.Models
         {
             switch (sortBy)
             {
-                case "DateDesc":
-                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.Date);
+                case "Date":
+                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.Date);
                     break;
                 case "ProjectName":
                     ProjectResourceList = ProjectResourceList.OrderBy(r => r.ProjectName);
@@ -65,7 +65,7 @@ namespace ProjectManager.Models
                     ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.Description);
                     break;
                 default:
-                    ProjectResourceList = ProjectResourceList.OrderBy(r => r.Date);
+                    ProjectResourceList = ProjectResourceList.OrderByDescending(r => r.Date);
                     break;
             }
 
@@ -76,8 +76,8 @@ namespace ProjectManager.Models
         {
             switch (sortBy)
             {
-                case "DateDesc":
-                    SheetList = SheetList.OrderByDescending(r => r.CreateDate);
+                case "Date":
+                    SheetList = SheetList.OrderBy(r => r.CreateDate);
                     break;
                 case "ProjectName":
                     SheetList = SheetList.OrderBy(r => r.ProjectName);
@@ -104,7 +104,7 @@ namespace ProjectManager.Models
                     SheetList = SheetList.OrderByDescending(r => r.Description);
                     break;
                 default:
-                    SheetList = SheetList.OrderBy(r => r.CreateDate);
+                    SheetList = SheetList.OrderByDescending(r => r.CreateDate);
                     break;
             }
 
