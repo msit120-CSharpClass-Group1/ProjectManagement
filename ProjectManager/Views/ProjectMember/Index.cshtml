@@ -80,7 +80,7 @@
                 <!--runin-->
                 @foreach (var _emp in (List<Employee>)ViewBag.FirstEmpList)
                 {
-                    <div class="alert alert-primary" role="alert" id="empDiv" style="margin:8px;width:23%">
+                    <div class="alert alert-primary" role="alert" id="empDiv" style="margin:8px;width:23%;cursor:pointer">
                         @if (_emp.JobTitle.TitleName != "專案經理")
                         {
                             <img src="~/image/avatar.png" class="rounded-circle" />
@@ -151,7 +151,7 @@
                         {
                             var img = $("<img/>").attr("src", "/image/leader.png").attr("class", "rounded-circle");
                         }
-                        var empdiv = $("<div style='margin: 8px; width:23%;height:71px;'></div>").attr("class", "alert alert-primary");
+                        var empdiv = $("<div style='margin: 8px; width:23%;height:71px;cursor:pointer'></div>").attr("class", "alert alert-primary");
                         if (_emp.AVGPMScore.toFixed() != 0)
                         {
                             var scoreLavel = $("<h4 style='display:inline;float:right'><span class='badge badge-light'>" + _emp.AVGPMScore.toFixed() + "</span></h4>")
