@@ -215,7 +215,9 @@ namespace ProjectManager.Controllers
         {
             var member = new Guid(Request.Cookies["MemberGUID"].Value);
             var employeeGuid = members.Find(member).EmployeeGUID;
-            var _GetProjectList= projectMembers.GetCollections().Where(n => n.EmployeeGUID == employeeGuid).Select(n => new { n.Project.ProjectName, n.ProjectGUID }).ToList();
+            var _GetProjectList1= projectMembers.GetCollections().Where(n => n.EmployeeGUID == employeeGuid).Select(n => new { n.Project.ProjectName, n.ProjectGUID }).ToList();
+            var _GetProjectList2= projects.GetCollections().Where(n=>n.InChargeDeptPMGUID == employeeGuid).Select(n => new { n.ProjectName, n.ProjectGUID }).ToList();
+            var _GetProjectList = _GetProjectList1.Union(_GetProjectList2);
             return Json(_GetProjectList, JsonRequestBehavior.AllowGet);
         }
         public ActionResult GetTaskList(Guid id)
