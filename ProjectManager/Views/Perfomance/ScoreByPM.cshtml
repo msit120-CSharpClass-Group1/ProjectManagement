@@ -12,7 +12,7 @@
     <div class="container">
         <h5 class="section-title h1">專案團隊成員評分介面</h5>
         <div class="row" id="cardarea">
-            @if(Model.ProjectMembers.Count()==0)
+            @if (Model.ProjectMembers.Count() == 0)
             {
                 <p>成員都已經評分過了</p>
             }
@@ -55,7 +55,7 @@
                         </div>
                     </div>
                 </div>
-                }
+            }
         </div>
     </div>
 </section>
@@ -106,9 +106,8 @@
     </div>
 </div>
 
-
-    @section script{
-<script>
+@section script{
+    <script>
         $(document).ready(function ()
         {
             let cardareacount = $("#cardarea").children().length;
@@ -140,7 +139,7 @@
                         data: { "EmployeeGUID": EmployeeGUID, "PMScore": score, "ProjectGUID": $("#pjGUID").text()},
                         type:"post",
                         success: function (data)
-                        {                            
+                        {
                             scoreArea.children("input").prop("checked", false);
                             $('#exampleModalCenter').modal('hide');
                             for (var i = 0; i <= cardareacount; i++)
@@ -149,17 +148,17 @@
                                 let EmpGUID = carditem.children("p").text();
                                 if (EmpGUID == EmployeeGUID)
                                 {
-                                    carditem.html('<img src="/image/sign-check-icon.png" style="width:250px;"/><h3 style="text-align:center;font-size:200;margin-top:auto"><strong>'+ score +'分</strong></h3>');
-                                    carditem.fadeOut(1800, function () {$(this).remove()});                                  
+                                    carditem.html('<img src="/image/sign-check-icon.png" style="width:250px;"/><h3 style="text-align:center;margin-top:auto;margin-right:10px"><strong>'+ score +'分</strong></h3>');
+                                    carditem.fadeOut(1800, function () {$(this).remove()});
                                 }
                             }
                             score = 0;
                         }
-                });                
+                });
             })
             $("#cancelscore").click(function () { $(".boxes").children("input").prop("checked", false)})
         })
 
-</script>
+    </script>
 
-    }
+}
