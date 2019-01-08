@@ -140,6 +140,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="favicon\favicon-16x16.png" />
+    <Content Include="favicon\favicon-32x32.png" />
+    <Content Include="favicon\favicon-96x96.png" />
+    <Content Include="favicon\favicon.ico" />
     <Content Include="image\Excel-Icon.png" />
     <Content Include="image\Excelicon.png" />
     <Content Include="Content\AdminLTE.css" />
