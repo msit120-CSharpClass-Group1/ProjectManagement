@@ -113,7 +113,7 @@ namespace ProjectManager.Controllers
 
             Response.Cookies["sortBy"].Value = sortBy;
             ViewBag.Count = ProjectResourceList.Count();
-            ViewBag.sortByDate = string.IsNullOrEmpty(sortBy) ? "DateDesc" : "";
+            ViewBag.sortByDate = string.IsNullOrEmpty(sortBy) ? "Date" : "";
             ViewBag.sortByProjectName = sortBy == "ProjectName" ? "ProjectNameDesc" : "ProjectName";
             ViewBag.sortByTaskName = sortBy == "TaskName" ? "TaskNameDesc" : "TaskName";
             ViewBag.sortByResourceName = sortBy == "ResourceName" ? "ResourceNameDesc" : "ResourceName";
