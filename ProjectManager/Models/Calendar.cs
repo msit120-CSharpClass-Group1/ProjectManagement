@@ -27,7 +27,7 @@ namespace ProjectManager.Models
         public Nullable<System.DateTime> CreateDate { get; set; }
         public Nullable<int> CategoryID { get; set; }
     
-        public virtual Members Members { get; set; }
         public virtual CalendarCategory CalendarCategory { get; set; }
+        public virtual Members Members { get; set; }
     }
 }

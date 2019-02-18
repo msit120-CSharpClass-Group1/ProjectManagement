@@ -140,6 +140,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\ProjectManagement.ldf">
+      <DependentUpon>ProjectManagement.mdf</DependentUpon>
+    </Content>
+    <Content Include="App_Data\ProjectManagement.mdf" />
     <Content Include="favicon\favicon-16x16.png" />
     <Content Include="favicon\favicon-32x32.png" />
     <Content Include="favicon\favicon-96x96.png" />
@@ -167,15 +171,15 @@
     <Content Include="image\leader.png" />
     <Content Include="image\notask2.png" />
     <Content Include="image\sign-check-icon.png" />
-    <Content Include="Models\ProjectManagerModel.Context.tt">
+    <Content Include="Models\ProjectManageModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
-      <LastGenOutput>ProjectManagerModel.Context.cs</LastGenOutput>
+      <DependentUpon>ProjectManageModel.edmx</DependentUpon>
+      <LastGenOutput>ProjectManageModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\ProjectManagerModel.tt">
+    <Content Include="Models\ProjectManageModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
-      <LastGenOutput>ProjectManagerModel.cs</LastGenOutput>
+      <DependentUpon>ProjectManageModel.edmx</DependentUpon>
+      <LastGenOutput>ProjectManageModel.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\BindingEnterSGR.js" />
     <Content Include="Scripts\jquery.signalR-2.4.0.js" />
@@ -318,14 +322,14 @@
     <Content Include="webfonts\fa-solid-900.ttf" />
     <Content Include="webfonts\fa-solid-900.woff" />
     <Content Include="webfonts\fa-solid-900.woff2" />
-    <EntityDeploy Include="Models\ProjectManagerModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ProjectManagerModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\ProjectManagerModel.edmx.diagram">
-      <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
-    </Content>
     <Content Include="libman.json" />
+    <EntityDeploy Include="Models\ProjectManageModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ProjectManageModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\ProjectManageModel.edmx.diagram">
+      <DependentUpon>ProjectManageModel.edmx</DependentUpon>
+    </Content>
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
@@ -411,54 +415,54 @@
     <Compile Include="Models\BLL\TasksBL.cs" />
     <Compile Include="Models\BLL\TreeGridModel.cs" />
     <Compile Include="Models\Calendar.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CalendarCategory.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CostEstimateSheet.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CostEstimateSheetDetail.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CostPool.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Dashboard.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DataObject\AllowCrossSiteJsonAttribute.cs" />
     <Compile Include="Models\DataObject\ExcelTasks.cs" />
     <Compile Include="Models\DataObject\Grouped.cs" />
     <Compile Include="Models\DataObject\StoredProcedureForDemo.cs" />
     <Compile Include="Models\Department.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Document.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DocumentCategory.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DocumentModified.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Employee.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IRepository.cs" />
     <Compile Include="Models\JobTitle.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Meeting.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MeetingDetail.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Members.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MetaData\Calendar.cs" />
     <Compile Include="Models\MetaData\Project.cs" />
@@ -467,63 +471,63 @@
     <Compile Include="Models\PartialClass\Employee.cs" />
     <Compile Include="Models\PartialClass\Project.cs" />
     <Compile Include="Models\Permissions.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PreTasks.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Project.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProjectCategory.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProjectDiscuss.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ProjectManagerModel.Context.cs">
+    <Compile Include="Models\ProjectManageModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ProjectManagerModel.Context.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ProjectManagerModel.cs">
+    <Compile Include="Models\ProjectManageModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ProjectManagerModel.Designer.cs">
+    <Compile Include="Models\ProjectManageModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ProjectManagerModel.edmx</DependentUpon>
+      <DependentUpon>ProjectManageModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\ProjectMembers.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProjectStatus.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Repository.cs" />
     <Compile Include="Models\Repository\TasksRepository.cs" />
     <Compile Include="Models\ResourceCategory.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TaskDetail.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TaskDetailStatus.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TaskModified.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TaskResource.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Tasks.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TaskStatus.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModel\BoardVM.cs" />
     <Compile Include="Models\ViewModel\ChartDataVM.cs" />
@@ -545,10 +549,10 @@
     <Compile Include="Models\ViewModel\TaskVM.cs" />
     <Compile Include="Models\ViewModel\WidgetsVM.cs" />
     <Compile Include="Models\WidgetDetail.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Widgets.cs">
-      <DependentUpon>ProjectManagerModel.tt</DependentUpon>
+      <DependentUpon>ProjectManageModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -667,7 +671,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Document\1\" />
     <Folder Include="Document\2\" />
     <Folder Include="Document\3\" />
