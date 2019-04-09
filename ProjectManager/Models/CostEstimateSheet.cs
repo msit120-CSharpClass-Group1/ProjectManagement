@@ -18,6 +18,7 @@ namespace ProjectManager.Models
         public int SheetID { get; set; }
         public Nullable<System.Guid> ProjectGUID { get; set; }
         public string Description { get; set; }
+        public Nullable<decimal> Wage { get; set; }
         public Nullable<decimal> Rental { get; set; }
         public Nullable<decimal> Utility { get; set; }
         public Nullable<decimal> OtherManagement { get; set; }
@@ -27,6 +28,5 @@ namespace ProjectManager.Models
         public Nullable<System.DateTime> CreateDate { get; set; }
         public string ModifierName { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
-        public Nullable<decimal> Wage { get; set; }
     }
 }
