@@ -164,7 +164,10 @@ namespace ProjectManager.Models
 
                 foreach (var project in department.Project)
                 {
-                    sum += (int)project.ProjectBudget;
+                    if(project.ProjectBudget != null)
+                    {
+                        sum += (int)project.ProjectBudget;
+                    }
                 }
 
                 result.Add(sum);
